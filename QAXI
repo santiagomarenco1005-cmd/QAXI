@@ -174,8 +174,7 @@
         }
 
         .founder-sign {
-            margin-top: 30px;
-            font-style: italic;
+            margin-top: 40px;
             border-top: 1px solid #333;
             padding-top: 20px;
             display: inline-block;
@@ -183,31 +182,31 @@
 
         /* --- Aliados / Review Section (Estilo Mejorado) --- */
         .aliados-section {
-            background: var(--bg-color); /* Fondo limpio */
+            background: var(--bg-color);
             padding: 60px 10%;
             text-align: center;
         }
 
         .aliado-card {
-            background: linear-gradient(145deg, #111, #080808); /* Degradado elegante */
+            background: linear-gradient(145deg, #111, #080808);
             padding: 50px 40px;
-            border-radius: 20px; /* Bordes más redondeados */
-            border: 1px solid rgba(255,255,255,0.08); /* Borde sutil */
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
             max-width: 600px;
             margin: 0 auto;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6); /* Sombra profunda */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
             position: relative;
         }
 
         .aliado-card img {
-            height: 70px; /* Tamaño ajustado del logo */
+            height: 70px;
             margin-bottom: 25px;
             object-fit: contain;
-            filter: brightness(0.9); /* Un poco más integrado */
+            filter: brightness(0.9);
         }
 
         .review-stars {
-            color: #d4af37; /* Color dorado elegante */
+            color: #d4af37;
             margin-bottom: 20px;
             font-size: 1.1rem;
             letter-spacing: 3px;
@@ -405,17 +404,25 @@
     <section id="founder" class="founder-section">
         <div class="founder-content">
             <h2 class="section-title">Nuestro Enfoque</h2>
-            <p>
+            
+            <p style="margin-bottom: 20px;">
                 QAXI es un estudio digital especializado en el desarrollo, mantenimiento y optimización de páginas web modernas, seguras y de alto rendimiento. Diseñamos experiencias digitales minimalistas, limpias y funcionales, donde cada elemento tiene un propósito claro.
             </p>
-            <br>
-            <p>
-                Integramos inteligencia artificial en nuestros procesos para optimizar el diseño, mejorar el rendimiento y garantizar soluciones web más eficientes, escalables y preparadas para el futuro. Nuestro enfoque se basa en la simplicidad, la precisión y la evolución constante. Creamos tecnología que se mantiene, se adapta y perdura en el tiempo.
+            
+            <p style="margin-bottom: 20px;">
+                Integramos inteligencia artificial en nuestros procesos para optimizar el diseño, mejorar el rendimiento y garantizar soluciones web más eficientes, escalables y preparadas para el futuro.
             </p>
             
+            <p style="margin-bottom: 20px;">
+                Nuestro enfoque se basa en la simplicidad, la precisión y la evolución constante. Creamos tecnología que se mantiene, se adapta y perdura en el tiempo.
+            </p>
+
+            <p style="font-weight: 800; font-size: 1.2rem; margin-top: 30px;">Q.</p>
+            
             <div class="founder-sign">
-                <strong>— Santiago Andrés</strong><br>
-                <span style="font-size: 0.9rem; color: #888;">CEO & Founder</span>
+                <div style="font-style: italic; margin-bottom: 5px;">— Santiago Andrés</div>
+                <div style="font-size: 0.9rem; color: #888;">CEO & Founder</div>
+                <div style="font-size: 0.8rem; color: #555; margin-top: 15px;">© 2025 · QAXI</div>
             </div>
         </div>
     </section>
