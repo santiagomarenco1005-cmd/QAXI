@@ -49,7 +49,7 @@
         }
 
         .logo img {
-            height: 35px; 
+            height: 40px; /* Ajustado un poco para el icono cuadrado */
             object-fit: contain;
         }
 
@@ -139,9 +139,11 @@
         /* --- About --- */
         .about-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr; /* Cambiado a 1 columna al quitar la imagen */
             gap: 50px;
             align-items: center;
+            max-width: 800px; /* Centrado del texto */
+            margin: 0 auto;
         }
 
         .about-text h3 {
@@ -174,50 +176,11 @@
         }
 
         .founder-sign {
-            margin-top: 40px;
+            margin-top: 30px;
+            font-style: italic;
             border-top: 1px solid #333;
             padding-top: 20px;
             display: inline-block;
-        }
-
-        /* --- Aliados / Review Section (Estilo Mejorado) --- */
-        .aliados-section {
-            background: var(--bg-color);
-            padding: 60px 10%;
-            text-align: center;
-        }
-
-        .aliado-card {
-            background: linear-gradient(145deg, #111, #080808);
-            padding: 50px 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.08);
-            max-width: 600px;
-            margin: 0 auto;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            position: relative;
-        }
-
-        .aliado-card img {
-            height: 70px;
-            margin-bottom: 25px;
-            object-fit: contain;
-            filter: brightness(0.9);
-        }
-
-        .review-stars {
-            color: #d4af37;
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-            letter-spacing: 3px;
-        }
-
-        .review-text {
-            color: #e0e0e0;
-            font-style: italic;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            font-weight: 300;
         }
 
         /* --- Pricing --- */
@@ -350,7 +313,6 @@
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
-            .about-grid { grid-template-columns: 1fr; }
             nav { display: none; } 
         }
     </style>
@@ -359,7 +321,7 @@
 
     <header>
         <div class="logo">
-            <img src="image_4.png" alt="QAXI Logo">
+            <img src="image_8.png" alt="QAXI Icon Logo">
         </div>
         <nav>
             <ul>
@@ -395,46 +357,24 @@
                     <li><i class="fas fa-sync"></i> Modelo mensual todo incluido</li>
                 </ul>
             </div>
-            <div class="about-image" style="text-align: center;">
-                <img src="image_3.png" alt="Q Icon" style="width: 200px; border-radius: 20px; opacity: 0.8;">
             </div>
-        </div>
     </section>
 
     <section id="founder" class="founder-section">
         <div class="founder-content">
             <h2 class="section-title">Nuestro Enfoque</h2>
-            
-            <p style="margin-bottom: 20px;">
+            <p>
                 QAXI es un estudio digital especializado en el desarrollo, mantenimiento y optimización de páginas web modernas, seguras y de alto rendimiento. Diseñamos experiencias digitales minimalistas, limpias y funcionales, donde cada elemento tiene un propósito claro.
             </p>
-            
-            <p style="margin-bottom: 20px;">
-                Integramos inteligencia artificial en nuestros procesos para optimizar el diseño, mejorar el rendimiento y garantizar soluciones web más eficientes, escalables y preparadas para el futuro.
+            <br>
+            <p>
+                Integramos inteligencia artificial en nuestros procesos para optimizar el diseño, mejorar el rendimiento y garantizar soluciones web más eficientes, escalables y preparadas para el futuro. Nuestro enfoque se basa en la simplicidad, la precisión y la evolución constante. Creamos tecnología que se mantiene, se adapta y perdura en el tiempo.
             </p>
-            
-            <p style="margin-bottom: 20px;">
-                Nuestro enfoque se basa en la simplicidad, la precisión y la evolución constante. Creamos tecnología que se mantiene, se adapta y perdura en el tiempo.
-            </p>
-
-            <p style="font-weight: 800; font-size: 1.2rem; margin-top: 30px;">Q.</p>
             
             <div class="founder-sign">
-                <div style="font-style: italic; margin-bottom: 5px;">— Santiago Andrés</div>
-                <div style="font-size: 0.9rem; color: #888;">CEO & Founder</div>
-                <div style="font-size: 0.8rem; color: #555; margin-top: 15px;">© 2025 · QAXI</div>
+                <strong>— Santiago Andrés</strong><br>
+                <span style="font-size: 0.9rem; color: #888;">CEO & Founder</span>
             </div>
-        </div>
-    </section>
-
-    <section id="aliados" class="aliados-section">
-        <div class="aliado-card">
-            <img src="image_7.png" alt="SM SEGUROS Logo">
-            <div class="review-stars">
-                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-            </div>
-            <p class="review-text">"QAXI es súper genial y recomendable. Nos ayudaron a transformar nuestra presencia digital de manera increíble."</p>
-            <div style="margin-top: 15px; font-weight: 600; font-size: 0.9rem; color: #666;">SM SEGUROS</div>
         </div>
     </section>
 
