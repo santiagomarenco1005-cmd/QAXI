@@ -32,312 +32,147 @@
             overflow-x: hidden;
         }
 
-        /* --- Animación de Brillo (Shine Effect) --- */
+        /* --- ANIMACIÓN SCROLL REVEAL (La magia del movimiento) --- */
+        .hidden {
+            opacity: 0;
+            filter: blur(5px);
+            transform: translateY(50px); /* Empieza más abajo */
+            transition: all 1s ease-out; /* Tarda 1 segundo en aparecer suavemente */
+        }
+
+        .show {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateY(0);
+        }
+
+        /* --- Animación de Brillo Texto (Grok Style) --- */
         @keyframes shine {
-            to {
-                background-position: 200% center;
-            }
+            to { background-position: 200% center; }
         }
 
         /* --- Header & Nav --- */
         header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 15px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(5, 5, 5, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: fixed; top: 0; width: 100%; padding: 15px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(10px);
+            z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .logo img {
-            height: 55px; 
-            object-fit: contain;
-        }
+        .logo img { height: 55px; object-fit: contain; }
 
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-        }
-
-        nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: var(--accent);
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5); /* Pequeño brillo al pasar el mouse */
-        }
+        nav ul { display: flex; list-style: none; gap: 30px; }
+        nav a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s; }
+        nav a:hover { color: var(--accent); text-shadow: 0 0 8px rgba(255, 255, 255, 0.5); }
 
         .cta-btn {
-            background: var(--accent);
-            color: var(--bg-color);
-            padding: 10px 20px;
-            border-radius: 4px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: inline-block;
+            background: var(--accent); color: var(--bg-color); padding: 10px 20px;
+            border-radius: 4px; font-weight: 600; text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s; display: inline-block;
         }
-
-        .cta-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); /* Botón brillante */
-        }
+        .cta-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
 
         /* --- Hero Section --- */
         .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
             padding: 0 20px;
             background: radial-gradient(circle at center, #1a1a1a 0%, #050505 70%);
         }
 
         .hero h1 {
-            font-size: 4rem;
-            font-weight: 800;
-            letter-spacing: -2px;
-            margin-bottom: 20px;
-            
-            /* EFECTO GROK / SHINY */
-            background: linear-gradient(to right, #ffffff 20%, #999999 40%, #ffffff 60%, #999999 80%);
+            font-size: 4rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 20px;
+            /* Efecto Grok Brillante */
+            background: linear-gradient(to right, #ffffff 20%, #888888 40%, #ffffff 60%, #888888 80%);
             background-size: 200% auto;
-            color: #fff; /* Fallback */
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 5s linear infinite;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2); /* Resplandor difuso */
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: shine 4s linear infinite;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
         }
 
         .hero p {
-            font-size: 1.2rem;
-            color: #cccccc; /* Un poco más claro */
-            max-width: 600px;
-            margin-bottom: 40px;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.1); /* Brillo sutil */
+            font-size: 1.2rem; color: #cccccc; max-width: 600px; margin-bottom: 40px;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
         }
 
         .q-watermark {
-            font-size: 20rem;
-            position: absolute;
-            opacity: 0.03;
-            font-weight: 800;
-            z-index: -1;
-            pointer-events: none;
+            font-size: 20rem; position: absolute; opacity: 0.03; font-weight: 800;
+            z-index: -1; pointer-events: none;
         }
 
         /* --- Sections General --- */
-        section {
-            padding: 80px 10%;
-        }
-
+        section { padding: 80px 10%; }
         .section-title {
-            font-size: 2rem;
-            margin-bottom: 40px;
-            border-left: 4px solid var(--accent);
-            padding-left: 20px;
-            
-            /* Efecto brillante también en títulos de sección */
-            background: linear-gradient(to right, #fff, #aaa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            font-size: 2rem; margin-bottom: 40px; border-left: 4px solid var(--accent); padding-left: 20px;
+            background: linear-gradient(to right, #fff, #aaa); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
         /* --- About --- */
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 50px;
-            align-items: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        .about-grid { display: grid; grid-template-columns: 1fr; gap: 50px; align-items: center; max-width: 800px; margin: 0 auto; }
+        .about-text h3 { margin-bottom: 20px; font-size: 1.5rem; color: #fff; }
+        .about-list li { margin-bottom: 15px; display: flex; align-items: center; color: var(--text-secondary); }
+        .about-list li i { margin-right: 15px; color: var(--accent); text-shadow: 0 0 5px #fff; }
 
-        .about-text h3 {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+        /* --- Process (Cómo Funciona) --- */
+        .process-step {
+            flex: 1; min-width: 250px;
+            background: rgba(255,255,255,0.02); padding: 30px; border-radius: 10px;
+            border: 1px solid #222; transition: transform 0.3s;
         }
-
-        .about-list li {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            color: var(--text-secondary);
-        }
-
-        .about-list li i {
-            margin-right: 15px;
-            color: var(--accent);
-            text-shadow: 0 0 5px #fff; /* Iconos brillantes */
-        }
+        .process-step:hover { transform: translateY(-5px); border-color: #444; }
+        .step-num { font-size: 3rem; font-weight: 800; color: #222; margin-bottom: 10px; line-height: 1; }
 
         /* --- Founder --- */
-        .founder-section {
-            background: var(--surface-color);
-            border-top: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-        }
+        .founder-section { background: var(--surface-color); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .founder-content { max-width: 800px; margin: 0 auto; }
+        .founder-sign { margin-top: 30px; font-style: italic; border-top: 1px solid #333; padding-top: 20px; display: inline-block; }
 
-        .founder-content {
-            max-width: 800px;
-            margin: 0 auto;
+        /* --- FAQ (Preguntas Frecuentes) --- */
+        details {
+            background: rgba(255,255,255,0.02); margin-bottom: 15px; border-radius: 8px; border: 1px solid #222;
+            transition: all 0.3s; overflow: hidden;
         }
-
-        .founder-sign {
-            margin-top: 30px;
-            font-style: italic;
-            border-top: 1px solid #333;
-            padding-top: 20px;
-            display: inline-block;
+        details[open] { background: rgba(255,255,255,0.05); border-color: #444; }
+        summary {
+            padding: 20px; cursor: pointer; color: #fff; font-weight: 600; list-style: none;
+            display: flex; justify-content: space-between; align-items: center;
         }
+        summary::after { content: '+'; font-size: 1.2rem; color: #666; transition: transform 0.3s; }
+        details[open] summary::after { transform: rotate(45deg); color: #fff; }
+        .faq-answer { padding: 0 20px 20px 20px; color: #aaa; font-size: 0.9rem; line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 10px; padding-top: 15px; }
 
         /* --- Pricing --- */
-        .pricing-container {
-            display: flex;
-            justify-content: center;
-        }
-
+        .pricing-container { display: flex; justify-content: center; }
         .pricing-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border-color);
-            padding: 40px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
+            padding: 40px; border-radius: 12px; width: 100%; max-width: 400px;
+            text-align: center; transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
         }
-
-        .pricing-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--accent);
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05); /* Glow al pasar el mouse */
-        }
-
-        .price {
-            font-size: 3rem;
-            font-weight: 800;
-            margin: 20px 0;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* Precio brillante */
-        }
-
-        .price span {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-            text-shadow: none;
-        }
-
-        .features-list {
-            list-style: none;
-            text-align: left;
-            margin: 30px 0;
-        }
-
-        .features-list li {
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .features-list li i {
-            color: var(--accent);
-            margin-right: 10px;
-            text-shadow: 0 0 5px #fff;
-        }
+        .pricing-card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 0 30px rgba(255, 255, 255, 0.05); }
+        .price { font-size: 3rem; font-weight: 800; margin: 20px 0; text-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
+        .price span { font-size: 1rem; color: var(--text-secondary); font-weight: 400; text-shadow: none; }
+        .features-list { list-style: none; text-align: left; margin: 30px 0; }
+        .features-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .features-list li i { color: var(--accent); margin-right: 10px; text-shadow: 0 0 5px #fff; }
 
         /* --- Legal Dropdown --- */
-        .legal-summary {
-            cursor: pointer;
-            padding: 20px;
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .legal-summary { cursor: pointer; padding: 20px; background: var(--surface-color); border: 1px solid var(--border-color); margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .legal-content { display: none; padding: 40px; background: #000; font-size: 0.9rem; color: #888; border: 1px solid var(--border-color); border-top: none; }
+        .legal-content h4 { color: #fff; margin-top: 30px; margin-bottom: 10px; font-size: 1.1rem; }
+        .legal-content ul { margin-left: 20px; margin-bottom: 15px; list-style: disc; color: #888; }
 
-        .legal-content {
-            display: none;
-            padding: 40px;
-            background: #000;
-            font-size: 0.9rem;
-            color: #888;
-            border: 1px solid var(--border-color);
-            border-top: none;
-        }
-
-        .legal-content h4 {
-            color: #fff;
-            margin-top: 30px;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
+        /* Footer */
+        footer { text-align: center; padding: 40px; border-top: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.8rem; }
         
-        .legal-content p {
-            margin-bottom: 15px;
-        }
-
-        .legal-content ul {
-            margin-left: 20px;
-            margin-bottom: 15px;
-            list-style: disc;
-            color: #888;
-        }
-
-        /* --- Footer --- */
-        footer {
-            text-align: center;
-            padding: 40px;
-            border-top: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-        }
-
-        /* --- EMAIL BUTTON (Floating) --- */
+        /* Floating Email */
         .email-float-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background: var(--accent);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* Botón con glow */
-            transition: transform 0.3s;
-            z-index: 2000;
-            text-decoration: none;
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: var(--accent); border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); transition: transform 0.3s; z-index: 2000; text-decoration: none;
         }
-
-        .email-float-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
-        }
-
-        .email-float-btn i {
-            font-size: 24px;
-            color: #000;
-        }
+        .email-float-btn:hover { transform: scale(1.1); box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); }
+        .email-float-btn i { font-size: 24px; color: #000; }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -354,9 +189,9 @@
         </div>
         <nav>
             <ul>
+                <li><a href="#process">Cómo funciona</a></li>
                 <li><a href="#about">Nosotros</a></li>
                 <li><a href="#pricing">Precios</a></li>
-                <li><a href="#founder">Manifiesto</a></li>
                 <li><a href="#legal">Legal</a></li>
             </ul>
         </nav>
@@ -389,6 +224,31 @@
         </div>
     </section>
 
+    <section id="process" style="text-align: center;">
+        <h2 class="section-title" style="display: inline-block; border: none; text-align: center;">¿Cómo funciona?</h2>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin-top: 20px;">
+            
+            <div class="process-step">
+                <div class="step-num">01</div>
+                <h4 style="color: #fff; margin-bottom: 10px; font-size: 1.2rem;">Suscríbete</h4>
+                <p style="color: #a1a1a1; font-size: 0.9rem;">Elige el Plan Estándar y activa tu suscripción mensual simple y rápida.</p>
+            </div>
+
+            <div class="process-step">
+                <div class="step-num">02</div>
+                <h4 style="color: #fff; margin-bottom: 10px; font-size: 1.2rem;">Desarrollamos</h4>
+                <p style="color: #a1a1a1; font-size: 0.9rem;">Creamos tu web minimalista, la optimizamos con IA y la configuramos.</p>
+            </div>
+
+            <div class="process-step">
+                <div class="step-num" style="color: #fff; text-shadow: 0 0 10px #fff;">03</div>
+                <h4 style="color: #fff; margin-bottom: 10px; font-size: 1.2rem;">Lanzamiento</h4>
+                <p style="color: #a1a1a1; font-size: 0.9rem;">Tu sitio queda activo, seguro y con nuestro mantenimiento continuo.</p>
+            </div>
+
+        </div>
+    </section>
+
     <section id="founder" class="founder-section">
         <div class="founder-content">
             <h2 class="section-title">Nuestro Enfoque</h2>
@@ -400,10 +260,48 @@
                 Integramos inteligencia artificial en nuestros procesos para optimizar el diseño, mejorar el rendimiento y garantizar soluciones web más eficientes, escalables y preparadas para el futuro. Nuestro enfoque se basa en la simplicidad, la precisión y la evolución constante. Creamos tecnología que se mantiene, se adapta y perdura en el tiempo.
             </p>
             
+            <p style="font-weight: 800; font-size: 1.2rem; margin-top: 30px;">Q.</p>
+
             <div class="founder-sign">
-                <strong>— Santiago Andrés</strong><br>
-                <span style="font-size: 0.9rem; color: #888;">CEO & Founder</span>
+                <div style="font-style: italic; margin-bottom: 5px;">— Santiago Andrés</div>
+                <div style="font-size: 0.9rem; color: #888;">CEO & Founder</div>
+                <div style="font-size: 0.8rem; color: #555; margin-top: 15px;">© 2025 · QAXI</div>
             </div>
+        </div>
+    </section>
+
+    <section id="faq">
+        <h2 class="section-title">Preguntas Frecuentes</h2>
+        <div style="max-width: 800px; margin: 0 auto;">
+            
+            <details>
+                <summary>¿Qué pasa si cancelo mi suscripción?</summary>
+                <div class="faq-answer">
+                    El servicio funciona como un alquiler. Si cancelas, la página web y el dominio se desactivan al finalizar el mes pagado. Puedes reactivarlos cuando quieras retomando el pago.
+                </div>
+            </details>
+
+            <details>
+                <summary>¿El hosting está incluido?</summary>
+                <div class="faq-answer">
+                    Sí, absolutamente. El hosting privado de alta velocidad está incluido en el precio mensual de $16 USD. No tienes que preocuparte por servidores ni configuraciones técnicas extra.
+                </div>
+            </details>
+
+            <details>
+                <summary>¿Puedo pedir cambios en la web?</summary>
+                <div class="faq-answer">
+                    El plan incluye mantenimiento técnico constante. Cambios de contenido menores (textos, una foto) están incluidos; si requieres un rediseño completo de la estructura, se cotiza por aparte.
+                </div>
+            </details>
+
+             <details>
+                <summary>¿Cuánto tardan en entregar mi web?</summary>
+                <div class="faq-answer">
+                    Gracias a nuestra integración con IA y procesos optimizados, una vez tengamos tu información, tu web suele estar lista en un plazo de 3 a 5 días hábiles.
+                </div>
+            </details>
+
         </div>
     </section>
 
@@ -505,6 +403,7 @@
     </a>
 
     <script>
+        // Toggle Legal
         function toggleLegal() {
             const content = document.getElementById('legal-text');
             const icon = document.getElementById('legal-icon');
@@ -516,6 +415,22 @@
                 icon.className = "fas fa-chevron-up";
             }
         }
+
+        // Script de Animación Scroll Reveal (Para que aparezcan suavemente)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        });
+        
+        // Seleccionamos todas las secciones
+        const hiddenElements = document.querySelectorAll('section');
+        // Les agregamos la clase hidden inicialmente
+        hiddenElements.forEach((el) => el.classList.add('hidden'));
+        // Empezamos a observarlas
+        hiddenElements.forEach((el) => observer.observe(el));
     </script>
 </body>
 </html>
