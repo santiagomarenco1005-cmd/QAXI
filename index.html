@@ -32,12 +32,12 @@
             overflow-x: hidden;
         }
 
-        /* --- ANIMACIÓN SCROLL REVEAL (La magia del movimiento) --- */
+        /* --- ANIMACIÓN SCROLL REVEAL --- */
         .hidden {
             opacity: 0;
             filter: blur(5px);
-            transform: translateY(50px); /* Empieza más abajo */
-            transition: all 1s ease-out; /* Tarda 1 segundo en aparecer suavemente */
+            transform: translateY(50px);
+            transition: all 1s ease-out;
         }
 
         .show {
@@ -128,7 +128,7 @@
         .founder-content { max-width: 800px; margin: 0 auto; }
         .founder-sign { margin-top: 30px; font-style: italic; border-top: 1px solid #333; padding-top: 20px; display: inline-block; }
 
-        /* --- FAQ (Preguntas Frecuentes) --- */
+        /* --- FAQ --- */
         details {
             background: rgba(255,255,255,0.02); margin-bottom: 15px; border-radius: 8px; border: 1px solid #222;
             transition: all 0.3s; overflow: hidden;
@@ -192,6 +192,7 @@
                 <li><a href="#process">Cómo funciona</a></li>
                 <li><a href="#about">Nosotros</a></li>
                 <li><a href="#pricing">Precios</a></li>
+                <li><a href="#founder">Manifiesto</a></li>
                 <li><a href="#legal">Legal</a></li>
             </ul>
         </nav>
@@ -204,6 +205,27 @@
         <p>Diseño minimalista. Automatización con IA.<br>Precio accesible. Modelo escalable.</p>
         <a href="#pricing" class="cta-btn">Ver Planes</a>
     </section>
+
+    <div style="border-bottom: 1px solid #222; background: #080808; padding: 30px 0;">
+        <div style="display: flex; justify-content: center; gap: 50px; flex-wrap: wrap; opacity: 0.6;">
+            <div style="text-align: center;">
+                <i class="fas fa-shield-alt" style="font-size: 1.5rem; color: #fff; margin-bottom: 5px;"></i>
+                <div style="font-size: 0.8rem; color: #aaa;">Seguridad SSL</div>
+            </div>
+            <div style="text-align: center;">
+                <i class="fas fa-bolt" style="font-size: 1.5rem; color: #fff; margin-bottom: 5px;"></i>
+                <div style="font-size: 0.8rem; color: #aaa;">Carga Rápida</div>
+            </div>
+            <div style="text-align: center;">
+                <i class="fas fa-brain" style="font-size: 1.5rem; color: #fff; margin-bottom: 5px;"></i>
+                <div style="font-size: 0.8rem; color: #aaa;">Potenciado con IA</div>
+            </div>
+            <div style="text-align: center;">
+                <i class="fas fa-mobile-alt" style="font-size: 1.5rem; color: #fff; margin-bottom: 5px;"></i>
+                <div style="font-size: 0.8rem; color: #aaa;">100% Responsivo</div>
+            </div>
+        </div>
+    </div>
 
     <section id="about">
         <h2 class="section-title">Quiénes Somos</h2>
@@ -227,25 +249,21 @@
     <section id="process" style="text-align: center;">
         <h2 class="section-title" style="display: inline-block; border: none; text-align: center;">¿Cómo funciona?</h2>
         <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin-top: 20px;">
-            
             <div class="process-step">
                 <div class="step-num">01</div>
                 <h4 style="color: #fff; margin-bottom: 10px; font-size: 1.2rem;">Suscríbete</h4>
                 <p style="color: #a1a1a1; font-size: 0.9rem;">Elige el Plan Estándar y activa tu suscripción mensual simple y rápida.</p>
             </div>
-
             <div class="process-step">
                 <div class="step-num">02</div>
                 <h4 style="color: #fff; margin-bottom: 10px; font-size: 1.2rem;">Desarrollamos</h4>
                 <p style="color: #a1a1a1; font-size: 0.9rem;">Creamos tu web minimalista, la optimizamos con IA y la configuramos.</p>
             </div>
-
             <div class="process-step">
                 <div class="step-num" style="color: #fff; text-shadow: 0 0 10px #fff;">03</div>
                 <h4 style="color: #fff; margin-bottom: 10px; font-size: 1.2rem;">Lanzamiento</h4>
                 <p style="color: #a1a1a1; font-size: 0.9rem;">Tu sitio queda activo, seguro y con nuestro mantenimiento continuo.</p>
             </div>
-
         </div>
     </section>
 
@@ -259,9 +277,7 @@
             <p>
                 Integramos inteligencia artificial en nuestros procesos para optimizar el diseño, mejorar el rendimiento y garantizar soluciones web más eficientes, escalables y preparadas para el futuro. Nuestro enfoque se basa en la simplicidad, la precisión y la evolución constante. Creamos tecnología que se mantiene, se adapta y perdura en el tiempo.
             </p>
-            
             <p style="font-weight: 800; font-size: 1.2rem; margin-top: 30px;">Q.</p>
-
             <div class="founder-sign">
                 <div style="font-style: italic; margin-bottom: 5px;">— Santiago Andrés</div>
                 <div style="font-size: 0.9rem; color: #888;">CEO & Founder</div>
@@ -273,35 +289,30 @@
     <section id="faq">
         <h2 class="section-title">Preguntas Frecuentes</h2>
         <div style="max-width: 800px; margin: 0 auto;">
-            
             <details>
                 <summary>¿Qué pasa si cancelo mi suscripción?</summary>
                 <div class="faq-answer">
                     El servicio funciona como un alquiler. Si cancelas, la página web y el dominio se desactivan al finalizar el mes pagado. Puedes reactivarlos cuando quieras retomando el pago.
                 </div>
             </details>
-
             <details>
                 <summary>¿El hosting está incluido?</summary>
                 <div class="faq-answer">
-                    Sí, absolutamente. El hosting privado de alta velocidad está incluido en el precio mensual de $16 USD. No tienes que preocuparte por servidores ni configuraciones técnicas extra.
+                    Sí, absolutamente. El hosting privado de alta velocidad está incluido en el precio mensual de $18 USD. No tienes que preocuparte por servidores ni configuraciones técnicas extra.
                 </div>
             </details>
-
             <details>
                 <summary>¿Puedo pedir cambios en la web?</summary>
                 <div class="faq-answer">
                     El plan incluye mantenimiento técnico constante. Cambios de contenido menores (textos, una foto) están incluidos; si requieres un rediseño completo de la estructura, se cotiza por aparte.
                 </div>
             </details>
-
              <details>
                 <summary>¿Cuánto tardan en entregar mi web?</summary>
                 <div class="faq-answer">
                     Gracias a nuestra integración con IA y procesos optimizados, una vez tengamos tu información, tu web suele estar lista en un plazo de 3 a 5 días hábiles.
                 </div>
             </details>
-
         </div>
     </section>
 
@@ -310,9 +321,8 @@
         <div class="pricing-container">
             <div class="pricing-card">
                 <h3>Plan Estándar Mensual</h3>
-                <div class="price">$16 USD<span>/Mes</span></div>
+                <div class="price">$18 USD<span>/Mes</span></div>
                 <p>Creación de tu página web con todo incluido.</p>
-                
                 <ul class="features-list">
                     <li><i class="fas fa-check-circle"></i> 1 página web</li>
                     <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
@@ -323,6 +333,48 @@
                 </ul>
                 <a href="mailto:santiagomarenco1005@icloud.com?subject=Quiero suscribirme al Plan Estándar QAXI" class="cta-btn" style="display: block; width: 100%;">Suscribirme</a>
             </div>
+        </div>
+    </section>
+
+    <section id="comparison">
+        <h2 class="section-title" style="text-align: center; border: none;">¿Por qué QAXI?</h2>
+        <div style="overflow-x: auto; margin-top: 20px;">
+            <table style="width: 100%; max-width: 800px; margin: 0 auto; border-collapse: collapse; color: #fff;">
+                <thead>
+                    <tr style="border-bottom: 1px solid #333;">
+                        <th style="text-align: left; padding: 20px; color: #888;">Característica</th>
+                        <th style="padding: 20px; color: #fff; font-size: 1.2rem; text-shadow: 0 0 10px #fff;">QAXI</th>
+                        <th style="padding: 20px; color: #666;">Agencia Tradicional</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #222;">
+                        <td style="padding: 20px; color: #aaa;">Costo Inicial</td>
+                        <td style="padding: 20px; text-align: center; font-weight: bold; color: #4caf50;">$18 USD</td>
+                        <td style="padding: 20px; text-align: center; color: #666;">$500 - $2,000+</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #222;">
+                        <td style="padding: 20px; color: #aaa;">Mantenimiento</td>
+                        <td style="padding: 20px; text-align: center; font-weight: bold; color: #fff;">Incluido siempre</td>
+                        <td style="padding: 20px; text-align: center; color: #666;">Se cobra por hora</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #222;">
+                        <td style="padding: 20px; color: #aaa;">Hosting y Dominio</td>
+                        <td style="padding: 20px; text-align: center; font-weight: bold; color: #fff;">Incluido</td>
+                        <td style="padding: 20px; text-align: center; color: #666;">Pagas extra anual</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #222;">
+                        <td style="padding: 20px; color: #aaa;">Tecnología</td>
+                        <td style="padding: 20px; text-align: center; font-weight: bold; color: #fff;">Código + IA</td>
+                        <td style="padding: 20px; text-align: center; color: #666;">Plantillas Pesadas</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 20px; color: #aaa;">Actualizaciones</td>
+                        <td style="padding: 20px; text-align: center; font-weight: bold; color: #fff;">Continuas</td>
+                        <td style="padding: 20px; text-align: center; color: #666;">Ninguna</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </section>
 
@@ -403,7 +455,6 @@
     </a>
 
     <script>
-        // Toggle Legal
         function toggleLegal() {
             const content = document.getElementById('legal-text');
             const icon = document.getElementById('legal-icon');
@@ -416,7 +467,6 @@
             }
         }
 
-        // Script de Animación Scroll Reveal (Para que aparezcan suavemente)
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
@@ -425,11 +475,8 @@
             });
         });
         
-        // Seleccionamos todas las secciones
         const hiddenElements = document.querySelectorAll('section');
-        // Les agregamos la clase hidden inicialmente
         hiddenElements.forEach((el) => el.classList.add('hidden'));
-        // Empezamos a observarlas
         hiddenElements.forEach((el) => observer.observe(el));
     </script>
 </body>
