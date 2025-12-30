@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAXI | Desarrollo Web por Suscripción</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #050505;
+            --surface-color: #121212;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1a1;
+            --accent: #ffffff;
+            --accent-hover: #cccccc;
+            --border-color: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Header & Nav --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logo img {
+            height: 35px; 
+            object-fit: contain;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        .cta-btn {
+            background: var(--accent);
+            color: var(--bg-color);
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+
+        .cta-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #050505 70%);
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #666);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        .q-watermark {
+            font-size: 20rem;
+            position: absolute;
+            opacity: 0.03;
+            font-weight: 800;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- Sections General --- */
+        section {
+            padding: 80px 10%;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 40px;
+            border-left: 4px solid var(--accent);
+            padding-left: 20px;
+        }
+
+        /* --- About --- */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .about-list li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+        }
+
+        .about-list li i {
+            margin-right: 15px;
+            color: var(--accent);
+        }
+
+        /* --- Founder --- */
+        .founder-section {
+            background: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .founder-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .founder-sign {
+            margin-top: 30px;
+            font-style: italic;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+            display: inline-block;
+        }
+
+        /* --- Aliados / Review Section (Estilo Mejorado) --- */
+        .aliados-section {
+            background: var(--bg-color); /* Fondo limpio */
+            padding: 60px 10%;
+            text-align: center;
+        }
+
+        .aliado-card {
+            background: linear-gradient(145deg, #111, #080808); /* Degradado elegante */
+            padding: 50px 40px;
+            border-radius: 20px; /* Bordes más redondeados */
+            border: 1px solid rgba(255,255,255,0.08); /* Borde sutil */
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6); /* Sombra profunda */
+            position: relative;
+        }
+
+        .aliado-card img {
+            height: 70px; /* Tamaño ajustado del logo */
+            margin-bottom: 25px;
+            object-fit: contain;
+            filter: brightness(0.9); /* Un poco más integrado */
+        }
+
+        .review-stars {
+            color: #d4af37; /* Color dorado elegante */
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+        }
+
+        .review-text {
+            color: #e0e0e0;
+            font-style: italic;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        /* --- Pricing --- */
+        .pricing-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .pricing-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 20px 0;
+        }
+
+        .price span {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .features-list {
+            list-style: none;
+            text-align: left;
+            margin: 30px 0;
+        }
+
+        .features-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .features-list li i {
+            color: var(--accent);
+            margin-right: 10px;
+        }
+
+        /* --- Legal Dropdown --- */
+        .legal-summary {
+            cursor: pointer;
+            padding: 20px;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .legal-content {
+            display: none;
+            padding: 40px;
+            background: #000;
+            font-size: 0.9rem;
+            color: #888;
+            border: 1px solid var(--border-color);
+            border-top: none;
+        }
+
+        .legal-content h4 {
+            color: #fff;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .legal-content p {
+            margin-bottom: 15px;
+        }
+
+        .legal-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            list-style: disc;
+            color: #888;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* --- EMAIL BUTTON (Floating) --- */
+        .email-float-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            transition: transform 0.3s;
+            z-index: 2000;
+            text-decoration: none;
+        }
+
+        .email-float-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .email-float-btn i {
+            font-size: 24px;
+            color: #000;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .about-grid { grid-template-columns: 1fr; }
+            nav { display: none; } 
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="image_4.png" alt="QAXI Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#about">Nosotros</a></li>
+                <li><a href="#pricing">Precios</a></li>
+                <li><a href="#founder">Manifiesto</a></li>
+                <li><a href="#legal">Legal</a></li>
+            </ul>
+        </nav>
+        <a href="mailto:santiagomarenco1005@icloud.com" class="cta-btn">Soporte</a>
+    </header>
+
+    <section class="hero">
+        <div class="q-watermark">Q.</div>
+        <h1>Desarrollo y mantenimiento<br>web por suscripción.</h1>
+        <p>Diseño minimalista. Automatización con IA.<br>Precio accesible. Modelo escalable.</p>
+        <a href="#pricing" class="cta-btn">Ver Planes</a>
+    </section>
+
+    <section id="about">
+        <h2 class="section-title">Quiénes Somos</h2>
+        <div class="about-grid">
+            <div class="about-text">
+                <h3>QAXI es una empresa de desarrollo y mantenimiento de páginas web por suscripción.</h3>
+                <p style="color: #a1a1a1; margin-bottom: 20px;">
+                    Creada para ofrecer presencia digital accesible, simple y automatizada a emprendedores y pequeños negocios.
+                    QAXI nace en 2025 como una solución práctica para quienes necesitan una web sin complicaciones técnicas ni altos costos.
+                </p>
+                <ul class="about-list">
+                    <li><i class="fas fa-check"></i> Páginas web funcionales y minimalistas</li>
+                    <li><i class="fas fa-shield-alt"></i> Activas, seguras y actualizadas</li>
+                    <li><i class="fas fa-robot"></i> IA para optimizar contenido y procesos</li>
+                    <li><i class="fas fa-sync"></i> Modelo mensual todo incluido</li>
+                </ul>
+            </div>
+            <div class="about-image" style="text-align: center;">
+                <img src="image_3.png" alt="Q Icon" style="width: 200px; border-radius: 20px; opacity: 0.8;">
+            </div>
+        </div>
+    </section>
+
+    <section id="founder" class="founder-section">
+        <div class="founder-content">
+            <h2 class="section-title">Nuestro Enfoque</h2>
+            <p>
+                QAXI es un estudio digital especializado en el desarrollo, mantenimiento y optimización de páginas web modernas, seguras y de alto rendimiento. Diseñamos experiencias digitales minimalistas, limpias y funcionales, donde cada elemento tiene un propósito claro.
+            </p>
+            <br>
+            <p>
+                Integramos inteligencia artificial en nuestros procesos para optimizar el diseño, mejorar el rendimiento y garantizar soluciones web más eficientes, escalables y preparadas para el futuro. Nuestro enfoque se basa en la simplicidad, la precisión y la evolución constante. Creamos tecnología que se mantiene, se adapta y perdura en el tiempo.
+            </p>
+            
+            <div class="founder-sign">
+                <strong>— Santiago Andrés</strong><br>
+                <span style="font-size: 0.9rem; color: #888;">CEO & Founder</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="aliados" class="aliados-section">
+        <div class="aliado-card">
+            <img src="image_7.png" alt="SM SEGUROS Logo">
+            <div class="review-stars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <p class="review-text">"QAXI es súper genial y recomendable. Nos ayudaron a transformar nuestra presencia digital de manera increíble."</p>
+            <div style="margin-top: 15px; font-weight: 600; font-size: 0.9rem; color: #666;">SM SEGUROS</div>
+        </div>
+    </section>
+
+    <section id="pricing">
+        <h2 class="section-title" style="text-align: center; border: none;">Planes y Precios</h2>
+        <div class="pricing-container">
+            <div class="pricing-card">
+                <h3>Plan Estándar Mensual</h3>
+                <div class="price">$16 USD<span>/Mes</span></div>
+                <p>Creación de tu página web con todo incluido.</p>
+                
+                <ul class="features-list">
+                    <li><i class="fas fa-check-circle"></i> 1 página web</li>
+                    <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
+                    <li><i class="fas fa-check-circle"></i> Hosting privado</li>
+                    <li><i class="fas fa-check-circle"></i> Integración de IA</li>
+                    <li><i class="fas fa-check-circle"></i> Mantenimiento continuo</li>
+                    <li><i class="fas fa-check-circle"></i> Soporte vía email</li>
+                </ul>
+                <a href="mailto:santiagomarenco1005@icloud.com?subject=Quiero suscribirme al Plan Estándar QAXI" class="cta-btn" style="display: block; width: 100%;">Suscribirme</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="legal">
+        <div class="legal-summary" onclick="toggleLegal()">
+            <h3>Términos y Condiciones — QAXI</h3>
+            <i class="fas fa-chevron-down" id="legal-icon"></i>
+        </div>
+        <div class="legal-content" id="legal-text">
+            <p><strong>Última actualización: 2025</strong></p>
+            
+            <h4>1. Descripción del servicio</h4>
+            <p>QAXI ofrece un servicio de creación, alojamiento, mantenimiento y soporte de páginas web bajo modalidad de suscripción mensual. El servicio incluye, según el plan contratado, desarrollo web, dominio, hosting, mantenimiento, soporte y uso de herramientas de inteligencia artificial. QAXI no vende páginas web como producto final, sino que presta un servicio continuo mientras la suscripción esté activa.</p>
+
+            <h4>2. Modalidad de suscripción</h4>
+            <p>El servicio funciona bajo pago mensual recurrente. La página web, el dominio y el hosting permanecen activos únicamente mientras el plan esté vigente y al día en los pagos. QAXI se reserva el derecho de modificar, suspender o cancelar el servicio en caso de incumplimiento de pago.</p>
+
+            <h4>3. Dominio y propiedad</h4>
+            <p>El dominio es adquirido y administrado por QAXI. El dominio se mantiene activo solo mientras el cliente tenga un plan vigente. En caso de cancelación o falta de pago, el dominio podrá ser desactivado o reutilizado por QAXI. El cliente no adquiere propiedad automática sobre el dominio, salvo acuerdo expreso por escrito.</p>
+
+            <h4>4. Hosting y contenido</h4>
+            <p>El hosting es gestionado por QAXI. El cliente acepta que la infraestructura, configuración y administración técnica pertenecen a QAXI durante la vigencia del servicio. El contenido del sitio puede ser eliminado en caso de cancelación del servicio o falta de pago.</p>
+
+            <h4>5. Mantenimiento</h4>
+            <p>El mantenimiento incluye:</p>
+            <ul>
+                <li>actualizaciones técnicas</li>
+                <li>ajustes básicos</li>
+                <li>monitoreo general</li>
+                <li>soporte técnico estándar</li>
+            </ul>
+            <p>No incluye rediseños completos, desarrollos a medida ni cambios ilimitados, salvo que el plan contratado lo especifique.</p>
+
+            <h4>6. Soporte</h4>
+            <p>El soporte se brinda vía chat web (o correo electrónico), en horarios definidos por QAXI. El tiempo de respuesta puede variar según el volumen de solicitudes y el plan contratado.</p>
+
+            <h4>7. Uso de Inteligencia Artificial</h4>
+            <p>QAXI utiliza herramientas de inteligencia artificial para generación de contenido, optimización y automatización de procesos. El cliente acepta que el contenido generado por IA puede requerir ajustes y no garantiza resultados comerciales específicos.</p>
+
+            <h4>8. Cancelación del servicio</h4>
+            <p>El cliente puede cancelar el servicio en cualquier momento. En caso de cancelación o falta de pago:</p>
+            <ul>
+                <li>el sitio web será suspendido</li>
+                <li>el dominio será desactivado</li>
+                <li>el contenido podrá ser eliminado</li>
+            </ul>
+            <p>No se realizan reembolsos por períodos ya pagados.</p>
+
+            <h4>9. Permanencia mínima</h4>
+            <p>Algunos planes pueden requerir una permanencia mínima (por ejemplo, 12 meses). Esta condición será informada claramente al momento de la contratación.</p>
+
+            <h4>10. Limitación de responsabilidad</h4>
+            <p>QAXI no garantiza resultados comerciales, posicionamiento en buscadores ni generación de ventas. El servicio se presta “tal cual”, enfocado en presencia digital y mantenimiento técnico.</p>
+
+            <h4>11. Modificaciones</h4>
+            <p>QAXI se reserva el derecho de modificar estos Términos y Condiciones en cualquier momento. Las modificaciones serán publicadas en el sitio web y entrarán en vigor desde su publicación.</p>
+
+            <h4>12. Aceptación</h4>
+            <p>Al contratar cualquiera de los servicios de QAXI, el cliente declara haber leído, comprendido y aceptado estos Términos y Condiciones.</p>
+
+            <br>
+            <div style="border-top: 1px solid #333; padding-top: 20px; color: #fff;">
+                <strong>QAXI</strong><br>
+                Desarrollo y mantenimiento web por suscripción<br>
+                Q.<br>
+                © 2025 · QAXI.
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 · QAXI. Todos los derechos reservados.</p>
+        <p>Q.</p>
+    </footer>
+
+    <a href="mailto:santiagomarenco1005@icloud.com" class="email-float-btn" title="Contactar Soporte">
+        <i class="fas fa-envelope"></i>
+    </a>
+
+    <script>
+        function toggleLegal() {
+            const content = document.getElementById('legal-text');
+            const icon = document.getElementById('legal-icon');
+            if (content.style.display === "block") {
+                content.style.display = "none";
+                icon.className = "fas fa-chevron-down";
+            } else {
+                content.style.display = "block";
+                icon.className = "fas fa-chevron-up";
+            }
+        }
+    </script>
+</body>
+</html>
