@@ -107,7 +107,6 @@
             height: 100vh; display: flex; flex-direction: column;
             justify-content: center; align-items: center; text-align: center;
             padding: 0 20px;
-            /* Degradado más suave para integración con glass */
             background: radial-gradient(circle at center, rgba(20,20,20,0.5) 0%, rgba(5,5,5,0) 70%);
             position: relative; overflow: hidden;
         }
@@ -180,11 +179,9 @@
 
         /* --- FAQ (GLASS DETAILS) --- */
         details {
-            /* Glass Styles */
             background: var(--glass-bg);
             backdrop-filter: var(--glass-blur);
             border: 1px solid var(--glass-border);
-            
             margin-bottom: 15px; border-radius: 12px;
             transition: all 0.3s; overflow: hidden;
         }
@@ -199,9 +196,13 @@
         .faq-answer { padding: 0 20px 20px 20px; color: #aaa; font-size: 0.9rem; line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 10px; padding-top: 15px; }
 
         /* --- Pricing (GLASS CARD) --- */
-        .pricing-container { display: flex; justify-content: center; }
+        .pricing-container { 
+            display: flex; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+            gap: 30px; 
+        }
         .pricing-card {
-            /* Glass Styles */
             background: var(--glass-bg);
             backdrop-filter: var(--glass-blur);
             -webkit-backdrop-filter: var(--glass-blur);
@@ -210,6 +211,7 @@
             
             padding: 40px; border-radius: 20px; width: 100%; max-width: 400px;
             text-align: center; transition: all 0.3s ease;
+            display: flex; flex-direction: column; justify-content: space-between;
         }
         .pricing-card:hover { 
             transform: translateY(-15px) scale(1.02); 
@@ -222,6 +224,9 @@
         .features-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .features-list li i { color: var(--accent); margin-right: 10px; text-shadow: 0 0 5px #fff; }
 
+        /* Highlight para características nuevas */
+        .highlight-feature { color: #fff; font-weight: 700; }
+
         /* --- Comparison Table --- */
         .comparison-table { width: 100%; max-width: 800px; margin: 0 auto; border-collapse: collapse; color: #fff; }
         .comparison-table th { padding: 20px; text-align: center; }
@@ -231,7 +236,6 @@
         /* --- Legal --- */
         .legal-summary { 
             cursor: pointer; padding: 20px; 
-            /* Glass */
             background: rgba(18,18,18,0.4); 
             border: 1px solid var(--glass-border);
             margin-top: 20px; display: flex; justify-content: space-between; align-items: center; transition: border-color 0.3s; 
@@ -312,12 +316,12 @@
             <div class="process-step">
                 <div class="step-num">01</div>
                 <h4 style="color: #fff; margin-bottom: 10px; font-size: 1.2rem;">Suscríbete</h4>
-                <p style="color: #a1a1a1; font-size: 0.9rem;">Elige el Plan Estándar y activa tu suscripción mensual simple y rápida.</p>
+                <p style="color: #a1a1a1; font-size: 0.9rem;">Elige un plan y activa tu suscripción mensual simple y rápida.</p>
             </div>
             <div class="process-step">
                 <div class="step-num">02</div>
                 <h4 style="color: #fff; margin-bottom: 10px; font-size: 1.2rem;">Desarrollamos</h4>
-                <p style="color: #a1a1a1; font-size: 0.9rem;">Creamos tu web minimalista, la optimizamos con IA y la configuramos.</p>
+                <p style="color: #a1a1a1; font-size: 0.9rem;">Creamos tu web elegante, la optimizamos con IA y la configuramos.</p>
             </div>
             <div class="process-step">
                 <div class="step-num" style="color: #fff; text-shadow: 0 0 10px #fff;">03</div>
@@ -358,13 +362,13 @@
             <details>
                 <summary>¿El hosting está incluido?</summary>
                 <div class="faq-answer">
-                    Sí, absolutamente. El hosting privado de alta velocidad está incluido en el precio mensual de $18 USD. No tienes que preocuparte por servidores ni configuraciones técnicas extra.
+                    Sí, absolutamente. El hosting privado de alta velocidad está incluido en el precio mensual de $16 USD. No tienes que preocuparte por servidores ni configuraciones técnicas extra.
                 </div>
             </details>
             <details>
                 <summary>¿Puedo pedir cambios en la web?</summary>
                 <div class="faq-answer">
-                    El plan incluye mantenimiento técnico constante. Cambios de contenido menores (textos, una foto) están incluidos; si requieres un rediseño completo de la estructura, se cotiza por aparte.
+                    El plan incluye mantenimiento básico para ajustes sencillos (como cambiar textos o imágenes). Los cambios estructurales complejos o rediseños se cotizan por aparte.
                 </div>
             </details>
              <details>
@@ -380,25 +384,42 @@
         <h2 class="section-title" style="text-align: center; border: none;">Planes y Precios</h2>
         <div class="pricing-container">
             <div class="pricing-card">
-                <h3>Plan Estándar Mensual</h3>
-                <div class="price">$18 USD<span>/Mes</span></div>
-                <p>Creación de tu página web con todo incluido.</p>
+                <h3>Plan Estándar</h3>
+                <div class="price">$16 USD<span>/Mes</span></div>
+                <p>Presencia digital esencial con todo incluido.</p>
                 <ul class="features-list">
                     <li><i class="fas fa-check-circle"></i> 1 página web</li>
                     <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
                     <li><i class="fas fa-check-circle"></i> Hosting privado</li>
                     <li><i class="fas fa-check-circle"></i> Integración de IA</li>
-                    <li><i class="fas fa-check-circle"></i> Mantenimiento continuo</li>
+                    <li><i class="fas fa-check-circle"></i> Mantenimiento básico</li>
                     <li><i class="fas fa-check-circle"></i> Soporte vía email</li>
                 </ul>
-                
-                <p style="font-size: 0.8rem; color: #777; margin-bottom: 15px; line-height: 1.4; padding: 0 10px;">
-                    Envía un correo explicando tu interés y en poco tiempo QAXI te responderá para iniciar.
-                </p>
+                <a href="mailto:santiagomarenco1005@icloud.com?subject=Quiero suscribirme al Plan Estándar QAXI" class="cta-btn" style="display: block; width: 100%; margin-top: auto;">Suscribirme</a>
+            </div>
 
-                <a href="mailto:santiagomarenco1005@icloud.com?subject=Quiero suscribirme al Plan Estándar QAXI" class="cta-btn" style="display: block; width: 100%;">Suscribirme</a>
+            <div class="pricing-card" style="border-color: rgba(255,255,255,0.3);">
+                <h3>Plan Pro</h3>
+                <div class="price">$30 USD<span>/Mes</span></div>
+                <p>Potencia tu marca con gestión de redes y soporte PRO.</p>
+                <ul class="features-list">
+                    <li><i class="fas fa-check-circle"></i> 1 página web</li>
+                    <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
+                    <li><i class="fas fa-check-circle"></i> Hosting privado</li>
+                    <li><i class="fas fa-check-circle"></i> Integración de IA</li>
+                    <li class="highlight-feature"><i class="fas fa-check-circle"></i> Admin. o Creación de Redes</li>
+                    <li class="highlight-feature"><i class="fas fa-check-circle"></i> Mantenimiento PRO</li>
+                    <li><i class="fas fa-check-circle"></i> Soporte Prioritario</li>
+                </ul>
+                <a href="mailto:santiagomarenco1005@icloud.com?subject=Quiero suscribirme al Plan Pro QAXI" class="cta-btn" style="display: block; width: 100%; margin-top: auto;">Mejorar a Pro</a>
             </div>
         </div>
+        
+        <p style="text-align: center; font-size: 1.1rem; color: #ccc; margin-top: 40px; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+            <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+            Al seleccionar tu plan, se generará un correo automático. 
+            Envíalo para confirmar tu interés y QAXI se pondrá en contacto contigo en poco tiempo para comenzar.
+        </p>
     </section>
 
     <section id="comparison">
@@ -415,12 +436,12 @@
                 <tbody>
                     <tr>
                         <td style="color: #aaa;">Costo Inicial</td>
-                        <td style="font-weight: bold; color: #4caf50;">$18 USD</td>
+                        <td style="font-weight: bold; color: #4caf50;">Desde $16 USD</td>
                         <td style="color: #666;">$500 - $2,000+</td>
                     </tr>
                     <tr>
                         <td style="color: #aaa;">Mantenimiento</td>
-                        <td style="font-weight: bold; color: #fff;">Incluido siempre</td>
+                        <td style="font-weight: bold; color: #fff;">Incluido (Básico/PRO)</td>
                         <td style="color: #666;">Se cobra por hora</td>
                     </tr>
                     <tr>
