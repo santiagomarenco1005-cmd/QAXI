@@ -131,23 +131,27 @@
         .close { color: #666; position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; transition: 0.3s; }
         .close:hover { color: #fff; transform: rotate(90deg); }
         
-        .qr-img { width: 100%; max-width: 250px; margin: 10px 0 20px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .qr-img { width: 100%; max-width: 250px; margin: 15px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
         .instructions { font-size: 0.85rem; color: #aaa; margin-bottom: 10px; line-height: 1.4; }
         .email-btn {
-            background: transparent; color: #fff; border: 1px solid #fff; padding: 10px 20px;
+            background: transparent; color: #fff; border: 1px solid #fff; padding: 12px 20px;
             border-radius: 4px; font-weight: 600; text-decoration: none; cursor: pointer;
             transition: all 0.2s; display: block; margin: 15px auto 0; width: 100%;
         }
         .email-btn:hover { background: #fff; color: #000; }
 
-        /* AUTH FORMS */
+        /* AUTH FORMS & DASHBOARD */
         .auth-input {
             width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; color: #fff; font-size: 1rem;
         }
         .auth-input:focus { outline: none; border-color: #fff; }
         .auth-toggle { font-size: 0.85rem; color: #aaa; margin-top: 15px; cursor: pointer; text-decoration: underline; }
+
+        .dashboard-info { text-align: left; margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; }
+        .dashboard-label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .dashboard-value { font-size: 1rem; color: #fff; margin-bottom: 10px; font-weight: 600; }
 
         /* LEGAL CONTENT */
         .legal-summary { cursor: pointer; padding: 20px; background: rgba(18,18,18,0.4); border: 1px solid var(--glass-border); margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -169,9 +173,10 @@
             <ul>
                 <li><a href="#pricing">Precios</a></li>
                 <li><a href="#founder">Manifiesto</a></li>
+                
                 <li>
                     <a id="authBtn" class="login-nav-btn" onclick="openAuthModal()">Acceso Clientes</a>
-                    <a id="logoutBtn" class="login-nav-btn" style="display: none;">Cerrar Sesión</a>
+                    <a id="accountBtn" class="login-nav-btn" style="display: none;" onclick="openDashboardModal()">Mi Cuenta</a>
                 </li>
             </ul>
         </nav>
@@ -180,7 +185,6 @@
 
     <section class="hero" id="hero">
         <div id="userGreeting" style="margin-bottom: 20px; color: #aaa; font-size: 0.9rem; display: none;"></div>
-        
         <div class="q-watermark">Q.</div>
         <h1>Desarrollo y mantenimiento<br>web por suscripción.</h1>
         <p>Diseño minimalista. Automatización con IA.<br>Precio accesible. Modelo escalable.</p>
@@ -251,7 +255,7 @@
                     <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
                     <li><i class="fas fa-check-circle"></i> Hosting privado</li>
                     <li class="highlight-feature"><i class="fas fa-check-circle"></i> Integración de IA</li>
-                    <li class="highlight-feature"><i class="fas fa-check-circle"></i> Administración o creación de Redes Sociales</li>
+                    <li class="highlight-feature"><i class="fas fa-check-circle"></i> Administración de Redes Sociales</li>
                     <li class="highlight-feature"><i class="fas fa-check-circle"></i> Mantenimiento PRO</li>
                     <li><i class="fas fa-check-circle"></i> Soporte vía email</li>
                 </ul>
@@ -285,6 +289,33 @@
             </form>
             <p class="auth-toggle" id="toggleAuthMode">¿No tienes cuenta? Crea una aquí</p>
             <p id="authError" style="color: #ff4444; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
+        </div>
+    </div>
+
+    <div id="dashboardModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDashboardModal()">&times;</span>
+            <h3 style="margin-bottom: 20px;">Mi Perfil QAXI</h3>
+            
+            <div class="dashboard-info">
+                <div class="dashboard-label">Correo</div>
+                <div class="dashboard-value" id="dashEmail">Cargando...</div>
+                
+                <div class="dashboard-label">Estado de Cuenta</div>
+                <div class="dashboard-value" id="dashStatus" style="color: #ffff00;">Inactivo</div>
+            </div>
+
+            <form id="profileForm">
+                <label class="dashboard-label">Tu Nombre</label>
+                <input type="text" id="profName" class="auth-input" placeholder="Ej: Juan Pérez">
+                
+                <label class="dashboard-label">Teléfono / WhatsApp</label>
+                <input type="text" id="profPhone" class="auth-input" placeholder="Ej: 300 123 4567">
+                
+                <button type="submit" class="cta-btn" style="width: 100%; border:none;">Guardar Datos</button>
+            </form>
+            
+            <button id="btnLogout" class="login-nav-btn" style="width: 100%; margin-top: 20px; text-align: center;">Cerrar Sesión</button>
         </div>
     </div>
 
@@ -363,11 +394,11 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
 
     <script type="module">
-        // Importar las funciones de Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // --- TUS LLAVES DE FIREBASE ---
+        // TUS LLAVES REALES
         const firebaseConfig = {
             apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
             authDomain: "qaxi-93d6d.firebaseapp.com",
@@ -378,11 +409,11 @@
             measurementId: "G-C74Z1DWV54"
         };
 
-        // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
-        // Variables de UI
+        // Variables UI
         const authForm = document.getElementById('authForm');
         const emailInput = document.getElementById('email');
         const passInput = document.getElementById('password');
@@ -390,29 +421,36 @@
         const authTitle = document.getElementById('authTitle');
         const authError = document.getElementById('authError');
         const authBtn = document.getElementById('authBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
+        const accountBtn = document.getElementById('accountBtn');
+        const btnLogout = document.getElementById('btnLogout');
         const userGreeting = document.getElementById('userGreeting');
 
+        // Variables Dashboard
+        const dashEmail = document.getElementById('dashEmail');
+        const profileForm = document.getElementById('profileForm');
+        const profName = document.getElementById('profName');
+        const profPhone = document.getElementById('profPhone');
+        
         let isLoginMode = true;
+        let currentUser = null;
 
-        // Detectar si el usuario ya inició sesión
+        // AUTH STATE CHANGE
         onAuthStateChanged(auth, (user) => {
+            currentUser = user;
             if (user) {
                 authBtn.style.display = 'none';
-                logoutBtn.style.display = 'inline-block';
+                accountBtn.style.display = 'inline-block';
                 userGreeting.style.display = 'block';
-                userGreeting.innerText = `Hola, ${user.email} · Cuenta Activa`;
+                userGreeting.innerText = `Hola, ${user.email}`;
                 closeAuthModal();
-                logoutBtn.onclick = () => { signOut(auth).then(() => { alert("Sesión cerrada correctamente."); }); };
             } else {
                 authBtn.style.display = 'inline-block';
-                authBtn.innerText = "Acceso Clientes";
-                logoutBtn.style.display = 'none';
+                accountBtn.style.display = 'none';
                 userGreeting.style.display = 'none';
             }
         });
 
-        // Alternar entre Login y Registro
+        // LOGIN / REGISTER LOGIC
         toggleBtn.addEventListener('click', () => {
             isLoginMode = !isLoginMode;
             if (isLoginMode) {
@@ -427,29 +465,73 @@
             authError.style.display = 'none';
         });
 
-        // Manejar el envío del formulario
-        authForm.addEventListener('submit', (e) => {
+        authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = emailInput.value;
             const password = passInput.value;
             authError.style.display = 'none';
 
-            if (isLoginMode) {
-                signInWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => { alert("¡Bienvenido de nuevo a QAXI!"); })
-                    .catch((error) => {
-                        authError.style.display = 'block';
-                        authError.innerText = "Error: Correo o contraseña incorrectos.";
+            try {
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    alert("¡Bienvenido a QAXI!");
+                } else {
+                    const cred = await createUserWithEmailAndPassword(auth, email, password);
+                    // Crear documento en Firestore
+                    await setDoc(doc(db, "users", cred.user.uid), {
+                        email: email,
+                        createdAt: new Date(),
+                        name: "",
+                        phone: "",
+                        status: "active"
                     });
-            } else {
-                createUserWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => { alert("¡Cuenta creada exitosamente! Bienvenido a QAXI."); })
-                    .catch((error) => {
-                        authError.style.display = 'block';
-                        if (error.code === 'auth/email-already-in-use') authError.innerText = "Este correo ya está registrado.";
-                        else if (error.code === 'auth/weak-password') authError.innerText = "La contraseña debe tener al menos 6 caracteres.";
-                        else authError.innerText = "Error: " + error.message;
-                    });
+                    alert("Cuenta creada. Ahora completa tu perfil.");
+                    openDashboardModal(); // Abrir dashboard para llenar datos
+                }
+            } catch (error) {
+                authError.style.display = 'block';
+                authError.innerText = error.message;
+            }
+        });
+
+        // LOGOUT
+        btnLogout.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                closeDashboardModal();
+                alert("Sesión cerrada.");
+            });
+        });
+
+        // DASHBOARD LOGIC (Cargar y Guardar Datos)
+        window.openDashboardModal = async function() {
+            document.getElementById('dashboardModal').style.display = 'flex';
+            if (currentUser) {
+                dashEmail.innerText = currentUser.email;
+                // Cargar datos de Firestore
+                const docRef = doc(db, "users", currentUser.uid);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    profName.value = data.name || "";
+                    profPhone.value = data.phone || "";
+                }
+            }
+        };
+
+        window.closeDashboardModal = function() {
+            document.getElementById('dashboardModal').style.display = 'none';
+        };
+
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (currentUser) {
+                const userRef = doc(db, "users", currentUser.uid);
+                await updateDoc(userRef, {
+                    name: profName.value,
+                    phone: profPhone.value
+                });
+                alert("Datos guardados correctamente.");
+                closeDashboardModal();
             }
         });
     </script>
@@ -461,6 +543,7 @@
         function openNequiModal(planName) {
             document.getElementById('nequiModal').style.display = "flex";
             document.getElementById('planNameDisplay').innerText = "Estás pagando el " + planName;
+            
             const recipient = "santiagomarenco1005@icloud.com";
             const subject = encodeURIComponent("Comprobante de Pago QAXI");
             const body = encodeURIComponent(
@@ -479,6 +562,7 @@
         window.onclick = function(event) {
             if (event.target == document.getElementById('nequiModal')) closeNequiModal();
             if (event.target == document.getElementById('authModal')) closeAuthModal();
+            if (event.target == document.getElementById('dashboardModal')) closeDashboardModal();
         }
 
         function toggleLegal() {
