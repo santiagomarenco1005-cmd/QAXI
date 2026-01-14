@@ -64,15 +64,9 @@
             background: var(--accent); color: var(--bg-color); padding: 10px 20px;
             border-radius: 4px; font-weight: 600; text-decoration: none; cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s; display: inline-block; border: none;
+            font-size: 0.85rem;
         }
         .cta-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
-
-        /* Botón Login en Nav */
-        .login-nav-btn {
-            border: 1px solid rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 4px;
-            font-size: 0.85rem; color: #fff; text-decoration: none; transition: 0.3s; cursor: pointer;
-        }
-        .login-nav-btn:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
 
         .hero {
             height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
@@ -160,7 +154,13 @@
         .legal-content ul { margin-left: 20px; margin-bottom: 15px; list-style: disc; }
 
         footer { text-align: center; padding: 40px; border-top: 1px solid var(--glass-border); color: var(--text-secondary); font-size: 0.8rem; }
-        @media (max-width: 768px) { .hero h1 { font-size: 2.5rem; } nav { display: none; } }
+        
+        @media (max-width: 768px) { 
+            .hero h1 { font-size: 2.5rem; } 
+            nav { display: none; } 
+            header { padding: 10px 5%; }
+            .logo img { height: 45px; }
+        }
     </style>
 </head>
 <body>
@@ -173,14 +173,12 @@
             <ul>
                 <li><a href="#pricing">Precios</a></li>
                 <li><a href="#founder">Manifiesto</a></li>
-                
-                <li>
-                    <a id="authBtn" class="login-nav-btn" onclick="openAuthModal()">Acceso Clientes</a>
-                    <a id="accountBtn" class="login-nav-btn" style="display: none;" onclick="openDashboardModal()">Mi Cuenta</a>
-                </li>
             </ul>
         </nav>
-        <a href="mailto:santiagomarenco1005@icloud.com" class="cta-btn">Soporte</a>
+        <div class="auth-wrapper">
+            <a id="authBtn" class="cta-btn" onclick="openAuthModal()">Acceso Clientes</a>
+            <a id="accountBtn" class="cta-btn" style="display: none;" onclick="openDashboardModal()">Mi Cuenta</a>
+        </div>
     </header>
 
     <section class="hero" id="hero">
@@ -188,7 +186,7 @@
         <div class="q-watermark">Q.</div>
         <h1>Desarrollo y mantenimiento<br>web por suscripción.</h1>
         <p>Diseño minimalista. Automatización con IA.<br>Precio accesible. Modelo escalable.</p>
-        <a href="#pricing" class="cta-btn">Ver Planes</a>
+        <a href="#pricing" class="cta-btn" style="font-size: 1.1rem; padding: 15px 30px;">Ver Planes</a>
     </section>
 
     <section id="about">
@@ -315,7 +313,7 @@
                 <button type="submit" class="cta-btn" style="width: 100%; border:none;">Guardar Datos</button>
             </form>
             
-            <button id="btnLogout" class="login-nav-btn" style="width: 100%; margin-top: 20px; text-align: center;">Cerrar Sesión</button>
+            <button id="btnLogout" class="login-nav-btn" style="width: 100%; margin-top: 20px; text-align: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px; color: #fff; cursor: pointer; border-radius: 4px;">Cerrar Sesión</button>
         </div>
     </div>
 
@@ -398,7 +396,6 @@
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // TUS LLAVES REALES
         const firebaseConfig = {
             apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
             authDomain: "qaxi-93d6d.firebaseapp.com",
@@ -413,7 +410,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Variables UI
         const authForm = document.getElementById('authForm');
         const emailInput = document.getElementById('email');
         const passInput = document.getElementById('password');
@@ -425,7 +421,6 @@
         const btnLogout = document.getElementById('btnLogout');
         const userGreeting = document.getElementById('userGreeting');
 
-        // Variables Dashboard
         const dashEmail = document.getElementById('dashEmail');
         const profileForm = document.getElementById('profileForm');
         const profName = document.getElementById('profName');
@@ -434,7 +429,6 @@
         let isLoginMode = true;
         let currentUser = null;
 
-        // AUTH STATE CHANGE
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) {
@@ -450,7 +444,6 @@
             }
         });
 
-        // LOGIN / REGISTER LOGIC
         toggleBtn.addEventListener('click', () => {
             isLoginMode = !isLoginMode;
             if (isLoginMode) {
@@ -477,7 +470,6 @@
                     alert("¡Bienvenido a QAXI!");
                 } else {
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
-                    // Crear documento en Firestore
                     await setDoc(doc(db, "users", cred.user.uid), {
                         email: email,
                         createdAt: new Date(),
@@ -486,7 +478,7 @@
                         status: "active"
                     });
                     alert("Cuenta creada. Ahora completa tu perfil.");
-                    openDashboardModal(); // Abrir dashboard para llenar datos
+                    openDashboardModal();
                 }
             } catch (error) {
                 authError.style.display = 'block';
@@ -494,7 +486,6 @@
             }
         });
 
-        // LOGOUT
         btnLogout.addEventListener('click', () => {
             signOut(auth).then(() => {
                 closeDashboardModal();
@@ -502,12 +493,10 @@
             });
         });
 
-        // DASHBOARD LOGIC (Cargar y Guardar Datos)
         window.openDashboardModal = async function() {
             document.getElementById('dashboardModal').style.display = 'flex';
             if (currentUser) {
                 dashEmail.innerText = currentUser.email;
-                // Cargar datos de Firestore
                 const docRef = doc(db, "users", currentUser.uid);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
@@ -572,7 +561,6 @@
             else { content.style.display = "block"; icon.className = "fas fa-chevron-up"; }
         }
 
-        // --- PARTÍCULAS ---
         const canvas = document.getElementById("particles-canvas");
         const ctx = canvas.getContext("2d");
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
