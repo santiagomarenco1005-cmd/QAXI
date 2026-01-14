@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QAXI | Desarrollo Web por Suscripción</title>
+    <title>QAXI</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,7 +23,7 @@
             
             /* VARIABLES GLASS (CRISTAL) */
             --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08); /* Borde sutil y elegante */
+            --glass-border: rgba(255, 255, 255, 0.08);
             --glass-blur: blur(20px);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
@@ -44,7 +44,7 @@
             position: relative;
         }
 
-        /* --- ATMÓSFERA DE FONDO (LIQUID BACKGROUND) --- */
+        /* --- ATMÓSFERA DE FONDO --- */
         body::before {
             content: '';
             position: fixed;
@@ -76,11 +76,11 @@
         .hidden { opacity: 0; filter: blur(5px); transform: translateY(50px); transition: all 1s ease-out; }
         .show { opacity: 1; filter: blur(0); transform: translateY(0); }
 
-        /* --- Header & Nav (GLASS HEADER) --- */
+        /* --- Header & Nav --- */
         header {
             position: fixed; top: 0; width: 100%; padding: 15px 5%;
             display: flex; justify-content: space-between; align-items: center;
-            background: rgba(5, 5, 5, 0.6); /* Más transparente */
+            background: rgba(5, 5, 5, 0.6);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             z-index: 1000; 
@@ -146,27 +146,6 @@
         .about-list li { margin-bottom: 15px; display: flex; align-items: center; color: var(--text-secondary); }
         .about-list li i { margin-right: 15px; color: var(--accent); text-shadow: 0 0 5px #fff; }
 
-        /* --- Process (GLASS CARDS) --- */
-        .process-step {
-            flex: 1; min-width: 250px;
-            /* Glass Styles */
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            
-            padding: 30px; border-radius: 16px; 
-            transition: all 0.3s ease;
-        }
-        .process-step:hover { 
-            transform: translateY(-10px); 
-            border-color: rgba(255,255,255,0.3); 
-            box-shadow: 0 15px 40px -10px rgba(255,255,255,0.05); 
-        }
-        .step-num { font-size: 3rem; font-weight: 800; color: rgba(255,255,255,0.1); margin-bottom: 10px; line-height: 1; transition: color 0.3s; }
-        .process-step:hover .step-num { color: #444; }
-
         /* --- Founder --- */
         .founder-section { 
             background: rgba(18, 18, 18, 0.5);
@@ -176,24 +155,6 @@
         }
         .founder-content { max-width: 800px; margin: 0 auto; }
         .founder-sign { margin-top: 30px; font-style: italic; border-top: 1px solid #333; padding-top: 20px; display: inline-block; }
-
-        /* --- FAQ (GLASS DETAILS) --- */
-        details {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            margin-bottom: 15px; border-radius: 12px;
-            transition: all 0.3s; overflow: hidden;
-        }
-        details:hover { border-color: rgba(255,255,255,0.3); }
-        details[open] { background: rgba(255,255,255,0.08); border-color: var(--accent); }
-        summary {
-            padding: 20px; cursor: pointer; color: #fff; font-weight: 600; list-style: none;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        summary::after { content: '+'; font-size: 1.2rem; color: #666; transition: transform 0.3s; }
-        details[open] summary::after { transform: rotate(45deg); color: #fff; }
-        .faq-answer { padding: 0 20px 20px 20px; color: #aaa; font-size: 0.9rem; line-height: 1.6; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 10px; padding-top: 15px; }
 
         /* --- Pricing (GLASS CARD) --- */
         .pricing-container { 
@@ -223,15 +184,7 @@
         .features-list { list-style: none; text-align: left; margin: 30px 0; }
         .features-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .features-list li i { color: var(--accent); margin-right: 10px; text-shadow: 0 0 5px #fff; }
-
-        /* Highlight para características nuevas */
         .highlight-feature { color: #fff; font-weight: 700; }
-
-        /* --- Comparison Table --- */
-        .comparison-table { width: 100%; max-width: 800px; margin: 0 auto; border-collapse: collapse; color: #fff; }
-        .comparison-table th { padding: 20px; text-align: center; }
-        .comparison-table td { padding: 20px; text-align: center; border-bottom: 1px solid #333; transition: background 0.3s; }
-        .comparison-table tr:hover td { background: rgba(255,255,255,0.05); }
 
         /* --- Legal --- */
         .legal-summary { 
@@ -248,16 +201,6 @@
         /* Footer */
         footer { text-align: center; padding: 40px; border-top: 1px solid var(--glass-border); color: var(--text-secondary); font-size: 0.8rem; }
         
-        /* Floating Email */
-        .email-float-btn {
-            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
-            background: var(--accent); border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: transform 0.3s; z-index: 2000; text-decoration: none;
-            animation: pulse-soft 3s infinite ease-in-out; 
-        }
-        .email-float-btn:hover { transform: scale(1.1); animation: none; box-shadow: 0 0 25px rgba(255, 255, 255, 0.8); }
-        .email-float-btn i { font-size: 24px; color: #000; }
-
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
@@ -275,7 +218,6 @@
         </div>
         <nav>
             <ul>
-                <li><a href="#process">Cómo funciona</a></li>
                 <li><a href="#pricing">Precios</a></li>
                 <li><a href="#founder">Manifiesto</a></li>
                 <li><a href="#legal">Legal</a></li>
@@ -310,27 +252,6 @@
         </div>
     </section>
 
-    <section id="process" style="text-align: center;">
-        <h2 class="section-title" style="display: inline-block; border: none; text-align: center;">¿Cómo funciona?</h2>
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin-top: 20px;">
-            <div class="process-step">
-                <div class="step-num">01</div>
-                <h4 style="color: #fff; margin-bottom: 10px; font-size: 1.2rem;">Suscríbete</h4>
-                <p style="color: #a1a1a1; font-size: 0.9rem;">Elige un plan y activa tu suscripción mensual simple y rápida.</p>
-            </div>
-            <div class="process-step">
-                <div class="step-num">02</div>
-                <h4 style="color: #fff; margin-bottom: 10px; font-size: 1.2rem;">Desarrollamos</h4>
-                <p style="color: #a1a1a1; font-size: 0.9rem;">Creamos tu web elegante, la optimizamos con IA y la configuramos.</p>
-            </div>
-            <div class="process-step">
-                <div class="step-num" style="color: #fff; text-shadow: 0 0 10px #fff;">03</div>
-                <h4 style="color: #fff; margin-bottom: 10px; font-size: 1.2rem;">Lanzamiento</h4>
-                <p style="color: #a1a1a1; font-size: 0.9rem;">Tu sitio queda activo, seguro y con nuestro mantenimiento continuo.</p>
-            </div>
-        </div>
-    </section>
-
     <section id="founder" class="founder-section">
         <div class="founder-content">
             <h2 class="section-title">Nuestro Enfoque</h2>
@@ -350,36 +271,6 @@
         </div>
     </section>
 
-    <section id="faq">
-        <h2 class="section-title">Preguntas Frecuentes</h2>
-        <div style="max-width: 800px; margin: 0 auto;">
-            <details>
-                <summary>¿Qué pasa si cancelo mi suscripción?</summary>
-                <div class="faq-answer">
-                    El servicio funciona como un alquiler. Si cancelas, la página web y el dominio se desactivan al finalizar el mes pagado. Puedes reactivarlos cuando quieras retomando el pago.
-                </div>
-            </details>
-            <details>
-                <summary>¿El hosting está incluido?</summary>
-                <div class="faq-answer">
-                    Sí, absolutamente. El hosting privado de alta velocidad está incluido en el precio mensual de $16 USD. No tienes que preocuparte por servidores ni configuraciones técnicas extra.
-                </div>
-            </details>
-            <details>
-                <summary>¿Puedo pedir cambios en la web?</summary>
-                <div class="faq-answer">
-                    El plan incluye mantenimiento básico para ajustes sencillos (como cambiar textos o imágenes). Los cambios estructurales complejos o rediseños se cotizan por aparte.
-                </div>
-            </details>
-             <details>
-                <summary>¿Cuánto tardan en entregar mi web?</summary>
-                <div class="faq-answer">
-                    Gracias a nuestra integración con IA y procesos optimizados, una vez tengamos tu información, tu web suele estar lista en un plazo de 3 a 5 días hábiles.
-                </div>
-            </details>
-        </div>
-    </section>
-
     <section id="pricing">
         <h2 class="section-title" style="text-align: center; border: none;">Planes y Precios</h2>
         <div class="pricing-container">
@@ -395,7 +286,7 @@
                     <li><i class="fas fa-check-circle"></i> Mantenimiento básico</li>
                     <li><i class="fas fa-check-circle"></i> Soporte vía email</li>
                 </ul>
-                <a href="mailto:santiagomarenco1005@icloud.com?subject=Quiero suscribirme al Plan Estándar QAXI" class="cta-btn" style="display: block; width: 100%; margin-top: auto;">Suscribirme</a>
+                <a href="https://buy.stripe.com/test_7sY9ASbeacmwgZA6jTa7C02" class="cta-btn" style="display: block; width: 100%; margin-top: auto;">Suscribirme</a>
             </div>
 
             <div class="pricing-card" style="border-color: rgba(255,255,255,0.3);">
@@ -411,56 +302,8 @@
                     <li class="highlight-feature"><i class="fas fa-check-circle"></i> Mantenimiento PRO</li>
                     <li><i class="fas fa-check-circle"></i> Soporte vía email</li>
                 </ul>
-                <a href="mailto:santiagomarenco1005@icloud.com?subject=Quiero suscribirme al Plan Pro QAXI" class="cta-btn" style="display: block; width: 100%; margin-top: auto;">Mejorar a Pro</a>
+                <a href="https://buy.stripe.com/test_aFadR8eqm72caBc0Zza7C01" class="cta-btn" style="display: block; width: 100%; margin-top: auto;">Mejorar a Pro</a>
             </div>
-        </div>
-        
-        <p style="text-align: center; font-size: 1.1rem; color: #ccc; margin-top: 40px; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.5;">
-            <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
-            Al seleccionar tu plan, se generará un correo automático. 
-            Envíalo para confirmar tu interés y QAXI se pondrá en contacto contigo en poco tiempo para comenzar.
-        </p>
-    </section>
-
-    <section id="comparison">
-        <h2 class="section-title" style="text-align: center; border: none;">¿Por qué QAXI?</h2>
-        <div style="overflow-x: auto; margin-top: 20px;">
-            <table class="comparison-table">
-                <thead>
-                    <tr style="border-bottom: 1px solid #333;">
-                        <th style="text-align: left; color: #888;">Característica</th>
-                        <th style="color: #fff; font-size: 1.2rem; text-shadow: 0 0 10px #fff;">QAXI</th>
-                        <th style="color: #666;">Agencia Tradicional</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="color: #aaa;">Costo Inicial</td>
-                        <td style="font-weight: bold; color: #4caf50;">Desde $16 USD</td>
-                        <td style="color: #666;">$500 - $2,000+</td>
-                    </tr>
-                    <tr>
-                        <td style="color: #aaa;">Mantenimiento</td>
-                        <td style="font-weight: bold; color: #fff;">Incluido (Básico/PRO)</td>
-                        <td style="color: #666;">Se cobra por hora</td>
-                    </tr>
-                    <tr>
-                        <td style="color: #aaa;">Hosting y Dominio</td>
-                        <td style="font-weight: bold; color: #fff;">Incluido</td>
-                        <td style="color: #666;">Pagas extra anual</td>
-                    </tr>
-                    <tr>
-                        <td style="color: #aaa;">Tecnología</td>
-                        <td style="font-weight: bold; color: #fff;">Código + IA</td>
-                        <td style="color: #666;">Plantillas Pesadas</td>
-                    </tr>
-                    <tr>
-                        <td style="color: #aaa;">Actualizaciones</td>
-                        <td style="font-weight: bold; color: #fff;">Continuas</td>
-                        <td style="color: #666;">Ninguna</td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </section>
 
@@ -535,10 +378,6 @@
         <p>© 2025 · QAXI. Todos los derechos reservados.</p>
         <p>Q.</p>
     </footer>
-
-    <a href="mailto:santiagomarenco1005@icloud.com" class="email-float-btn" title="Contactar Soporte">
-        <i class="fas fa-envelope"></i>
-    </a>
 
     <script>
         function toggleLegal() {
