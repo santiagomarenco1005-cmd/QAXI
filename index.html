@@ -21,212 +21,166 @@
             --text-secondary: #a1a1a1;
             --accent: #ffffff;
             
-            /* VARIABLES GLASS (CRISTAL) */
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
             --glass-blur: blur(20px);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--bg-color); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; position: relative; }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* --- ATMÓSFERA DE FONDO --- */
+        /* Canvas de Partículas */
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        
         body::before {
-            content: '';
-            position: fixed;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 50%);
-            z-index: -1;
-            pointer-events: none;
-            animation: breathe 10s infinite alternate;
+            content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 50%);
+            z-index: -2; pointer-events: none; animation: breathe 10s infinite alternate;
         }
 
-        @keyframes breathe {
-            from { opacity: 0.5; transform: scale(1); }
-            to { opacity: 0.8; transform: scale(1.1); }
-        }
-
-        /* --- ANIMACIONES --- */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-
-        @keyframes pulse-soft {
-            0% { box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
-            50% { box-shadow: 0 0 25px rgba(255, 255, 255, 0.5); transform: scale(1.02); }
-            100% { box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
-        }
+        @keyframes breathe { from { opacity: 0.5; transform: scale(1); } to { opacity: 0.8; transform: scale(1.1); } }
+        @keyframes shine { to { background-position: 200% center; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .hidden { opacity: 0; filter: blur(5px); transform: translateY(50px); transition: all 1s ease-out; }
         .show { opacity: 1; filter: blur(0); transform: translateY(0); }
 
-        /* --- Header & Nav --- */
         header {
             position: fixed; top: 0; width: 100%; padding: 15px 5%;
             display: flex; justify-content: space-between; align-items: center;
-            background: rgba(5, 5, 5, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 1000; 
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(5, 5, 5, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .logo-link { display: inline-block; transition: transform 0.3s ease; }
-        .logo-link:hover { transform: scale(1.1); }
         .logo img { height: 55px; object-fit: contain; mix-blend-mode: screen; display: block; }
 
-        nav ul { display: flex; list-style: none; gap: 30px; }
-        nav a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s; }
+        nav ul { display: flex; list-style: none; gap: 30px; align-items: center; }
+        nav a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s; cursor: pointer; }
         nav a:hover { color: var(--accent); text-shadow: 0 0 8px rgba(255, 255, 255, 0.5); }
 
         .cta-btn {
             background: var(--accent); color: var(--bg-color); padding: 10px 20px;
-            border-radius: 4px; font-weight: 600; text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s; display: inline-block;
+            border-radius: 4px; font-weight: 600; text-decoration: none; cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s; display: inline-block; border: none;
         }
         .cta-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
 
-        /* --- Hero Section --- */
+        /* Botón Login en Nav */
+        .login-nav-btn {
+            border: 1px solid rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 4px;
+            font-size: 0.85rem; color: #fff; text-decoration: none; transition: 0.3s; cursor: pointer;
+        }
+        .login-nav-btn:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
+
         .hero {
-            height: 100vh; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; text-align: center;
-            padding: 0 20px;
-            background: radial-gradient(circle at center, rgba(20,20,20,0.5) 0%, rgba(5,5,5,0) 70%);
+            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            padding: 0 20px; background: radial-gradient(circle at center, rgba(20,20,20,0.5) 0%, rgba(5,5,5,0) 70%);
             position: relative; overflow: hidden;
         }
-
-        @keyframes shine { to { background-position: 200% center; } }
-
         .hero h1 {
             font-size: 4rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 20px;
             background: linear-gradient(to right, #ffffff 20%, #888888 40%, #ffffff 60%, #888888 80%);
-            background-size: 200% auto;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             animation: shine 4s linear infinite;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
         }
+        .hero p { font-size: 1.2rem; color: #cccccc; max-width: 600px; margin-bottom: 40px; }
+        .q-watermark { font-size: 20rem; position: absolute; opacity: 0.03; font-weight: 800; z-index: -1; pointer-events: none; }
 
-        .hero p {
-            font-size: 1.2rem; color: #cccccc; max-width: 600px; margin-bottom: 40px;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
-        }
-
-        .q-watermark {
-            font-size: 20rem; position: absolute; opacity: 0.03; font-weight: 800;
-            z-index: -1; pointer-events: none;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        /* --- Sections General --- */
         section { padding: 80px 10%; }
-        .section-title {
-            font-size: 2rem; margin-bottom: 40px; border-left: 4px solid var(--accent); padding-left: 20px;
-            background: linear-gradient(to right, #fff, #aaa); -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent; text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        }
+        .section-title { font-size: 2rem; margin-bottom: 40px; border-left: 4px solid var(--accent); padding-left: 20px; }
 
-        /* --- About --- */
-        .about-grid { display: grid; grid-template-columns: 1fr; gap: 50px; align-items: center; max-width: 800px; margin: 0 auto; }
+        .about-text h3 { margin-bottom: 20px; font-size: 1.5rem; }
+        .about-list { list-style: none; }
         .about-list li { margin-bottom: 15px; display: flex; align-items: center; color: var(--text-secondary); }
-        .about-list li i { margin-right: 15px; color: var(--accent); text-shadow: 0 0 5px #fff; }
+        .about-list li i { margin-right: 15px; color: var(--accent); }
 
-        /* --- Founder --- */
-        .founder-section { 
-            background: rgba(18, 18, 18, 0.5);
-            backdrop-filter: blur(5px);
-            border-top: 1px solid var(--glass-border); 
-            border-bottom: 1px solid var(--glass-border); 
-        }
+        .founder-section { background: rgba(18, 18, 18, 0.5); backdrop-filter: blur(5px); border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
         .founder-content { max-width: 800px; margin: 0 auto; }
         .founder-sign { margin-top: 30px; font-style: italic; border-top: 1px solid #333; padding-top: 20px; display: inline-block; }
 
-        /* --- Pricing (GLASS CARD) --- */
-        .pricing-container { 
-            display: flex; 
-            justify-content: center; 
-            flex-wrap: wrap; 
-            gap: 30px; 
-        }
+        .pricing-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; }
+        
         .pricing-card {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            
-            padding: 40px; border-radius: 20px; width: 100%; max-width: 400px;
-            text-align: center; transition: all 0.3s ease;
+            background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border);
+            padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center;
             display: flex; flex-direction: column; justify-content: space-between;
+            transform-style: preserve-3d;
         }
-        .pricing-card:hover { 
-            transform: translateY(-15px) scale(1.02); 
-            border-color: var(--accent); 
-            box-shadow: 0 20px 50px -20px rgba(255, 255, 255, 0.1); 
-        }
-        .price { font-size: 3rem; font-weight: 800; margin: 20px 0; text-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
-        .price span { font-size: 1rem; color: var(--text-secondary); font-weight: 400; text-shadow: none; }
-        .features-list { list-style: none; text-align: left; margin: 30px 0; }
+        .pricing-card:hover { border-color: var(--accent); }
+
+        .price { font-size: 2.5rem; font-weight: 800; margin: 20px 0; transform: translateZ(20px); }
+        .price span { font-size: 1rem; color: var(--text-secondary); font-weight: 400; }
+        .features-list { list-style: none; text-align: left; margin: 30px 0; transform: translateZ(10px); }
         .features-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .features-list li i { color: var(--accent); margin-right: 10px; text-shadow: 0 0 5px #fff; }
+        .features-list li i { color: var(--accent); margin-right: 10px; }
         .highlight-feature { color: #fff; font-weight: 700; }
 
-        /* --- Legal --- */
-        .legal-summary { 
-            cursor: pointer; padding: 20px; 
-            background: rgba(18,18,18,0.4); 
-            border: 1px solid var(--glass-border);
-            margin-top: 20px; display: flex; justify-content: space-between; align-items: center; transition: border-color 0.3s; 
+        /* MODALES */
+        .modal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            align-items: center; justify-content: center; animation: fadeIn 0.3s ease;
         }
-        .legal-summary:hover { border-color: #666; }
-        .legal-content { display: none; padding: 40px; background: #000; font-size: 0.9rem; color: #888; border: 1px solid var(--border-color); border-top: none; }
-        .legal-content h4 { color: #fff; margin-top: 30px; margin-bottom: 10px; font-size: 1.1rem; }
-        .legal-content ul { margin-left: 20px; margin-bottom: 15px; list-style: disc; color: #888; }
-
-        /* Footer */
-        footer { text-align: center; padding: 40px; border-top: 1px solid var(--glass-border); color: var(--text-secondary); font-size: 0.8rem; }
+        .modal-content {
+            background: rgba(20, 20, 20, 0.95); padding: 40px 30px; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1); text-align: center; max-width: 450px; width: 90%;
+            position: relative; box-shadow: 0 0 50px rgba(255, 255, 255, 0.05); animation: popIn 0.3s forwards;
+        }
+        .close { color: #666; position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; transition: 0.3s; }
+        .close:hover { color: #fff; transform: rotate(90deg); }
         
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            nav { display: none; } 
+        .qr-img { width: 100%; max-width: 250px; margin: 10px 0 20px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        .instructions { font-size: 0.85rem; color: #aaa; margin-bottom: 10px; line-height: 1.4; }
+        .email-btn {
+            background: transparent; color: #fff; border: 1px solid #fff; padding: 10px 20px;
+            border-radius: 4px; font-weight: 600; text-decoration: none; cursor: pointer;
+            transition: all 0.2s; display: block; margin: 15px auto 0; width: 100%;
         }
+        .email-btn:hover { background: #fff; color: #000; }
+
+        /* AUTH FORMS */
+        .auth-input {
+            width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 5px; color: #fff; font-size: 1rem;
+        }
+        .auth-input:focus { outline: none; border-color: #fff; }
+        .auth-toggle { font-size: 0.85rem; color: #aaa; margin-top: 15px; cursor: pointer; text-decoration: underline; }
+
+        /* LEGAL CONTENT */
+        .legal-summary { cursor: pointer; padding: 20px; background: rgba(18,18,18,0.4); border: 1px solid var(--glass-border); margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .legal-content { display: none; padding: 40px; background: #000; font-size: 0.9rem; color: #888; border: 1px solid var(--glass-border); border-top: none; }
+        .legal-content h4 { color: #fff; margin-top: 20px; margin-bottom: 10px; }
+        .legal-content ul { margin-left: 20px; margin-bottom: 15px; list-style: disc; }
+
+        footer { text-align: center; padding: 40px; border-top: 1px solid var(--glass-border); color: var(--text-secondary); font-size: 0.8rem; }
+        @media (max-width: 768px) { .hero h1 { font-size: 2.5rem; } nav { display: none; } }
     </style>
 </head>
 <body>
 
+    <canvas id="particles-canvas"></canvas>
+
     <header>
-        <div class="logo">
-            <a href="#hero" class="logo-link">
-                <img src="icon.png" alt="QAXI Logo">
-            </a>
-        </div>
+        <div class="logo"><a href="#hero"><img src="icon.png" alt="QAXI Logo"></a></div>
         <nav>
             <ul>
                 <li><a href="#pricing">Precios</a></li>
                 <li><a href="#founder">Manifiesto</a></li>
-                <li><a href="#legal">Legal</a></li>
+                <li>
+                    <a id="authBtn" class="login-nav-btn" onclick="openAuthModal()">Acceso Clientes</a>
+                    <a id="logoutBtn" class="login-nav-btn" style="display: none;">Cerrar Sesión</a>
+                </li>
             </ul>
         </nav>
         <a href="mailto:santiagomarenco1005@icloud.com" class="cta-btn">Soporte</a>
     </header>
 
     <section class="hero" id="hero">
+        <div id="userGreeting" style="margin-bottom: 20px; color: #aaa; font-size: 0.9rem; display: none;"></div>
+        
         <div class="q-watermark">Q.</div>
         <h1>Desarrollo y mantenimiento<br>web por suscripción.</h1>
         <p>Diseño minimalista. Automatización con IA.<br>Precio accesible. Modelo escalable.</p>
@@ -239,8 +193,7 @@
             <div class="about-text">
                 <h3>QAXI es una empresa de desarrollo y mantenimiento de páginas web por suscripción.</h3>
                 <p style="color: #a1a1a1; margin-bottom: 20px;">
-                    Creada para ofrecer presencia digital accesible, simple y automatizada a emprendedores y pequeños negocios.
-                    QAXI nace en 2025 como una solución práctica para quienes necesitan una web sin complicaciones técnicas ni altos costos.
+                    Creada para ofrecer presencia digital accesible, simple y automatizada a emprendedores y pequeños negocios en Colombia.
                 </p>
                 <ul class="about-list">
                     <li><i class="fas fa-check"></i> Páginas web funcionales y minimalistas</li>
@@ -260,7 +213,7 @@
             </p>
             <br>
             <p>
-                Integramos inteligencia artificial en nuestros procesos para optimizar el diseño, mejorar el rendimiento y garantizar soluciones web más eficientes, escalables y preparadas para el futuro. Nuestro enfoque se basa en la simplicidad, la precisión y la evolución constante. Creamos tecnología que se mantiene, se adapta y perdura en el tiempo.
+                Integramos inteligencia artificial en nuestros procesos para optimizar el diseño, mejorar el rendimiento y garantizar soluciones web más eficientes, escalables y preparadas para el futuro. Nuestro enfoque se basa en la simplicidad, la precisión y la evolución constante.
             </p>
             <p style="font-weight: 800; font-size: 1.2rem; margin-top: 30px;">Q.</p>
             <div class="founder-sign">
@@ -274,10 +227,10 @@
     <section id="pricing">
         <h2 class="section-title" style="text-align: center; border: none;">Planes y Precios</h2>
         <div class="pricing-container">
-            <div class="pricing-card">
-                <h3>Plan Estándar</h3>
-                <div class="price">$16 USD<span>/Mes</span></div>
-                <p>Presencia digital esencial con todo incluido.</p>
+            <div class="pricing-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
+                <h3 style="transform: translateZ(20px);">Plan Estándar</h3>
+                <div class="price">60.000 COP<span>/Mes</span></div>
+                <p style="transform: translateZ(10px);">Presencia digital esencial con todo incluido.</p>
                 <ul class="features-list">
                     <li><i class="fas fa-check-circle"></i> 1 página web</li>
                     <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
@@ -286,26 +239,54 @@
                     <li><i class="fas fa-check-circle"></i> Mantenimiento básico</li>
                     <li><i class="fas fa-check-circle"></i> Soporte vía email</li>
                 </ul>
-                <a href="https://buy.stripe.com/test_7sY9ASbeacmwgZA6jTa7C02" class="cta-btn" style="display: block; width: 100%; margin-top: auto;">Suscribirme</a>
+                <button onclick="openNequiModal('Plan Estándar')" class="cta-btn" style="width: 100%; margin-top: auto; transform: translateZ(30px);">Suscribirme</button>
             </div>
 
-            <div class="pricing-card" style="border-color: rgba(255,255,255,0.3);">
-                <h3>Plan Pro</h3>
-                <div class="price">$30 USD<span>/Mes</span></div>
-                <p>Potencia tu marca con gestión de redes y soporte PRO.</p>
+            <div class="pricing-card" style="border-color: rgba(255,255,255,0.3);" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
+                <h3 style="transform: translateZ(20px);">Plan Pro</h3>
+                <div class="price">120.000 COP<span>/Mes</span></div>
+                <p style="transform: translateZ(10px);">Potencia tu marca con gestión de redes y soporte PRO.</p>
                 <ul class="features-list">
                     <li><i class="fas fa-check-circle"></i> 1 página web</li>
                     <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
                     <li><i class="fas fa-check-circle"></i> Hosting privado</li>
-                    <li><i class="fas fa-check-circle"></i> Integración de IA</li>
-                    <li class="highlight-feature"><i class="fas fa-check-circle"></i> Administración o Creación de Redes Sociales</li>
+                    <li class="highlight-feature"><i class="fas fa-check-circle"></i> Integración de IA</li>
+                    <li class="highlight-feature"><i class="fas fa-check-circle"></i> Administración o creación de Redes Sociales</li>
                     <li class="highlight-feature"><i class="fas fa-check-circle"></i> Mantenimiento PRO</li>
                     <li><i class="fas fa-check-circle"></i> Soporte vía email</li>
                 </ul>
-                <a href="https://buy.stripe.com/test_aFadR8eqm72caBc0Zza7C01" class="cta-btn" style="display: block; width: 100%; margin-top: auto;">Mejorar a Pro</a>
+                <button onclick="openNequiModal('Plan Pro')" class="cta-btn" style="width: 100%; margin-top: auto; transform: translateZ(30px);">Suscribirme</button>
             </div>
         </div>
     </section>
+
+    <div id="nequiModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeNequiModal()">&times;</span>
+            <h3 style="margin-bottom: 5px; font-weight: 600;">1. Escanea para pagar</h3>
+            <p id="planNameDisplay" style="color: #666; font-size: 0.9rem; margin-bottom: 5px;"></p>
+            <img src="qr-nequi.png" alt="QR Nequi" class="qr-img">
+            <div class="instructions">
+                <strong>2. Activa tu cuenta:</strong><br>
+                Después de pagar, envía el comprobante para la activación.
+            </div>
+            <a id="emailLink" href="#" class="email-btn"><i class="far fa-envelope"></i> Enviar Comprobante</a>
+        </div>
+    </div>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAuthModal()">&times;</span>
+            <h3 id="authTitle" style="margin-bottom: 20px;">Acceso Clientes</h3>
+            <form id="authForm">
+                <input type="email" id="email" class="auth-input" placeholder="Correo electrónico" required>
+                <input type="password" id="password" class="auth-input" placeholder="Contraseña (mín 6 caracteres)" required>
+                <button type="submit" class="cta-btn" style="width: 100%; border:none;">Ingresar</button>
+            </form>
+            <p class="auth-toggle" id="toggleAuthMode">¿No tienes cuenta? Crea una aquí</p>
+            <p id="authError" style="color: #ff4444; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
+        </div>
+    </div>
 
     <section id="legal">
         <div class="legal-summary" onclick="toggleLegal()">
@@ -379,30 +360,158 @@
         <p>Q.</p>
     </footer>
 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
+    <script type="module">
+        // Importar las funciones de Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // --- TUS LLAVES DE FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
+            authDomain: "qaxi-93d6d.firebaseapp.com",
+            projectId: "qaxi-93d6d",
+            storageBucket: "qaxi-93d6d.firebasestorage.app",
+            messagingSenderId: "137240859996",
+            appId: "1:137240859996:web:73e14d28c77233be965d99",
+            measurementId: "G-C74Z1DWV54"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Variables de UI
+        const authForm = document.getElementById('authForm');
+        const emailInput = document.getElementById('email');
+        const passInput = document.getElementById('password');
+        const toggleBtn = document.getElementById('toggleAuthMode');
+        const authTitle = document.getElementById('authTitle');
+        const authError = document.getElementById('authError');
+        const authBtn = document.getElementById('authBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userGreeting = document.getElementById('userGreeting');
+
+        let isLoginMode = true;
+
+        // Detectar si el usuario ya inició sesión
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                authBtn.style.display = 'none';
+                logoutBtn.style.display = 'inline-block';
+                userGreeting.style.display = 'block';
+                userGreeting.innerText = `Hola, ${user.email} · Cuenta Activa`;
+                closeAuthModal();
+                logoutBtn.onclick = () => { signOut(auth).then(() => { alert("Sesión cerrada correctamente."); }); };
+            } else {
+                authBtn.style.display = 'inline-block';
+                authBtn.innerText = "Acceso Clientes";
+                logoutBtn.style.display = 'none';
+                userGreeting.style.display = 'none';
+            }
+        });
+
+        // Alternar entre Login y Registro
+        toggleBtn.addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            if (isLoginMode) {
+                authTitle.innerText = "Acceso Clientes";
+                authForm.querySelector('button').innerText = "Ingresar";
+                toggleBtn.innerText = "¿No tienes cuenta? Crea una aquí";
+            } else {
+                authTitle.innerText = "Crear Cuenta QAXI";
+                authForm.querySelector('button').innerText = "Registrarse";
+                toggleBtn.innerText = "¿Ya tienes cuenta? Ingresa aquí";
+            }
+            authError.style.display = 'none';
+        });
+
+        // Manejar el envío del formulario
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = emailInput.value;
+            const password = passInput.value;
+            authError.style.display = 'none';
+
+            if (isLoginMode) {
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => { alert("¡Bienvenido de nuevo a QAXI!"); })
+                    .catch((error) => {
+                        authError.style.display = 'block';
+                        authError.innerText = "Error: Correo o contraseña incorrectos.";
+                    });
+            } else {
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => { alert("¡Cuenta creada exitosamente! Bienvenido a QAXI."); })
+                    .catch((error) => {
+                        authError.style.display = 'block';
+                        if (error.code === 'auth/email-already-in-use') authError.innerText = "Este correo ya está registrado.";
+                        else if (error.code === 'auth/weak-password') authError.innerText = "La contraseña debe tener al menos 6 caracteres.";
+                        else authError.innerText = "Error: " + error.message;
+                    });
+            }
+        });
+    </script>
+
     <script>
+        function openAuthModal() { document.getElementById('authModal').style.display = "flex"; }
+        function closeAuthModal() { document.getElementById('authModal').style.display = "none"; }
+        
+        function openNequiModal(planName) {
+            document.getElementById('nequiModal').style.display = "flex";
+            document.getElementById('planNameDisplay').innerText = "Estás pagando el " + planName;
+            const recipient = "santiagomarenco1005@icloud.com";
+            const subject = encodeURIComponent("Comprobante de Pago QAXI");
+            const body = encodeURIComponent(
+                "Hola QAXI, adjunto mi comprobante de pago.\n\n" +
+                "Mis datos para la activación:\n" +
+                "- Nombre Completo:\n" +
+                "- Teléfono de contacto:\n" +
+                "- Plan seleccionado: " + planName + "\n" +
+                "- Tipo de página web deseada:\n" +
+                "- (Si es Plan Pro) Redes sociales a gestionar:\n"
+            );
+            document.getElementById('emailLink').href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+        }
+        function closeNequiModal() { document.getElementById('nequiModal').style.display = "none"; }
+        
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('nequiModal')) closeNequiModal();
+            if (event.target == document.getElementById('authModal')) closeAuthModal();
+        }
+
         function toggleLegal() {
             const content = document.getElementById('legal-text');
             const icon = document.getElementById('legal-icon');
-            if (content.style.display === "block") {
-                content.style.display = "none";
-                icon.className = "fas fa-chevron-down";
-            } else {
-                content.style.display = "block";
-                icon.className = "fas fa-chevron-up";
-            }
+            if (content.style.display === "block") { content.style.display = "none"; icon.className = "fas fa-chevron-down"; }
+            else { content.style.display = "block"; icon.className = "fas fa-chevron-up"; }
         }
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('show');
-                }
-            });
-        });
+        // --- PARTÍCULAS ---
+        const canvas = document.getElementById("particles-canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particlesArray;
+        let mouse = { x: null, y: null, radius: (canvas.height/80)*(canvas.width/80) }
+        window.addEventListener('mousemove', function(event) { mouse.x = event.x; mouse.y = event.y; });
+        class Particle {
+            constructor(x, y, dX, dY, size) { this.x=x; this.y=y; this.dX=dX; this.dY=dY; this.size=size; }
+            draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fillStyle='#fff'; ctx.globalAlpha=0.3; ctx.fill(); }
+            update() {
+                if(this.x>canvas.width||this.x<0) this.dX=-this.dX; if(this.y>canvas.height||this.y<0) this.dY=-this.dY;
+                let dx=mouse.x-this.x; let dy=mouse.y-this.y; let dist=Math.sqrt(dx*dx+dy*dy);
+                if(dist<mouse.radius+this.size){ if(mouse.x<this.x && this.x<canvas.width-this.size*10)this.x+=3; if(mouse.x>this.x && this.x>this.size*10)this.x-=3; }
+                this.x+=this.dX; this.y+=this.dY; this.draw();
+            }
+        }
+        function init(){ particlesArray=[]; for(let i=0;i<(canvas.height*canvas.width)/9000;i++){ particlesArray.push(new Particle(Math.random()*canvas.width, Math.random()*canvas.height, (Math.random()*0.4)-0.2, (Math.random()*0.4)-0.2, (Math.random()*2)+1)); } }
+        function animate(){ requestAnimationFrame(animate); ctx.clearRect(0,0,canvas.width,canvas.height); for(let i=0;i<particlesArray.length;i++){ particlesArray[i].update(); } connect(); }
+        function connect(){ for(let a=0;a<particlesArray.length;a++){ for(let b=a;b<particlesArray.length;b++){ let dist=((particlesArray[a].x-particlesArray[b].x)**2)+((particlesArray[a].y-particlesArray[b].y)**2); if(dist<(canvas.width/7)*(canvas.height/7)){ ctx.strokeStyle='rgba(255,255,255,'+(1-(dist/20000))*0.1+')'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(particlesArray[a].x,particlesArray[a].y); ctx.lineTo(particlesArray[b].x,particlesArray[b].y); ctx.stroke(); } } } }
+        init(); animate();
         
-        const hiddenElements = document.querySelectorAll('section');
-        hiddenElements.forEach((el) => el.classList.add('hidden'));
-        hiddenElements.forEach((el) => observer.observe(el));
+        const observer = new IntersectionObserver((entries)=>{entries.forEach((e)=>{if(e.isIntersecting)e.target.classList.add('show');});});
+        document.querySelectorAll('section').forEach((el)=>{el.classList.add('hidden'); observer.observe(el);});
     </script>
 </body>
 </html>
