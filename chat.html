@@ -10,11 +10,12 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg); color: white; height: 100vh; overflow: hidden; display: flex; }
         
-        /* LOGIN */
-        #login-gate { text-align: center; width: 100%; max-width: 380px; padding: 20px; margin: auto; }
+        /* LOGIN / REGISTRO */
+        #login-gate { text-align: center; width: 100%; max-width: 380px; padding: 20px; margin: auto; display: block; }
         .login-logo { font-size: 4rem; font-weight: 800; margin-bottom: 10px; }
         .auth-input { width: 100%; padding: 14px; margin-bottom: 12px; background: #0a0a0a; border: 1px solid #222; color: #fff; border-radius: 8px; outline: none; }
         .login-btn { width: 100%; background: #fff; color: #000; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+        .toggle-auth { margin-top: 15px; font-size: 0.8rem; color: #555; cursor: pointer; text-decoration: underline; display: block; }
 
         /* PLATAFORMA PRINCIPAL */
         #main-platform { display: none; width: 100%; height: 100%; flex-direction: row; position: relative; }
@@ -32,14 +33,12 @@
         #chat-section { flex: 1; display: flex; flex-direction: column; background: #000; position: relative; }
         #chat-header { padding: 10px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; min-height: 65px; }
         #btn-back { display: none; background: none; border: none; color: white; font-size: 1.2rem; margin-right: 15px; cursor: pointer; }
-        #chat-title { font-size: 0.8rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        #typing-indicator { font-size: 0.6rem; color: #555; }
+        #chat-title { font-size: 0.8rem; font-weight: 700; }
 
-        /* MENÚ DE ESTADOS (TICKET) */
+        /* TICKET / STATUS MENU */
         #status-menu { position: absolute; top: 60px; right: 20px; background: #111; border: 1px solid #222; border-radius: 8px; display: none; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .status-opt { padding: 12px 20px; cursor: pointer; font-size: 0.8rem; border-bottom: 1px solid #1a1a1a; }
-        .status-opt:last-child { border: none; }
-        .status-opt:hover { background: #222; }
+        .status-opt { padding: 12px 20px; cursor: pointer; font-size: 0.8rem; border-bottom: 1px solid #1a1a1a; color: #ccc; }
+        .status-opt:hover { background: #222; color: #fff; }
 
         #msg-display { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
         .msg { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; }
@@ -52,18 +51,14 @@
         /* INPUT AREA */
         #input-area { padding: 15px; border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; background: #050505; }
         input#msgInp { flex: 1; background: #111; border: 1px solid #222; color: white; padding: 12px; border-radius: 8px; outline: none; font-size: 16px; }
-        .tool-btn { color: #555; font-size: 1.3rem; background: none; border: none; cursor: pointer; transition: 0.2s; }
-        .tool-btn:hover { color: #fff; }
-        .recording { color: var(--danger) !important; }
+        .tool-btn { color: #555; font-size: 1.3rem; background: none; border: none; cursor: pointer; }
 
-        /* MÓVIL */
         @media (max-width: 768px) {
             #sidebar { width: 100%; position: absolute; height: 100%; }
             #chat-section { width: 100%; position: absolute; height: 100%; left: 100%; transition: 0.3s; }
             .chat-open #sidebar { transform: translateX(-100%); }
             .chat-open #chat-section { transform: translateX(-100%); }
             .chat-open #btn-back { display: block; }
-            .msg { max-width: 90%; }
         }
     </style>
 </head>
@@ -71,12 +66,13 @@
 
     <div id="login-gate">
         <div class="login-logo">Q.</div>
+        <h3 id="auth-title" style="margin-bottom: 20px; font-size: 0.8rem; letter-spacing: 2px; color: #555;">INICIAR SESIÓN</h3>
         <form id="authForm">
             <input type="email" id="email" class="auth-input" placeholder="Correo electrónico" required>
             <input type="password" id="pass" class="auth-input" placeholder="Contraseña" required>
-            <button type="submit" class="login-btn">INGRESAR</button>
+            <button type="submit" id="authSubmit" class="login-btn">INGRESAR</button>
         </form>
-        <p id="toggleAuth" style="margin-top:15px; font-size:0.8rem; color:#555; cursor:pointer; text-decoration:underline;">¿Eres nuevo? Regístrate</p>
+        <span id="toggleAuth" class="toggle-auth">¿No tienes cuenta? Regístrate aquí</span>
     </div>
 
     <div id="main-platform">
@@ -94,11 +90,11 @@
                     <button id="btn-back" onclick="cerrarChatMovil()"><i class="fas fa-arrow-left"></i></button>
                     <div>
                         <div id="chat-title">Selecciona un chat</div>
-                        <div id="typing-indicator"></div>
+                        <div id="typing-indicator" style="font-size:0.6rem; color:#555;"></div>
                     </div>
                 </div>
                 <div id="admin-tools" style="display:none; gap: 18px;">
-                    <button class="tool-btn" id="btnStatus" title="Estado de Pago"><i class="fas fa-tag"></i></button>
+                    <button class="tool-btn" id="btnStatus"><i class="fas fa-tag"></i></button>
                     <button class="tool-btn" id="btnClear"><i class="fas fa-broom"></i></button>
                     <button class="tool-btn" id="btnDelete"><i class="fas fa-trash-alt"></i></button>
                 </div>
@@ -146,9 +142,35 @@
         let isAdmin = false;
         let selectedTarget = null;
         let unsubMessages = null;
+        let isLoginMode = true;
 
+        // --- BOTÓN TOGGLE REGISTRO ---
+        const toggleBtn = document.getElementById('toggleAuth');
+        toggleBtn.onclick = () => {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-title').innerText = isLoginMode ? "INICIAR SESIÓN" : "CREAR CUENTA QAXI";
+            document.getElementById('authSubmit').innerText = isLoginMode ? "INGRESAR" : "REGISTRARME";
+            toggleBtn.innerText = isLoginMode ? "¿No tienes cuenta? Regístrate aquí" : "¿Ya tienes cuenta? Ingresa aquí";
+        };
+
+        // --- MANEJO DE VISTA MÓVIL ---
         window.abrirChatMovil = () => { if (window.innerWidth <= 768) document.getElementById('app-body').classList.add('chat-open'); };
         window.cerrarChatMovil = () => document.getElementById('app-body').classList.remove('chat-open');
+
+        // --- AUTH SUBMIT ---
+        document.getElementById('authForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+            try {
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                } else {
+                    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                    await setDoc(doc(db, "chats", email), { registrado: serverTimestamp(), color: "#333" });
+                }
+            } catch (err) { alert("Error: Verifica tus datos."); }
+        };
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -206,19 +228,18 @@
             });
         }
 
-        // FUNCIONES ADMIN (ESTADOS)
+        // --- ESTADOS ---
         document.getElementById('btnStatus').onclick = () => {
             const menu = document.getElementById('status-menu');
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         };
-
         window.updateStatus = async (name, color) => {
             if(!selectedTarget) return;
             await setDoc(doc(db, "chats", selectedTarget), { status: name, color: color }, { merge: true });
             document.getElementById('status-menu').style.display = 'none';
         };
 
-        // ENVIAR MENSAJES
+        // --- ENVIAR ---
         async function enviar(txt, file = null, fType = null) {
             if(!selectedTarget) return;
             await addDoc(collection(db, "chats", selectedTarget, "messages"), {
@@ -244,7 +265,7 @@
             }
         };
 
-        // VOZ
+        // --- VOZ ---
         let mediaRec; let chunks = [];
         document.getElementById('voiceBtn').onclick = async function() {
             if(!mediaRec || mediaRec.state === "inactive") {
