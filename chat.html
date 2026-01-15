@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>QAXI - Central PRO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --bg: #050505; --sidebar: #0a0a0a; --accent: #ffffff; --border: #1a1a1a; --danger: #ff4444; --warning: #ffaa00; --success: #00ff88; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: white; height: 100vh; overflow: hidden; display: flex; }
+        
+        /* SIDEBAR PRO */
+        #sidebar { width: 320px; border-right: 1px solid var(--border); background: var(--sidebar); display: flex; flex-direction: column; }
+        .sb-header { padding: 20px; border-bottom: 1px solid var(--border); }
+        #searchClients { width: 100%; background: #111; border: 1px solid #222; padding: 10px; border-radius: 6px; color: white; font-size: 0.8rem; outline: none; }
+        
+        #list-container { flex: 1; overflow-y: auto; }
+        .client-item { padding: 15px 20px; border-bottom: 1px solid #0f0f0f; cursor: pointer; transition: 0.2s; position: relative; }
+        .client-item:hover { background: #111; }
+        .client-item.active { background: #fff; color: #000; font-weight: 700; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+
+        /* CHAT AREA */
+        #chat-section { flex: 1; display: flex; flex-direction: column; position: relative; }
+        #chat-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        #typing-indicator { font-size: 0.7rem; color: #555; font-style: italic; height: 15px; }
+
+        #msg-display { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .msg { max-width: 70%; padding: 12px 18px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; position: relative; }
+        .from-admin { background: #fff; color: #000; align-self: flex-end; font-weight: 600; }
+        .from-client { background: #111; color: #fff; align-self: flex-start; border: 1px solid #222; }
+        
+        /* AUDIOS */
+        audio { height: 35px; margin-top: 5px; filter: invert(1); }
+
+        /* INPUT AREA PRO */
+        #input-area { padding: 20px; border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; background: #000; }
+        input#msgInp { flex: 1; background: #0a0a0a; border: 1px solid #222; color: white; padding: 14px; border-radius: 8px; outline: none; }
+        
+        .tool-btn { color: #555; cursor: pointer; font-size: 1.2rem; transition: 0.2s; background: none; border: none; }
+        .tool-btn:hover { color: #fff; }
+        .recording { color: var(--danger) !important; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* MODAL ESTADOS (SOLO ADMIN) */
+        #status-menu { position: absolute; top: 60px; right: 20px; background: #111; border: 1px solid #222; border-radius: 8px; display: none; z-index: 100; }
+        .status-opt { padding: 10px 20px; cursor: pointer; font-size: 0.8rem; }
+        .status-opt:hover { background: #222; }
+
+        @media (max-width: 768px) { #sidebar { display: none; } }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <div class="sb-header">
+            <div style="font-weight: 800; margin-bottom: 15px; letter-spacing: 1px;">QAXI ADMIN</div>
+            <input type="text" id="searchClients" placeholder="🔍 Buscar cliente por correo...">
+        </div>
+        <div id="list-container"></div>
+        <div style="padding: 15px;"><button id="btnLogout" style="width:100%; padding:8px; background:none; border:1px solid #222; color:#555; border-radius:4px; cursor:pointer; font-size:0.7rem;">CERRAR SESIÓN</button></div>
+    </div>
+
+    <div id="chat-section">
+        <div id="chat-header">
+            <div>
+                <div id="chat-title" style="font-size: 0.8rem; font-weight: 700;">Selecciona un chat</div>
+                <div id="typing-indicator"></div>
+            </div>
+            <div id="admin-tools" style="display:none; gap: 15px;">
+                <button class="tool-btn" id="btnStatus" title="Cambiar Estado"><i class="fas fa-tag"></i></button>
+                <button class="tool-btn" id="btnClear" title="Limpiar"><i class="fas fa-broom"></i></button>
+                <button class="tool-btn" id="btnDelete" title="Eliminar"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>
+
+        <div id="status-menu">
+            <div class="status-opt" onclick="updateStatus('Nuevo', '#ffffff')">⚪ Nuevo</div>
+            <div class="status-opt" onclick="updateStatus('En Proceso', '#ffaa00')">🟠 En Proceso</div>
+            <div class="status-opt" onclick="updateStatus('Activo', '#00ff88')">🟢 Activo</div>
+            <div class="status-opt" onclick="updateStatus('Pendiente', '#ff4444')">🔴 Pendiente</div>
+        </div>
+
+        <div id="msg-display"></div>
+
+        <form id="input-area">
+            <label for="fileInp" class="tool-btn"><i class="fas fa-paperclip"></i></label>
+            <input type="file" id="fileInp" style="display:none">
+            
+            <button type="button" class="tool-btn" id="voiceBtn"><i class="fas fa-microphone"></i></button>
+            
+            <input type="text" id="msgInp" placeholder="Escribe un mensaje..." autocomplete="off">
+            <button type="submit" id="sendBtn" style="background:#fff; color:#000; border:none; padding:12px 20px; border-radius:8px; font-weight:800; cursor:pointer;">ENVIAR</button>
+        </form>
+    </div>
+
+    <audio id="notif" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, collection, onSnapshot, query, orderBy, addDoc, serverTimestamp, updateDoc, setDoc, deleteDoc, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE", authDomain: "qaxi-93d6d.firebaseapp.com", projectId: "qaxi-93d6d", storageBucket: "qaxi-93d6d.firebasestorage.app", messagingSenderId: "137240859996", appId: "1:137240859996:web:73e14d28c77233be965d99" };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const ADMIN_EMAIL = "santiagomarenco1005@icloud.com";
+        let isAdmin = false;
+        let selectedTarget = null;
+        let unsubMessages = null;
+
+        // --- AUTH ---
+        onAuthStateChanged(auth, (user) => {
+            if (!user) { window.location.href = "index.html"; return; }
+            isAdmin = (user.email === ADMIN_EMAIL);
+            if(isAdmin) setupAdmin(); else setupClient(user.email);
+        });
+
+        // --- BUSCADOR ---
+        document.getElementById('searchClients').oninput = (e) => {
+            const val = e.target.value.toLowerCase();
+            document.querySelectorAll('.client-item').forEach(item => {
+                item.style.display = item.innerText.toLowerCase().includes(val) ? "block" : "none";
+            });
+        };
+
+        // --- ADMINISTRADOR ---
+        function setupAdmin() {
+            document.getElementById('admin-tools').style.display = "flex";
+            onSnapshot(collection(db, "chats"), (snap) => {
+                const list = document.getElementById('list-container');
+                list.innerHTML = "";
+                snap.forEach(d => {
+                    const data = d.data();
+                    const div = document.createElement('div');
+                    div.className = `client-item ${selectedTarget === d.id ? 'active' : ''}`;
+                    div.innerHTML = `<span class="status-dot" style="background:${data.color || '#333'}"></span>${d.id}`;
+                    div.onclick = () => loadChat(d.id);
+                    list.appendChild(div);
+                });
+            });
+        }
+
+        function setupClient(email) {
+            selectedTarget = email;
+            document.getElementById('sidebar').style.display = "none";
+            loadChat(email);
+        }
+
+        function loadChat(email) {
+            selectedTarget = email;
+            document.getElementById('chat-title').innerText = email;
+            if (unsubMessages) unsubMessages();
+
+            // Escuchar Escribiendo
+            onSnapshot(doc(db, "chats", email), (d) => {
+                const data = d.data();
+                const indicator = document.getElementById('typing-indicator');
+                if(isAdmin && data.clienteEscribiendo) indicator.innerText = "El cliente está escribiendo...";
+                else if(!isAdmin && data.adminEscribiendo) indicator.innerText = "QAXI está escribiendo...";
+                else indicator.innerText = "";
+            });
+
+            const q = query(collection(db, "chats", email, "messages"), orderBy("fecha", "asc"));
+            unsubMessages = onSnapshot(q, (snap) => {
+                const display = document.getElementById('msg-display');
+                display.innerHTML = "";
+                snap.forEach(d => {
+                    const data = d.data();
+                    const m = document.createElement('div');
+                    const isMe = isAdmin ? (data.emisor === 'admin') : (data.emisor === 'cliente');
+                    m.className = `msg ${isMe ? 'from-admin' : 'from-client'}`;
+                    
+                    if(data.texto) m.innerHTML = `<p>${data.texto}</p>`;
+                    if(data.file) {
+                        if(data.fileType?.startsWith('image')) m.innerHTML += `<img src="${data.file}" style="max-width:100%; border-radius:8px; margin-top:10px;">`;
+                        else if(data.fileType?.startsWith('audio')) m.innerHTML += `<audio src="${data.file}" controls></audio>`;
+                        else m.innerHTML += `<a href="${data.file}" style="color:inherit; font-size:0.7rem;" download>📎 Archivo adjunto</a>`;
+                    }
+                    display.appendChild(m);
+                });
+                display.scrollTop = display.scrollHeight;
+            });
+        }
+
+        // --- INDICADOR ESCRIBIENDO ---
+        let typingTimeout;
+        document.getElementById('msgInp').oninput = () => {
+            const field = isAdmin ? "adminEscribiendo" : "clienteEscribiendo";
+            setDoc(doc(db, "chats", selectedTarget), { [field]: true }, { merge: true });
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                setDoc(doc(db, "chats", selectedTarget), { [field]: false }, { merge: true });
+            }, 2000);
+        };
+
+        // --- MENSAJES DE VOZ ---
+        let mediaRecorder;
+        let audioChunks = [];
+        const voiceBtn = document.getElementById('voiceBtn');
+
+        voiceBtn.onclick = async () => {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+                    const reader = new FileReader();
+                    reader.readAsDataURL(audioBlob);
+                    reader.onloadend = () => {
+                        sendMsg(null, reader.result, 'audio/mp3');
+                    };
+                    audioChunks = [];
+                    voiceBtn.classList.remove('recording');
+                };
+                mediaRecorder.start();
+                voiceBtn.classList.add('recording');
+            } else {
+                mediaRecorder.stop();
+            }
+        };
+
+        // --- ENVÍO ---
+        async function sendMsg(text, file = null, type = null) {
+            await addDoc(collection(db, "chats", selectedTarget, "messages"), {
+                texto: text, emisor: isAdmin ? "admin" : "cliente", fecha: serverTimestamp(),
+                file: file, fileType: type
+            });
+        }
+
+        document.getElementById('input-area').onsubmit = async (e) => {
+            e.preventDefault();
+            const inp = document.getElementById('msgInp');
+            if(!inp.value.trim()) return;
+            await sendMsg(inp.value);
+            inp.value = "";
+        };
+
+        // --- UTILIDADES ADMIN ---
+        window.updateStatus = async (name, color) => {
+            await setDoc(doc(db, "chats", selectedTarget), { status: name, color: color }, { merge: true });
+            document.getElementById('status-menu').style.display = "none";
+        };
+        document.getElementById('btnStatus').onclick = () => {
+            const menu = document.getElementById('status-menu');
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        };
+        document.getElementById('btnLogout').onclick = () => signOut(auth);
+    </script>
+</body>
+</html>
