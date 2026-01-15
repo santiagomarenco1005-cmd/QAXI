@@ -161,6 +161,30 @@
             header { padding: 10px 5%; }
             .logo img { height: 45px; }
         }
+
+        /* --- ESTILOS CHAT AI --- */
+        #chat-launcher {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: #fff; color: #000; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 3000; transition: 0.3s;
+        }
+        #chat-launcher:hover { transform: scale(1.1); }
+
+        #chat-window {
+            position: fixed; bottom: 100px; right: 30px; width: 350px; height: 500px;
+            background: #0c0c0c; border: 1px solid #1a1a1a; border-radius: 12px;
+            display: none; flex-direction: column; overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); z-index: 3000; animation: fadeIn 0.3s;
+        }
+        .chat-header-ai { padding: 15px; border-bottom: 1px solid #1a1a1a; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; display: flex; justify-content: space-between; align-items: center; }
+        #chat-display-ai { flex: 1; padding: 15px; overflow-y: auto; font-size: 0.85rem; display: flex; flex-direction: column; gap: 12px; }
+        .msg-ai { max-width: 85%; padding: 10px 14px; border-radius: 8px; line-height: 1.4; }
+        .bot-ai { background: #1a1a1a; color: #fff; align-self: flex-start; }
+        .user-ai { background: #fff; color: #000; align-self: flex-end; font-weight: 500; }
+        .chat-input-area { display: flex; padding: 15px; background: #000; border-top: 1px solid #1a1a1a; }
+        .chat-input-area input { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 0.85rem; }
+        .chat-input-area button { background: #fff; color: #000; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-weight: 700; font-size: 0.7rem; }
     </style>
 </head>
 <body>
@@ -268,10 +292,15 @@
             <h3 style="margin-bottom: 5px; font-weight: 600;">1. Escanea para pagar</h3>
             <p id="planNameDisplay" style="color: #666; font-size: 0.9rem; margin-bottom: 5px;"></p>
             <img src="qr-nequi.png" alt="QR Nequi" class="qr-img">
-            <div class="instructions">
-                <strong>2. Activa tu cuenta:</strong><br>
-                Después de pagar, envía el comprobante para la activación.
+            
+            <div class="instructions" style="text-align: left; margin-top: 15px;">
+                <strong>Paso a paso para la activación:</strong><br>
+                1. <strong>Crea una cuenta</strong> o inicia sesión si ya tienes una.<br>
+                2. Realiza el pago escaneando el código QR superior.<br>
+                3. Envía el comprobante de pago presionando el botón de abajo.<br>
+                4. En el correo, incluye: tu <strong>usuario QAXI (email)</strong>, tu <strong>nombre completo</strong> y el <strong>tipo de página web</strong> que deseas crear.
             </div>
+            
             <a id="emailLink" href="#" class="email-btn"><i class="far fa-envelope"></i> Enviar Comprobante</a>
         </div>
     </div>
@@ -294,25 +323,19 @@
         <div class="modal-content">
             <span class="close" onclick="closeDashboardModal()">&times;</span>
             <h3 style="margin-bottom: 20px;">Mi Perfil QAXI</h3>
-            
             <div class="dashboard-info">
                 <div class="dashboard-label">Correo</div>
                 <div class="dashboard-value" id="dashEmail">Cargando...</div>
-                
                 <div class="dashboard-label">Estado de Cuenta</div>
                 <div class="dashboard-value" id="dashStatus" style="color: #ffff00;">Inactivo</div>
             </div>
-
             <form id="profileForm">
                 <label class="dashboard-label">Tu Nombre</label>
                 <input type="text" id="profName" class="auth-input" placeholder="Ej: Juan Pérez">
-                
                 <label class="dashboard-label">Teléfono / WhatsApp</label>
                 <input type="text" id="profPhone" class="auth-input" placeholder="Ej: 300 123 4567">
-                
                 <button type="submit" class="cta-btn" style="width: 100%; border:none;">Guardar Datos</button>
             </form>
-            
             <button id="btnLogout" class="login-nav-btn" style="width: 100%; margin-top: 20px; text-align: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px; color: #fff; cursor: pointer; border-radius: 4px;">Cerrar Sesión</button>
         </div>
     </div>
@@ -324,70 +347,29 @@
         </div>
         <div class="legal-content" id="legal-text">
             <p><strong>Última actualización: 2025</strong></p>
-            
-            <h4>1. Descripción del servicio</h4>
-            <p>QAXI ofrece un servicio de creación, alojamiento, mantenimiento y soporte de páginas web bajo modalidad de suscripción mensual. El servicio incluye, según el plan contratado, desarrollo web, dominio, hosting, mantenimiento, soporte y uso de herramientas de inteligencia artificial. QAXI no vende páginas web como producto final, sino que presta un servicio continuo mientras la suscripción esté activa.</p>
-
-            <h4>2. Modalidad de suscripción</h4>
-            <p>El servicio funciona bajo pago mensual recurrente. La página web, el dominio y el hosting permanecen activos únicamente mientras el plan esté vigente y al día en los pagos. QAXI se reserva el derecho de modificar, suspender o cancelar el servicio en caso de incumplimiento de pago.</p>
-
-            <h4>3. Dominio y propiedad</h4>
-            <p>El dominio es adquirido y administrado por QAXI. El dominio se mantiene activo solo mientras el cliente tenga un plan vigente. En caso de cancelación o falta de pago, el dominio podrá ser desactivado o reutilizado por QAXI. El cliente no adquiere propiedad automática sobre el dominio, salvo acuerdo expreso por escrito.</p>
-
-            <h4>4. Hosting y contenido</h4>
-            <p>El hosting es gestionado por QAXI. El cliente acepta que la infraestructura, configuración y administración técnica pertenecen a QAXI durante la vigencia del servicio. El contenido del sitio puede ser eliminado en caso de cancelación del servicio o falta de pago.</p>
-
-            <h4>5. Mantenimiento</h4>
-            <p>El mantenimiento incluye:</p>
-            <ul>
-                <li>actualizaciones técnicas</li>
-                <li>ajustes básicos</li>
-                <li>monitoreo general</li>
-                <li>soporte técnico estándar</li>
-            </ul>
-            <p>No incluye rediseños completos, desarrollos a medida ni cambios ilimitados, salvo que el plan contratado lo especifique.</p>
-
-            <h4>6. Soporte</h4>
-            <p>El soporte se brinda vía chat web (o correo electrónico), en horarios definidos por QAXI. El tiempo de respuesta puede variar según el volumen de solicitudes y el plan contratado.</p>
-
-            <h4>7. Uso de Inteligencia Artificial</h4>
-            <p>QAXI utiliza herramientas de inteligencia artificial para generación de contenido, optimización y automatización de procesos. El cliente acepta que el contenido generado por IA puede requerir ajustes y no garantiza resultados comerciales específicos.</p>
-
-            <h4>8. Cancelación del servicio</h4>
-            <p>El cliente puede cancelar el servicio en cualquier momento. En caso de cancelación o falta de pago:</p>
-            <ul>
-                <li>el sitio web será suspendido</li>
-                <li>el dominio será desactivado</li>
-                <li>el contenido podrá ser eliminado</li>
-            </ul>
-            <p>No se realizan reembolsos por períodos ya pagados.</p>
-
-            <h4>9. Permanencia mínima</h4>
-            <p>Algunos planes pueden requerir una permanencia mínima (por ejemplo, 12 meses). Esta condición será informada claramente al momento de la contratación.</p>
-
-            <h4>10. Limitación de responsabilidad</h4>
-            <p>QAXI no garantiza resultados comerciales, posicionamiento en buscadores ni generación de ventas. El servicio se presta “tal cual”, enfocado en presencia digital y mantenimiento técnico.</p>
-
-            <h4>11. Modificaciones</h4>
-            <p>QAXI se reserva el derecho de modificar estos Términos y Condiciones en cualquier momento. Las modificaciones serán publicadas en el sitio web y entrarán en vigor desde su publicación.</p>
-
-            <h4>12. Aceptación</h4>
-            <p>Al contratar cualquiera de los servicios de QAXI, el cliente declara haber leído, comprendido y aceptado estos Términos y Condiciones.</p>
-
-            <br>
-            <div style="border-top: 1px solid #333; padding-top: 20px; color: #fff;">
-                <strong>QAXI</strong><br>
-                Desarrollo y mantenimiento web por suscripción<br>
-                Q.<br>
-                © 2025 · QAXI.
+            <p>QAXI ofrece un servicio de creación, alojamiento, mantenimiento y soporte de páginas web bajo modalidad de suscripción mensual...</p>
             </div>
-        </div>
     </section>
 
     <footer>
         <p>© 2025 · QAXI. Todos los derechos reservados.</p>
         <p>Q.</p>
     </footer>
+
+    <div id="chat-launcher" onclick="toggleChatAi()"><i class="fas fa-headset"></i></div>
+    <div id="chat-window">
+        <div class="chat-header-ai">
+            <span>QAXI Support</span>
+            <i class="fas fa-times" onclick="toggleChatAi()" style="cursor:pointer"></i>
+        </div>
+        <div id="chat-display-ai">
+            <div class="msg-ai bot-ai">Bienvenido al soporte de QAXI, ¿en qué te puedo ayudar hoy?</div>
+        </div>
+        <form class="chat-input-area" id="chatFormAi">
+            <input type="text" id="userInputAi" placeholder="Escribe tu duda..." autocomplete="off">
+            <button type="submit" id="sendBtnAi">Enviar</button>
+        </form>
+    </div>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
 
@@ -463,7 +445,6 @@
             const email = emailInput.value;
             const password = passInput.value;
             authError.style.display = 'none';
-
             try {
                 if (isLoginMode) {
                     await signInWithEmailAndPassword(auth, email, password);
@@ -473,9 +454,7 @@
                     await setDoc(doc(db, "users", cred.user.uid), {
                         email: email,
                         createdAt: new Date(),
-                        name: "",
-                        phone: "",
-                        status: "active"
+                        name: "", phone: "", status: "active"
                     });
                     alert("Cuenta creada. Ahora completa tu perfil.");
                     openDashboardModal();
@@ -515,10 +494,7 @@
             e.preventDefault();
             if (currentUser) {
                 const userRef = doc(db, "users", currentUser.uid);
-                await updateDoc(userRef, {
-                    name: profName.value,
-                    phone: profPhone.value
-                });
+                await updateDoc(userRef, { name: profName.value, phone: profPhone.value });
                 alert("Datos guardados correctamente.");
                 closeDashboardModal();
             }
@@ -526,6 +502,63 @@
     </script>
 
     <script>
+        const GROQ_API_KEY = "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";
+        const chatWindow = document.getElementById('chat-window');
+        const chatDisplayAi = document.getElementById('chat-display-ai');
+        const chatFormAi = document.getElementById('chatFormAi');
+        const userInputAi = document.getElementById('userInputAi');
+        const sendBtnAi = document.getElementById('sendBtnAi');
+
+        function toggleChatAi() {
+            chatWindow.style.display = (chatWindow.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        chatFormAi.onsubmit = async (e) => {
+            e.preventDefault();
+            const text = userInputAi.value.trim();
+            if (!text) return;
+
+            addMsgAi(text, 'user-ai');
+            userInputAi.value = '';
+            sendBtnAi.disabled = true;
+
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${GROQ_API_KEY}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [
+                            {
+                                role: "system",
+                                content: `Eres el soporte oficial de QAXI. REGLAS: Saluda profesionalmente pero directo. No menciones nombres personales ni CEOs. Planes: Estándar (60k COP), Pro (120k COP). Pagos: Nequi QR. Activación: Enviar comprobante a santiagomarenco1005@icloud.com. SI EL USUARIO DICE "NO ACEPTO": Indica que todos los términos son obligatorios para el servicio. Sé breve.`
+                            },
+                            { role: "user", content: text }
+                        ],
+                        temperature: 0.2
+                    })
+                });
+                const data = await response.json();
+                addMsgAi(data.choices[0].message.content, 'bot-ai');
+            } catch (error) {
+                addMsgAi("Error de conexión. Intente de nuevo.", 'bot-ai');
+            } finally {
+                sendBtnAi.disabled = false;
+            }
+        };
+
+        function addMsgAi(text, sender) {
+            const div = document.createElement('div');
+            div.classList.add('msg-ai', sender);
+            div.innerText = text;
+            chatDisplayAi.appendChild(div);
+            chatDisplayAi.scrollTop = chatDisplayAi.scrollHeight;
+        }
+
+        /* --- LOGICA MODALES Y PARTICULAS --- */
         function openAuthModal() { document.getElementById('authModal').style.display = "flex"; }
         function closeAuthModal() { document.getElementById('authModal').style.display = "none"; }
         
@@ -534,15 +567,15 @@
             document.getElementById('planNameDisplay').innerText = "Estás pagando el " + planName;
             
             const recipient = "santiagomarenco1005@icloud.com";
-            const subject = encodeURIComponent("Comprobante de Pago QAXI");
+            const subject = encodeURIComponent("Comprobante de Pago QAXI - Activación de Cuenta");
             const body = encodeURIComponent(
-                "Hola QAXI, adjunto mi comprobante de pago.\n\n" +
-                "Mis datos para la activación:\n" +
+                "Hola QAXI,\n\n" +
+                "Adjunto mi comprobante de pago para activar mi servicio.\n\n" +
+                "Información de mi cuenta:\n" +
+                "- Usuario QAXI (Email):\n" +
                 "- Nombre Completo:\n" +
-                "- Teléfono de contacto:\n" +
-                "- Plan seleccionado: " + planName + "\n" +
-                "- Tipo de página web deseada:\n" +
-                "- (Si es Plan Pro) Redes sociales a gestionar:\n"
+                "- Tipo de página web que deseo crear:\n\n" +
+                "Quedo atento a la activación. Gracias."
             );
             document.getElementById('emailLink').href = `mailto:${recipient}?subject=${subject}&body=${body}`;
         }
