@@ -156,10 +156,19 @@
         footer { text-align: center; padding: 40px; border-top: 1px solid var(--glass-border); color: var(--text-secondary); font-size: 0.8rem; }
         
         @media (max-width: 768px) { 
-            .hero h1 { font-size: 2.5rem; } 
+            .hero h1 { font-size: 2.2rem; } 
             nav { display: none; } 
             header { padding: 10px 5%; }
             .logo img { height: 45px; }
+            /* Ajuste para que los botones nuevos no se amontonen en móvil */
+            .auth-wrapper, .hero-btns {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                width: 90%;
+                align-items: center;
+            }
+            .hero-btns .cta-btn { width: 100%; margin: 0 !important; }
         }
 
         /* --- ESTILOS CHAT AI --- */
@@ -200,6 +209,7 @@
             </ul>
         </nav>
         <div class="auth-wrapper">
+            <a href="chat.html" class="cta-btn" style="background: transparent; border: 1px solid #fff; color: #fff; margin-right: 10px;">Chat QAXI</a>
             <a id="authBtn" class="cta-btn" onclick="openAuthModal()">Acceso Clientes</a>
             <a id="accountBtn" class="cta-btn" style="display: none;" onclick="openDashboardModal()">Mi Cuenta</a>
         </div>
@@ -210,7 +220,11 @@
         <div class="q-watermark">Q.</div>
         <h1>Desarrollo y mantenimiento<br>web por suscripción.</h1>
         <p>Diseño minimalista. Automatización con IA.<br>Precio accesible. Modelo escalable.</p>
-        <a href="#pricing" class="cta-btn" style="font-size: 1.1rem; padding: 15px 30px;">Ver Planes</a>
+        
+        <div class="hero-btns">
+            <a href="chat.html" class="cta-btn" style="font-size: 1.1rem; padding: 15px 30px;">Chat QAXI</a>
+            <a href="#pricing" class="cta-btn" style="font-size: 1.1rem; padding: 15px 30px; background: transparent; border: 1px solid #fff; color: #fff;">Ver Planes</a>
+        </div>
     </section>
 
     <section id="about">
@@ -350,6 +364,10 @@
             <p>QAXI ofrece un servicio de creación, alojamiento, mantenimiento y soporte de páginas web bajo modalidad de suscripción mensual...</p>
             </div>
     </section>
+
+    <div style="text-align: center; padding: 20px; color: #888; font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.05);">
+        Medio de comunicaciones: Correo: <strong>santiagomarenco1005@icloud.com</strong> y <strong>QAXI chat (Soporta imágenes)</strong>
+    </div>
 
     <footer>
         <p>© 2025 · QAXI. Todos los derechos reservados.</p>
