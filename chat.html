@@ -26,6 +26,7 @@
             --msg-me: #ffffff; 
             --msg-other: #161616; 
             --accent-green: #00ff88;
+            --text-gray: #888;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -65,7 +66,11 @@
         .client-item:active { background: #1a1a1a; }
         .client-item.active { background: #121212; }
         .client-item.active::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: #fff; }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 15px; border: 2px solid #000; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 15px; border: 2px solid #333; transition: all 0.3s ease; }
+        /* Clases dinámicas para estado */
+        .status-dot.online { background: var(--accent-green); box-shadow: 0 0 8px rgba(0, 255, 136, 0.4); border-color: transparent; }
+        .status-dot.offline { background: #444; }
+        
         .client-info { flex: 1; overflow: hidden; }
         .client-name { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .client-preview { font-size: 0.8rem; color: #666; margin-top: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -74,13 +79,14 @@
         #chat-section { flex: 1; display: flex; flex-direction: column; background: transparent; position: relative; }
         #chat-header { height: 75px; padding: 0 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(5,5,5,0.9); backdrop-filter: blur(15px); }
         #btn-back { display: none; background: none; border: none; color: white; font-size: 1.5rem; margin-right: 15px; cursor: pointer; padding: 10px; }
-        .chat-info-header { overflow: hidden; }
+        .chat-info-header { overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
         #chat-title { font-size: 1.15rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
-        #chat-subtitle { font-size: 0.75rem; color: var(--accent-green); display: flex; align-items: center; gap: 6px; margin-top: 3px; font-weight: 600; }
+        #chat-subtitle { font-size: 0.75rem; color: var(--text-gray); display: flex; align-items: center; gap: 6px; margin-top: 3px; font-weight: 500; transition: color 0.3s; }
+        .online-text { color: var(--accent-green) !important; font-weight: 600; }
         
         /* MENSAJES */
-        #msg-display { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; }
-        .msg { max-width: 80%; padding: 14px 18px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; position: relative; word-wrap: break-word; animation: popMsg 0.2s ease-out; }
+        #msg-display { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+        .msg { max-width: 80%; padding: 14px 18px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; position: relative; word-wrap: break-word; animation: popMsg 0.2s ease-out; will-change: transform, opacity; }
         @keyframes popMsg { from{opacity:0; transform:translateY(10px) scale(0.95);} to{opacity:1; transform:translateY(0) scale(1);} }
         
         .me { background: var(--msg-me); color: #000; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
@@ -90,7 +96,7 @@
         .attachment-img:hover { filter: brightness(0.8); }
         
         /* AREA DE ENTRADA */
-        #input-area { padding: 15px 20px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; background: #050505; z-index: 100; }
+        #input-area { padding: 15px 20px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; background: #050505; z-index: 100; position: relative; }
         input#msgInp { flex: 1; background: #151515; border: 1px solid #252525; color: white; padding: 14px 22px; border-radius: 30px; outline: none; font-size: 16px; transition: 0.3s; }
         input#msgInp:focus { border-color: #444; background: #1a1a1a; }
         
@@ -103,6 +109,50 @@
         #micBtn { color: #fff; }
         #micBtn.recording { color: #ff3b30; animation: micPulse 1.2s infinite; background: rgba(255,59,48,0.1); }
         @keyframes micPulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
+
+        /* PREVISUALIZACIÓN DE ARCHIVO */
+        #preview-box {
+            position: absolute;
+            bottom: 100%; 
+            left: 0;
+            width: 100%;
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #222;
+            padding: 15px;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 90;
+            animation: slideUp 0.2s ease-out;
+        }
+        @keyframes slideUp { from{transform:translateY(20px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+        
+        #preview-img-thumb {
+            height: 60px;
+            width: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        
+        .preview-info {
+            font-size: 0.85rem;
+            color: #ccc;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        #cancel-preview {
+            background: none;
+            border: none;
+            color: #ff3b30;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+        }
 
         /* HERRAMIENTAS ADMIN */
         #admin-tools { display: none; gap: 15px; }
@@ -156,7 +206,7 @@
                     <button id="btn-back" onclick="cerrarChat()"><i class="fas fa-chevron-left"></i></button>
                     <div class="chat-info-header">
                         <div id="chat-title">Selecciona un chat</div>
-                        <div id="chat-subtitle"><span style="font-size:1.4rem; line-height: 0;">•</span> En línea</div>
+                        <div id="chat-subtitle">...</div>
                     </div>
                 </div>
                 
@@ -166,9 +216,15 @@
             </div>
 
             <div id="msg-display">
-                </div>
+            </div>
 
             <form id="input-area">
+                <div id="preview-box">
+                    <img id="preview-img-thumb" src="">
+                    <div class="preview-info" id="preview-filename">Imagen seleccionada</div>
+                    <button type="button" id="cancel-preview"><i class="fas fa-times"></i></button>
+                </div>
+
                 <label for="fileInp" class="icon-btn"><i class="fas fa-plus-circle"></i></label>
                 <input type="file" id="fileInp" style="display:none">
                 
@@ -212,9 +268,46 @@
         let isLoginMode = true;
         let selectedChatID = null;
         let unsubMessages = null;
+        let unsubStatus = null; // Para escuchar estado online
         let allClientsData = [];
         let mediaRecorder;
         let audioChunks = [];
+        let currentUserEmail = null;
+
+        // --- LÓGICA DE PREVISUALIZACIÓN DE IMAGEN ---
+        const fileInp = document.getElementById('fileInp');
+        const previewBox = document.getElementById('preview-box');
+        const previewImg = document.getElementById('preview-img-thumb');
+        const previewName = document.getElementById('preview-filename');
+        const cancelPreviewBtn = document.getElementById('cancel-preview');
+
+        fileInp.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                previewName.innerText = file.name;
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        previewBox.style.display = 'flex';
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    previewImg.src = "https://cdn-icons-png.flaticon.com/512/124/124837.png";
+                    previewBox.style.display = 'flex';
+                }
+            } else {
+                closePreview();
+            }
+        });
+
+        cancelPreviewBtn.addEventListener('click', closePreview);
+
+        function closePreview() {
+            fileInp.value = "";
+            previewBox.style.display = 'none';
+            previewImg.src = "";
+        }
 
         // --- LÓGICA DE AUTENTICACIÓN ---
         document.getElementById('toggleAuth').onclick = () => {
@@ -236,11 +329,12 @@
                     await signInWithEmailAndPassword(auth, email, pass);
                 } else {
                     await createUserWithEmailAndPassword(auth, email, pass);
-                    // Crear entrada inicial en la colección de chats
                     await setDoc(doc(db, "chats", email.toLowerCase()), {
                         registrado: serverTimestamp(),
                         lastMsg: "¡Hola! Bienvenido a QAXI Chat",
-                        color: "#ffffff"
+                        color: "#ffffff",
+                        isOnline: true, // Nuevo: Estado inicial
+                        lastSeen: serverTimestamp() // Nuevo: Última vez
                     });
                 }
             } catch(error) {
@@ -249,15 +343,28 @@
             }
         };
 
-        document.getElementById('btnLogout').onclick = () => signOut(auth).then(() => location.reload());
+        // Función para cerrar sesión y poner offline
+        const handleLogout = async () => {
+             if(currentUserEmail) {
+                try {
+                    await updateDoc(doc(db, "chats", currentUserEmail), { isOnline: false, lastSeen: serverTimestamp() });
+                } catch(e) {}
+             }
+             signOut(auth).then(() => location.reload());
+        };
+        document.getElementById('btnLogout').onclick = handleLogout;
 
-        // --- MONITOR DE SESIÓN ---
-        onAuthStateChanged(auth, (user) => {
+        // --- MONITOR DE SESIÓN Y PRESENCIA ---
+        onAuthStateChanged(auth, async (user) => {
             if(user) {
                 document.getElementById('login-gate').style.display = 'none';
                 document.getElementById('main-platform').style.display = 'flex';
                 document.getElementById('userEmailDisplay').innerText = user.email;
+                currentUserEmail = user.email.toLowerCase();
                 
+                // INICIAR PRESENCIA REAL
+                setupPresence(currentUserEmail);
+
                 isAdmin = (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
 
                 if(isAdmin) {
@@ -275,6 +382,41 @@
             }
         });
 
+        // --- SISTEMA DE PRESENCIA (ONLINE/OFFLINE) ---
+        function setupPresence(email) {
+            const userRef = doc(db, "chats", email);
+            
+            // Marcar como Online al entrar
+            updateDoc(userRef, { isOnline: true, lastSeen: serverTimestamp() });
+
+            // Detectar cambio de pestaña o cierre
+            document.addEventListener("visibilitychange", () => {
+                if (document.visibilityState === 'visible') {
+                    updateDoc(userRef, { isOnline: true });
+                } else {
+                    updateDoc(userRef, { lastSeen: serverTimestamp() }); // No ponemos false inmediato para evitar parpadeos cortos
+                }
+            });
+
+            // Detectar cierre de ventana
+            window.addEventListener("beforeunload", () => {
+                updateDoc(userRef, { isOnline: false, lastSeen: serverTimestamp() });
+            });
+        }
+
+        // --- FORMATO DE TIEMPO "HACE..." ---
+        function formatLastSeen(timestamp) {
+            if(!timestamp) return "Desconocido";
+            const date = timestamp.toDate();
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000); // segundos
+
+            if(diff < 60) return "hace un momento";
+            if(diff < 3600) return `hace ${Math.floor(diff/60)} min`;
+            if(diff < 86400) return `hace ${Math.floor(diff/3600)} h`;
+            return date.toLocaleDateString();
+        }
+
         // --- GESTIÓN DE CLIENTES (ADMIN) ---
         function loadClients() {
             onSnapshot(collection(db, "chats"), (snap) => {
@@ -282,6 +424,9 @@
                 snap.forEach(d => { allClientsData.push({ id: d.id, ...d.data() }); });
                 
                 allClientsData.sort((a, b) => {
+                    // Ordenar por Online primero, luego por último mensaje
+                    if(a.isOnline && !b.isOnline) return -1;
+                    if(!a.isOnline && b.isOnline) return 1;
                     const tA = a.registrado ? a.registrado.seconds : 0;
                     const tB = b.registrado ? b.registrado.seconds : 0;
                     return tB - tA;
@@ -296,11 +441,17 @@
             dataArray.forEach(data => {
                 const item = document.createElement('div');
                 item.className = `client-item ${selectedChatID === data.id ? 'active' : ''}`;
+                
+                // Dot Online/Offline
+                const statusClass = data.isOnline ? 'online' : 'offline';
+                
                 item.innerHTML = `
-                    <div class="status-dot" style="background:#fff"></div>
+                    <div class="status-dot ${statusClass}"></div>
                     <div class="client-info">
                         <div class="client-name">${data.id}</div>
-                        <div class="client-preview">${data.lastMsg || '...'}</div>
+                        <div class="client-preview" style="${data.isOnline ? 'color:#00ff88;' : ''}">
+                            ${data.isOnline ? 'En línea ahora' : (data.lastMsg || '...')}
+                        </div>
                     </div>
                 `;
                 item.onclick = () => {
@@ -316,17 +467,39 @@
             renderClientList(allClientsData.filter(c => c.id.toLowerCase().includes(term)));
         });
 
-        // --- MOTOR DEL CHAT ---
+        // --- MOTOR DEL CHAT (OPTIMIZADO) ---
         function loadChat(chatID) {
             selectedChatID = chatID;
             document.getElementById('chat-title').innerText = chatID;
             if(isAdmin) renderClientList(allClientsData); 
 
+            // 1. Escuchar estado del usuario (Header dinámico)
+            if(unsubStatus) unsubStatus();
+            unsubStatus = onSnapshot(doc(db, "chats", chatID), (docSnap) => {
+                if(docSnap.exists()) {
+                    const data = docSnap.data();
+                    const subTitle = document.getElementById('chat-subtitle');
+                    
+                    if(data.isOnline) {
+                        subTitle.innerHTML = `<span style="font-size:1.4rem; line-height: 0;">•</span> En línea`;
+                        subTitle.classList.add('online-text');
+                    } else {
+                        subTitle.innerText = `Últ. vez: ${formatLastSeen(data.lastSeen)}`;
+                        subTitle.classList.remove('online-text');
+                    }
+                }
+            });
+
+            // 2. Escuchar mensajes
             if(unsubMessages) unsubMessages();
             const q = query(collection(db, "chats", chatID, "messages"), orderBy("fecha", "asc"));
             
             unsubMessages = onSnapshot(q, (snap) => {
                 const display = document.getElementById('msg-display');
+                // No borramos todo el HTML si ya hay mensajes para evitar "flicker"
+                // Solo si está vacío o cambio drástico, limpiamos. 
+                // Para fluidez total, reconstruimos rápido pero el navegador maneja el diff visualmente bien si es simple.
+                // Sin frameworks reactivos, innerHTML es lo más seguro para consistencia, pero añadimos scroll suave.
                 display.innerHTML = "";
                 
                 snap.forEach(d => {
@@ -354,7 +527,10 @@
                     div.innerHTML = content;
                     display.appendChild(div);
                 });
-                display.scrollTop = display.scrollHeight;
+                // Scroll al fondo fluido
+                setTimeout(() => {
+                    display.scrollTop = display.scrollHeight;
+                }, 50);
             });
         }
 
@@ -407,7 +583,6 @@
         document.getElementById('input-area').onsubmit = async (e) => {
             e.preventDefault();
             const inp = document.getElementById('msgInp');
-            const fileInp = document.getElementById('fileInp');
             const txt = inp.value.trim();
             const file = fileInp.files[0];
 
@@ -444,14 +619,14 @@
             } catch(error) { console.error(error); }
             
             inp.value = "";
-            fileInp.value = "";
+            closePreview();
             sendBtn.disabled = false;
         };
 
-        // --- BORRADO REAL DE LA BASE DE DATOS (FIREBASE) ---
+        // --- BORRADO REAL ---
         window.deleteChatHistory = async () => {
             if(!selectedChatID || !isAdmin) return;
-            if(!confirm("¿Estás seguro de borrar TODO el historial de este chat de la base de datos? Esto es irreversible.")) return;
+            if(!confirm("¿Estás seguro de borrar TODO el historial?")) return;
 
             try {
                 const snapshot = await getDocs(collection(db, "chats", selectedChatID, "messages"));
@@ -460,11 +635,10 @@
                 await batch.commit();
                 
                 await updateDoc(doc(db, "chats", selectedChatID), { lastMsg: "Chat vaciado" });
-                alert("Historial eliminado correctamente.");
+                alert("Historial eliminado.");
             } catch (error) { alert("Error al borrar historial."); }
         };
 
-        // UI HELPERS
         window.cerrarChat = () => document.body.classList.remove('chat-open');
 
     </script>
