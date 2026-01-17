@@ -66,8 +66,9 @@
         .client-item:active { background: #1a1a1a; }
         .client-item.active { background: #121212; }
         .client-item.active::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: #fff; }
+        
+        /* ESTADO ONLINE/OFFLINE */
         .status-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 15px; border: 2px solid #333; transition: all 0.3s ease; }
-        /* Clases dinámicas para estado */
         .status-dot.online { background: var(--accent-green); box-shadow: 0 0 8px rgba(0, 255, 136, 0.4); border-color: transparent; }
         .status-dot.offline { background: #444; }
         
@@ -226,7 +227,7 @@
                 </div>
 
                 <label for="fileInp" class="icon-btn"><i class="fas fa-plus-circle"></i></label>
-                <input type="file" id="fileInp" style="display:none">
+                <input type="file" id="fileInp" style="display:none" accept="image/*,application/pdf">
                 
                 <button type="button" id="micBtn" class="icon-btn"><i class="fas fa-microphone"></i></button>
 
@@ -273,6 +274,37 @@
         let mediaRecorder;
         let audioChunks = [];
         let currentUserEmail = null;
+
+        // --- FUNCIÓN DE COMPRESIÓN DE IMAGEN (MEJORADA) ---
+        function compressImage(file, quality = 0.5, maxWidth = 600) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        // Redimensionar para ahorrar mucho espacio
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Forzar JPEG siempre, es más ligero que PNG/WebP
+                        resolve(canvas.toDataURL("image/jpeg", quality));
+                    };
+                };
+            });
+        }
 
         // --- LÓGICA DE PREVISUALIZACIÓN DE IMAGEN ---
         const fileInp = document.getElementById('fileInp');
@@ -333,8 +365,8 @@
                         registrado: serverTimestamp(),
                         lastMsg: "¡Hola! Bienvenido a QAXI Chat",
                         color: "#ffffff",
-                        isOnline: true, // Nuevo: Estado inicial
-                        lastSeen: serverTimestamp() // Nuevo: Última vez
+                        isOnline: true, 
+                        lastSeen: serverTimestamp() 
                     });
                 }
             } catch(error) {
@@ -385,31 +417,26 @@
         // --- SISTEMA DE PRESENCIA (ONLINE/OFFLINE) ---
         function setupPresence(email) {
             const userRef = doc(db, "chats", email);
-            
-            // Marcar como Online al entrar
             updateDoc(userRef, { isOnline: true, lastSeen: serverTimestamp() });
 
-            // Detectar cambio de pestaña o cierre
             document.addEventListener("visibilitychange", () => {
                 if (document.visibilityState === 'visible') {
                     updateDoc(userRef, { isOnline: true });
                 } else {
-                    updateDoc(userRef, { lastSeen: serverTimestamp() }); // No ponemos false inmediato para evitar parpadeos cortos
+                    updateDoc(userRef, { lastSeen: serverTimestamp() }); 
                 }
             });
 
-            // Detectar cierre de ventana
             window.addEventListener("beforeunload", () => {
                 updateDoc(userRef, { isOnline: false, lastSeen: serverTimestamp() });
             });
         }
 
-        // --- FORMATO DE TIEMPO "HACE..." ---
         function formatLastSeen(timestamp) {
             if(!timestamp) return "Desconocido";
             const date = timestamp.toDate();
             const now = new Date();
-            const diff = Math.floor((now - date) / 1000); // segundos
+            const diff = Math.floor((now - date) / 1000); 
 
             if(diff < 60) return "hace un momento";
             if(diff < 3600) return `hace ${Math.floor(diff/60)} min`;
@@ -424,7 +451,6 @@
                 snap.forEach(d => { allClientsData.push({ id: d.id, ...d.data() }); });
                 
                 allClientsData.sort((a, b) => {
-                    // Ordenar por Online primero, luego por último mensaje
                     if(a.isOnline && !b.isOnline) return -1;
                     if(!a.isOnline && b.isOnline) return 1;
                     const tA = a.registrado ? a.registrado.seconds : 0;
@@ -442,7 +468,6 @@
                 const item = document.createElement('div');
                 item.className = `client-item ${selectedChatID === data.id ? 'active' : ''}`;
                 
-                // Dot Online/Offline
                 const statusClass = data.isOnline ? 'online' : 'offline';
                 
                 item.innerHTML = `
@@ -473,7 +498,6 @@
             document.getElementById('chat-title').innerText = chatID;
             if(isAdmin) renderClientList(allClientsData); 
 
-            // 1. Escuchar estado del usuario (Header dinámico)
             if(unsubStatus) unsubStatus();
             unsubStatus = onSnapshot(doc(db, "chats", chatID), (docSnap) => {
                 if(docSnap.exists()) {
@@ -490,16 +514,11 @@
                 }
             });
 
-            // 2. Escuchar mensajes
             if(unsubMessages) unsubMessages();
             const q = query(collection(db, "chats", chatID, "messages"), orderBy("fecha", "asc"));
             
             unsubMessages = onSnapshot(q, (snap) => {
                 const display = document.getElementById('msg-display');
-                // No borramos todo el HTML si ya hay mensajes para evitar "flicker"
-                // Solo si está vacío o cambio drástico, limpiamos. 
-                // Para fluidez total, reconstruimos rápido pero el navegador maneja el diff visualmente bien si es simple.
-                // Sin frameworks reactivos, innerHTML es lo más seguro para consistencia, pero añadimos scroll suave.
                 display.innerHTML = "";
                 
                 snap.forEach(d => {
@@ -512,12 +531,15 @@
                     
                     if(data.texto) content += `<p>${data.texto}</p>`;
                     
+                    // Renderizado de Audio
                     if(data.fileType && data.fileType.startsWith('audio')) {
                          content += `<audio controls src="${data.file}" style="max-width:200px; margin-top:8px; height:35px; filter: invert(1);"></audio>`;
                     }
+                    // Renderizado de Imagen
                     else if(data.fileType && data.fileType.startsWith('image')) {
                         content += `<img src="${data.file}" class="attachment-img" onclick="window.open('${data.file}')">`;
                     }
+                    // Renderizado de Archivo
                     else if(data.file) {
                         content += `<a href="${data.file}" download style="color:#00ff88; display:block; margin-top:10px; font-weight:700;">📎 Archivo adjunto</a>`;
                     }
@@ -527,7 +549,7 @@
                     div.innerHTML = content;
                     display.appendChild(div);
                 });
-                // Scroll al fondo fluido
+                
                 setTimeout(() => {
                     display.scrollTop = display.scrollHeight;
                 }, 50);
@@ -567,7 +589,6 @@
                                 fecha: serverTimestamp()
                             });
                             await updateDoc(doc(db, "chats", selectedChatID), { lastMsg: "🎤 Nota de voz" });
-                            sendEmailNotification("🎤 Ha enviado un audio", selectedChatID);
                         };
                     };
                     mediaRecorder.start();
@@ -579,7 +600,7 @@
             }
         };
 
-        // --- ENVÍO DE MENSAJES ---
+        // --- ENVÍO DE MENSAJES CON GESTIÓN DE ERRORES REAL ---
         document.getElementById('input-area').onsubmit = async (e) => {
             e.preventDefault();
             const inp = document.getElementById('msgInp');
@@ -590,9 +611,14 @@
             if(!selectedChatID) return;
 
             const sendBtn = document.getElementById('sendBtn');
+            const originalIcon = sendBtn.innerHTML;
+            
+            // Indicador de "Enviando..."
             sendBtn.disabled = true;
+            sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
             try {
+                // Enviar texto
                 if(txt) {
                     await addDoc(collection(db, "chats", selectedChatID, "messages"), {
                         texto: txt,
@@ -602,25 +628,49 @@
                     await updateDoc(doc(db, "chats", selectedChatID), { lastMsg: txt });
                     sendEmailNotification(txt, selectedChatID);
                 }
+                
+                // Enviar archivo/imagen
                 if(file) {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = async () => {
-                        await addDoc(collection(db, "chats", selectedChatID, "messages"), {
-                            file: reader.result,
-                            fileType: file.type,
-                            emisor: isAdmin ? "admin" : "cliente",
-                            fecha: serverTimestamp()
+                    let fileData, type;
+
+                    if (file.type.startsWith('image/')) {
+                        // FORZAMOS LA COMPRESIÓN SIEMPRE
+                        fileData = await compressImage(file);
+                        type = "image/jpeg"; // Siempre guardamos como JPEG para asegurar compatibilidad
+                    } else {
+                        // Leer otros archivos
+                        fileData = await new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onload = (e) => resolve(e.target.result);
+                            reader.readAsDataURL(file);
                         });
-                        await updateDoc(doc(db, "chats", selectedChatID), { lastMsg: "📎 Archivo" });
-                        sendEmailNotification("📎 Ha enviado un archivo", selectedChatID);
-                    };
+                        type = file.type;
+                    }
+
+                    // Intentar guardar en Firestore
+                    await addDoc(collection(db, "chats", selectedChatID, "messages"), {
+                        file: fileData,
+                        fileType: type,
+                        emisor: isAdmin ? "admin" : "cliente",
+                        fecha: serverTimestamp()
+                    });
+                    
+                    const label = type.startsWith('image/') ? "📷 Imagen" : "📎 Archivo";
+                    await updateDoc(doc(db, "chats", selectedChatID), { lastMsg: label });
+                    sendEmailNotification(label, selectedChatID);
                 }
-            } catch(error) { console.error(error); }
-            
-            inp.value = "";
-            closePreview();
-            sendBtn.disabled = false;
+
+                // SOLO SI TODO FUE ÉXITO, LIMPIAMOS
+                inp.value = "";
+                closePreview();
+
+            } catch(error) { 
+                console.error("Error crítico:", error); 
+                alert("⚠️ ERROR: No se pudo enviar el mensaje.\n\nPosible causa: La imagen es demasiado pesada o hay un problema de conexión con la base de datos.");
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = originalIcon;
+            }
         };
 
         // --- BORRADO REAL ---
