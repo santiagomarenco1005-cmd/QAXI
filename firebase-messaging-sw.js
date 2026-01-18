@@ -1,24 +1,32 @@
-/* Archivo: firebase-messaging-sw.js */
-importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
+async function pedirPermisoYGuardarToken(email) {
+    try {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+            console.log('Permiso concedido.');
+            
+            // --- ESTA ES LA PARTE QUE CORRIGE EL ERROR ---
+            // Le decimos al navegador que el archivo está en /QAXI/
+            const registration = await navigator.serviceWorker.register('/QAXI/firebase-messaging-sw.js', {
+                scope: '/QAXI/'
+            });
+            
+            const token = await getToken(messaging, { 
+                vapidKey: vapidKey,
+                serviceWorkerRegistration: registration // Usamos el registro que acabamos de hacer
+            });
+            // ----------------------------------------------
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
-    authDomain: "qaxi-93d6d.firebaseapp.com",
-    projectId: "qaxi-93d6d",
-    storageBucket: "qaxi-93d6d.firebasestorage.app",
-    messagingSenderId: "137240859996",
-    appId: "1:137240859996:web:73e14d28c77233be965d99"
-};
-
-firebase.initializeApp(firebaseConfig);
-const messaging = firebase.messaging();
-
-messaging.onBackgroundMessage((payload) => {
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: 'icon2.png'
-  };
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
+            if (token && email) {
+                console.log("Token FCM guardado:", token);
+                await updateDoc(doc(db, "chats", email), { fcmToken: token });
+                btnNotif.style.display = 'none';
+                alert("✅ Notificaciones activadas.");
+            }
+        } else {
+            alert("⚠️ Has bloqueado las notificaciones.");
+        }
+    } catch (error) { 
+        console.error('Error FCM:', error); 
+        alert("Error activando notificaciones: " + error.message);
+    }
+}
