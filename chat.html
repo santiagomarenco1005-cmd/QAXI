@@ -89,7 +89,7 @@
             padding: 10px; 
             border-radius: 50%;
             margin-right: 10px;
-            display: none; /* Se muestra solo si no hay permiso */
+            display: none; 
         }
         #btn-notif.pulse { animation: notifPulse 2s infinite; color: var(--accent-green); border-color: var(--accent-green); }
         @keyframes notifPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4); } 70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); } }
@@ -235,14 +235,13 @@
         const messaging = getMessaging(app);
 
         // ==========================================
-        //  CONFIGURACIÓN DE NOTIFICACIONES 
+        //  CONFIGURACIÓN DE NOTIFICACIONES (CORREGIDA)
         // ==========================================
         const vapidKey = "BJqWn-bQPqhgcqu8RzVU0BZWXRvT0uV9qUUjP94jN6aoEau_ao8alamiYwz6OXdnfmD48Vj6myTm6uHVFug93Nc"; 
         const SERVER_KEY = "AIzaSyAkJNtkbSxTyek4_bU0C8dy9XLC24INDGs"; 
 
         const btnNotif = document.getElementById('btn-notif');
 
-        // Función Manual para pedir permiso (Al clickear la campana)
         btnNotif.addEventListener('click', async () => {
             await pedirPermisoYGuardarToken(currentUserEmail);
         });
@@ -251,18 +250,34 @@
             try {
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
-                    console.log('Permiso concedido.');
-                    const token = await getToken(messaging, { vapidKey: vapidKey });
+                    
+                    // --- CORRECCIÓN: REGISTRAR SW EN LA CARPETA /QAXI/ ---
+                    let token;
+                    if ('serviceWorker' in navigator) {
+                        try {
+                            const registration = await navigator.serviceWorker.register('/QAXI/firebase-messaging-sw.js', { scope: '/QAXI/' });
+                            console.log('SW registrado en /QAXI/');
+                            token = await getToken(messaging, { 
+                                vapidKey: vapidKey, 
+                                serviceWorkerRegistration: registration 
+                            });
+                        } catch(err) {
+                            console.error("Fallo al registrar SW manualmente, intentando por defecto", err);
+                            token = await getToken(messaging, { vapidKey: vapidKey });
+                        }
+                    } else {
+                        token = await getToken(messaging, { vapidKey: vapidKey });
+                    }
+                    // -----------------------------------------------------
+
                     if (token && email) {
                         console.log("Token FCM guardado:", token);
                         await updateDoc(doc(db, "chats", email), { fcmToken: token });
-                        
-                        // Ocultar botón si ya tuvo éxito
                         btnNotif.style.display = 'none';
-                        alert("✅ Notificaciones activadas. Te avisaremos cuando te respondan.");
+                        alert("✅ Notificaciones activadas.");
                     }
                 } else {
-                    alert("⚠️ Has bloqueado las notificaciones. Actívalas en la configuración de tu navegador.");
+                    alert("⚠️ Has bloqueado las notificaciones. Habilítalas en el navegador.");
                 }
             } catch (error) { 
                 console.error('Error FCM:', error); 
@@ -270,16 +285,14 @@
             }
         }
 
-        // Chequear estado al inicio
         function checkNotificationStatus() {
             if (Notification.permission === 'granted') {
-                btnNotif.style.display = 'none'; // Ya tiene permiso, ocultar campana
+                btnNotif.style.display = 'none'; 
             } else {
-                btnNotif.style.display = 'block'; // No tiene permiso, mostrar campana
+                btnNotif.style.display = 'block'; 
             }
         }
 
-        // Función para enviar la señal PUSH (Lado Admin)
         async function enviarNotificacionPush(chatID, mensaje) {
             try {
                 const docSnap = await getDoc(doc(db, "chats", chatID));
@@ -310,12 +323,10 @@
             } catch (error) { console.error("Error enviando push:", error); }
         }
 
-        // Recibir notificación si estoy en la app
         onMessage(messaging, (payload) => {
             console.log('Push recibida:', payload);
             alert(`🔔 QAXI: ${payload.notification.title}\n${payload.notification.body}`);
         });
-
 
         // ==========================================
         //  LÓGICA DEL CHAT
@@ -424,7 +435,7 @@
                 currentUserEmail = user.email.toLowerCase();
                 
                 setupPresence(currentUserEmail);
-                checkNotificationStatus(); // Verificar si mostramos la campana
+                checkNotificationStatus(); 
 
                 isAdmin = (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
 
