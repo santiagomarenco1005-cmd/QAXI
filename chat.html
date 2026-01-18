@@ -7,9 +7,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="QAXI Chat">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#050505">
     
-    <title>QAXI Chat - Soporte en Vivo</title>
+    <title>QAXI Chat</title>
 
     <link rel="icon" href="icon2.png" type="image/png">
     <link rel="apple-touch-icon" href="icon2.png">
@@ -20,7 +19,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
-        /* DEFINICIÓN DE VARIABLES DE COLOR */
         :root { 
             --bg: #050505; 
             --sidebar: #0a0a0a; 
@@ -29,643 +27,165 @@
             --msg-other: #161616; 
             --accent-green: #00ff88;
             --text-gray: #888;
-            --danger: #ff3b30;
         }
 
-        /* RESETEO BÁSICO */
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Inter', sans-serif; 
-            -webkit-tap-highlight-color: transparent; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* CUERPO PRINCIPAL - AJUSTE PARA MÓVILES (100dvh) */
-        body { 
-            background: var(--bg); 
-            color: white; 
-            height: 100dvh; /* Dynamic Viewport Height para Safari */
-            width: 100vw;
-            overflow: hidden; 
-            display: flex; 
-            font-size: 14px; 
-            position: relative; 
-        }
+        body { background: var(--bg); color: white; height: 100vh; overflow: hidden; display: flex; font-size: 14px; position: relative; }
         
-        /* MARCA DE AGUA DE FONDO (LOGO) */
+        /* FONDO MARCA DE AGUA (icon2.png) */
         body::before {
-            content: ''; 
-            position: absolute; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%);
-            width: 80%; 
-            max-width: 500px; 
-            height: 500px; 
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80%; max-width: 500px; height: 500px; 
             background: url('icon2.png') no-repeat center center;
-            background-size: contain; 
-            opacity: 0.05; 
-            pointer-events: none; 
-            z-index: 0;
+            background-size: contain; opacity: 0.05; pointer-events: none; z-index: 0;
             filter: grayscale(100%);
         }
 
-        /* ================================================================
-           PANTALLA DE LOGIN
-           ================================================================
-        */
-        #login-gate { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: #000; 
-            z-index: 2000; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-        }
-
-        .login-box { 
-            width: 90%; 
-            max-width: 380px; 
-            padding: 40px; 
-            text-align: center; 
-            position: relative; 
-            z-index: 2; 
-            border-radius: 20px; 
-            background: rgba(10,10,10,0.8); 
-            backdrop-filter: blur(20px); 
-            border: 1px solid #222;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-
-        .login-logo img { 
-            height: 90px; 
-            margin-bottom: 25px; 
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); 
-        } 
-
-        .auth-input { 
-            width: 100%; 
-            padding: 18px; 
-            margin-bottom: 15px; 
-            background: #050505; 
-            border: 1px solid #333; 
-            color: #fff; 
-            border-radius: 12px; 
-            outline: none; 
-            font-size: 16px; 
-            transition: border 0.3s; 
-        }
-
-        .auth-input:focus { 
-            border-color: var(--accent-green); 
-        }
-
-        .login-btn { 
-            width: 100%; 
-            background: #fff; 
-            color: #000; 
-            border: none; 
-            padding: 18px; 
-            border-radius: 12px; 
-            font-weight: 800; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            font-size: 16px; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            margin-top: 10px;
-        }
-
-        .login-btn:active { 
-            transform: scale(0.98); 
-            opacity: 0.9;
-        }
+        /* LOGIN GATE */
+        #login-gate { position: absolute; top:0; left:0; width: 100%; height: 100%; background: #000; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .login-box { width: 100%; max-width: 380px; padding: 30px; text-align: center; position: relative; z-index: 2; border-radius: 20px; background: rgba(10,10,10,0.5); backdrop-filter: blur(10px); }
+        .login-logo img { height: 90px; margin-bottom: 25px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.1)); } 
+        .auth-input { width: 100%; padding: 16px; margin-bottom: 15px; background: #111; border: 1px solid #333; color: #fff; border-radius: 12px; outline: none; font-size: 16px; transition: border 0.3s; }
+        .auth-input:focus { border-color: #555; }
+        .login-btn { width: 100%; background: #fff; color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.2s; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; }
+        .login-btn:active { transform: scale(0.98); }
         
-        /* ================================================================
-           LAYOUT PRINCIPAL (CONTENEDOR)
-           ================================================================
-        */
-        #main-platform { 
-            display: none; 
-            width: 100%; 
-            height: 100%; 
-            flex-direction: row; 
-            position: relative; 
-            z-index: 1; 
-        }
+        /* INTERFAZ PRINCIPAL */
+        #main-platform { display: none; width: 100%; height: 100%; flex-direction: row; position: relative; z-index: 1; }
         
-        /* ================================================================
-           BARRA LATERAL (SIDEBAR) - CLIENTES
-           Importante: Se oculta por defecto para que los clientes
-           no la vean en móviles. Solo el Admin la activará.
-           ================================================================
-        */
-        #sidebar { 
-            width: 340px; 
-            border-right: 1px solid var(--border); 
-            background: var(--sidebar); 
-            display: none; /* OCULTO POR DEFECTO */
-            flex-direction: column; 
-            z-index: 20; 
-            height: 100%;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
-
-        .sb-header { 
-            padding: 25px; 
-            border-bottom: 1px solid var(--border); 
-            background: rgba(10,10,10,0.9);
-        }
-
-        .sb-header h4 { 
-            margin-bottom: 15px; 
-            font-size: 0.75rem; 
-            color: #666; 
-            letter-spacing: 2px; 
-            text-transform: uppercase; 
-            font-weight: 800; 
-        }
-
-        #searchClients { 
-            width: 100%; 
-            background: #151515; 
-            border: 1px solid #222; 
-            padding: 14px 20px; 
-            border-radius: 30px; 
-            color: white; 
-            outline: none; 
-            font-size: 14px; 
-            transition: 0.3s; 
-        }
-
-        #searchClients:focus { 
-            border-color: #444; 
-            background: #1a1a1a; 
-        }
+        /* SIDEBAR */
+        #sidebar { width: 340px; border-right: 1px solid var(--border); background: var(--sidebar); display: flex; flex-direction: column; z-index: 10; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sb-header { padding: 25px; border-bottom: 1px solid var(--border); }
+        .sb-header h4 { margin-bottom: 15px; font-size: 0.7rem; color: #555; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 800; }
+        #searchClients { width: 100%; background: #111; border: 1px solid #222; padding: 12px 18px; border-radius: 30px; color: white; outline: none; font-size: 15px; transition: 0.3s; }
+        #searchClients:focus { border-color: #444; background: #151515; }
         
-        #list-container { 
-            flex: 1; 
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; 
-        }
-
-        /* ITEM DE CLIENTE EN LA LISTA */
-        .client-item { 
-            padding: 20px 25px; 
-            border-bottom: 1px solid #111; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            transition: 0.2s; 
-            position: relative; 
-        }
-
-        .client-item:hover {
-            background: #0f0f0f;
-        }
-
-        .client-item:active { 
-            background: #1a1a1a; 
-        }
-
-        .client-item.active { 
-            background: #121212; 
-        }
-
-        .client-item.active::before { 
-            content: ''; 
-            position: absolute; 
-            left: 0; 
-            top: 0; 
-            height: 100%; 
-            width: 4px; 
-            background: var(--accent-green); 
-        }
+        #list-container { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .client-item { padding: 18px 25px; border-bottom: 1px solid #111; cursor: pointer; display: flex; align-items: center; transition: 0.2s; position: relative; }
+        .client-item:active { background: #1a1a1a; }
+        .client-item.active { background: #121212; }
+        .client-item.active::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: #fff; }
         
-        /* ESTADO DEL CLIENTE (BOLITA VERDE/GRIS) */
-        .status-dot { 
-            width: 10px; 
-            height: 10px; 
-            border-radius: 50%; 
-            margin-right: 15px; 
-            border: 2px solid #333; 
-            transition: all 0.3s ease; 
-        }
-
-        .status-dot.online { 
-            background: var(--accent-green); 
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.4); 
-            border-color: transparent; 
-        }
-
-        .status-dot.offline { 
-            background: #444; 
-        }
+        /* ESTADO ONLINE/OFFLINE */
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 15px; border: 2px solid #333; transition: all 0.3s ease; }
+        .status-dot.online { background: var(--accent-green); box-shadow: 0 0 8px rgba(0, 255, 136, 0.4); border-color: transparent; }
+        .status-dot.offline { background: #444; }
         
-        .client-info { 
-            flex: 1; 
-            overflow: hidden; 
-        }
+        .client-info { flex: 1; overflow: hidden; }
+        .client-name { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .client-preview { font-size: 0.8rem; color: #666; margin-top: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        .client-name { 
-            font-weight: 600; 
-            font-size: 0.95rem; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            margin-bottom: 4px;
-        }
-
-        .client-preview { 
-            font-size: 0.8rem; 
-            color: #666; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            white-space: nowrap; 
-        }
-
-        /* ================================================================
-           SECCIÓN DEL CHAT
-           ================================================================
-        */
-        #chat-section { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            background: transparent; 
-            position: relative; 
-            height: 100%;
-            overflow: hidden;
-        }
-
-        /* CABECERA DEL CHAT */
-        #chat-header { 
-            height: 75px; 
-            padding: 0 20px; 
-            border-bottom: 1px solid var(--border); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: rgba(5,5,5,0.95); 
-            backdrop-filter: blur(15px); 
-            z-index: 50;
-        }
-
-        /* BOTÓN ATRÁS (SOLO PARA ADMIN EN MÓVIL) */
-        #btn-back { 
-            display: none; 
-            background: none; 
-            border: none; 
-            color: white; 
-            font-size: 1.5rem; 
-            margin-right: 15px; 
-            cursor: pointer; 
-            padding: 10px; 
-        }
-
-        .chat-info-header { 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-        }
-
-        #chat-title { 
-            font-size: 1.15rem; 
-            font-weight: 800; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            max-width: 220px; 
-        }
-
-        #chat-subtitle { 
-            font-size: 0.75rem; 
-            color: var(--text-gray); 
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-            margin-top: 3px; 
-            font-weight: 500; 
-            transition: color 0.3s; 
-        }
-
-        .online-text { 
-            color: var(--accent-green) !important; 
-            font-weight: 600; 
-        }
+        /* AREA DE CHAT */
+        #chat-section { flex: 1; display: flex; flex-direction: column; background: transparent; position: relative; }
+        #chat-header { height: 75px; padding: 0 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(5,5,5,0.9); backdrop-filter: blur(15px); }
+        #btn-back { display: none; background: none; border: none; color: white; font-size: 1.5rem; margin-right: 15px; cursor: pointer; padding: 10px; }
+        .chat-info-header { overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+        #chat-title { font-size: 1.15rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+        #chat-subtitle { font-size: 0.75rem; color: var(--text-gray); display: flex; align-items: center; gap: 6px; margin-top: 3px; font-weight: 500; transition: color 0.3s; }
+        .online-text { color: var(--accent-green) !important; font-weight: 600; }
         
-        /* BOTÓN DE NOTIFICACIONES */
-        #btn-notif { 
-            background: rgba(255,255,255,0.05); 
-            border: 1px solid #333; 
-            color: #fff; 
-            font-size: 1rem; 
-            cursor: pointer; 
-            padding: 12px; 
-            border-radius: 50%;
-            margin-right: 15px;
-            display: none; /* Se activa con JS */
-            transition: all 0.3s ease;
-        }
-
-        #btn-notif:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        #btn-notif.pulse { 
-            animation: notifPulse 2s infinite; 
-            color: var(--accent-green); 
-            border-color: var(--accent-green); 
-        }
-
-        @keyframes notifPulse { 
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4); } 
-            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); } 
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); } 
-        }
-
-        /* ================================================================
-           ÁREA DE MENSAJES
-           ================================================================
-        */
-        #msg-display { 
-            flex: 1; 
-            padding: 25px; 
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 15px; 
-            -webkit-overflow-scrolling: touch; 
-            scroll-behavior: smooth; 
-        }
-
-        .msg { 
-            max-width: 85%; 
-            padding: 14px 20px; 
-            border-radius: 20px; 
-            font-size: 0.95rem; 
-            line-height: 1.5; 
-            position: relative; 
-            word-wrap: break-word; 
-            animation: popMsg 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            will-change: transform, opacity; 
-        }
-
-        @keyframes popMsg { 
-            from{ opacity:0; transform:translateY(10px) scale(0.95); } 
-            to{ opacity:1; transform:translateY(0) scale(1); } 
-        }
+        /* MENSAJES */
+        #msg-display { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+        .msg { max-width: 80%; padding: 14px 18px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; position: relative; word-wrap: break-word; animation: popMsg 0.2s ease-out; will-change: transform, opacity; }
+        @keyframes popMsg { from{opacity:0; transform:translateY(10px) scale(0.95);} to{opacity:1; transform:translateY(0) scale(1);} }
         
-        /* MENSAJE MÍO (BLANCO) */
-        .me { 
-            background: var(--msg-me); 
-            color: #000; 
-            align-self: flex-end; 
-            border-bottom-right-radius: 4px; 
-            font-weight: 600; 
-        }
-
-        /* MENSAJE DEL OTRO (NEGRO) */
-        .other { 
-            background: var(--msg-other); 
-            color: #fff; 
-            align-self: flex-start; 
-            border: 1px solid #222; 
-            border-bottom-left-radius: 4px; 
-        }
-
-        .msg-time { 
-            font-size: 0.65rem; 
-            opacity: 0.5; 
-            display: block; 
-            text-align: right; 
-            margin-top: 6px; 
-        }
-
-        .attachment-img { 
-            max-width: 100%; 
-            border-radius: 12px; 
-            margin-top: 10px; 
-            cursor: pointer; 
-            transition: 0.3s; 
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .attachment-img:hover { 
-            filter: brightness(0.8); 
-        }
+        .me { background: var(--msg-me); color: #000; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
+        .other { background: var(--msg-other); color: #fff; align-self: flex-start; border: 1px solid #222; border-bottom-left-radius: 4px; }
+        .msg-time { font-size: 0.65rem; opacity: 0.5; display: block; text-align: right; margin-top: 6px; }
+        .attachment-img { max-width: 100%; border-radius: 12px; margin-top: 10px; cursor: pointer; transition: 0.3s; }
+        .attachment-img:hover { filter: brightness(0.8); }
         
-        /* ================================================================
-           ÁREA DE INPUT (TECLADO)
-           ================================================================
-        */
-        #input-area { 
-            padding: 15px 20px; 
-            /* Importante para iPhone X y superiores */
-            padding-bottom: calc(15px + env(safe-area-inset-bottom)); 
-            border-top: 1px solid var(--border); 
-            display: flex; 
-            gap: 12px; 
-            align-items: center; 
-            background: #050505; 
-            z-index: 100; 
-            position: relative; 
-        }
-
-        input#msgInp { 
-            flex: 1; 
-            background: #151515; 
-            border: 1px solid #252525; 
-            color: white; 
-            padding: 14px 22px; 
-            border-radius: 30px; 
-            outline: none; 
-            font-size: 16px; /* Evita zoom en iOS */
-            transition: 0.3s; 
-        }
-
-        input#msgInp:focus { 
-            border-color: #444; 
-            background: #1a1a1a; 
-        }
+        /* AREA DE ENTRADA */
+        #input-area { padding: 15px 20px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; background: #050505; z-index: 100; position: relative; }
+        input#msgInp { flex: 1; background: #151515; border: 1px solid #252525; color: white; padding: 14px 22px; border-radius: 30px; outline: none; font-size: 16px; transition: 0.3s; }
+        input#msgInp:focus { border-color: #444; background: #1a1a1a; }
         
-        /* BOTONES DEL INPUT */
-        .icon-btn { 
-            color: #888; 
-            font-size: 1.4rem; 
-            background: none; 
-            border: none; 
-            cursor: pointer; 
-            padding: 10px; 
-            transition: 0.2s; 
-            border-radius: 50%; 
-        }
-
-        .icon-btn:active { 
-            transform: scale(0.9); 
-            background: rgba(255,255,255,0.05); 
-            color: #fff; 
-        }
+        .icon-btn { color: #888; font-size: 1.4rem; background: none; border: none; cursor: pointer; padding: 10px; transition: 0.2s; border-radius: 50%; }
+        .icon-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.05); color: #fff; }
         
-        #sendBtn { 
-            background: #fff; 
-            color: #000; 
-            border: none; 
-            width: 48px; 
-            height: 48px; 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            font-size: 1.2rem; 
-            transition: 0.2s; 
-            box-shadow: 0 4px 15px rgba(255,255,255,0.2); 
-        }
-
-        #sendBtn:active { 
-            transform: scale(0.9); 
-        }
+        #sendBtn { background: #fff; color: #000; border: none; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        #sendBtn:active { transform: scale(0.9); }
         
-        /* MICRÓFONO */
         #micBtn { color: #fff; }
-        #micBtn.recording { 
-            color: var(--danger); 
-            animation: micPulse 1.2s infinite; 
-            background: rgba(255,59,48,0.1); 
-        }
+        #micBtn.recording { color: #ff3b30; animation: micPulse 1.2s infinite; background: rgba(255,59,48,0.1); }
+        @keyframes micPulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
 
-        @keyframes micPulse { 
-            0% { opacity: 1; transform: scale(1); } 
-            50% { opacity: 0.6; transform: scale(1.1); } 
-            100% { opacity: 1; transform: scale(1); } 
-        }
-
-        /* PREVIEW DE IMAGEN ANTES DE ENVIAR */
-        #preview-box { 
-            position: absolute; 
+        /* PREVISUALIZACIÓN DE ARCHIVO */
+        #preview-box {
+            position: absolute;
             bottom: 100%; 
-            left: 0; 
-            width: 100%; 
-            background: rgba(10,10,10,0.95); 
-            backdrop-filter: blur(10px); 
-            border-top: 1px solid #222; 
-            padding: 15px; 
-            display: none; 
-            align-items: center; 
-            gap: 15px; 
-            z-index: 90; 
-            animation: slideUp 0.2s ease-out; 
+            left: 0;
+            width: 100%;
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #222;
+            padding: 15px;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 90;
+            animation: slideUp 0.2s ease-out;
+        }
+        @keyframes slideUp { from{transform:translateY(20px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+        
+        #preview-img-thumb {
+            height: 60px;
+            width: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        
+        .preview-info {
+            font-size: 0.85rem;
+            color: #ccc;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        @keyframes slideUp { 
-            from{ transform:translateY(20px); opacity:0; } 
-            to{ transform:translateY(0); opacity:1; } 
+        #cancel-preview {
+            background: none;
+            border: none;
+            color: #ff3b30;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
         }
 
-        #preview-img-thumb { 
-            height: 60px; 
-            width: 60px; 
-            object-fit: cover; 
-            border-radius: 8px; 
-            border: 1px solid #444; 
-        }
+        /* HERRAMIENTAS ADMIN */
+        #admin-tools { display: none; gap: 15px; }
 
-        .preview-info { 
-            font-size: 0.85rem; 
-            color: #ccc; 
-            flex: 1; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            white-space: nowrap; 
-        }
-
-        #cancel-preview { 
-            background: none; 
-            border: none; 
-            color: var(--danger); 
-            font-size: 1.2rem; 
-            cursor: pointer; 
-            padding: 5px; 
-        }
-
-        #admin-tools { 
-            display: none; 
-            gap: 15px; 
-        }
-
-        /* ================================================================
-           RESPONSIVE DESIGN (MÓVILES)
-           ================================================================
-        */
+        /* RESPONSIVE MÓVIL DOCK-STYLE */
         @media (max-width: 768px) {
-            #sidebar { 
-                width: 100%; 
-                position: absolute; 
-                height: 100%; 
-                transform: translateX(0); 
-                z-index: 20; 
-                /* Se oculta para clientes, se muestra para admin en script */
-            }
-
-            #chat-section { 
-                width: 100%; 
-                position: absolute; 
-                height: 100%; 
-                z-index: 10; 
-                left: 0; 
-            }
-
-            /* Si el chat está "abierto", movemos el sidebar */
-            body.chat-open #sidebar { 
-                transform: translateX(-100%); 
-            }
-            
-            /* El botón atrás solo es visible si hay necesidad de volver (admin) */
-            body.is-admin #btn-back { 
-                display: block; 
-            }
-
-            .msg { 
-                max-width: 88%; 
-            }
-
-            #chat-title { 
-                max-width: 160px; 
-            }
+            #sidebar { width: 100%; position: absolute; height: 100%; transform: translateX(0); z-index: 20; }
+            #chat-section { width: 100%; position: absolute; height: 100%; z-index: 10; left: 0; }
+            body.chat-open #sidebar { transform: translateX(-100%); }
+            #btn-back { display: block; }
+            .msg { max-width: 85%; }
+            #chat-title { max-width: 160px; }
         }
     </style>
 </head>
-
 <body id="app-body">
 
     <div id="login-gate">
         <div class="login-box">
             <div class="login-logo"><img src="icon2.png" alt="QAXI Logo"></div>
             <h3 id="auth-title" style="margin-bottom: 30px; color: #888; letter-spacing: 3px; font-weight: 800; font-size: 14px;">QAXI CHAT</h3>
-            
             <form id="authForm">
                 <input type="email" id="email" class="auth-input" placeholder="Correo electrónico" required>
                 <input type="password" id="pass" class="auth-input" placeholder="Contraseña" required>
                 <button type="submit" id="authSubmit" class="login-btn">INGRESAR</button>
             </form>
-
-            <p id="toggleAuth" style="margin-top: 25px; color: #555; font-size: 0.8rem; cursor: pointer; font-weight: 600; text-decoration: underline;">
-                ¿No tienes cuenta? Crea una aquí
-            </p>
+            <p id="toggleAuth" style="margin-top: 25px; color: #555; font-size: 0.8rem; cursor: pointer; font-weight: 600; text-decoration: underline;">¿No tienes cuenta? Crea una aquí</p>
             <p id="errorMsg" style="color: #ff3b30; margin-top: 15px; font-size: 0.85rem; display: none;"></p>
         </div>
     </div>
 
     <div id="main-platform">
-        
         <div id="sidebar">
             <div class="sb-header">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -674,14 +194,10 @@
                 </div>
                 <input type="text" id="searchClients" placeholder="Buscar cliente..." autocomplete="off">
             </div>
-            
             <div id="list-container"></div>
-            
             <div style="padding: 20px; border-top: 1px solid #1a1a1a;">
                 <div style="font-size: 0.8rem; color: #444; margin-bottom: 12px; overflow:hidden; text-overflow:ellipsis; font-weight: 600;" id="userEmailDisplay">...</div>
-                <button id="btnLogout" style="width:100%; padding:15px; background:#111; border:1px solid #222; color:#555; border-radius:10px; cursor:pointer; font-weight:800; font-size:0.8rem; letter-spacing: 1px;">
-                    CERRAR SESIÓN
-                </button>
+                <button id="btnLogout" style="width:100%; padding:15px; background:#111; border:1px solid #222; color:#555; border-radius:10px; cursor:pointer; font-weight:800; font-size:0.8rem; letter-spacing: 1px;">CERRAR SESIÓN</button>
             </div>
         </div>
 
@@ -689,27 +205,19 @@
             <div id="chat-header">
                 <div style="display: flex; align-items: center; overflow: hidden;">
                     <button id="btn-back" onclick="cerrarChat()"><i class="fas fa-chevron-left"></i></button>
-                    
                     <div class="chat-info-header">
-                        <div id="chat-title">Cargando...</div>
+                        <div id="chat-title">Selecciona un chat</div>
                         <div id="chat-subtitle">...</div>
                     </div>
                 </div>
                 
-                <div style="display: flex; align-items: center;">
-                    <button id="btn-notif" class="pulse" title="Activar Notificaciones">
-                        <i class="fas fa-bell"></i>
-                    </button>
-                    
-                    <div id="admin-tools">
-                        <button class="icon-btn" onclick="deleteChatHistory()" title="Limpiar historial para siempre">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>
+                <div id="admin-tools">
+                    <button class="icon-btn" onclick="deleteChatHistory()" title="Limpiar historial para siempre"><i class="fas fa-trash-alt"></i></button>
                 </div>
             </div>
 
-            <div id="msg-display"></div>
+            <div id="msg-display">
+            </div>
 
             <form id="input-area">
                 <div id="preview-box">
@@ -730,25 +238,18 @@
     </div>
 
     <script type="module">
-        // Importación de módulos oficiales de Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, collection, onSnapshot, query, orderBy, addDoc, serverTimestamp, setDoc, updateDoc, getDocs, writeBatch, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
+        import { getFirestore, doc, collection, onSnapshot, query, orderBy, addDoc, serverTimestamp, setDoc, updateDoc, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // CONFIGURACIÓN DE EMAILJS (BACKUP DE CORREO)
+        // === CONFIGURACIÓN EMAILJS ===
         const EMAILJS_PUBLIC_KEY = "82bkQDtWAjJDSgW50";   
         const EMAILJS_SERVICE_ID = "service_b8au84e";     
         const EMAILJS_TEMPLATE_ID = "template_qamn3fu";   
-        
-        // Inicializar EmailJS si la clave existe
-        if(EMAILJS_PUBLIC_KEY) { 
-            (function(){ 
-                emailjs.init(EMAILJS_PUBLIC_KEY); 
-            })(); 
-        }
 
-        // CONFIGURACIÓN DE FIREBASE (TUS CREDENCIALES)
+        if(EMAILJS_PUBLIC_KEY) { (function(){ emailjs.init(EMAILJS_PUBLIC_KEY); })(); }
+
+        // === CONFIGURACIÓN FIREBASE ===
         const firebaseConfig = {
             apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
             authDomain: "qaxi-93d6d.firebaseapp.com",
@@ -758,153 +259,23 @@
             appId: "1:137240859996:web:73e14d28c77233be965d99"
         };
 
-        // INICIALIZACIÓN DE SERVICIOS
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const messaging = getMessaging(app);
 
-        // CLAVES DE NOTIFICACIÓN
-        const vapidKey = "BJqWn-bQPqhgcqu8RzVU0BZWXRvT0uV9qUUjP94jN6aoEau_ao8alamiYwz6OXdnfmD48Vj6myTm6uHVFug93Nc"; 
-        const SERVER_KEY = "AIzaSyAkJNtkbSxTyek4_bU0C8dy9XLC24INDGs"; 
-
-        // VARIABLES DE ESTADO GLOBAL
+        // VARS GLOBALES
         const ADMIN_EMAIL = "santiagomarenco1005@icloud.com"; 
         let isAdmin = false;
         let isLoginMode = true;
-        let selectedChatID = null; // ID del chat actual (correo del cliente)
+        let selectedChatID = null;
         let unsubMessages = null;
-        let unsubStatus = null;
+        let unsubStatus = null; // Para escuchar estado online
         let allClientsData = [];
         let mediaRecorder;
         let audioChunks = [];
         let currentUserEmail = null;
 
-        // Referencias al DOM
-        const btnNotif = document.getElementById('btn-notif');
-        const fileInp = document.getElementById('fileInp');
-        const previewBox = document.getElementById('preview-box');
-        const previewImg = document.getElementById('preview-img-thumb');
-        const previewName = document.getElementById('preview-filename');
-        const cancelPreviewBtn = document.getElementById('cancel-preview');
-
-        // ==========================================
-        //  SISTEMA DE NOTIFICACIONES PUSH (CORREGIDO)
-        // ==========================================
-        btnNotif.addEventListener('click', async () => {
-            if(currentUserEmail) await pedirPermisoYGuardarToken(currentUserEmail);
-        });
-
-        async function pedirPermisoYGuardarToken(email) {
-            try {
-                // Paso 1: Pedir permiso al navegador
-                const permission = await Notification.requestPermission();
-                
-                if (permission === 'granted') {
-                    console.log('Permiso concedido. Iniciando Service Worker...');
-                    
-                    let token;
-                    // Paso 2: Intentar registrar el Service Worker en la carpeta correcta
-                    if ('serviceWorker' in navigator) {
-                        try {
-                            // INTENTO 1: Ruta específica para GitHub Pages con carpeta de proyecto
-                            const registration = await navigator.serviceWorker.register('/QAXI/firebase-messaging-sw.js', { 
-                                scope: '/QAXI/' 
-                            });
-                            console.log('SW registrado en ruta /QAXI/');
-                            
-                            token = await getToken(messaging, { 
-                                vapidKey: vapidKey, 
-                                serviceWorkerRegistration: registration 
-                            });
-                        } catch(err) {
-                            console.error("Fallo registro en /QAXI/, intentando ruta raíz...", err);
-                            // INTENTO 2: Ruta raíz (Fallback)
-                            try {
-                                const regFallback = await navigator.serviceWorker.register('firebase-messaging-sw.js');
-                                token = await getToken(messaging, { 
-                                    vapidKey: vapidKey, 
-                                    serviceWorkerRegistration: regFallback 
-                                });
-                            } catch (err2) {
-                                console.error("Fallo total registrando SW", err2);
-                                // INTENTO 3: Dejar que Firebase lo maneje solo
-                                token = await getToken(messaging, { vapidKey: vapidKey });
-                            }
-                        }
-                    } else {
-                        // Si el navegador no soporta SW manuales
-                        token = await getToken(messaging, { vapidKey: vapidKey });
-                    }
-
-                    // Paso 3: Guardar el token en la base de datos
-                    if (token && email) {
-                        console.log("Token FCM guardado:", token);
-                        await updateDoc(doc(db, "chats", email), { fcmToken: token });
-                        btnNotif.style.display = 'none'; // Ocultar campana
-                        alert("✅ Notificaciones activadas exitosamente.");
-                    }
-                } else {
-                    alert("⚠️ Has bloqueado las notificaciones. Debes habilitarlas manualmente en la configuración del sitio.");
-                }
-            } catch (error) { 
-                console.error('Error FCM:', error); 
-                // Fallo silencioso para no asustar al usuario, solo consola
-            }
-        }
-
-        function checkNotificationStatus() {
-            if (Notification.permission === 'granted') {
-                btnNotif.style.display = 'none'; 
-            } else {
-                btnNotif.style.display = 'block'; 
-            }
-        }
-
-        async function enviarNotificacionPush(chatID, mensaje) {
-            try {
-                // Obtenemos los datos del destinatario
-                const docSnap = await getDoc(doc(db, "chats", chatID));
-                
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    const tokenCliente = data.fcmToken;
-
-                    if (tokenCliente) {
-                        // Enviamos petición al servidor de Google FCM
-                        await fetch('https://fcm.googleapis.com/fcm/send', {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': 'key=' + SERVER_KEY,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                "to": tokenCliente,
-                                "notification": {
-                                    "title": "Soporte QAXI",
-                                    "body": mensaje,
-                                    "icon": "icon2.png", 
-                                    "click_action": "https://santiagomarenco1005-cmd.github.io/QAXI/chat.html"
-                                }
-                            })
-                        });
-                        console.log("Notificación Push enviada.");
-                    }
-                }
-            } catch (error) { 
-                console.error("Error enviando push:", error); 
-            }
-        }
-
-        // Listener para mensajes en primer plano
-        onMessage(messaging, (payload) => {
-            console.log('Push recibida en primer plano:', payload);
-            alert(`🔔 QAXI: ${payload.notification.title}\n${payload.notification.body}`);
-        });
-
-        // ==========================================
-        //  COMPRESIÓN DE IMÁGENES
-        // ==========================================
+        // --- FUNCIÓN DE COMPRESIÓN DE IMAGEN (MEJORADA) ---
         function compressImage(file, quality = 0.5, maxWidth = 600) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -916,60 +287,61 @@
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
-                        
-                        // Redimensionar proporcionalmente
+
+                        // Redimensionar para ahorrar mucho espacio
                         if (width > maxWidth) {
                             height = Math.round((height * maxWidth) / width);
                             width = maxWidth;
                         }
-                        
+
                         canvas.width = width;
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Retornar imagen en base64 comprimida
+                        // Forzar JPEG siempre, es más ligero que PNG/WebP
                         resolve(canvas.toDataURL("image/jpeg", quality));
                     };
                 };
             });
         }
 
-        // ==========================================
-        //  MANEJO DE ARCHIVOS (PREVIEW)
-        // ==========================================
+        // --- LÓGICA DE PREVISUALIZACIÓN DE IMAGEN ---
+        const fileInp = document.getElementById('fileInp');
+        const previewBox = document.getElementById('preview-box');
+        const previewImg = document.getElementById('preview-img-thumb');
+        const previewName = document.getElementById('preview-filename');
+        const cancelPreviewBtn = document.getElementById('cancel-preview');
+
         fileInp.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
                 previewName.innerText = file.name;
                 if (file.type.startsWith('image/')) {
                     const reader = new FileReader();
-                    reader.onload = function(e) { 
-                        previewImg.src = e.target.result; 
-                        previewBox.style.display = 'flex'; 
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        previewBox.style.display = 'flex';
                     }
                     reader.readAsDataURL(file);
                 } else {
-                    // Icono genérico para PDFs u otros archivos
                     previewImg.src = "https://cdn-icons-png.flaticon.com/512/124/124837.png";
                     previewBox.style.display = 'flex';
                 }
-            } else { 
-                closePreview(); 
+            } else {
+                closePreview();
             }
         });
 
         cancelPreviewBtn.addEventListener('click', closePreview);
-        
-        function closePreview() { 
-            fileInp.value = ""; 
-            previewBox.style.display = 'none'; 
-            previewImg.src = ""; 
+
+        function closePreview() {
+            fileInp.value = "";
+            previewBox.style.display = 'none';
+            previewImg.src = "";
         }
 
-        // ==========================================
-        //  LÓGICA DE AUTENTICACIÓN (LOGIN/REGISTRO)
-        // ==========================================
+        // --- LÓGICA DE AUTENTICACIÓN ---
         document.getElementById('toggleAuth').onclick = () => {
             isLoginMode = !isLoginMode;
             document.getElementById('auth-title').innerText = isLoginMode ? "QAXI CHAT" : "REGISTRO";
@@ -983,13 +355,12 @@
             const pass = document.getElementById('pass').value;
             const err = document.getElementById('errorMsg');
             err.style.display = 'none';
-            
+
             try {
                 if(isLoginMode) {
                     await signInWithEmailAndPassword(auth, email, pass);
                 } else {
                     await createUserWithEmailAndPassword(auth, email, pass);
-                    // Crear documento inicial del usuario en Firestore
                     await setDoc(doc(db, "chats", email.toLowerCase()), {
                         registrado: serverTimestamp(),
                         lastMsg: "¡Hola! Bienvenido a QAXI Chat",
@@ -998,96 +369,66 @@
                         lastSeen: serverTimestamp() 
                     });
                 }
-            } catch(error) { 
-                err.style.display = 'block'; 
-                err.innerText = "Error: " + error.message; 
+            } catch(error) {
+                err.style.display = 'block';
+                err.innerText = "Error: " + error.message;
             }
         };
 
+        // Función para cerrar sesión y poner offline
         const handleLogout = async () => {
              if(currentUserEmail) {
-                try { 
-                    await updateDoc(doc(db, "chats", currentUserEmail), { 
-                        isOnline: false, 
-                        lastSeen: serverTimestamp() 
-                    }); 
+                try {
+                    await updateDoc(doc(db, "chats", currentUserEmail), { isOnline: false, lastSeen: serverTimestamp() });
                 } catch(e) {}
              }
              signOut(auth).then(() => location.reload());
         };
-        
         document.getElementById('btnLogout').onclick = handleLogout;
 
-        // ==========================================
-        //  MONITOREO DE ESTADO DE SESIÓN (MAIN)
-        // ==========================================
+        // --- MONITOR DE SESIÓN Y PRESENCIA ---
         onAuthStateChanged(auth, async (user) => {
             if(user) {
-                // Usuario logueado: Ocultar login, mostrar plataforma
                 document.getElementById('login-gate').style.display = 'none';
                 document.getElementById('main-platform').style.display = 'flex';
                 document.getElementById('userEmailDisplay').innerText = user.email;
-                
                 currentUserEmail = user.email.toLowerCase();
                 
+                // INICIAR PRESENCIA REAL
                 setupPresence(currentUserEmail);
-                checkNotificationStatus(); 
 
-                // Verificar si es Admin o Cliente
                 isAdmin = (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
 
-                // INTENTO AUTOMÁTICO DE NOTIFICACIONES
-                setTimeout(() => {
-                    if (Notification.permission === 'default') {
-                        pedirPermisoYGuardarToken(currentUserEmail);
-                    }
-                }, 2000);
-
                 if(isAdmin) {
-                    // --- MODO ADMIN ---
-                    document.body.classList.add('is-admin'); // Clase auxiliar CSS
-                    document.getElementById('sidebar').style.display = 'flex'; // Ver lista
-                    document.getElementById('admin-tools').style.display = 'flex'; // Ver papelera
-                    loadClients(); // Cargar lista de clientes
+                    document.getElementById('sidebar').style.display = 'flex';
+                    document.getElementById('admin-tools').style.display = 'flex';
+                    loadClients();
                 } else {
-                    // --- MODO CLIENTE ---
-                    document.body.classList.remove('is-admin');
-                    document.getElementById('sidebar').style.display = 'none'; // Ocultar lista
-                    document.getElementById('chat-section').style.width = '100%'; // Full width
-                    
-                    // IMPORTANTE: Auto-seleccionar el chat propio
-                    selectedChatID = currentUserEmail;
-                    document.getElementById('chat-title').innerText = "Soporte QAXI";
-                    loadChat(selectedChatID); 
+                    document.getElementById('sidebar').style.display = 'none'; 
+                    document.getElementById('chat-section').style.width = '100%'; 
+                    loadChat(user.email);
                 }
             } else {
-                // Usuario no logueado
                 document.getElementById('login-gate').style.display = 'flex';
                 document.getElementById('main-platform').style.display = 'none';
             }
         });
 
-        // ==========================================
-        //  SISTEMA DE PRESENCIA (ONLINE/OFFLINE)
-        // ==========================================
+        // --- SISTEMA DE PRESENCIA (ONLINE/OFFLINE) ---
         function setupPresence(email) {
             const userRef = doc(db, "chats", email);
-            
-            // Marcar online al entrar
             updateDoc(userRef, { isOnline: true, lastSeen: serverTimestamp() });
-            
-            // Detectar cambio de pestaña
+
             document.addEventListener("visibilitychange", () => {
-                if (document.visibilityState === 'visible') { 
-                    updateDoc(userRef, { isOnline: true }); 
-                } else { 
+                if (document.visibilityState === 'visible') {
+                    updateDoc(userRef, { isOnline: true });
+                } else {
                     updateDoc(userRef, { lastSeen: serverTimestamp() }); 
                 }
             });
-            
-            // Detectar cierre de ventana
-            window.addEventListener("beforeunload", () => { 
-                updateDoc(userRef, { isOnline: false, lastSeen: serverTimestamp() }); 
+
+            window.addEventListener("beforeunload", () => {
+                updateDoc(userRef, { isOnline: false, lastSeen: serverTimestamp() });
             });
         }
 
@@ -1096,22 +437,19 @@
             const date = timestamp.toDate();
             const now = new Date();
             const diff = Math.floor((now - date) / 1000); 
-            
+
             if(diff < 60) return "hace un momento";
             if(diff < 3600) return `hace ${Math.floor(diff/60)} min`;
             if(diff < 86400) return `hace ${Math.floor(diff/3600)} h`;
             return date.toLocaleDateString();
         }
 
-        // ==========================================
-        //  CARGA DE LISTA DE CLIENTES (SOLO ADMIN)
-        // ==========================================
+        // --- GESTIÓN DE CLIENTES (ADMIN) ---
         function loadClients() {
             onSnapshot(collection(db, "chats"), (snap) => {
                 allClientsData = [];
                 snap.forEach(d => { allClientsData.push({ id: d.id, ...d.data() }); });
                 
-                // Ordenar: Online primero, luego por fecha de registro
                 allClientsData.sort((a, b) => {
                     if(a.isOnline && !b.isOnline) return -1;
                     if(!a.isOnline && b.isOnline) return 1;
@@ -1119,7 +457,6 @@
                     const tB = b.registrado ? b.registrado.seconds : 0;
                     return tB - tA;
                 });
-                
                 renderClientList(allClientsData);
             });
         }
@@ -1127,10 +464,10 @@
         function renderClientList(dataArray) {
             const list = document.getElementById('list-container');
             list.innerHTML = "";
-            
             dataArray.forEach(data => {
                 const item = document.createElement('div');
                 item.className = `client-item ${selectedChatID === data.id ? 'active' : ''}`;
+                
                 const statusClass = data.isOnline ? 'online' : 'offline';
                 
                 item.innerHTML = `
@@ -1142,14 +479,10 @@
                         </div>
                     </div>
                 `;
-                
-                // Click en un cliente
                 item.onclick = () => {
                     loadChat(data.id);
-                    // Si es móvil y admin, deslizar pantalla
                     if(window.innerWidth <= 768) document.body.classList.add('chat-open');
                 };
-                
                 list.appendChild(item);
             });
         }
@@ -1159,24 +492,18 @@
             renderClientList(allClientsData.filter(c => c.id.toLowerCase().includes(term)));
         });
 
-        // ==========================================
-        //  CARGA DE MENSAJES (CORE DEL CHAT)
-        // ==========================================
+        // --- MOTOR DEL CHAT (OPTIMIZADO) ---
         function loadChat(chatID) {
-            selectedChatID = chatID; // Asegurar variable global
-            
-            // Actualizar títulos
-            if(isAdmin) {
-                document.getElementById('chat-title').innerText = chatID;
-                renderClientList(allClientsData); 
-            }
+            selectedChatID = chatID;
+            document.getElementById('chat-title').innerText = chatID;
+            if(isAdmin) renderClientList(allClientsData); 
 
-            // Escuchar estado del usuario (online/offline)
             if(unsubStatus) unsubStatus();
             unsubStatus = onSnapshot(doc(db, "chats", chatID), (docSnap) => {
                 if(docSnap.exists()) {
                     const data = docSnap.data();
                     const subTitle = document.getElementById('chat-subtitle');
+                    
                     if(data.isOnline) {
                         subTitle.innerHTML = `<span style="font-size:1.4rem; line-height: 0;">•</span> En línea`;
                         subTitle.classList.add('online-text');
@@ -1187,58 +514,60 @@
                 }
             });
 
-            // Escuchar Mensajes
             if(unsubMessages) unsubMessages();
             const q = query(collection(db, "chats", chatID, "messages"), orderBy("fecha", "asc"));
             
             unsubMessages = onSnapshot(q, (snap) => {
                 const display = document.getElementById('msg-display');
-                display.innerHTML = ""; // Limpiar antes de pintar
+                display.innerHTML = "";
                 
                 snap.forEach(d => {
                     const data = d.data();
                     const div = document.createElement('div');
-                    
-                    // Determinar si soy yo o el otro
                     let isMe = (isAdmin && data.emisor === 'admin') || (!isAdmin && data.emisor === 'cliente');
+
                     div.className = `msg ${isMe ? 'me' : 'other'}`;
-                    
                     let content = ``;
                     
-                    // Texto
                     if(data.texto) content += `<p>${data.texto}</p>`;
                     
-                    // Archivos
+                    // Renderizado de Audio
                     if(data.fileType && data.fileType.startsWith('audio')) {
                          content += `<audio controls src="${data.file}" style="max-width:200px; margin-top:8px; height:35px; filter: invert(1);"></audio>`;
-                    } else if(data.fileType && data.fileType.startsWith('image')) {
+                    }
+                    // Renderizado de Imagen
+                    else if(data.fileType && data.fileType.startsWith('image')) {
                         content += `<img src="${data.file}" class="attachment-img" onclick="window.open('${data.file}')">`;
-                    } else if(data.file) {
+                    }
+                    // Renderizado de Archivo
+                    else if(data.file) {
                         content += `<a href="${data.file}" download style="color:#00ff88; display:block; margin-top:10px; font-weight:700;">📎 Archivo adjunto</a>`;
                     }
                     
-                    // Hora
                     const date = data.fecha ? data.fecha.toDate() : new Date();
                     content += `<span class="msg-time">${date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>`;
-                    
                     div.innerHTML = content;
                     display.appendChild(div);
                 });
                 
-                // Auto-scroll al final
-                setTimeout(() => { display.scrollTop = display.scrollHeight; }, 50);
+                setTimeout(() => {
+                    display.scrollTop = display.scrollHeight;
+                }, 50);
             });
         }
 
+        // --- NOTIFICACIONES ---
         function sendEmailNotification(msg, fromEmail) {
             if(!isAdmin && EMAILJS_PUBLIC_KEY && EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID) {
-                emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { from_name: fromEmail, message: msg, reply_to: fromEmail });
+                emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                    from_name: fromEmail,
+                    message: msg,
+                    reply_to: fromEmail,
+                });
             }
         }
 
-        // ==========================================
-        //  GRABADORA DE VOZ
-        // ==========================================
+        // --- SISTEMA DE AUDIO ---
         const micBtn = document.getElementById('micBtn');
         micBtn.onclick = async () => {
             if(!mediaRecorder || mediaRecorder.state === "inactive") {
@@ -1246,7 +575,6 @@
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(stream);
                     audioChunks = [];
-                    
                     mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                     
                     mediaRecorder.onstop = async () => {
@@ -1254,77 +582,63 @@
                         const reader = new FileReader();
                         reader.readAsDataURL(blob);
                         reader.onloadend = async () => {
-                            // Enviar Audio
                             await addDoc(collection(db, "chats", selectedChatID, "messages"), {
-                                file: reader.result, 
-                                fileType: 'audio/mp3', 
-                                emisor: isAdmin ? "admin" : "cliente", 
+                                file: reader.result,
+                                fileType: 'audio/mp3',
+                                emisor: isAdmin ? "admin" : "cliente",
                                 fecha: serverTimestamp()
                             });
                             await updateDoc(doc(db, "chats", selectedChatID), { lastMsg: "🎤 Nota de voz" });
-                            
-                            if (isAdmin) { await enviarNotificacionPush(selectedChatID, "🎤 Nota de voz"); }
                         };
                     };
-                    
                     mediaRecorder.start();
                     micBtn.classList.add("recording");
-                } catch(err) { 
-                    alert("Permiso de micrófono denegado"); 
-                }
-            } else { 
-                mediaRecorder.stop(); 
-                micBtn.classList.remove("recording"); 
+                } catch(err) { alert("Permiso de micrófono denegado"); }
+            } else {
+                mediaRecorder.stop();
+                micBtn.classList.remove("recording");
             }
         };
 
-        // ==========================================
-        //  ENVÍO DE MENSAJES (FORMULARIO)
-        // ==========================================
+        // --- ENVÍO DE MENSAJES CON GESTIÓN DE ERRORES REAL ---
         document.getElementById('input-area').onsubmit = async (e) => {
             e.preventDefault();
             const inp = document.getElementById('msgInp');
             const txt = inp.value.trim();
             const file = fileInp.files[0];
 
-            // VALIDACIÓN CRÍTICA: Si es cliente y no hay chat seleccionado, forzarlo
-            if(!isAdmin && !selectedChatID && currentUserEmail) {
-                selectedChatID = currentUserEmail;
-            }
+            if(!txt && !file) return;
+            if(!selectedChatID) return;
 
-            if((!txt && !file) || !selectedChatID) return;
-
-            // Bloquear botón para evitar doble envío
             const sendBtn = document.getElementById('sendBtn');
             const originalIcon = sendBtn.innerHTML;
+            
+            // Indicador de "Enviando..."
             sendBtn.disabled = true;
             sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
             try {
-                // Opción A: Texto
+                // Enviar texto
                 if(txt) {
                     await addDoc(collection(db, "chats", selectedChatID, "messages"), {
-                        texto: txt, 
-                        emisor: isAdmin ? "admin" : "cliente", 
+                        texto: txt,
+                        emisor: isAdmin ? "admin" : "cliente",
                         fecha: serverTimestamp()
                     });
-                    
-                    await updateDoc(doc(db, "chats", selectedChatID), { 
-                        lastMsg: txt,
-                        lastSeen: serverTimestamp()
-                    });
-                    
+                    await updateDoc(doc(db, "chats", selectedChatID), { lastMsg: txt });
                     sendEmailNotification(txt, selectedChatID);
-                    if (isAdmin) { await enviarNotificacionPush(selectedChatID, txt); }
                 }
                 
-                // Opción B: Archivo
+                // Enviar archivo/imagen
                 if(file) {
                     let fileData, type;
+
                     if (file.type.startsWith('image/')) {
+                        // FORZAMOS LA COMPRESIÓN SIEMPRE
                         fileData = await compressImage(file);
-                        type = "image/jpeg"; 
+                        type = "image/jpeg"; // Siempre guardamos como JPEG para asegurar compatibilidad
                     } else {
+                        // Leer otros archivos
                         fileData = await new Promise((resolve) => {
                             const reader = new FileReader();
                             reader.onload = (e) => resolve(e.target.result);
@@ -1332,52 +646,51 @@
                         });
                         type = file.type;
                     }
-                    
+
+                    // Intentar guardar en Firestore
                     await addDoc(collection(db, "chats", selectedChatID, "messages"), {
-                        file: fileData, 
-                        fileType: type, 
-                        emisor: isAdmin ? "admin" : "cliente", 
+                        file: fileData,
+                        fileType: type,
+                        emisor: isAdmin ? "admin" : "cliente",
                         fecha: serverTimestamp()
                     });
                     
                     const label = type.startsWith('image/') ? "📷 Imagen" : "📎 Archivo";
-                    await updateDoc(doc(db, "chats", selectedChatID), { 
-                        lastMsg: label,
-                        lastSeen: serverTimestamp() 
-                    });
-                    
+                    await updateDoc(doc(db, "chats", selectedChatID), { lastMsg: label });
                     sendEmailNotification(label, selectedChatID);
-                    if (isAdmin) { await enviarNotificacionPush(selectedChatID, "📎 Archivo adjunto"); }
                 }
-                
+
+                // SOLO SI TODO FUE ÉXITO, LIMPIAMOS
                 inp.value = "";
                 closePreview();
+
             } catch(error) { 
                 console.error("Error crítico:", error); 
-                alert("⚠️ ERROR: No se pudo enviar el mensaje.");
+                alert("⚠️ ERROR: No se pudo enviar el mensaje.\n\nPosible causa: La imagen es demasiado pesada o hay un problema de conexión con la base de datos.");
             } finally {
                 sendBtn.disabled = false;
                 sendBtn.innerHTML = originalIcon;
             }
         };
 
-        // ==========================================
-        //  HERRAMIENTAS GLOBALES
-        // ==========================================
+        // --- BORRADO REAL ---
         window.deleteChatHistory = async () => {
             if(!selectedChatID || !isAdmin) return;
             if(!confirm("¿Estás seguro de borrar TODO el historial?")) return;
+
             try {
                 const snapshot = await getDocs(collection(db, "chats", selectedChatID, "messages"));
                 const batch = writeBatch(db);
                 snapshot.forEach((doc) => { batch.delete(doc.ref); });
                 await batch.commit();
+                
                 await updateDoc(doc(db, "chats", selectedChatID), { lastMsg: "Chat vaciado" });
                 alert("Historial eliminado.");
             } catch (error) { alert("Error al borrar historial."); }
         };
-        
+
         window.cerrarChat = () => document.body.classList.remove('chat-open');
+
     </script>
 </body>
 </html>
