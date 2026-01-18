@@ -79,6 +79,21 @@
         #chat-subtitle { font-size: 0.75rem; color: var(--text-gray); display: flex; align-items: center; gap: 6px; margin-top: 3px; font-weight: 500; transition: color 0.3s; }
         .online-text { color: var(--accent-green) !important; font-weight: 600; }
         
+        /* BOTÓN DE NOTIFICACIONES */
+        #btn-notif { 
+            background: rgba(255,255,255,0.1); 
+            border: 1px solid #333; 
+            color: #fff; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            padding: 10px; 
+            border-radius: 50%;
+            margin-right: 10px;
+            display: none; /* Se muestra solo si no hay permiso */
+        }
+        #btn-notif.pulse { animation: notifPulse 2s infinite; color: var(--accent-green); border-color: var(--accent-green); }
+        @keyframes notifPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4); } 70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); } }
+
         #msg-display { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
         .msg { max-width: 80%; padding: 14px 18px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; position: relative; word-wrap: break-word; animation: popMsg 0.2s ease-out; will-change: transform, opacity; }
         @keyframes popMsg { from{opacity:0; transform:translateY(10px) scale(0.95);} to{opacity:1; transform:translateY(0) scale(1);} }
@@ -163,8 +178,12 @@
                     </div>
                 </div>
                 
-                <div id="admin-tools">
-                    <button class="icon-btn" onclick="deleteChatHistory()" title="Limpiar historial para siempre"><i class="fas fa-trash-alt"></i></button>
+                <div style="display: flex; align-items: center;">
+                    <button id="btn-notif" class="pulse" title="Activar Notificaciones"><i class="fas fa-bell"></i></button>
+                    
+                    <div id="admin-tools">
+                        <button class="icon-btn" onclick="deleteChatHistory()" title="Limpiar historial para siempre"><i class="fas fa-trash-alt"></i></button>
+                    </div>
                 </div>
             </div>
 
@@ -216,30 +235,48 @@
         const messaging = getMessaging(app);
 
         // ==========================================
-        //  CONFIGURACIÓN DE NOTIFICACIONES (TUS CLAVES REALES)
+        //  CONFIGURACIÓN DE NOTIFICACIONES 
         // ==========================================
-        
-        // 1. Clave VAPID (Empieza por B...): Permiso del Navegador
         const vapidKey = "BJqWn-bQPqhgcqu8RzVU0BZWXRvT0uV9qUUjP94jN6aoEau_ao8alamiYwz6OXdnfmD48Vj6myTm6uHVFug93Nc"; 
-        
-        // 2. Server Key (API Key Legacy): Llave maestra para enviar
         const SERVER_KEY = "AIzaSyAkJNtkbSxTyek4_bU0C8dy9XLC24INDGs"; 
 
+        const btnNotif = document.getElementById('btn-notif');
 
-        // Función para activar notificaciones (Lado Cliente)
-        async function activarNotificaciones(email) {
+        // Función Manual para pedir permiso (Al clickear la campana)
+        btnNotif.addEventListener('click', async () => {
+            await pedirPermisoYGuardarToken(currentUserEmail);
+        });
+
+        async function pedirPermisoYGuardarToken(email) {
             try {
-                if(Notification.permission === 'default') {
-                    const permission = await Notification.requestPermission();
-                    if (permission === 'granted') {
-                        const token = await getToken(messaging, { vapidKey: vapidKey });
-                        if (token && email) {
-                            console.log("Token FCM guardado:", token);
-                            await updateDoc(doc(db, "chats", email), { fcmToken: token });
-                        }
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    console.log('Permiso concedido.');
+                    const token = await getToken(messaging, { vapidKey: vapidKey });
+                    if (token && email) {
+                        console.log("Token FCM guardado:", token);
+                        await updateDoc(doc(db, "chats", email), { fcmToken: token });
+                        
+                        // Ocultar botón si ya tuvo éxito
+                        btnNotif.style.display = 'none';
+                        alert("✅ Notificaciones activadas. Te avisaremos cuando te respondan.");
                     }
+                } else {
+                    alert("⚠️ Has bloqueado las notificaciones. Actívalas en la configuración de tu navegador.");
                 }
-            } catch (error) { console.error('Error FCM:', error); }
+            } catch (error) { 
+                console.error('Error FCM:', error); 
+                alert("Error activando notificaciones: " + error.message);
+            }
+        }
+
+        // Chequear estado al inicio
+        function checkNotificationStatus() {
+            if (Notification.permission === 'granted') {
+                btnNotif.style.display = 'none'; // Ya tiene permiso, ocultar campana
+            } else {
+                btnNotif.style.display = 'block'; // No tiene permiso, mostrar campana
+            }
         }
 
         // Función para enviar la señal PUSH (Lado Admin)
@@ -262,7 +299,7 @@
                                 "notification": {
                                     "title": "Nuevo mensaje de QAXI",
                                     "body": mensaje,
-                                    "icon": "icon2.png", // Asegúrate que icon2.png esté en tu carpeta
+                                    "icon": "icon2.png", 
                                     "click_action": "https://santiagomarenco1005-cmd.github.io/QAXI/chat.html"
                                 }
                             })
@@ -387,7 +424,7 @@
                 currentUserEmail = user.email.toLowerCase();
                 
                 setupPresence(currentUserEmail);
-                activarNotificaciones(currentUserEmail); 
+                checkNotificationStatus(); // Verificar si mostramos la campana
 
                 isAdmin = (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
 
