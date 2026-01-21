@@ -29,6 +29,7 @@
             --text-primary: #ffffff;
             --text-secondary: #a1a1a1;
             --accent: #ffffff;
+            --gold: #FFD700; /* Color Partners */
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
             --glass-blur: blur(20px);
@@ -56,6 +57,7 @@
         .hidden { opacity: 0; filter: blur(5px); transform: translateY(50px); transition: all 1s ease-out; }
         .show { opacity: 1; filter: blur(0); transform: translateY(0); }
 
+        /* HEADER Y NAVEGACIÓN */
         header {
             position: fixed; top: 0; width: 100%; padding: 15px 5%;
             display: flex; justify-content: space-between; align-items: center;
@@ -65,9 +67,27 @@
 
         .logo img { height: 55px; object-fit: contain; mix-blend-mode: screen; display: block; }
 
+        /* Contenedor para elementos del menú (Links + Botones Auth) */
+        .nav-container {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
         nav ul { display: flex; list-style: none; gap: 30px; align-items: center; }
         nav a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s; cursor: pointer; }
         nav a:hover { color: var(--accent); text-shadow: 0 0 8px rgba(255, 255, 255, 0.5); }
+
+        /* Botón Hamburguesa (Oculto en PC) */
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: #fff;
+            cursor: pointer;
+            z-index: 1100;
+        }
+
+        .auth-wrapper { display: flex; gap: 15px; }
 
         .cta-btn {
             background: var(--accent); color: var(--bg-color); padding: 10px 20px;
@@ -76,6 +96,77 @@
             font-size: 0.85rem;
         }
         .cta-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); }
+
+        /* --- MEDIA QUERIES (MÓVIL) --- */
+        @media (max-width: 768px) { 
+            header { padding: 15px 20px; }
+            .logo img { height: 45px; }
+
+            /* Mostrar botón hamburguesa */
+            .menu-toggle { display: block; }
+
+            /* Estilos del Menú Móvil Desplegable */
+            .nav-container {
+                position: fixed;
+                top: 0;
+                right: -100%; /* Oculto fuera de pantalla */
+                width: 80%; /* Ancho del menú lateral */
+                height: 100vh;
+                background: rgba(10, 10, 10, 0.98); /* Fondo oscuro casi sólido */
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1); /* Animación suave */
+                padding: 40px;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+                z-index: 1050;
+            }
+
+            /* Clase activa para mostrar el menú */
+            .nav-container.active {
+                right: 0;
+            }
+
+            /* Ajustes de enlaces en móvil */
+            nav ul {
+                flex-direction: column;
+                gap: 25px;
+                margin-bottom: 40px;
+                text-align: center;
+            }
+            nav a {
+                font-size: 1.3rem; /* Enlaces más grandes */
+                display: block;
+            }
+
+            /* Ajustes de botones de autenticación en móvil */
+            .auth-wrapper {
+                flex-direction: column;
+                width: 100%;
+                gap: 15px;
+            }
+            .auth-wrapper .cta-btn {
+                width: 100%;
+                text-align: center;
+                padding: 15px;
+                font-size: 1rem;
+            }
+
+            /* Ajustes Héroe Móvil */
+            .hero h1 { font-size: 2.5rem; } 
+            .hero-btns {
+                display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 350px;
+            }
+            .hero-btns .cta-btn { width: 100%; margin: 0 !important; }
+            
+            /* Ajustes Premium Cards Móvil */
+            .premium-card { padding: 30px 20px; flex-direction: column !important; gap: 30px; }
+            .premium-info, .premium-pricing { min-width: auto; width: 100%; }
+            .premium-card h3 { font-size: 1.8rem !important; }
+        }
+
+        /* --- FIN MEDIA QUERIES --- */
 
         .hero {
             height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
@@ -168,13 +259,10 @@
             align-items: center; justify-content: center; animation: fadeIn 0.3s ease;
         }
         
-        /* CORRECCIÓN SCROLL: Modal con Scroll interno y altura limitada */
         .modal-content {
             background: rgba(20, 20, 20, 0.95); padding: 30px 20px; border-radius: 20px;
             border: 1px solid rgba(255,255,255,0.1); text-align: center; max-width: 450px; width: 90%;
             position: relative; box-shadow: 0 0 50px rgba(255, 255, 255, 0.05); animation: popIn 0.3s forwards;
-            
-            /* Esto permite bajar (scrollear) si el contenido es muy largo */
             max-height: 85vh; 
             overflow-y: auto; 
         }
@@ -182,12 +270,10 @@
         .close { color: #666; position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; transition: 0.3s; }
         .close:hover { color: #fff; transform: rotate(90deg); }
         
-        /* QR MÁS PEQUEÑO */
-        .qr-img { width: 100%; max-width: 150px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .qr-img { width: 100%; max-width: 210px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
         .instructions { font-size: 0.85rem; color: #aaa; margin-bottom: 10px; line-height: 1.4; }
         
-        /* BOTONES DEL MODAL DE PAGO */
         .payment-btns { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
         .payment-btn {
             background: transparent; color: #fff; border: 1px solid #fff; padding: 10px 15px;
@@ -230,23 +316,6 @@
 
         footer { text-align: center; padding: 60px 40px; border-top: 1px solid var(--glass-border); color: var(--text-secondary); font-size: 0.8rem; }
         
-        @media (max-width: 768px) { 
-            .hero h1 { font-size: 2.2rem; } 
-            nav { display: none; } 
-            header { padding: 10px 5%; }
-            .logo img { height: 45px; }
-            .auth-wrapper, .hero-btns {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                width: 90%;
-                align-items: center;
-            }
-            .hero-btns .cta-btn { width: 100%; margin: 0 !important; }
-            .premium-card { padding: 30px 20px; flex-direction: column; }
-        }
-
-        /* --- ESTILOS BURBUJA QAXI CHAT --- */
         #qaxi-chat-floating {
             position: fixed; bottom: 30px; right: 30px;
             width: 65px; height: 65px;
@@ -260,27 +329,24 @@
         }
         #qaxi-chat-floating:hover { transform: scale(1.1); border-color: #fff; }
         
-        /* IMAGEN DEL LOGO EN LA BURBUJA */
         #qaxi-chat-floating img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        /* ESTILOS DE LA GUIA NEQUI */
         .nequi-guide-container {
             margin: 15px 0;
             background: rgba(255,255,255,0.05);
             padding: 15px;
             border-radius: 10px;
-            border-left: 3px solid #e91e63; /* Color Nequi Aprox */
+            border-left: 3px solid #e91e63;
             text-align: left;
         }
         
-        /* IMAGEN DE EJEMPLO NEQUI - PEQUEÑA */
         .nequi-guide-img {
             width: 100%;
-            max-width: 150px; /* Tamaño reducido como pediste */
+            max-width: 150px;
             display: block;
             margin: 10px auto;
             border-radius: 8px;
@@ -326,18 +392,26 @@
 
     <header>
         <div class="logo"><a href="#hero"><img src="icon.png" alt="QAXI Logo"></a></div>
-        <nav>
-            <ul>
-                <li><a href="#pricing">Precios</a></li>
-                <li><a href="#microapps">Micro-Apps</a></li>
-                <li><a href="#traffic" style="color: #fff; font-weight: 700;">Traffic</a></li>
-                <li><a href="#social" style="color: #fff; font-weight: 700;">Social</a></li>
-                <li><a href="#founder">Manifiesto</a></li>
-            </ul>
-        </nav>
-        <div class="auth-wrapper">
-            <a id="authBtn" class="cta-btn" onclick="openAuthModal()">Acceso Clientes</a>
-            <a id="accountBtn" class="cta-btn" style="display: none;" onclick="openDashboardModal()">Mi Panel QAXI</a>
+        
+        <div class="menu-toggle" id="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <div class="nav-container" id="nav-container">
+            <nav>
+                <ul>
+                    <li><a href="#pricing" class="nav-link">Precios</a></li>
+                    <li><a href="#microapps" class="nav-link">Micro-Apps</a></li>
+                    <li><a href="#traffic" class="nav-link" style="color: #fff; font-weight: 700;">Traffic</a></li>
+                    <li><a href="#social" class="nav-link" style="color: #fff; font-weight: 700;">Social</a></li>
+                    <li><a href="#founder" class="nav-link">Manifiesto</a></li>
+                    <li><a href="partners.html" class="nav-link" style="color: var(--gold); font-weight: 700; text-shadow: 0 0 10px rgba(255,215,0,0.2);">Partners</a></li>
+                </ul>
+            </nav>
+            <div class="auth-wrapper">
+                <a id="authBtn" class="cta-btn nav-link" onclick="openAuthModal()">Acceso Clientes</a>
+                <a id="accountBtn" class="cta-btn nav-link" style="display: none;" onclick="openDashboardModal()">Mi Panel QAXI</a>
+            </div>
         </div>
     </header>
 
@@ -348,7 +422,7 @@
         <p>Diseño minimalista. Automatización con IA.<br>Precio accesible. Modelo escalable.</p>
         
         <div class="hero-btns">
-            <a href="chat.html" target="_blank" class="cta-btn" style="font-size: 1.1rem; padding: 15px 30px;">QAXI Chat (Beta)</a>
+            <a href="chat.html" target="_blank" class="cta-btn" style="font-size: 1.1rem; padding: 15px 30px;">QAXI Chat (BETA)</a>
             <a href="#pricing" class="cta-btn" style="font-size: 1.1rem; padding: 15px 30px; background: transparent; border: 1px solid #fff; color: #fff;">Ver Planes</a>
         </div>
         <div style="margin-top: 20px;">
@@ -401,7 +475,6 @@
         <p style="color: #888; margin-bottom: 30px;">Herramientas modulares para potenciar tu web. Elige lo que necesites.</p>
         
         <div class="microapps-grid">
-            
             <div class="microapp-card">
                 <div class="ma-icon"><i class="far fa-calendar-alt"></i></div>
                 <div class="ma-title">Sistema de Reservas</div>
@@ -409,7 +482,6 @@
                 <div class="ma-price">$30.000 COP</div>
                 <a onclick="openNequiModal('Micro-App Reservas - $30k')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
             </div>
-
             <div class="microapp-card">
                 <div class="ma-icon"><i class="fas fa-qrcode"></i></div>
                 <div class="ma-title">Menú Digital QR</div>
@@ -417,7 +489,6 @@
                 <div class="ma-price">$20.000 COP</div>
                 <a onclick="openNequiModal('Micro-App Menú QR - $20k')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
             </div>
-
             <div class="microapp-card">
                 <div class="ma-icon"><i class="far fa-id-card"></i></div>
                 <div class="ma-title">Tarjeta de Presentación</div>
@@ -425,7 +496,6 @@
                 <div class="ma-price">$15.000 COP</div>
                 <a onclick="openNequiModal('Micro-App Tarjeta - $15k')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
             </div>
-
             <div class="microapp-card">
                 <div class="ma-icon"><i class="fas fa-file-pdf"></i></div>
                 <div class="ma-title">Catálogo PDF</div>
@@ -433,7 +503,6 @@
                 <div class="ma-price">$20.000 COP</div>
                 <a onclick="openNequiModal('Micro-App Catálogo - $20k')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
             </div>
-
             <div class="microapp-card">
                 <div class="ma-icon"><i class="fab fa-whatsapp"></i></div>
                 <div class="ma-title">Botón WhatsApp</div>
@@ -441,7 +510,6 @@
                 <div class="ma-price">$10.000 COP</div>
                 <a onclick="openNequiModal('Micro-App Botón WA - $10k')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
             </div>
-
             <div class="microapp-card">
                 <div class="ma-icon"><i class="fas fa-robot"></i></div>
                 <div class="ma-title">IA API Key Básica</div>
@@ -449,7 +517,6 @@
                 <div class="ma-price">$50.000 COP</div>
                 <a onclick="openNequiModal('Micro-App IA API - $50k')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
             </div>
-
             <div class="microapp-card">
                 <div class="ma-icon"><i class="fas fa-calculator"></i></div>
                 <div class="ma-title">Calculadora Básica</div>
@@ -457,7 +524,6 @@
                 <div class="ma-price">$30.000 COP</div>
                 <a onclick="openNequiModal('Micro-App Calculadora - $30k')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
             </div>
-            
             <div class="microapp-card">
                 <div class="ma-icon"><i class="fas fa-briefcase"></i></div>
                 <div class="ma-title">Portafolio Profesional</div>
@@ -465,7 +531,6 @@
                 <div class="ma-price">$35.000 COP</div>
                 <a onclick="openNequiModal('Micro-App Portafolio - $35k')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
             </div>
-
             <div class="microapp-card">
                 <div class="ma-icon"><i class="fas fa-pen-nib"></i></div>
                 <div class="ma-title">Diseño de Logo</div>
@@ -473,13 +538,11 @@
                 <div class="ma-price">$80.000 COP</div>
                 <a onclick="openNequiModal('Micro-App Logo - $80k')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
             </div>
-
         </div>
     </section>
 
     <section id="traffic" class="traffic-section" style="padding-top: 20px;">
         <h2 class="section-title">QAXI Traffic <span style="font-size: 0.5em; vertical-align: middle; background: #fff; color: #000; padding: 2px 8px; border-radius: 4px; letter-spacing: 0;">ADQUISICIÓN</span></h2>
-        
         <div class="premium-card" data-tilt>
             <div class="premium-info">
                 <h3 style="font-size: 2rem; margin-bottom: 15px; line-height: 1.1;">Tu web es el motor,<br>el tráfico es la gasolina.</h3>
@@ -493,19 +556,15 @@
                     <li><i class="fas fa-robot"></i> Optimización continua con IA.</li>
                 </ul>
             </div>
-            
             <div class="premium-pricing">
                 <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 10px;">COSTO DE GESTIÓN</div>
                 <div style="font-size: 3rem; font-weight: 800; line-height: 1;">100K <span style="font-size: 1rem;">COP</span></div>
                 <div style="font-size: 0.8rem; color: #666; margin-top: 5px;">/ Mensual</div>
-                
                 <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
-                
                 <div style="font-size: 0.85rem; color: #fff; margin-bottom: 20px;">
                     <i class="fas fa-wallet" style="margin-right: 5px;"></i> 
                     Tú defines el presupuesto (Lo que pagas a Meta).
                 </div>
-                
                 <button onclick="openNequiModal('QAXI Traffic - $100k')" class="cta-btn" style="width: 100%;">CONTRATAR GESTIÓN</button>
             </div>
         </div>
@@ -513,7 +572,6 @@
 
     <section id="social" class="social-section" style="padding-top: 0;">
         <h2 class="section-title">QAXI Social <span style="font-size: 0.5em; vertical-align: middle; background: #fff; color: #000; padding: 2px 8px; border-radius: 4px; letter-spacing: 0;">REDES</span></h2>
-        
         <div class="premium-card" data-tilt style="flex-direction: row-reverse;">
             <div class="premium-info">
                 <h3 style="font-size: 2rem; margin-bottom: 15px; line-height: 1.1;">Diseño que enamora,<br>redes que venden.</h3>
@@ -527,19 +585,15 @@
                     <li><i class="fas fa-check-circle"></i> Correcciones ilimitadas hasta tu aprobación.</li>
                 </ul>
             </div>
-            
             <div class="premium-pricing">
                 <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 10px;">PAQUETE MENSUAL</div>
                 <div style="font-size: 3rem; font-weight: 800; line-height: 1;">150K <span style="font-size: 1rem;">COP</span></div>
                 <div style="font-size: 0.8rem; color: #666; margin-top: 5px;">/ Mensual</div>
-                
                 <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
-                
                 <div style="font-size: 0.85rem; color: #fff; margin-bottom: 20px;">
                     <i class="fas fa-camera" style="margin-right: 5px;"></i> 
                     Incluye 30 Posts o Stories.
                 </div>
-                
                 <button onclick="openNequiModal('QAXI Social - $150k')" class="cta-btn" style="width: 100%;">CONTRATAR DISEÑO</button>
             </div>
         </div>
@@ -584,7 +638,7 @@
             </div>
             
             <div style="margin-top: 25px;">
-                <a href="chat.html" target="_blank" class="cta-btn" style="width: 100%;">IR A QAXI CHAT</a>
+                <a href="chat.html" target="_blank" class="cta-btn" style="width: 100%;">IR A QAXI CHAT (BETA)</a>
             </div>
         </div>
     </div>
@@ -595,26 +649,35 @@
             <h3 style="margin-bottom: 5px; font-weight: 600;">1. Escanea para pagar</h3>
             
             <div id="planNameDisplay" style="color: #666; font-size: 0.9rem; margin-bottom: 10px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px;">
-                </div>
+            </div>
 
             <img src="qr-nequi.png" alt="QR Nequi" class="qr-img">
             
+            <div style="margin: 15px 0; text-align: left; background: rgba(255,215,0,0.05); border: 1px dashed #FFD700; padding: 10px; border-radius: 8px;">
+                <label style="color: #FFD700; font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 5px;">
+                    <i class="fas fa-gift"></i> ¿TIENES CÓDIGO PARTNER?
+                </label>
+                <input type="text" id="paymentRefCode" placeholder="QAXI-..." 
+                       onkeyup="updatePaymentLinks()"
+                       style="width: 100%; padding: 8px; background: #000; border: 1px solid #333; color: #fff; border-radius: 4px; text-transform: uppercase;">
+            </div>
+
             <div class="instructions" style="text-align: center; margin-top: 15px;">
                 
                 <div class="nequi-guide-container">
                     <div style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 8px;">
-                        <i class="fas fa-pen" style="margin-right: 5px;"></i> ESCRIBE ESTO EN EL MENSAJE:
+                        <i class="fas fa-pen" style="margin-right: 5px;"></i> ESCRIBE ESTO EN LA NOTA:
                     </div>
                     <div style="font-size: 0.8rem; color: #aaa; margin-bottom: 10px;">
-                        Al enviar el dinero, usa el campo "Mensaje" de Nequi para poner:
+                        Al enviar el dinero, usa el campo de texto de Nequi para poner:
                     </div>
                     <div style="background: rgba(0,0,0,0.3); padding: 8px; border-radius: 5px; color: #4caf50; font-weight: 700; text-align: center; font-size: 0.85rem; border: 1px dashed #4caf50;">
-                        TU CORREO QAXI + TU NOMBRE
+                        TU CORREO + TU NOMBRE
                     </div>
                     
-                    <img src="nequi-ejemplo.png" alt="Guía Mensaje Nequi" class="nequi-guide-img">
+                    <img src="nequi-ejemplo.png" alt="Ejemplo Mensaje Nequi" class="nequi-guide-img">
                 </div>
-
+                
                 <div class="tutorial-steps" style="margin-bottom: 15px;">
                     <div class="step-item">
                         <div class="step-icon"><i class="fas fa-qrcode"></i></div>
@@ -622,22 +685,22 @@
                     </div>
                     <div class="step-item">
                         <div class="step-icon"><i class="fas fa-pen-fancy"></i></div>
-                        <div class="step-text">2. Escribe Msj</div>
+                        <div class="step-text">2. Escribe Nota</div>
                     </div>
                     <div class="step-item">
                         <div class="step-icon"><i class="fas fa-paper-plane"></i></div>
-                        <div class="step-text">3. Envía Comp.</div>
+                        <div class="step-text">3. Envía Comprobante</div>
                     </div>
                 </div>
-                
+
                 <p style="font-size: 0.75rem; color: #666; margin-top: 10px;">
-                    Envíanos el comprobante aquí:
+                    2. Envíanos el comprobante aquí para activar:
                 </p>
             </div>
             
             <div class="payment-btns">
-                <a id="emailLink" href="#" class="payment-btn"><i class="far fa-envelope"></i> Correo</a>
-                <a id="chatLink" href="#" class="payment-btn"><i class="fas fa-comment-dots"></i> Chat (Beta)</a>
+                <a id="emailLink" href="#" class="payment-btn"><i class="far fa-envelope"></i> Enviar por Correo</a>
+                <a id="chatLink" href="#" class="payment-btn" style="background: #fff; color: #000; border-color: #fff;"><i class="fas fa-comment-dots"></i> Enviar en QAXI Chat (BETA)</a>
             </div>
         </div>
     </div>
@@ -733,6 +796,7 @@
     <footer>
         <div class="footer-contact-icons">
             <a href="mailto:santiagomarenco1005@gmail.com" title="Enviar Correo"><i class="fas fa-envelope"></i></a>
+            <a href="https://discord.gg/tc3jCznZFg" target="_blank" title="Comunidad Discord"><i class="fab fa-discord"></i></a>
             <a href="chat.html" target="_blank" title="QAXI Chat"><i class="fas fa-comment-dots"></i></a>
         </div>
         <p>© 2025 · QAXI. Todos los derechos reservados.</p>
@@ -779,58 +843,54 @@
         const accountBtn = document.getElementById('accountBtn');
         const userGreeting = document.getElementById('userGreeting');
 
+        // Referencias al menú móvil
+        const menuToggle = document.getElementById('mobile-menu-toggle');
+        const navContainer = document.getElementById('nav-container');
+        const navLinks = document.querySelectorAll('.nav-link');
+
         let isLoginMode = true;
         let currentUser = null;
+        let currentPlanSelected = ""; 
 
         // --- FUNCIONES GLOBALES ---
-        window.openAuthModal = () => authModal.style.display = "flex";
+        window.openAuthModal = () => { authModal.style.display = "flex"; closeMobileMenu(); };
         window.closeAuthModal = () => { authModal.style.display = "none"; authError.style.display = 'none'; };
         
-        // --- FUNCIÓN DE PAGO ACTUALIZADA (SIN REF, SOLO PLAN) ---
         window.openNequiModal = (plan) => {
             nequiModal.style.display = "flex";
-            
-            // Solo mostramos el plan, ya no generamos REF aleatoria para el usuario
+            currentPlanSelected = plan; 
+            document.getElementById('paymentRefCode').value = "";
             document.getElementById('planNameDisplay').innerHTML = `
                 <div style="font-size:0.8rem; color:#aaa;">Estás pagando por:</div>
                 <div style="font-weight:700; color:#fff; font-size:1.1rem;">${plan}</div>
             `;
-            
-            // Preparamos los enlaces para enviar comprobante
-            const msgRaw = `Hola, envío comprobante de pago para el plan: ${plan}.`;
-            const msgMailto = `Hola, envío comprobante de pago para el plan: ${plan}.%0A%0A(Adjunto el pantallazo de Nequi con mi mensaje personal).`;
-            
-            // Configurar botón Email
+            updatePaymentLinks();
+        };
+
+        window.updatePaymentLinks = () => {
+            const refCode = document.getElementById('paymentRefCode').value.trim().toUpperCase();
+            const plan = currentPlanSelected;
+            let msgMailto = `Hola, envío comprobante de pago para el plan: ${plan}.%0A%0A`;
+            if(refCode.length > 0) {
+                msgMailto += `🎟️ CÓDIGO DE REFERIDO: ${refCode}%0A`;
+                msgMailto += `(Por favor validar este referido para mi beneficio)%0A%0A`;
+            }
+            msgMailto += `(Adjunto el pantallazo de Nequi con mi mensaje personal).`;
             document.getElementById('emailLink').href = `mailto:santiagomarenco1005@gmail.com?subject=Pago Nuevo - ${plan}&body=${msgMailto}`;
-            
-            // Configurar botón Chat (Solo abrir)
             document.getElementById('chatLink').onclick = (e) => {
                  e.preventDefault();
-                 window.open('chat.html', '_blank');
+                 const textToCopy = `Hola, pago el plan ${plan}. Código Referido: ${refCode || 'N/A'}`;
+                 navigator.clipboard.writeText(textToCopy).then(() => { window.open('chat.html', '_blank'); });
             };
         };
 
         window.closeNequiModal = () => nequiModal.style.display = "none";
         
-        // --- FUNCIONES TUTORIAL ---
         window.openTutorialModal = () => {
-            closeNequiModal(); 
-            closeDashboardModal();
-            tutorialModal.style.display = "flex";
+            closeNequiModal(); closeDashboardModal(); tutorialModal.style.display = "flex";
         };
         window.closeTutorialModal = () => tutorialModal.style.display = "none";
         
-        window.copyEmailToClipboard = () => {
-            const email = "santiagomarenco1005@gmail.com";
-            navigator.clipboard.writeText(email).then(() => {
-                const boxes = document.querySelectorAll('.email-copy-box');
-                boxes.forEach(box => {
-                    box.classList.add('copied');
-                    setTimeout(() => box.classList.remove('copied'), 2000);
-                });
-            });
-        };
-
         window.closeDashboardModal = () => dashboardModal.style.display = "none";
         window.toggleLegal = () => {
             const txt = document.getElementById('legal-text');
@@ -838,6 +898,22 @@
             if (txt.style.display === "block") { txt.style.display = "none"; ico.className = "fas fa-chevron-down"; }
             else { txt.style.display = "block"; ico.className = "fas fa-chevron-up"; }
         };
+
+        // --- FUNCIÓN MENÚ MÓVIL ---
+        function toggleMobileMenu() {
+            navContainer.classList.toggle('active');
+            const icon = menuToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        }
+        function closeMobileMenu() {
+            navContainer.classList.remove('active');
+            const icon = menuToggle.querySelector('i');
+            icon.classList.add('fa-bars');
+            icon.classList.remove('fa-times');
+        }
+        menuToggle.addEventListener('click', toggleMobileMenu);
+        navLinks.forEach(link => link.addEventListener('click', closeMobileMenu));
 
         // --- LÓGICA DE FIREBASE ---
         onAuthStateChanged(auth, (user) => {
@@ -855,7 +931,6 @@
             }
         });
 
-        // Alternar entre Login y Registro
         toggleBtn.addEventListener('click', () => {
             isLoginMode = !isLoginMode;
             authTitle.innerText = isLoginMode ? "Acceso Clientes" : "Crear Cuenta QAXI";
@@ -864,35 +939,26 @@
             authError.style.display = 'none';
         });
 
-        // Manejo del Formulario de Autenticación
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = emailInput.value;
             const password = passInput.value;
             authError.style.display = 'none';
-            
             try {
                 if (isLoginMode) {
                     await signInWithEmailAndPassword(auth, email, password);
                 } else {
                     await createUserWithEmailAndPassword(auth, email, password);
-                    await setDoc(doc(db, "chats", email.toLowerCase().trim()), { 
-                        status: "NUEVO CLIENTE", 
-                        color: "#ffffff", 
-                        registrado: new Date() 
-                    });
+                    await setDoc(doc(db, "chats", email.toLowerCase().trim()), { status: "NUEVO CLIENTE", color: "#ffffff", registrado: new Date() });
                 }
-            } catch (error) {
-                authError.style.display = 'block';
-                authError.innerText = "Error: " + error.message;
-            }
+            } catch (error) { authError.style.display = 'block'; authError.innerText = "Error: " + error.message; }
         });
 
         document.getElementById('btnLogout').addEventListener('click', () => signOut(auth).then(() => location.reload()));
 
-        // --- FUNCIÓN DASHBOARD ---
         window.openDashboardModal = async function() {
             dashboardModal.style.display = 'flex';
+            closeMobileMenu(); // Cerrar menú si está abierto
             if (currentUser) {
                 document.getElementById('dashEmail').innerText = currentUser.email;
                 const docRef = doc(db, "chats", currentUser.email.toLowerCase().trim());
@@ -904,7 +970,6 @@
                         statusEl.innerText = data.status || "ACTIVO";
                         statusEl.style.background = data.color || "#fff";
                         statusEl.style.color = (data.color === "#ffffff") ? "#000" : "#fff";
-
                         if(data.webLink) {
                             document.getElementById('web-section').style.display = 'block';
                             document.getElementById('no-web-msg').style.display = 'none';
@@ -913,12 +978,8 @@
                             document.getElementById('web-section').style.display = 'none';
                             document.getElementById('no-web-msg').style.display = 'block';
                         }
-                    } else {
-                         document.getElementById('dashStatus').innerText = "PENDIENTE";
-                    }
-                } catch(err) {
-                    console.log("Error leyendo Firestore:", err);
-                }
+                    } else { document.getElementById('dashStatus').innerText = "PENDIENTE"; }
+                } catch(err) { console.log("Error leyendo Firestore:", err); }
             }
         };
 
@@ -929,11 +990,7 @@
         let particlesArray = [];
         class Particle {
             constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.dX=(Math.random()*0.4)-0.2; this.dY=(Math.random()*0.4)-0.2; }
-            update() { 
-                if(this.x>canvas.width||this.x<0) this.dX=-this.dX; if(this.y>canvas.height||this.y<0) this.dY=-this.dY;
-                this.x+=this.dX; this.y+=this.dY; 
-                ctx.beginPath(); ctx.arc(this.x, this.y, 1.5, 0, Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.fill(); 
-            }
+            update() { if(this.x>canvas.width||this.x<0) this.dX=-this.dX; if(this.y>canvas.height||this.y<0) this.dY=-this.dY; this.x+=this.dX; this.y+=this.dY; ctx.beginPath(); ctx.arc(this.x, this.y, 1.5, 0, Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.fill(); }
         }
         function init(){ particlesArray=[]; for(let i=0;i<100;i++){ particlesArray.push(new Particle()); } }
         function animate(){ requestAnimationFrame(animate); ctx.clearRect(0,0,canvas.width,canvas.height); particlesArray.forEach(p => p.update()); }
