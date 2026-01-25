@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAXI Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root { 
+            --bg: #000; --card: #0a0a0a; --gold: #FFD700; --text: #fff; --sub: #444; --border: #161616;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; overflow: hidden; }
+
+        /* INTERFAZ DE INICIO */
+        #login-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .login-card { width: 90%; max-width: 360px; text-align: center; }
+        .login-card h1 { font-weight: 900; margin-bottom: 30px; font-size: 2.2rem; letter-spacing: -1px; color: #fff; }
+        .login-card h1 span { color: var(--gold); }
+        .inp { width: 100%; padding: 16px; margin-bottom: 12px; background: #0a0a0a; border: 1px solid #222; color: #fff; border-radius: 12px; outline: none; }
+        .inp:focus { border-color: var(--gold); }
+        .btn-gold { width: 100%; padding: 16px; background: var(--gold); border: none; border-radius: 12px; font-weight: 800; cursor: pointer; color: #000; }
+
+        /* DASHBOARD */
+        #app-container { display: none; width: 100%; height: 100%; flex-direction: column; }
+        .nav { padding: 25px 5%; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .main { flex: 1; padding: 40px 5%; overflow-y: auto; }
+        
+        /* GRILLA BENTO */
+        .grid-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 35px; position: relative; }
+        
+        .label { font-size: 0.75rem; color: var(--sub); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .val { font-size: 3rem; font-weight: 800; letter-spacing: -1px; }
+
+        /* META EDITABLE */
+        .edit-btn { cursor: pointer; font-size: 0.9rem; color: var(--sub); transition: 0.3s; }
+        .edit-btn:hover { color: var(--gold); }
+
+        .progress-bar { margin-top: 20px; height: 6px; background: #111; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: 1s; }
+
+        @media(max-width: 800px) { .grid-cards { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="login-card">
+            <h1>QAXI <span>Analytics</span></h1>
+            <form id="loginForm">
+                <input type="email" id="email" class="inp" placeholder="Correo electrónico" required>
+                <input type="password" id="password" class="inp" placeholder="Contraseña" required>
+                <button type="submit" class="btn-gold">ACCEDER AL PANEL</button>
+            </form>
+            <p id="loginError" style="color: #ff4444; font-size: 0.8rem; margin-top: 15px; display: none;">Credenciales incorrectas.</p>
+        </div>
+    </div>
+
+    <div id="app-container">
+        <header class="nav">
+            <div style="font-weight: 900; font-size: 1.2rem; letter-spacing: -1px;">ANALYTICS</div>
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <div style="font-size: 0.8rem; color: #555;" id="userEmailDisplay">...</div>
+                <button id="logoutBtn" style="background: none; border: none; color: #fff; cursor: pointer; font-size: 0.85rem; opacity: 0.4; text-decoration: underline;">Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="grid-cards">
+                <div class="card">
+                    <div class="label">Visitas Totales</div>
+                    <div class="val" id="valVisitas">0</div>
+                    <div style="color: #25D366; font-size: 0.75rem; font-weight: 800; margin-top: 15px;">● DATOS EN VIVO</div>
+                </div>
+
+                <div class="card">
+                    <div class="label">Mensajes de WhatsApp</div>
+                    <div class="val" id="valLeads" style="color: #25D366;">0</div>
+                    <div style="color: #444; font-size: 0.75rem; margin-top: 15px;">Clics registrados</div>
+                </div>
+
+                <div class="card">
+                    <div class="label">
+                        Meta de Visitas Mensual 
+                        <i class="fas fa-pen edit-btn" id="triggerEditMeta" title="Cambiar Meta"></i>
+                    </div>
+                    <div class="val" style="color: var(--gold);" id="displayMeta">1,000</div>
+                    <div class="progress-bar"><div class="progress-fill" id="metaBar"></div></div>
+                </div>
+
+                <div class="card">
+                    <div class="label">Estado del Servicio</div>
+                    <div class="val" style="font-size: 1.8rem; padding-top: 5px;">Activo y Seguro</div>
+                    <div style="color: #444; font-size: 0.75rem; margin-top: 15px;">Protección QAXI Shield</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = { 
+            apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE", 
+            authDomain: "qaxi-93d6d.firebaseapp.com", 
+            projectId: "qaxi-93d6d", 
+            storageBucket: "qaxi-93d6d.firebasestorage.app", 
+            messagingSenderId: "137240859996", 
+            appId: "1:137240859996:web:73e14d28c77233be965d99" 
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentMeta = localStorage.getItem('qaxi_meta') || 1000;
+
+        onAuthStateChanged(auth, (user) => {
+            if(user) {
+                document.getElementById('login-overlay').style.display='none';
+                document.getElementById('app-container').style.display='flex';
+                document.getElementById('userEmailDisplay').innerText = user.email;
+                
+                onSnapshot(doc(db, "analytics", user.email), (snap) => {
+                    if(snap.exists()) updateDashboard(snap.data());
+                });
+            } else {
+                document.getElementById('login-overlay').style.display='flex';
+                document.getElementById('app-container').style.display='none';
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async(e)=>{
+            e.preventDefault();
+            const errorMsg = document.getElementById('loginError');
+            errorMsg.style.display = 'none';
+            try { 
+                await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); 
+            } catch (error) { 
+                errorMsg.style.display = 'block'; 
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                location.reload(); 
+            } catch (error) {
+                console.error("Error al cerrar sesión:", error);
+            }
+        });
+
+        document.getElementById('triggerEditMeta').addEventListener('click', () => {
+            const nueva = prompt("Ingresa el nuevo objetivo de visitas:", currentMeta);
+            if(nueva && !isNaN(nueva)) {
+                currentMeta = nueva;
+                localStorage.setItem('qaxi_meta', nueva);
+                document.getElementById('displayMeta').innerText = parseInt(nueva).toLocaleString();
+                updateProgress(document.getElementById('valVisitas').innerText.replace(/\D/g,''));
+            }
+        });
+
+        function updateDashboard(d) {
+            const v = d.visitas_totales || 0;
+            const l = d.clics_whatsapp || 0;
+            document.getElementById('valVisitas').innerText = v.toLocaleString();
+            document.getElementById('valLeads').innerText = l.toLocaleString();
+            document.getElementById('displayMeta').innerText = parseInt(currentMeta).toLocaleString();
+            updateProgress(v);
+        }
+
+        function updateProgress(v) {
+            const progreso = Math.min((v / currentMeta) * 100, 100);
+            document.getElementById('metaBar').style.width = progreso + "%";
+        }
+    </script>
+</body>
+</html>
