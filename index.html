@@ -728,11 +728,35 @@
                 </ul>
                 <button onclick="initPayment('Plan Estándar', 60000, 'PLAN')" class="cta-btn" style="width: 100%; margin-top: auto; transform: translateZ(30px);">Suscribirme</button>
             </div>
+
+            <div class="pricing-card" style="border-color: var(--gold); box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
+                <div style="position: absolute; top: 0; right: 0; background: var(--gold); color: #000; font-weight: 800; font-size: 0.7rem; padding: 5px 15px; border-bottom-left-radius: 10px;">MEJOR OPCIÓN</div>
+                <h3 style="transform: translateZ(20px); color: var(--gold);">Plan PRO</h3>
+                <div class="price">150.000 COP<span>/Mes</span></div>
+                <p style="transform: translateZ(10px);">Todo incluido + Gestión de Instagram y Apps.</p>
+                <ul class="features-list">
+                    <li><i class="fas fa-check-circle"></i> 1 Página Web</li>
+                    <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
+                    <li><i class="fas fa-check-circle"></i> Hosting privado</li>
+                    <li><i class="fas fa-check-circle"></i> Certificado SSL (Seguridad)</li>
+                    <li><i class="fas fa-check-circle"></i> Integración de IA</li>
+                    <li><i class="fas fa-check-circle"></i> Google Firebase</li>
+                    <li><i class="fas fa-check-circle"></i> Mantenimiento PRO</li>
+                    <li><i class="fas fa-check-circle"></i> Soporte Vía Email o WhatsApp</li>
+                    <li class="highlight-feature"><i class="fab fa-instagram" style="color: var(--gold);"></i> Creación de Red social (Instagram)</li>
+                    <li class="highlight-feature"><i class="fas fa-gift" style="color: var(--gold);"></i> <strong>Todas las Micro-Apps GRATIS</strong></li>
+                    <li class="highlight-feature"><i class="fas fa-camera" style="color: var(--gold);"></i> 10 Post o Stories mensuales para Instagram</li>
+                    <li class="highlight-feature"><i class="fas fa-check-circle" style="color: #1da1f2;"></i> Meta Verified</li>
+                    <li><i class="fas fa-search"></i> Optimización de búsqueda (Instagram)</li>
+                    <li><i class="fas fa-shield-alt"></i> Protección con suplantación de identidad (Instagram)</li>
+                </ul>
+                <button onclick="initPayment('Plan PRO', 150000, 'PLAN')" class="cta-btn" style="width: 100%; margin-top: auto; background: var(--gold); color: #000; transform: translateZ(30px);">Suscribirme PRO</button>
+            </div>
         </div>
     </section>
 
     <section id="traffic" class="traffic-section" style="padding-top: 20px;">
-        <h2 class="section-title">QAXI Traffic <span style="font-size: 0.5em; vertical-align: middle; background: #fff; color: #000; padding: 2px 8px; border-radius: 4px; letter-spacing: 0;">ADQUISICIÓN</span></h2>
+        <h2 class="section-title">QAXI Traffic</h2>
         <div class="premium-card" data-tilt>
             <div class="premium-info">
                 <h3 style="font-size: 2rem; margin-bottom: 15px; line-height: 1.1;">Tu web es el motor,<br>el tráfico es la gasolina.</h3>
@@ -740,7 +764,7 @@
                     Tener una web increíble no sirve de nada si nadie la ve. En QAXI Traffic gestionamos tus campañas publicitarias para llevar clientes reales a tu negocio.
                 </p>
                 <ul class="premium-list">
-                    <li><i class="fas fa-bullhorn"></i> Gestión de campañas en Meta Ads (Facebook & Instagram).</li>
+                    <li><i class="fas fa-bullhorn"></i> Gestión de campañas en Google Ads.</li>
                     <li><i class="fas fa-users-cog"></i> Segmentación precisa de tu público objetivo.</li>
                     <li><i class="fas fa-chart-line"></i> Reportes mensuales de rendimiento y ventas.</li>
                     <li><i class="fas fa-robot"></i> Optimización continua con IA.</li>
@@ -753,7 +777,7 @@
                 <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
                 <div style="font-size: 0.85rem; color: #fff; margin-bottom: 20px;">
                     <i class="fas fa-wallet" style="margin-right: 5px;"></i> 
-                    Tú defines el presupuesto (Lo que pagas a Meta).
+                    Tú defines el presupuesto (Lo que pagas a Google).
                 </div>
                 <button onclick="initPayment('QAXI Traffic', 100000, 'PREMIUM')" class="cta-btn" style="width: 100%;">CONTRATAR GESTIÓN</button>
             </div>
@@ -761,7 +785,7 @@
     </section>
 
     <section id="social" class="social-section" style="padding-top: 0;">
-        <h2 class="section-title">QAXI Social <span style="font-size: 0.5em; vertical-align: middle; background: #fff; color: #000; padding: 2px 8px; border-radius: 4px; letter-spacing: 0;">REDES</span></h2>
+        <h2 class="section-title">QAXI Social</h2>
         <div class="premium-card" data-tilt style="flex-direction: row-reverse;">
             <div class="premium-info">
                 <h3 style="font-size: 2rem; margin-bottom: 15px; line-height: 1.1;">Diseño que enamora,<br>redes que venden.</h3>
@@ -782,7 +806,7 @@
                 <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
                 <div style="font-size: 0.85rem; color: #fff; margin-bottom: 20px;">
                     <i class="fas fa-camera" style="margin-right: 5px;"></i> 
-                    Incluye 30 Posts o Stories.
+                    Incluye Posts o Stories Ilimitados.
                 </div>
                 <button onclick="initPayment('QAXI Social', 200000, 'PREMIUM')" class="cta-btn" style="width: 100%;">CONTRATAR DISEÑO</button>
             </div>
@@ -830,13 +854,6 @@
                 <a onclick="initPayment('Micro-App Botón WA', 10000, 'MICROAPP')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="microapp-card">
-                <div class="ma-icon"><i class="fas fa-robot"></i></div>
-                <div class="ma-title">IA API Key Básica</div>
-                <div class="ma-desc">Inteligencia real en tu web. Respuestas automáticas y textos generados.</div>
-                <div class="ma-price">$50.000 COP</div>
-                <a onclick="initPayment('Micro-App IA API', 50000, 'MICROAPP')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="microapp-card">
                 <div class="ma-icon"><i class="fas fa-calculator"></i></div>
                 <div class="ma-title">Calculadora Básica</div>
                 <div class="ma-desc">Facilita la decisión. Permite que tus clientes calculen costos al vuelo.</div>
@@ -877,6 +894,7 @@
         <div class="footer-contact-icons">
             <a href="mailto:santiagomarenco1005@gmail.com" title="Enviar Correo"><i class="fas fa-envelope"></i></a>
             <a href="https://wa.me/573213526875" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://www.instagram.com/qaxioficial/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
         </div>
         <p>© 2026 · QAXI. Todos los derechos reservados.</p>
         <p>Q.</p>
