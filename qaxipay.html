@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAXI PAY | Checkout Seguro</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="icon.png" type="image/png">
+
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: #0a0a0a;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --gold: #FFD700;
+            --gold-glow: rgba(255, 215, 0, 0.3);
+            --text-muted: #888;
+            --success: #4caf50;
+            --nequi-color: #DA0081;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: #fff; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+
+        /* HEADER OPTIMIZADO */
+        header {
+            padding: 15px 30px; border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(5,5,5,0.9); backdrop-filter: blur(10px); z-index: 50;
+        }
+        .brand { font-weight: 900; letter-spacing: 1px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .brand i { color: var(--gold); }
+        
+        /* BOTÓN REGALOS EN HEADER */
+        .gift-header-btn {
+            background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold);
+            color: var(--gold); padding: 8px 15px; border-radius: 20px;
+            text-decoration: none; font-size: 0.85rem; font-weight: 700;
+            display: flex; align-items: center; gap: 8px; transition: 0.3s;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+        }
+        .gift-header-btn:hover {
+            background: var(--gold); color: #000; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .cancel-link { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: 0.3s; display: flex; align-items: center; gap: 5px; }
+        .cancel-link:hover { color: #fff; }
+
+        /* LAYOUT PRINCIPAL */
+        .main-layout { display: flex; height: 100%; overflow: hidden; }
+
+        /* IZQUIERDA: RESUMEN DEL PEDIDO */
+        .summary-panel {
+            width: 40%; max-width: 500px; background: radial-gradient(circle at top left, #1a1a1a, #050505);
+            border-right: 1px solid var(--border-color); padding: 50px;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .label-sm { font-size: 0.75rem; color: var(--gold); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px; }
+        .prod-title { font-size: 2.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 30px; }
+        
+        .bill-row { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #333; font-size: 0.95rem; }
+        .bill-total { display: flex; justify-content: space-between; font-size: 1.5rem; font-weight: 800; margin-top: 10px; color: #fff; }
+        
+        .security-badge { margin-top: auto; display: flex; gap: 10px; align-items: center; color: #444; font-size: 0.8rem; }
+        .security-badge i { color: var(--gold); }
+
+        /* DERECHA: PASARELA DE PAGO */
+        .payment-panel { flex: 1; padding: 40px 60px; overflow-y: auto; background: var(--bg-color); position: relative; display: flex; flex-direction: column; justify-content: center; }
+        
+        .section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: #eee; }
+        
+        /* TARJETA NEQUI PRO */
+        .nequi-container {
+            background: linear-gradient(145deg, #18051a, #0a0a0a);
+            border: 1px solid #333; border-radius: 16px; padding: 25px; margin-bottom: 30px;
+            position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .nequi-container::after {
+            content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px;
+            background: radial-gradient(circle, rgba(218, 0, 129, 0.2), transparent 70%); pointer-events: none;
+        }
+
+        .nequi-flex { display: flex; align-items: center; gap: 30px; }
+        
+        /* QR GRANDE */
+        .qr-wrapper {
+            background: #fff; padding: 10px; border-radius: 12px; flex-shrink: 0;
+            box-shadow: 0 0 20px rgba(255,255,255,0.05); width: 180px; height: 180px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .qr-wrapper img { width: 100%; height: 100%; object-fit: contain; }
+
+        .nequi-details { flex: 1; }
+        .nequi-label { font-size: 0.75rem; color: #aaa; text-transform: uppercase; margin-bottom: 2px; }
+        .nequi-value { font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 15px; font-family: monospace; letter-spacing: 1px; }
+        
+        .copy-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: #ccc; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;
+            transition: 0.2s; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .copy-btn:hover { background: #fff; color: #000; }
+
+        /* INPUTS */
+        .input-box { position: relative; margin-bottom: 25px; }
+        .input-field {
+            width: 100%; background: #111; border: 1px solid #333; padding: 16px; border-radius: 8px;
+            color: #fff; font-size: 0.95rem; outline: none; transition: 0.3s;
+        }
+        .input-field:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.1); }
+        .btn-check {
+            position: absolute; right: 6px; top: 6px; background: #222; color: #fff;
+            border: 1px solid #333; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;
+        }
+        .btn-check:hover { background: var(--gold); color: #000; border-color: var(--gold); }
+
+        /* WHATSAPP MAIN CTA */
+        .wa-cta {
+            width: 100%; background: #25D366; color: #000; font-weight: 800; padding: 18px;
+            border-radius: 8px; border: none; font-size: 1rem; cursor: pointer; text-decoration: none;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.2); transition: 0.3s; margin-top: 20px;
+        }
+        .wa-cta:hover { background: #1ebc57; transform: translateY(-2px); }
+
+        /* OVERLAY ERROR */
+        .error-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #000; z-index: 5000; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            text-align: center; display: none; 
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            header { padding: 15px 20px; gap: 10px; }
+            .brand span { display: none; }
+            .gift-header-btn span { display: none; }
+            
+            .main-layout { flex-direction: column; overflow-y: auto; }
+            .summary-panel { width: 100%; max-width: none; padding: 30px; border-right: none; border-bottom: 1px solid #222; }
+            .payment-panel { padding: 30px 20px; justify-content: flex-start; }
+            .nequi-flex { flex-direction: column; text-align: center; }
+            .qr-wrapper { width: 200px; height: 200px; margin: 0 auto; }
+            .nequi-details { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="errorOverlay" class="error-overlay">
+        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ff4444; margin-bottom: 20px;"></i>
+        <h2>No has seleccionado un servicio</h2>
+        <p style="color: #888; margin-bottom: 30px; padding: 0 20px;">Por favor vuelve al inicio y selecciona el plan que deseas.</p>
+        <a href="index.html" class="wa-cta" style="background: #fff; width: auto; padding: 12px 30px;">Volver al Inicio</a>
+    </div>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <header>
+        <div class="brand"><i class="fas fa-bolt"></i> QAXI PAY <span style="font-size:0.7rem; background:#222; padding:2px 6px; border-radius:4px; margin-left:5px; color:#888;">SECURE</span></div>
+        
+        <a href="giftcards.html" target="_blank" class="gift-header-btn">
+            <i class="fas fa-gift"></i> <span>Regalos</span>
+        </a>
+
+        <a href="index.html" class="cancel-link"><i class="fas fa-times"></i> Cancelar</a>
+    </header>
+
+    <div class="main-layout">
+        <div class="summary-panel">
+            <div class="label-sm">DETALLE DEL SERVICIO</div>
+            <div class="prod-title" id="prodName">Cargando...</div>
+            
+            <div class="bill-row">
+                <span style="color:#aaa;">Subtotal</span>
+                <span id="prodPrice">$0</span>
+            </div>
+            
+            <div class="bill-row" id="discountRow" style="display:none; border-color: rgba(76,175,80,0.3);">
+                <span style="color: var(--success);">Descuento Partner</span>
+                <span style="color: var(--success);" id="discountVal">-$0</span>
+            </div>
+
+            <div class="bill-total">
+                <span>Total a Pagar</span>
+                <span style="color: var(--gold);" id="finalPrice">$0</span>
+            </div>
+
+            <div id="statusBadge" style="margin-top: 15px; font-size: 0.8rem; background: #111; padding: 10px; border-radius: 6px; color: #aaa; display: none; text-align: center;"></div>
+
+            <div class="security-badge">
+                <i class="fas fa-lock"></i> Transacción encriptada.
+            </div>
+        </div>
+
+        <div class="payment-panel">
+            
+            <div id="paymentInterface">
+                <div class="section-title">
+                    <i class="fas fa-university"></i> Transferencia Nequi
+                </div>
+
+                <div class="nequi-container">
+                    <div class="nequi-flex">
+                        <div class="qr-wrapper">
+                            <img src="qr-nequi.png" alt="Escanea QR Nequi">
+                        </div>
+                        
+                        <div class="nequi-details">
+                            <div style="margin-bottom: 15px;">
+                                <div class="nequi-label">Celular</div>
+                                <div class="nequi-value">321 352 6875</div>
+                                <button class="copy-btn" onclick="copyToClip('3213526875')"><i class="far fa-copy"></i> Copiar</button>
+                            </div>
+                            
+                            <div>
+                                <div class="nequi-label">Llave (Key)</div>
+                                <div class="nequi-value" style="color: var(--gold);">0078572351</div>
+                                <button class="copy-btn" onclick="copyToClip('0078572351')"><i class="far fa-copy"></i> Copiar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <div class="section-title"><i class="fas fa-user-friends"></i> Código de Socio</div>
+                <div class="input-box">
+                    <input type="text" id="code" class="input-field" placeholder="Ingresa tu Código Partner">
+                    <button class="btn-check" onclick="verifyCode()" id="btnVerify">APLICAR</button>
+                </div>
+                <div id="codeMsg" style="font-size: 0.85rem; height: 20px;"></div>
+            </div>
+
+            <a id="waLink" href="#" target="_blank" class="wa-cta">
+                <i class="fab fa-whatsapp"></i> Enviar Comprobante y Activar
+            </a>
+
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // CONFIGURACIÓN
+        const MY_PHONE = "3213526875"; 
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
+            authDomain: "qaxi-93d6d.firebaseapp.com",
+            projectId: "qaxi-93d6d",
+            storageBucket: "qaxi-93d6d.firebasestorage.app",
+            messagingSenderId: "137240859996",
+            appId: "1:137240859996:web:73e14d28c77233be965d99",
+            measurementId: "G-C74Z1DWV54"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // LEER URL
+        const params = new URLSearchParams(window.location.search);
+        
+        // VALIDAR SI HAY DATOS (SI NO, MOSTRAR ERROR)
+        if (!params.has('p') || !params.has('v')) {
+            document.getElementById('errorOverlay').style.display = 'flex';
+        }
+
+        const pName = params.get('p') || 'Servicio QAXI';
+        const pPrice = parseInt(params.get('v')) || 0;
+        const pType = params.get('t') || 'OTRO';
+
+        let currentPrice = pPrice;
+        let activeCode = "";
+
+        // INICIALIZAR UI
+        document.getElementById('prodName').innerText = pName;
+        document.getElementById('prodPrice').innerText = format(pPrice);
+        updateTotal();
+
+        function format(val) { return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(val); }
+
+        function updateTotal() {
+            document.getElementById('finalPrice').innerText = format(currentPrice);
+            
+            let msg = `Hola QAXI, envío comprobante de pago.\n\nServicio: ${pName}\nValor Transferido: ${format(currentPrice)}\n`;
+            if(activeCode) msg += `Código Partner Aplicado: ${activeCode}\n`;
+            msg += `Adjunto mi captura de Nequi.`;
+            
+            document.getElementById('waLink').href = `https://wa.me/57${MY_PHONE}?text=${encodeURIComponent(msg)}`;
+        }
+
+        window.copyToClip = (text) => {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Copiado: " + text);
+            });
+        };
+
+        // --- VALIDACIÓN SOLO PARTNERS ---
+        window.verifyCode = async () => {
+            const codeInput = document.getElementById('code');
+            const code = codeInput.value.trim().toUpperCase();
+            const btn = document.getElementById('btnVerify');
+            const msg = document.getElementById('codeMsg');
+            
+            if(!code) return;
+            
+            btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i>"; 
+            btn.disabled = true;
+            msg.innerText = "Verificando socio...";
+            msg.style.color = "#aaa";
+
+            try {
+                const q = query(collection(db, "partners"), where("code", "==", code));
+                const snap = await getDocs(q);
+
+                if(!snap.empty) {
+                    let discount = 0;
+                    if (pType === 'PLAN') discount = 0.15;
+                    else if (pType === 'PREMIUM') discount = 0.20;
+                    else if (pType === 'MICROAPP') discount = 0.05;
+                    else discount = 0.10; // Default
+
+                    const saving = pPrice * discount;
+                    currentPrice = pPrice - saving;
+                    activeCode = code; 
+
+                    document.getElementById('discountRow').style.display = 'flex';
+                    document.getElementById('discountVal').innerText = `-${format(saving)}`;
+
+                    const badge = document.getElementById('statusBadge');
+                    badge.style.display = 'block';
+                    badge.innerHTML = `<i class='fas fa-user-friends'></i> Socio <strong>${code}</strong> verificado.`;
+                    badge.style.color = "#4caf50";
+                    
+                    msg.innerHTML = "<span style='color: #4caf50'>Descuento de socio aplicado.</span>";
+                    updateTotal();
+                } else {
+                    currentPrice = pPrice; activeCode = "";
+                    document.getElementById('discountRow').style.display = 'none';
+                    document.getElementById('statusBadge').style.display = 'none';
+                    msg.innerHTML = "<span style='color: #ff4444'>Código de socio no válido.</span>";
+                    updateTotal();
+                }
+            } catch(e) {
+                console.error(e);
+                msg.innerText = "Error de conexión.";
+                msg.style.color = "#ff4444";
+            }
+            btn.innerText = "APLICAR"; 
+            btn.disabled = false;
+        };
+
+        // PARTICULAS
+        const canvas = document.getElementById("particles-canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particlesArray = [];
+        class Particle {
+            constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.dX=(Math.random()*0.2)-0.1; this.dY=(Math.random()*0.2)-0.1; }
+            update() { if(this.x>canvas.width||this.x<0) this.dX=-this.dX; if(this.y>canvas.height||this.y<0) this.dY=-this.dY; this.x+=this.dX; this.y+=this.dY; ctx.beginPath(); ctx.arc(this.x, this.y, 1, 0, Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.1)'; ctx.fill(); }
+        }
+        function init(){ particlesArray=[]; for(let i=0;i<60;i++){ particlesArray.push(new Particle()); } }
+        function animate(){ requestAnimationFrame(animate); ctx.clearRect(0,0,canvas.width,canvas.height); particlesArray.forEach(p => p.update()); }
+        init(); animate();
+
+    </script>
+</body>
+</html>
