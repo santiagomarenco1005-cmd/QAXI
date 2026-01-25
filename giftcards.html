@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarjetas de Regalo | QAXI</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="icon.png" type="image/png">
+
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1a1;
+            --gold: #FFD700;
+            --blue: #4285F4;
+            --pink: #d6249f;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; }
+
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+
+        header {
+            position: fixed; top: 0; width: 100%; padding: 20px; display: flex; justify-content: center;
+            background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(20px); z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .logo img { height: 50px; }
+
+        .hero { padding: 140px 20px 40px; text-align: center; }
+        .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 0; }
+        /* TEXTO ELIMINADO AQUÍ */
+        
+        .cards-section { padding: 40px 5%; perspective: 1500px; }
+        .cards-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 50px; justify-items: center; max-width: 1200px; margin: 0 auto;
+        }
+
+        /* --- ESTRUCTURA 3D FLIP --- */
+        .gift-card-wrapper {
+            width: 100%; max-width: 350px; aspect-ratio: 1.586/1;
+            position: relative; transform-style: preserve-3d; 
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer; border-radius: 15px;
+        }
+
+        .gift-card-wrapper:hover { transform: translateY(-15px) rotateX(5deg); }
+        .gift-card-wrapper.flipped { transform: rotateY(180deg); }
+
+        /* Caras de la tarjeta */
+        .gift-card-face {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            border-radius: 15px; padding: 25px; display: flex; flex-direction: column; justify-content: space-between;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); overflow: hidden;
+        }
+
+        /* EFECTO HOLOGRÁFICO */
+        .gc-front::after {
+            content: ''; position: absolute; top: 0; left: -150%; width: 200%; height: 100%;
+            background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+            transform: skewX(-25deg); pointer-events: none; transition: none;
+        }
+        .gift-card-wrapper:hover .gc-front::after { animation: shimmer 1.5s infinite; }
+        @keyframes shimmer {
+            0% { left: -150%; opacity: 0; } 50% { opacity: 1; } 100% { left: 150%; opacity: 0; }
+        }
+
+        /* --- CARA FRONTAL --- */
+        .gc-front { transform: rotateY(0deg); z-index: 2; }
+        .gc-standard .gc-front { background: linear-gradient(135deg, #1a1a1a 0%, #000 100%); }
+        .gc-traffic .gc-front { background: linear-gradient(135deg, #1a2a3a 0%, #000 100%); border: 1px solid var(--blue); }
+        .gc-social .gc-front { background: linear-gradient(135deg, #2a0825 0%, #1a051a 100%); border: 1px solid var(--pink); }
+
+        /* Elementos Frontales con Paralaje */
+        .gc-chip, .gc-title-group, .gc-value, .gc-footer { transition: transform 0.4s ease-out; }
+        .gc-bg-logo { position: absolute; right: -20px; bottom: -30px; font-size: 10rem; font-weight: 900; color: rgba(255,255,255,0.03); pointer-events: none; transform: translateZ(0); }
+        
+        .gc-chip { 
+            width: 45px; height: 35px; background: linear-gradient(135deg, #d4af37, #aa8e26); 
+            border-radius: 5px; margin-bottom: 10px; opacity: 0.9; 
+            transform: translateZ(20px); box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+        .gift-card-wrapper:hover .gc-chip { transform: translateZ(50px) scale(1.1); }
+
+        .gc-title-group { transform: translateZ(30px); }
+        .gift-card-wrapper:hover .gc-title-group { transform: translateZ(70px); }
+
+        .gc-title { font-size: 1.2rem; font-weight: 700; color: #fff; line-height: 1.1; margin-bottom: 5px; }
+        .gc-subtitle { font-size: 0.7rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        
+        .gc-value { 
+            font-size: 1.8rem; font-weight: 800; color: #fff; margin-top: auto; 
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5); transform: translateZ(40px); 
+        }
+        .gift-card-wrapper:hover .gc-value { transform: translateZ(90px); }
+
+        .gc-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 15px; transform: translateZ(20px); }
+        .gift-card-wrapper:hover .gc-footer { transform: translateZ(50px); }
+
+        .gc-logo-small { font-weight: 900; font-size: 1rem; letter-spacing: 2px; }
+        .tap-hint { font-size: 0.7rem; color: var(--gold); margin-top: 10px; text-align: center; animation: pulse 2s infinite; }
+
+        /* --- CARA TRASERA MEJORADA (Distribución arreglada) --- */
+        .gc-back {
+            transform: rotateY(180deg); background: #080808; z-index: 1;
+            display: flex; flex-direction: column; align-items: center; 
+            /* Cambiado a space-evenly para mejor distribución vertical */
+            justify-content: space-evenly; 
+            text-align: center;
+            padding: 20px 15px; /* Padding ajustado */
+        }
+        
+        .gc-standard.flipped .gc-back { box-shadow: 0 0 40px rgba(255, 215, 0, 0.2) inset; border-color: var(--gold); }
+        .gc-traffic.flipped .gc-back { box-shadow: 0 0 40px rgba(66, 133, 244, 0.2) inset; border-color: var(--blue); }
+        .gc-social.flipped .gc-back { box-shadow: 0 0 40px rgba(214, 36, 159, 0.2) inset; border-color: var(--pink); }
+
+        /* Icono Principal (Ajustado de tamaño para que quepa todo) */
+        .back-icon {
+            font-size: 2.5rem; /* Reducido de 3rem a 2.5rem */
+            margin-bottom: 5px; 
+            transform: translateZ(40px);
+        }
+
+        .gc-back h3 { margin-bottom: 5px; font-size: 1.1rem; transform: translateZ(30px); }
+        
+        .gc-desc { 
+            font-size: 0.85rem; color: #ccc; 
+            margin-bottom: 10px; padding: 0 5px; 
+            transform: translateZ(20px);
+            line-height: 1.4;
+        }
+        
+        .pay-btn {
+            padding: 10px 25px; border-radius: 30px; font-weight: 800; text-decoration: none; 
+            transition: 0.3s; border: none; cursor: pointer; color: #000; transform: translateZ(50px);
+            font-size: 0.9rem; margin-top: 5px; width: 80%; /* Botón un poco más ancho */
+        }
+        .pay-btn:hover { transform: translateZ(70px) scale(1.05); color: #000; background: #fff !important; }
+
+        .close-flip { position: absolute; top: 12px; right: 12px; color: #555; cursor: pointer; font-size: 1.1rem; transition: 0.3s; transform: translateZ(30px); }
+        .close-flip:hover { color: #fff; transform: translateZ(50px) rotate(90deg); }
+
+        @keyframes pulse { 0% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.5; transform: scale(1); } }
+        footer { text-align: center; padding: 40px; border-top: 1px solid #222; color: #666; font-size: 0.8rem; margin-top: 50px; }
+    </style>
+</head>
+<body>
+    <canvas id="particles-canvas"></canvas>
+
+    <header>
+        <div class="logo"><a href="index.html"><img src="icon.png" alt="QAXI"></a></div>
+    </header>
+
+    <div class="hero">
+        <h1>REGALA EL <span style="color: var(--gold);">FUTURO</span></h1>
+        </div>
+
+    <div class="cards-section">
+        <div class="cards-grid">
+            
+            <div class="gift-card-wrapper gc-standard" onclick="flipCard(this)">
+                <div class="gift-card-face gc-front">
+                    <div class="gc-bg-logo">Q</div>
+                    <div class="gc-chip"></div>
+                    <div class="gc-title-group">
+                        <div class="gc-title">Plan Estándar</div>
+                        <div class="gc-subtitle">SUSCRIPCIÓN (1 MES)</div>
+                    </div>
+                    <div class="gc-value">$60.000 COP</div>
+                    <div class="gc-footer">
+                        <div class="tap-hint"><i class="fas fa-sync-alt"></i> Toca para voltear</div>
+                        <div class="gc-logo-small">QAXI GIFT</div>
+                    </div>
+                </div>
+                <div class="gift-card-face gc-back">
+                    <i class="fas fa-times close-flip" onclick="flipCard(this.parentElement.parentElement); event.stopPropagation();"></i>
+                    <i class="fas fa-rocket back-icon" style="color: var(--gold);"></i>
+                    <h3 style="color: var(--gold);">El Impulso Inicial</h3>
+                    <p class="gc-desc">Esta tarjeta es válida únicamente por <strong>1 MES</strong> de servicio web completo (Diseño + Hosting + Dominio).</p>
+                    <button class="pay-btn" style="background: var(--gold); box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);" onclick="redirectToPay('Gift Card Plan Estándar (1 Mes)', 60000); event.stopPropagation();">
+                        PAGAR AHORA
+                    </button>
+                </div>
+            </div>
+
+            <div class="gift-card-wrapper gc-traffic" onclick="flipCard(this)">
+                <div class="gift-card-face gc-front">
+                    <div class="gc-bg-logo">Q</div>
+                    <div class="gc-chip"></div>
+                    <div class="gc-title-group">
+                        <div class="gc-title">QAXI Traffic</div>
+                        <div class="gc-subtitle">GESTIÓN ADS (1 MES)</div>
+                    </div>
+                    <div class="gc-value">$100.000 COP</div>
+                    <div class="gc-footer">
+                        <div class="tap-hint"><i class="fas fa-sync-alt"></i> Toca para voltear</div>
+                        <div class="gc-logo-small">QAXI GIFT</div>
+                    </div>
+                </div>
+                <div class="gift-card-face gc-back">
+                    <i class="fas fa-times close-flip" onclick="flipCard(this.parentElement.parentElement); event.stopPropagation();"></i>
+                    <i class="fas fa-bullseye back-icon" style="color: var(--blue);"></i>
+                    <h3 style="color: var(--blue);">Tráfico Real</h3>
+                    <p class="gc-desc">Incluye la gestión profesional de campañas en Meta Ads durante <strong>1 MES</strong>.</p>
+                    <button class="pay-btn" style="background: var(--blue); color: #fff; box-shadow: 0 5px 15px rgba(66, 133, 244, 0.3);" onclick="redirectToPay('Gift Card QAXI Traffic (1 Mes)', 100000); event.stopPropagation();">
+                        PAGAR AHORA
+                    </button>
+                </div>
+            </div>
+
+            <div class="gift-card-wrapper gc-social" onclick="flipCard(this)">
+                <div class="gift-card-face gc-front">
+                    <div class="gc-bg-logo">Q</div>
+                    <div class="gc-chip"></div>
+                    <div class="gc-title-group">
+                        <div class="gc-title">QAXI Social</div>
+                        <div class="gc-subtitle">DISEÑO REDES (1 MES)</div>
+                    </div>
+                    <div class="gc-value">$200.000 COP</div>
+                    <div class="gc-footer">
+                        <div class="tap-hint"><i class="fas fa-sync-alt"></i> Toca para voltear</div>
+                        <div class="gc-logo-small">QAXI GIFT</div>
+                    </div>
+                </div>
+                <div class="gift-card-face gc-back">
+                    <i class="fas fa-times close-flip" onclick="flipCard(this.parentElement.parentElement); event.stopPropagation();"></i>
+                    <i class="fas fa-palette back-icon" style="color: var(--pink);"></i>
+                    <h3 style="color: var(--pink);">Imagen de Marca</h3>
+                    <p class="gc-desc">Válido por <strong>1 MES</strong> de servicio de diseño gráfico (30 piezas para redes sociales).</p>
+                    <button class="pay-btn" style="background: var(--pink); color: #fff; box-shadow: 0 5px 15px rgba(214, 36, 159, 0.3);" onclick="redirectToPay('Gift Card QAXI Social (1 Mes)', 200000); event.stopPropagation();">
+                        PAGAR AHORA
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer><p>© 2025 QAXI Gifts.</p></footer>
+
+    <script>
+        // FUNCIÓN PARA GIRAR LA TARJETA
+        function flipCard(cardWrapper) {
+            cardWrapper.classList.toggle('flipped');
+        }
+
+        // FUNCIÓN DE PAGO
+        function redirectToPay(name, price) {
+            window.location.href = `qaxipay.html?p=${encodeURIComponent(name)}&v=${price}&t=GIFT_PURCHASE`;
+        }
+
+        // Partículas de fondo
+        const canvas = document.getElementById("particles-canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particlesArray = [];
+        class Particle {
+            constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.dX=(Math.random()*0.2)-0.1; this.dY=(Math.random()*0.2)-0.1; }
+            update() { if(this.x>canvas.width||this.x<0) this.dX=-this.dX; if(this.y>canvas.height||this.y<0) this.dY=-this.dY; this.x+=this.dX; this.y+=this.dY; ctx.beginPath(); ctx.arc(this.x, this.y, 1.5, 0, Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.fill(); }
+        }
+        function init(){ particlesArray=[]; for(let i=0;i<80;i++){ particlesArray.push(new Particle()); } }
+        function animate(){ requestAnimationFrame(animate); ctx.clearRect(0,0,canvas.width,canvas.height); particlesArray.forEach(p => p.update()); }
+        init(); animate();
+    </script>
+</body>
+</html>
