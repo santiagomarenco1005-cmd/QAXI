@@ -64,7 +64,6 @@
             pointer-events: none;
         }
         
-        /* Efecto de respiración sutil en el fondo */
         body::before {
             content: '';
             position: fixed;
@@ -684,6 +683,11 @@
                     <li><a href="#traffic" class="nav-link" style="color: #fff; font-weight: 700;">Traffic</a></li>
                     <li><a href="#social" class="nav-link" style="color: #fff; font-weight: 700;">Social</a></li>
                     <li><a href="#founder" class="nav-link">Manifiesto</a></li>
+                    <li>
+                        <a href="qaxi_analytics.html" class="nav-link" target="_blank" style="display:flex; align-items:center; gap:5px; color:var(--gold);">
+                            <i class="fas fa-chart-pie"></i> Analytics
+                        </a>
+                    </li>
                     <li><a href="giftcards.html" class="nav-link" style="color: var(--gold);"><i class="fas fa-gift"></i> Regalos</a></li>
                     <li><a href="partners.html" class="nav-link" style="color: var(--gold); font-weight: 700; text-shadow: 0 0 10px rgba(255,215,0,0.2);">Partners</a></li>
                 </ul>
@@ -703,9 +707,6 @@
         <div class="hero-btns">
             <a href="https://wa.me/573213526875" target="_blank" class="cta-btn" style="font-size: 1.1rem; padding: 15px 30px; background-color: #25D366; border-color: #25D366; color: white;"><i class="fab fa-whatsapp"></i> WhatsApp</a>
             <a href="#pricing" class="cta-btn" style="font-size: 1.1rem; padding: 15px 30px; background: transparent; border: 1px solid #fff; color: #fff;">Ver Planes</a>
-        </div>
-        <div style="margin-top: 20px;">
-            <a onclick="openTutorialModal()" class="cta-btn" style="background: transparent; border: 1px solid rgba(255,255,255,0.3); font-size: 0.8rem; padding: 8px 15px; cursor: pointer;"><i class="fas fa-play"></i> Cómo funciona</a>
         </div>
     </section>
 
@@ -806,7 +807,7 @@
                 <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
                 <div style="font-size: 0.85rem; color: #fff; margin-bottom: 20px;">
                     <i class="fas fa-camera" style="margin-right: 5px;"></i> 
-                    Incluye Posts o Stories Ilimitados.
+                    30 Posts o Stories al mes (No acumulables).
                 </div>
                 <button onclick="initPayment('QAXI Social', 200000, 'PREMIUM')" class="cta-btn" style="width: 100%;">CONTRATAR DISEÑO</button>
             </div>
@@ -943,6 +944,10 @@
                  <div id="no-web-msg" style="color: #666; font-size: 0.9rem; margin-top: 20px; display: none;">
                     Tu servicio se está configurando. Te notificaremos cuando esté listo.
                 </div>
+
+                <a href="qaxi_analytics.html" target="_blank" class="cta-btn" style="background: var(--gold); color: #000; margin-top: 15px; width: 100%; text-align: center; display: block; text-decoration: none;">
+                    <i class="fas fa-chart-line"></i> Abrir QAXI Analytics
+                </a>
             </div>
             <button id="btnLogout" class="cta-btn" style="background: #333; margin-top: 20px; width: 100%;">Cerrar Sesión</button>
         </div>
@@ -1315,6 +1320,47 @@
             if (event.target == dashboardModal) window.closeDashboardModal();
             if (event.target == tutorialModal) window.closeTutorialModal();
         }
+    </script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfigCompat = {
+            apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
+            projectId: "qaxi-93d6d",
+            storageBucket: "qaxi-93d6d.firebasestorage.app",
+            messagingSenderId: "137240859996",
+            appId: "1:137240859996:web:73e14d28c77233be965d99"
+        };
+        firebase.initializeApp(firebaseConfigCompat);
+        const dbCompat = firebase.firestore();
+
+        // IMPORTANTE: Este correo debe ser el mismo con el que entras al panel
+        const CLIENT_ID = "santiagomarenco1005@icloud.com"; 
+
+        function registrarVisita() {
+            const fechaHoy = new Date().toISOString().split('T')[0];
+            const esMovil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const dispositivo = esMovil ? "mobile" : "desktop";
+            
+            const docRef = dbCompat.collection("analytics").doc(CLIENT_ID);
+
+            docRef.set({
+                visitas_totales: firebase.firestore.FieldValue.increment(1),
+                historial: { [fechaHoy]: firebase.firestore.FieldValue.increment(1) },
+                dispositivos: { [dispositivo]: firebase.firestore.FieldValue.increment(1) },
+                ultima_conexion: new Date()
+            }, { merge: true });
+        }
+        registrarVisita();
+
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('a[href*="wa.me"]')) {
+                dbCompat.collection("analytics").doc(CLIENT_ID).set({
+                    clics_whatsapp: firebase.firestore.FieldValue.increment(1)
+                }, { merge: true });
+            }
+        });
     </script>
 </body>
 </html>
