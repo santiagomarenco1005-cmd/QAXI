@@ -573,6 +573,127 @@
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
+        /* ESTILOS MEJORADOS PARA EL DASHBOARD */
+        .dashboard-card {
+            background: linear-gradient(145deg, #111 0%, #050505 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .dash-header {
+            padding: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .dash-user-info {
+            text-align: left;
+        }
+
+        .dash-label {
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .dash-email {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .dash-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--gold);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .dash-body {
+            padding: 30px;
+        }
+
+        .dash-status-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .plan-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .web-access-area {
+            text-align: center;
+        }
+
+        .web-btn-big {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #fff;
+            color: #000;
+            width: 100%;
+            padding: 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 1rem;
+            margin-top: 10px;
+            box-shadow: 0 5px 20px rgba(255,255,255,0.1);
+        }
+
+        .web-btn-big:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+        }
+
+        .dash-footer {
+            padding: 20px 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: right;
+        }
+
+        .logout-link {
+            color: #ff4444;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .logout-link:hover {
+            color: #ff6666;
+            text-decoration: underline;
+        }
+
         .close {
             color: #aaa;
             float: right;
@@ -583,6 +704,7 @@
             top: 15px;
             right: 20px;
             transition: 0.3s;
+            z-index: 10;
         }
 
         .close:hover {
@@ -683,11 +805,6 @@
                     <li><a href="#traffic" class="nav-link" style="color: #fff; font-weight: 700;">Traffic</a></li>
                     <li><a href="#social" class="nav-link" style="color: #fff; font-weight: 700;">Social</a></li>
                     <li><a href="#founder" class="nav-link">Manifiesto</a></li>
-                    <li>
-                        <a href="qaxi_analytics.html" class="nav-link" target="_blank" style="display:flex; align-items:center; gap:5px; color:var(--gold);">
-                            <i class="fas fa-chart-pie"></i> Analytics
-                        </a>
-                    </li>
                     <li><a href="giftcards.html" class="nav-link" style="color: var(--gold);"><i class="fas fa-gift"></i> Regalos</a></li>
                     <li><a href="partners.html" class="nav-link" style="color: var(--gold); font-weight: 700; text-shadow: 0 0 10px rgba(255,215,0,0.2);">Partners</a></li>
                 </ul>
@@ -724,7 +841,6 @@
                     <li><i class="fas fa-check-circle"></i> Certificado SSL (Seguridad)</li>
                     <li class="highlight-feature"><i class="fas fa-check-circle"></i> Integración de IA</li>
                     <li class="highlight-feature"><i class="fas fa-check-circle"></i> Google Firebase</li>
-                    <li class="highlight-feature"><i class="fas fa-chart-pie"></i> QAXI Analytics</li>
                     <li class="highlight-feature"><i class="fas fa-check-circle"></i> Mantenimiento PRO</li>
                     <li><i class="fas fa-check-circle"></i> Soporte Vía Email o WhatsApp</li>
                 </ul>
@@ -743,7 +859,6 @@
                     <li><i class="fas fa-check-circle"></i> Certificado SSL (Seguridad)</li>
                     <li><i class="fas fa-check-circle"></i> Integración de IA</li>
                     <li><i class="fas fa-check-circle"></i> Google Firebase</li>
-                    <li class="highlight-feature"><i class="fas fa-chart-pie" style="color: var(--gold);"></i> <strong>QAXI Analytics PRO</strong></li>
                     <li><i class="fas fa-check-circle"></i> Mantenimiento PRO</li>
                     <li><i class="fas fa-check-circle"></i> Soporte Vía Email o WhatsApp</li>
                     <li class="highlight-feature"><i class="fab fa-instagram" style="color: var(--gold);"></i> Creación de Red social (Instagram)</li>
@@ -769,7 +884,6 @@
                 <ul class="premium-list">
                     <li><i class="fas fa-bullhorn"></i> Gestión de campañas en Google Ads.</li>
                     <li><i class="fas fa-users-cog"></i> Segmentación precisa de tu público objetivo.</li>
-                    <li><i class="fas fa-chart-pie"></i> Acceso total a QAXI Analytics.</li>
                     <li><i class="fas fa-chart-line"></i> Reportes mensuales de rendimiento y ventas.</li>
                     <li><i class="fas fa-robot"></i> Optimización continua con IA.</li>
                 </ul>
@@ -871,13 +985,6 @@
                 <div class="ma-price">$35.000 COP</div>
                 <a onclick="initPayment('Micro-App Portafolio', 35000, 'MICROAPP')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
             </div>
-            <div class="microapp-card">
-                <div class="ma-icon"><i class="fas fa-pen-nib"></i></div>
-                <div class="ma-title">Diseño de Logo</div>
-                <div class="ma-desc">Creamos la cara de tu marca. Diseño vectorial, moderno y escalable para cualquier formato.</div>
-                <div class="ma-price">$80.000 COP</div>
-                <a onclick="initPayment('Micro-App Logo', 80000, 'MICROAPP')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
-            </div>
         </div>
     </section>
 
@@ -928,31 +1035,40 @@
     </div>
 
     <div id="dashboardModal" class="modal">
-        <div class="modal-content" style="max-width: 500px; text-align: left;">
-            <span class="close" onclick="closeDashboardModal()">&times;</span>
-            <h2 style="margin-bottom: 25px; font-weight: 800; letter-spacing: -1px;">Panel de Cliente</h2>
-            <div class="dashboard-info">
-                <div class="dashboard-label">Usuario Activo</div>
-                <div class="dashboard-value" id="dashEmail">cargando...</div>
-                
-                <div class="dashboard-label">Servicio Contratado</div>
-                <div class="dashboard-value"><span id="dashStatus" class="plan-tag">CARGANDO...</span></div>
-                
-                <div id="web-section" style="display: none;">
-                    <div class="web-access-box">
-                        <div style="font-size: 0.7rem; font-weight: 800; letter-spacing: 1px;">TU PÁGINA WEB ESTÁ LISTA</div>
-                        <a href="#" id="webLinkBtn" target="_blank" class="web-btn">VISITAR MI SITIO WEB <i class="fas fa-external-link-alt"></i></a>
-                    </div>
+        <div class="modal-content dashboard-card">
+            <span class="close" style="top: 25px; right: 25px;" onclick="closeDashboardModal()">&times;</span>
+            
+            <div class="dash-header">
+                <div class="dash-user-info">
+                    <div class="dash-label">CLIENTE ID</div>
+                    <div class="dash-email" id="dashEmail">cargando...</div>
                 </div>
-                 <div id="no-web-msg" style="color: #666; font-size: 0.9rem; margin-top: 20px; display: none;">
-                    Tu servicio se está configurando. Te notificaremos cuando esté listo.
+                <div class="dash-avatar">Q</div>
+            </div>
+
+            <div class="dash-body">
+                <div class="dash-status-container">
+                    <div class="dash-label" style="margin:0;">ESTADO DEL SERVICIO:</div>
+                    <span id="dashStatus" class="plan-badge">CARGANDO...</span>
                 </div>
 
-                <a href="qaxi_analytics.html" target="_blank" class="cta-btn" style="background: var(--gold); color: #000; margin-top: 15px; width: 100%; text-align: center; display: block; text-decoration: none;">
-                    <i class="fas fa-chart-line"></i> Abrir QAXI Analytics
-                </a>
+                <div id="web-section" style="display: none;">
+                    <div class="web-access-area">
+                        <div style="font-size: 0.8rem; color:#aaa; margin-bottom:5px;">Tu sitio web está activo</div>
+                        <a href="#" id="webLinkBtn" target="_blank" class="web-btn-big">
+                            VISITAR MI SITIO WEB <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+                 <div id="no-web-msg" style="color: #666; font-size: 0.9rem; text-align: center; padding: 20px; border: 1px dashed #333; border-radius: 10px;">
+                    <i class="fas fa-hammer"></i><br>
+                    Tu servicio se está configurando. Te notificaremos cuando esté listo.
+                </div>
             </div>
-            <button id="btnLogout" class="cta-btn" style="background: #333; margin-top: 20px; width: 100%;">Cerrar Sesión</button>
+
+            <div class="dash-footer">
+                <div id="btnLogout" class="logout-link">Cerrar Sesión</div>
+            </div>
         </div>
     </div>
 
@@ -1032,7 +1148,6 @@
         const authForm = document.getElementById('authForm');
         const emailInput = document.getElementById('email');
         const passInput = document.getElementById('password');
-        // const toggleBtn = ... (removed);
         const authTitle = document.getElementById('authTitle');
         const authError = document.getElementById('authError');
         const authBtn = document.getElementById('authBtn');
@@ -1259,8 +1374,6 @@
             }
         });
 
-        // Toggle logic removed
-
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = emailInput.value;
@@ -1323,47 +1436,6 @@
             if (event.target == dashboardModal) window.closeDashboardModal();
             if (event.target == tutorialModal) window.closeTutorialModal();
         }
-    </script>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script>
-        const firebaseConfigCompat = {
-            apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
-            projectId: "qaxi-93d6d",
-            storageBucket: "qaxi-93d6d.firebasestorage.app",
-            messagingSenderId: "137240859996",
-            appId: "1:137240859996:web:73e14d28c77233be965d99"
-        };
-        firebase.initializeApp(firebaseConfigCompat);
-        const dbCompat = firebase.firestore();
-
-        // IMPORTANTE: Este correo debe ser el mismo con el que entras al panel
-        const CLIENT_ID = "santiagomarenco1005@icloud.com"; 
-
-        function registrarVisita() {
-            const fechaHoy = new Date().toISOString().split('T')[0];
-            const esMovil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            const dispositivo = esMovil ? "mobile" : "desktop";
-            
-            const docRef = dbCompat.collection("analytics").doc(CLIENT_ID);
-
-            docRef.set({
-                visitas_totales: firebase.firestore.FieldValue.increment(1),
-                historial: { [fechaHoy]: firebase.firestore.FieldValue.increment(1) },
-                dispositivos: { [dispositivo]: firebase.firestore.FieldValue.increment(1) },
-                ultima_conexion: new Date()
-            }, { merge: true });
-        }
-        registrarVisita();
-
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('a[href*="wa.me"]')) {
-                dbCompat.collection("analytics").doc(CLIENT_ID).set({
-                    clics_whatsapp: firebase.firestore.FieldValue.increment(1)
-                }, { merge: true });
-            }
-        });
     </script>
 </body>
 </html>
