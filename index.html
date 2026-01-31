@@ -402,79 +402,6 @@
             font-weight: 600;
         }
 
-        /* --- MICRO APPS --- */
-        .microapps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 25px;
-        }
-        
-        .microapp-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--glass-border);
-            padding: 30px 20px;
-            border-radius: 16px;
-            text-align: center;
-            transition: 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .microapp-card:hover {
-            background: rgba(255,255,255,0.04);
-            border-color: var(--gold);
-            transform: translateY(-5px);
-        }
-        
-        .ma-icon {
-            font-size: 2rem;
-            color: var(--gold);
-            margin-bottom: 15px;
-        }
-        
-        .ma-title {
-            font-weight: 700;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-        
-        .ma-desc {
-            color: #888;
-            font-size: 0.85rem;
-            margin-bottom: 15px;
-            line-height: 1.5;
-            flex-grow: 1;
-        }
-        
-        .ma-price {
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: #fff;
-            margin-bottom: 15px;
-        }
-        
-        .ma-btn {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #fff; 
-            padding: 8px 20px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 0.8rem; 
-            transition: 0.3s;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .ma-btn:hover {
-            background: var(--gold);
-            color: #000;
-            border-color: var(--gold);
-        }
-
         /* --- FOUNDER / MANIFIESTO --- */
         .founder-section {
             margin-top: 100px;
@@ -575,57 +502,131 @@
 
         /* ESTILOS MEJORADOS PARA EL DASHBOARD */
         .dashboard-card {
-            background: linear-gradient(145deg, #111 0%, #050505 100%);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 25px;
+            background: #050505; /* Fondo solido elegante */
+            border: 1px solid rgba(255,255,255,0.08); /* Borde sutil */
+            border-radius: 30px; /* Bordes mas redondeados */
             padding: 0;
             overflow: hidden;
             width: 100%;
-            max-width: 500px;
+            max-width: 420px; /* Un poco mas angosto para elegancia */
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 20;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .close-modal-btn:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            transform: rotate(90deg);
         }
 
         .dash-header {
-            padding: 30px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 45px 30px 20px 30px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            background: rgba(255,255,255,0.02);
+            text-align: center;
+            /* Eliminamos borde inferior duro para mas limpieza */
+            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0) 100%);
         }
 
-        .dash-user-info {
-            text-align: left;
-        }
-
-        .dash-label {
-            font-size: 0.75rem;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-
-        .dash-email {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #fff;
+        .dash-avatar-container {
+            position: relative;
+            margin-bottom: 20px;
+            cursor: pointer;
+            group-hover: opacity 0.8;
         }
 
         .dash-avatar {
-            width: 50px;
-            height: 50px;
-            background: var(--gold);
+            width: 85px;
+            height: 85px;
+            background: linear-gradient(135deg, var(--gold), #FDB931);
             color: #000;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 2.2rem;
             font-weight: 800;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15);
+            border: 3px solid #0f0f0f;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .dash-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .dash-avatar-container:hover .dash-avatar {
+            transform: scale(1.05);
+            border-color: var(--gold);
+        }
+
+        .avatar-edit-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #222;
+            border: 2px solid #0f0f0f;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            transition: 0.2s;
+        }
+
+        .dash-avatar-container:hover .avatar-edit-badge {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .dash-user-info {
+            text-align: center;
+            width: 100%;
+        }
+
+        .dash-label {
+            font-size: 0.65rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .dash-email {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #fff;
+            letter-spacing: -0.3px;
         }
 
         .dash-body {
-            padding: 30px;
+            padding: 20px 35px 35px 35px;
         }
 
         .dash-status-container {
@@ -633,18 +634,21 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
-            background: rgba(255,255,255,0.03);
-            padding: 15px;
-            border-radius: 12px;
+            background: rgba(255,255,255,0.02);
+            padding: 18px 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
         }
 
         .plan-badge {
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1px;
             text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .web-access-area {
@@ -655,60 +659,53 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             background: #fff;
             color: #000;
             width: 100%;
-            padding: 18px;
-            border-radius: 12px;
+            padding: 16px;
+            border-radius: 14px;
             font-weight: 700;
             text-decoration: none;
-            transition: 0.3s;
-            font-size: 1rem;
-            margin-top: 10px;
-            box-shadow: 0 5px 20px rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            margin-top: 15px;
+            box-shadow: 0 4px 20px rgba(255,255,255,0.05);
         }
 
         .web-btn-big:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255,255,255,0.15);
+            background: #f0f0f0;
         }
 
         .dash-footer {
-            padding: 20px 30px;
+            padding: 25px 35px;
             border-top: 1px solid rgba(255,255,255,0.05);
-            text-align: right;
+            text-align: center; /* Centrado para elegancia */
+            background: #080808;
         }
 
         .logout-link {
-            color: #ff4444;
+            color: #666; /* Mas sutil por defecto */
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             cursor: pointer;
             transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .logout-link:hover {
-            color: #ff6666;
-            text-decoration: underline;
+            color: #ff4444;
+            /* text-decoration: none; removed underline */
         }
 
         .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            transition: 0.3s;
-            z-index: 10;
-        }
-
-        .close:hover {
-            color: #fff;
+            /* ESTILO ANTIGUO ELIMINADO en favor de .close-modal-btn */
+            display: none; 
         }
 
         .auth-input {
@@ -801,12 +798,11 @@
             <nav>
                 <ul>
                     <li><a href="#pricing" class="nav-link">Precios</a></li>
-                    <li><a href="#microapps" class="nav-link">Micro-Apps</a></li>
                     <li><a href="#traffic" class="nav-link" style="color: #fff; font-weight: 700;">Traffic</a></li>
                     <li><a href="#social" class="nav-link" style="color: #fff; font-weight: 700;">Social</a></li>
                     <li><a href="#founder" class="nav-link">Manifiesto</a></li>
                     <li><a href="giftcards.html" class="nav-link" style="color: var(--gold);"><i class="fas fa-gift"></i> Regalos</a></li>
-                    <li><a href="partners.html" class="nav-link" style="color: var(--gold); font-weight: 700; text-shadow: 0 0 10px rgba(255,215,0,0.2);">Partners</a></li>
+                    <li><a href="cloud.html" class="nav-link" style="color: var(--gold); font-weight: 700;">QAXI Cloud <span style="font-size:0.7rem; color:var(--gold);">Beta</span></a></li>
                 </ul>
             </nav>
             <div class="auth-wrapper">
@@ -915,6 +911,10 @@
                     <li><i class="fas fa-layer-group"></i> Línea gráfica coherente con tu página web.</li>
                     <li><i class="fas fa-file-archive"></i> Entrega de archivos listos en alta calidad.</li>
                     <li><i class="fas fa-check-circle"></i> Correcciones ilimitadas hasta tu aprobación.</li>
+                    <li><i class="fab fa-instagram" style="color: var(--gold);"></i> Creación de Red social (Instagram)</li>
+                    <li><i class="fas fa-check-circle" style="color: #1da1f2;"></i> Meta Verified</li>
+                    <li><i class="fas fa-search"></i> Optimización de búsqueda (Instagram)</li>
+                    <li><i class="fas fa-shield-alt"></i> Protección con suplantación de identidad (Instagram)</li>
                 </ul>
             </div>
             <div class="premium-pricing">
@@ -927,63 +927,6 @@
                     30 Posts o Stories al mes (No acumulables).
                 </div>
                 <button onclick="initPayment('QAXI Social', 200000, 'PREMIUM')" class="cta-btn" style="width: 100%;">CONTRATAR DISEÑO</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="microapps" style="padding-top: 0;">
-        <h2 class="section-title" style="border: none; margin-bottom: 20px;">Micro-Apps & Complementos</h2>
-        <p style="color: #888; margin-bottom: 30px; text-align: center;">Herramientas modulares para potenciar tu web. Elige lo que necesites.</p>
-        
-        <div class="microapps-grid">
-            <div class="microapp-card">
-                <div class="ma-icon"><i class="far fa-calendar-alt"></i></div>
-                <div class="ma-title">Sistema de Reservas</div>
-                <div class="ma-desc">Tu tiempo es oro. Automatiza tus citas 24/7 sin mover un dedo.</div>
-                <div class="ma-price">$30.000 COP</div>
-                <a onclick="initPayment('Micro-App Reservas', 30000, 'MICROAPP')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="microapp-card">
-                <div class="ma-icon"><i class="fas fa-qrcode"></i></div>
-                <div class="ma-title">Menú Digital QR</div>
-                <div class="ma-desc">Sin papel, sin contacto. Tus clientes escanean y piden al instante.</div>
-                <div class="ma-price">$20.000 COP</div>
-                <a onclick="initPayment('Micro-App Menú QR', 20000, 'MICROAPP')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="microapp-card">
-                <div class="ma-icon"><i class="far fa-id-card"></i></div>
-                <div class="ma-title">Tarjeta de Presentación</div>
-                <div class="ma-desc">Impacta desde el primer clic. Tu identidad profesional en un enlace.</div>
-                <div class="ma-price">$15.000 COP</div>
-                <a onclick="initPayment('Micro-App Tarjeta', 15000, 'MICROAPP')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="microapp-card">
-                <div class="ma-icon"><i class="fas fa-file-pdf"></i></div>
-                <div class="ma-title">Catálogo PDF</div>
-                <div class="ma-desc">Tus productos organizados y listos para descargar. Vende con elegancia.</div>
-                <div class="ma-price">$20.000 COP</div>
-                <a onclick="initPayment('Micro-App Catálogo', 20000, 'MICROAPP')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="microapp-card">
-                <div class="ma-icon"><i class="fab fa-whatsapp"></i></div>
-                <div class="ma-title">Botón WhatsApp</div>
-                <div class="ma-desc">Conexión directa. Un clic y tus clientes ya están hablando contigo.</div>
-                <div class="ma-price">$10.000 COP</div>
-                <a onclick="initPayment('Micro-App Botón WA', 10000, 'MICROAPP')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="microapp-card">
-                <div class="ma-icon"><i class="fas fa-calculator"></i></div>
-                <div class="ma-title">Calculadora Básica</div>
-                <div class="ma-desc">Facilita la decisión. Permite que tus clientes calculen costos al vuelo.</div>
-                <div class="ma-price">$30.000 COP</div>
-                <a onclick="initPayment('Micro-App Calculadora', 30000, 'MICROAPP')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="microapp-card">
-                <div class="ma-icon"><i class="fas fa-briefcase"></i></div>
-                <div class="ma-title">Portafolio Profesional</div>
-                <div class="ma-desc">Exhibe tus proyectos con estilo. Galería interactiva para convencer.</div>
-                <div class="ma-price">$35.000 COP</div>
-                <a onclick="initPayment('Micro-App Portafolio', 35000, 'MICROAPP')" class="ma-btn">Pagar <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
     </section>
@@ -1036,38 +979,50 @@
 
     <div id="dashboardModal" class="modal">
         <div class="modal-content dashboard-card">
-            <span class="close" style="top: 25px; right: 25px;" onclick="closeDashboardModal()">&times;</span>
+            <!-- Botón de cerrar estilizado y alejado -->
+            <div class="close-modal-btn" onclick="closeDashboardModal()">
+                <i class="fas fa-times"></i>
+            </div>
             
             <div class="dash-header">
-                <div class="dash-user-info">
-                    <div class="dash-label">CLIENTE ID</div>
-                    <div class="dash-email" id="dashEmail">cargando...</div>
+                <!-- Contenedor Avatar Interactivo -->
+                <div class="dash-avatar-container" onclick="document.getElementById('avatarInput').click()" title="Cambiar foto">
+                    <div class="dash-avatar">
+                        <span id="textAvatar">Q</span>
+                        <img id="imgAvatar" src="" alt="Perfil" style="display: none;">
+                    </div>
+                    <div class="avatar-edit-badge"><i class="fas fa-camera"></i></div>
+                    <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(this)">
                 </div>
-                <div class="dash-avatar">Q</div>
+
+                <div class="dash-user-info">
+                    <div class="dash-email" id="dashEmail">cargando...</div>
+                    <div class="dash-label">CLIENTE ID</div>
+                </div>
             </div>
 
             <div class="dash-body">
                 <div class="dash-status-container">
-                    <div class="dash-label" style="margin:0;">ESTADO DEL SERVICIO:</div>
+                    <div class="dash-label" style="margin:0; opacity: 0.7;">PLAN ACTUAL</div>
                     <span id="dashStatus" class="plan-badge">CARGANDO...</span>
                 </div>
 
                 <div id="web-section" style="display: none;">
                     <div class="web-access-area">
-                        <div style="font-size: 0.8rem; color:#aaa; margin-bottom:5px;">Tu sitio web está activo</div>
                         <a href="#" id="webLinkBtn" target="_blank" class="web-btn-big">
-                            VISITAR MI SITIO WEB <i class="fas fa-external-link-alt"></i>
+                            VISITAR MI SITIO WEB <i class="fas fa-arrow-right" style="font-size: 0.8em;"></i>
                         </a>
+                        <div style="font-size: 0.75rem; color:#444; margin-top:12px;">Estado: <strong>Activo y visible</strong></div>
                     </div>
                 </div>
-                 <div id="no-web-msg" style="color: #666; font-size: 0.9rem; text-align: center; padding: 20px; border: 1px dashed #333; border-radius: 10px;">
-                    <i class="fas fa-hammer"></i><br>
-                    Tu servicio se está configurando. Te notificaremos cuando esté listo.
+                 <div id="no-web-msg" style="color: #666; font-size: 0.85rem; text-align: center; padding: 25px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 16px; background: rgba(255,255,255,0.01);">
+                    <i class="fas fa-hammer" style="margin-bottom: 10px; font-size: 1.2rem; display: block; opacity: 0.5;"></i>
+                    Tu servicio se está configurando.
                 </div>
             </div>
 
             <div class="dash-footer">
-                <div id="btnLogout" class="logout-link">Cerrar Sesión</div>
+                <div id="btnLogout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</div>
             </div>
         </div>
     </div>
@@ -1114,7 +1069,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
@@ -1169,50 +1124,7 @@
             return;
         };
 
-        window.clearError = () => { codeStatus.innerText = ""; };
-
-        // --- VERIFICACIÓN DE CÓDIGO (PARTNER O GIFT CARD) ---
-        window.verifyPartnerCode = async () => {
-            const code = codeInput.value.trim().toUpperCase();
-            if (!code) { codeStatus.innerHTML = "<span style='color:#ff4444'>Ingresa un código.</span>"; return; }
-
-            // 1. DETECTAR SI ES GIFT CARD
-            if (code.startsWith("GIFT-")) {
-                applyGiftCard(code);
-                return;
-            }
-
-            // 2. SI NO, BUSCAR PARTNER
-            btnVerify.innerText = "..."; btnVerify.disabled = true;
-
-            try {
-                const q = query(collection(db, "partners"), where("code", "==", code));
-                const querySnapshot = await getDocs(q);
-
-                if (!querySnapshot.empty) {
-                    applyDiscount(code);
-                    
-                    let percentStr = "";
-                    if (productType === 'PLAN') percentStr = "15%";
-                    else if (productType === 'PREMIUM') percentStr = "20%";
-                    else if (productType === 'MICROAPP') percentStr = "5%";
-
-                    codeStatus.innerHTML = `
-                        <div style='color:#4caf50; font-weight:700; margin-bottom:5px;'>
-                            <i class='fas fa-check-circle'></i> ¡CÓDIGO APLICADO!
-                        </div>
-                        <div style='color:#fff; font-size:0.8rem;'>
-                            TIENES EL <span style='color:#FFD700'>${percentStr}</span> DE DESCUENTO.<br>
-                        </div>
-                    `;
-                } else {
-                    resetPrice();
-                    codeStatus.innerHTML = `<span style='color:#ff4444'><i class='fas fa-times'></i> Código inválido.</span>`;
-                }
-            } catch (err) { console.error(err); codeStatus.innerText = "Error de conexión."; }
-            
-            btnVerify.innerText = "APLICAR"; btnVerify.disabled = false;
-        };
+        // partner-related functionality removed as requested
 
         // --- LÓGICA TARJETA DE REGALO ---
         function applyGiftCard(code) {
@@ -1220,27 +1132,34 @@
             isGiftCard = true;
             finalPrice = 0; // Gratis
 
-            originalPriceDisplay.innerText = formatCurrency(basePrice);
-            originalPriceDisplay.style.display = 'block';
-            priceDisplay.innerText = "$0 COP";
+            // elements used here may exist in payment page; keep behavior
+            if (typeof originalPriceDisplay !== 'undefined') {
+                originalPriceDisplay.innerText = formatCurrency(basePrice);
+                originalPriceDisplay.style.display = 'block';
+            }
+            if (typeof priceDisplay !== 'undefined') priceDisplay.innerText = "$0 COP";
             
-            discountTag.style.display = 'inline-block';
-            discountTag.innerText = "TARJETA DE REGALO ACEPTADA";
-            discountTag.style.background = "#FFD700";
-            discountTag.style.color = "#000";
+            if (typeof discountTag !== 'undefined') {
+                discountTag.style.display = 'inline-block';
+                discountTag.innerText = "TARJETA DE REGALO ACEPTADA";
+                discountTag.style.background = "#FFD700";
+                discountTag.style.color = "#000";
+            }
 
-            qrFrame.style.display = "none"; // Ocultar QR
+            if (typeof qrFrame !== 'undefined') qrFrame.style.display = "none"; // Ocultar QR
             
-            codeStatus.innerHTML = `
-                <div style='color:#FFD700; font-weight:700; margin-bottom:5px; font-size:1rem;'>
-                    <i class='fas fa-gift'></i> ¡SALDO CUBIERTO AL 100%!
-                </div>
-                <div style='color:#fff; font-size:0.8rem;'>
-                    No necesitas pagar. Envíanos el código para activar tu servicio.
-                </div>
-            `;
+            if (typeof codeStatus !== 'undefined') {
+                codeStatus.innerHTML = `
+                    <div style='color:#FFD700; font-weight:700; margin-bottom:5px; font-size:1rem;'>
+                        <i class='fas fa-gift'></i> ¡SALDO CUBIERTO AL 100%!
+                    </div>
+                    <div style='color:#fff; font-size:0.8rem;'>
+                        No necesitas pagar. Envíanos el código para activar tu servicio.
+                    </div>
+                `;
+            }
             
-            noteInstruction.innerHTML = `ACTIVAR: <span style='color:#FFD700'>${code}</span>`;
+            if (typeof noteInstruction !== 'undefined') noteInstruction.innerHTML = `ACTIVAR: <span style='color:#FFD700'>${code}</span>`;
             updatePaymentLinks();
         }
 
@@ -1255,26 +1174,30 @@
             const discountAmount = basePrice * discountPercent;
             finalPrice = basePrice - discountAmount;
 
-            originalPriceDisplay.innerText = formatCurrency(basePrice);
-            originalPriceDisplay.style.display = 'block';
-            priceDisplay.innerText = formatCurrency(finalPrice);
+            if (typeof originalPriceDisplay !== 'undefined') {
+                originalPriceDisplay.innerText = formatCurrency(basePrice);
+                originalPriceDisplay.style.display = 'block';
+            }
+            if (typeof priceDisplay !== 'undefined') priceDisplay.innerText = formatCurrency(finalPrice);
             
-            discountTag.style.display = 'inline-block';
-            discountTag.innerText = `AHORRAS: ${formatCurrency(discountAmount)}`;
-            discountTag.style.background = "rgba(76, 175, 80, 0.15)";
-            discountTag.style.color = "#4caf50";
+            if (typeof discountTag !== 'undefined') {
+                discountTag.style.display = 'inline-block';
+                discountTag.innerText = `AHORRAS: ${formatCurrency(discountAmount)}`;
+                discountTag.style.background = "rgba(76, 175, 80, 0.15)";
+                discountTag.style.color = "#4caf50";
+            }
 
-            noteInstruction.innerHTML = `CORREO + NOMBRE + <span style='color:#FFD700'>${code}</span>`;
+            if (typeof noteInstruction !== 'undefined') noteInstruction.innerHTML = `CORREO + NOMBRE + <span style='color:#FFD700'>${code}</span>`;
             updatePaymentLinks();
         }
 
         function resetPrice() {
             finalPrice = basePrice; activeCode = ""; isGiftCard = false;
-            originalPriceDisplay.style.display = 'none';
-            priceDisplay.innerText = formatCurrency(basePrice);
-            discountTag.style.display = 'none';
-            noteInstruction.innerHTML = "TU CORREO + TU NOMBRE";
-            qrFrame.style.display = "block";
+            if (typeof originalPriceDisplay !== 'undefined') originalPriceDisplay.style.display = 'none';
+            if (typeof priceDisplay !== 'undefined') priceDisplay.innerText = formatCurrency(basePrice);
+            if (typeof discountTag !== 'undefined') discountTag.style.display = 'none';
+            if (typeof noteInstruction !== 'undefined') noteInstruction.innerHTML = "TU CORREO + TU NOMBRE";
+            if (typeof qrFrame !== 'undefined') qrFrame.style.display = "block";
             updatePaymentLinks();
         }
 
@@ -1291,31 +1214,33 @@
                 msg += `Adjunto comprobante Nequi.`;
             }
 
-            document.getElementById('emailLink').href = `mailto:santiagomarenco1005@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(msg)}`;
+            if (document.getElementById('emailLink')) {
+                document.getElementById('emailLink').href = `mailto:santiagomarenco1005@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(msg)}`;
+            }
             
             const chatBtn = document.getElementById('chatLink');
-            
-            // Lógica de botones WhatsApp vs Chat
-            document.getElementById('chatLink').onclick = (e) => {
-                 e.preventDefault();
-                 if(isGiftCard) {
-                    window.open(`https://wa.me/573213526875?text=${encodeURIComponent(msg)}`, '_blank');
-                 } else {
-                    navigator.clipboard.writeText(msg).then(() => window.open('chat.html', '_blank'));
-                 }
-            };
-            
-            if(isGiftCard) {
-                chatBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Activar por WhatsApp';
-                chatBtn.classList.remove('btn-fill');
-                chatBtn.style.background = '#25D366';
-                chatBtn.style.color = '#fff';
-                chatBtn.style.border = 'none';
-            } else {
-                chatBtn.innerHTML = '<i class="fas fa-comment-dots"></i> Enviar en QAXI Chat (BETA)';
-                chatBtn.classList.add('btn-fill');
-                chatBtn.style.background = '#fff';
-                chatBtn.style.color = '#000';
+            if (chatBtn) {
+                document.getElementById('chatLink').onclick = (e) => {
+                     e.preventDefault();
+                     if(isGiftCard) {
+                        window.open(`https://wa.me/573213526875?text=${encodeURIComponent(msg)}`, '_blank');
+                     } else {
+                        navigator.clipboard.writeText(msg).then(() => window.open('chat.html', '_blank'));
+                     }
+                };
+                
+                if(isGiftCard) {
+                    chatBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Activar por WhatsApp';
+                    chatBtn.classList.remove('btn-fill');
+                    chatBtn.style.background = '#25D366';
+                    chatBtn.style.color = '#fff';
+                    chatBtn.style.border = 'none';
+                } else {
+                    chatBtn.innerHTML = '<i class="fas fa-comment-dots"></i> Enviar en QAXI Chat (BETA)';
+                    chatBtn.classList.add('btn-fill');
+                    chatBtn.style.background = '#fff';
+                    chatBtn.style.color = '#000';
+                }
             }
         };
 
@@ -1323,7 +1248,7 @@
             return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(amount);
         }
 
-        window.closeNequiModal = () => nequiModal.style.display = "none";
+        window.closeNequiModal = () => { if (typeof nequiModal !== 'undefined') nequiModal.style.display = "none"; };
         
         window.openTutorialModal = () => {
             closeNequiModal(); closeDashboardModal(); tutorialModal.style.display = "flex";
@@ -1396,6 +1321,11 @@
             closeMobileMenu(); 
             if (currentUser) {
                 document.getElementById('dashEmail').innerText = currentUser.email;
+                
+                // Cargar Avatar guardado
+                const savedAvatar = localStorage.getItem(`avatar_${currentUser.email}`);
+                updateAvatarUI(savedAvatar);
+
                 const docRef = doc(db, "chats", currentUser.email.toLowerCase().trim());
                 try {
                     const docSnap = await getDoc(docRef);
@@ -1417,6 +1347,40 @@
                 } catch(err) { console.log("Error leyendo Firestore:", err); }
             }
         };
+
+        // Función para manejar la subida de foto (visual + localStorage)
+        window.handleAvatarUpload = (input) => {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgUrl = e.target.result;
+                    // Actualizar UI
+                    updateAvatarUI(imgUrl);
+                    // Guardar en localStorage si hay usuario
+                    if (currentUser) {
+                        try {
+                            localStorage.setItem(`avatar_${currentUser.email}`, imgUrl);
+                        } catch (err) {
+                            console.log("Error guardando avatar local (quizás muy grande):", err);
+                        }
+                    }
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        function updateAvatarUI(url) {
+            const imgEl = document.getElementById('imgAvatar');
+            const txtEl = document.getElementById('textAvatar');
+            if (url) {
+                imgEl.src = url;
+                imgEl.style.display = 'block';
+                txtEl.style.display = 'none';
+            } else {
+                imgEl.style.display = 'none';
+                txtEl.style.display = 'block';
+            }
+        }
 
         // --- PARTÍCULAS ---
         const canvas = document.getElementById("particles-canvas");
