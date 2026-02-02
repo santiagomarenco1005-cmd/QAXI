@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAXI Search - Buscador Inteligente con IA</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="QAXI Search: El buscador inteligente impulsado por IA.">
+    <meta name="theme-color" content="#B6B6B6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- CSS Externo - Carga más rápida -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- FontAwesome - Carga diferida -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    
+    <!-- Leaflet CSS para mapas -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" media="print" onload="this.media='all'">
+</head>
+<body>
+    <!-- Fondo 3D - aparece después -->
+    <canvas id="three-bg"></canvas>
+    
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-content">
+            <button class="login-close" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
+            <img src="icon.png" alt="QAXI" class="login-logo">
+            <h2 class="login-title">Bienvenido a QAXI</h2>
+            <p class="login-subtitle">Inicia sesión para sincronizar tu historial y preferencias</p>
+            <input type="email" class="login-input" placeholder="Correo electrónico" id="loginEmail">
+            <input type="password" class="login-input" placeholder="Contraseña" id="loginPassword">
+            <button class="login-submit" onclick="handleLogin()">Iniciar sesión</button>
+            <div class="login-divider"><span>o continúa con</span></div>
+            <div class="login-social">
+                <button class="social-btn" title="Google"><i class="fa-brands fa-google"></i></button>
+                <button class="social-btn" title="Apple"><i class="fa-brands fa-apple"></i></button>
+                <button class="social-btn" title="GitHub"><i class="fa-brands fa-github"></i></button>
+            </div>
+            <p class="login-footer">¿No tienes cuenta? <a href="#">Crear cuenta QAXI</a></p>
+        </div>
+    </div>
+    
+    <!-- Progress Bar -->
+    <div class="progress-bar-container" id="progressBarContainer">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <!-- History Toggle Button -->
+    <button class="history-toggle" onclick="toggleHistory()" title="Historial de búsquedas">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+    </button>
+    
+    <!-- Favorites Toggle Button -->
+    <button class="favorites-toggle" onclick="toggleFavorites()" title="Favoritos guardados">
+        <i class="fa-solid fa-star"></i>
+    </button>
+    
+    <!-- History Panel -->
+    <div class="history-panel" id="historyPanel">
+        <div class="history-header">
+            <h3><i class="fa-solid fa-history"></i> Historial</h3>
+            <button class="history-close" onclick="toggleHistory()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+        <button class="history-clear" onclick="clearHistory()"><i class="fa-solid fa-trash"></i> Borrar historial</button>
+    </div>
+    
+    <!-- Favorites Panel -->
+    <div class="favorites-panel" id="favoritesPanel">
+        <div class="favorites-header">
+            <h3><i class="fa-solid fa-star"></i> Favoritos</h3>
+            <button class="history-close" onclick="toggleFavorites()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="favorites-list" id="favoritesList"></div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content" style="max-width: 450px;">
+            <div class="settings-header">
+                <h2><i class="fa-solid fa-gear"></i> Configuración</h2>
+                <button class="settings-close" onclick="toggleSettings()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="settings-section" style="background: linear-gradient(135deg, rgba(182,182,182,0.1) 0%, rgba(100,100,100,0.05) 100%); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+                    <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--titanium), #888); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-user" style="font-size: 1.3rem; color: #000;"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1rem;">Mi Panel QAXI</h3>
+                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-secondary);">Gestiona tu cuenta</p>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <a href="Index.html" class="quick-btn" style="text-decoration: none; text-align: center; padding: 10px;"><i class="fa-solid fa-home"></i> QAXI Home</a>
+                    <a href="cloud.html" class="quick-btn" style="text-decoration: none; text-align: center; padding: 10px;"><i class="fa-solid fa-cloud"></i> QAXI Cloud</a>
+                    <button class="quick-btn" onclick="toggleHistory()" style="padding: 10px;"><i class="fa-solid fa-clock-rotate-left"></i> Historial</button>
+                    <button class="quick-btn" onclick="toggleFavorites()" style="padding: 10px;"><i class="fa-solid fa-star"></i> Favoritos</button>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h3><i class="fa-solid fa-palette" style="margin-right: 8px;"></i>Tema</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="quick-btn" onclick="setTheme('dark')" style="flex:1;"><i class="fa-solid fa-moon"></i> Oscuro</button>
+                    <button class="quick-btn" onclick="setTheme('light')" style="flex:1;"><i class="fa-solid fa-sun"></i> Claro</button>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h3><i class="fa-solid fa-swatchbook" style="margin-right: 8px;"></i>Color de acento</h3>
+                <div class="accent-picker">
+                    <button class="accent-color default" onclick="setAccent('default')" title="Titanium"></button>
+                    <button class="accent-color cobalt" onclick="setAccent('cobalt')" title="Cobalt"></button>
+                    <button class="accent-color emerald" onclick="setAccent('emerald')" title="Emerald"></button>
+                    <button class="accent-color ruby" onclick="setAccent('ruby')" title="Ruby"></button>
+                    <button class="accent-color gold" onclick="setAccent('gold')" title="Gold"></button>
+                    <button class="accent-color purple" onclick="setAccent('purple')" title="Purple"></button>
+                </div>
+            </div>
+            <div class="settings-section">
+                <h3><i class="fa-solid fa-shield-halved" style="margin-right: 8px;"></i>Privacidad</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 10px;">QAXI no rastrea tu actividad.</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <span style="background: rgba(52,199,89,0.2); color: #34c759; padding: 5px 12px; border-radius: 15px; font-size: 0.75rem;"><i class="fa-solid fa-check"></i> Sin cookies</span>
+                    <span style="background: rgba(52,199,89,0.2); color: #34c759; padding: 5px 12px; border-radius: 15px; font-size: 0.75rem;"><i class="fa-solid fa-check"></i> Sin rastreo</span>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 15px; border-top: 1px solid var(--border);">
+                <p style="font-size: 0.75rem; color: var(--text-secondary);">QAXI Search v2.0</p>
+            </div>
+        </div>
+    </div>
+    
+    <header>
+        <a href="#" onclick="resetSearch(); return false;" class="brand-logo" title="Inicio">
+            <img src="icon.png" alt="QAXI" style="height: 35px;">
+            <span>Search</span>
+        </a>
+        <nav class="header-nav">
+            <a href="Index.html" class="nav-link">QAXI</a>
+            <a href="cloud.html" class="nav-link">Cloud</a>
+        </nav>
+        <div class="header-actions">
+            <button class="header-btn theme-toggle" onclick="toggleTheme()" title="Cambiar tema">
+                <i class="fa-solid fa-sun" id="themeIcon"></i>
+            </button>
+            <a href="#" onclick="showLoginModal(); return false;" class="login-btn">
+                <i class="fa-solid fa-user"></i>
+                <span>Iniciar sesión</span>
+            </a>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <div class="search-hero" id="searchHero">
+            <div class="logo-large">QAXI<span>Search</span></div>
+            <p class="tagline">Búsqueda Inteligente · Privada · Segura</p>
+            
+            <div class="search-box">
+                <div class="search-input-wrapper">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Pregunta lo que quieras..." autocomplete="off" oninput="handleAutocomplete(event)">
+                    <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceSearch()" title="Búsqueda por voz">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <button class="search-btn" id="searchBtn" onclick="performSearch()">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Buscar</span>
+                    </button>
+                </div>
+                <div class="autocomplete-container" id="autocompleteContainer"></div>
+                
+                <div class="search-tabs" id="searchTabs">
+                    <button class="search-tab active" data-type="all" onclick="setSearchType('all')">
+                        <i class="fa-solid fa-magnifying-glass"></i> Todo
+                    </button>
+                    <button class="search-tab" data-type="images" onclick="setSearchType('images')">
+                        <i class="fa-solid fa-images"></i> Imágenes
+                    </button>
+                    <button class="search-tab" data-type="news" onclick="setSearchType('news')">
+                        <i class="fa-solid fa-newspaper"></i> Noticias
+                    </button>
+                    <button class="search-tab" data-type="maps" onclick="setSearchType('maps')">
+                        <i class="fa-solid fa-map-location-dot"></i> Mapas
+                    </button>
+                    <button class="search-tab research-tab" data-type="research" onclick="setSearchType('research')">
+                        <i class="fa-solid fa-flask"></i> Research
+                    </button>
+                </div>
+                
+                <div class="ai-mode-selector" id="aiModeSelector">
+                    <button class="ai-mode-btn active" data-mode="balanced" onclick="setAIMode('balanced')" title="Respuestas equilibradas">
+                        <i class="fa-solid fa-scale-balanced"></i> Equilibrado
+                    </button>
+                    <button class="ai-mode-btn" data-mode="creative" onclick="setAIMode('creative')" title="Respuestas creativas">
+                        <i class="fa-solid fa-lightbulb"></i> Creativo
+                    </button>
+                    <button class="ai-mode-btn" data-mode="precise" onclick="setAIMode('precise')" title="Respuestas directas">
+                        <i class="fa-solid fa-crosshairs"></i> Preciso
+                    </button>
+                    <button class="ai-mode-btn" data-mode="coder" onclick="setAIMode('coder')" title="Código">
+                        <i class="fa-solid fa-code"></i> Programador
+                    </button>
+                    <div class="deep-search-toggle" id="deepSearchToggle" onclick="toggleDeepSearch()" title="Deep Search">
+                        <div class="toggle-switch"></div>
+                        <span class="toggle-label"><i class="fa-solid fa-flask"></i> Deep Search</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="openBrowserWithGoogle()" style="background: linear-gradient(135deg, rgba(66,133,244,0.15) 0%, rgba(66,133,244,0.05) 100%); border-color: rgba(66,133,244,0.3);">
+                    <i class="fa-brands fa-google" style="color: #4285f4;"></i> Google
+                </button>
+                <button class="quick-btn" onclick="openBrowserWithMaps()" style="background: linear-gradient(135deg, rgba(52,168,83,0.15) 0%, rgba(52,168,83,0.05) 100%); border-color: rgba(52,168,83,0.3);">
+                    <i class="fa-solid fa-map" style="color: #34a853;"></i> Maps
+                </button>
+                <button class="quick-btn" onclick="quickSearch('Últimas noticias de tecnología')">
+                    <i class="fa-solid fa-microchip"></i> Tecnología
+                </button>
+                <button class="quick-btn" onclick="quickSearch('Clima hoy')">
+                    <i class="fa-solid fa-cloud-sun"></i> Clima
+                </button>
+                <button class="quick-btn" onclick="quickSearch('Noticias del día')">
+                    <i class="fa-solid fa-newspaper"></i> Noticias
+                </button>
+                <button class="quick-btn" onclick="quickSearch('Cotización del dólar hoy')">
+                    <i class="fa-solid fa-dollar-sign"></i> Dólar
+                </button>
+            </div>
+            
+            <div class="news-section" id="newsSection">
+                <div class="news-header">
+                    <h3><i class="fa-solid fa-fire" style="color: #ff6b35;"></i> <span data-i18n="news_title">Novedades</span></h3>
+                    <button class="refresh-news-btn" onclick="loadNews(true)" title="Actualizar noticias">
+                        <i class="fa-solid fa-sync-alt"></i>
+                    </button>
+                </div>
+                <!-- News Categories -->
+                <div class="news-categories" id="newsCategories">
+                    <button class="news-cat-btn active" data-category="all" onclick="filterNews('all')">
+                        <i class="fa-solid fa-globe"></i> <span data-i18n="cat_all">Todo</span>
+                    </button>
+                    <button class="news-cat-btn" data-category="politics" onclick="filterNews('politics')">
+                        <i class="fa-solid fa-landmark"></i> <span data-i18n="cat_politics">Política</span>
+                    </button>
+                    <button class="news-cat-btn" data-category="sports" onclick="filterNews('sports')">
+                        <i class="fa-solid fa-futbol"></i> <span data-i18n="cat_sports">Deportes</span>
+                    </button>
+                    <button class="news-cat-btn" data-category="tech" onclick="filterNews('tech')">
+                        <i class="fa-solid fa-microchip"></i> <span data-i18n="cat_tech">Tecnología</span>
+                    </button>
+                    <button class="news-cat-btn" data-category="entertainment" onclick="filterNews('entertainment')">
+                        <i class="fa-solid fa-film"></i> <span data-i18n="cat_entertainment">Entretenimiento</span>
+                    </button>
+                    <button class="news-cat-btn" data-category="business" onclick="filterNews('business')">
+                        <i class="fa-solid fa-chart-line"></i> <span data-i18n="cat_business">Negocios</span>
+                    </button>
+                </div>
+                <div class="news-grid" id="newsGrid">
+                    <div class="news-loading">
+                        <div class="loading-spinner" style="width: 30px; height: 30px;"></div>
+                        <span data-i18n="loading_news">Cargando noticias...</span>
+                    </div>
+                </div>
+                <div class="load-more-news" id="loadMoreNews" style="display: none;">
+                    <button class="load-more-news-btn" onclick="loadMoreNews()">
+                        <i class="fa-solid fa-plus"></i> Cargar más noticias
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-area" id="resultsArea">
+            <div class="results-header">
+                <div class="results-count">Resultados para: <span id="queryDisplay"></span></div>
+            </div>
+            <!-- QAXI AI Response Container -->
+            <div id="aiResponse" class="ai-response-container"></div>
+            <div id="resultsContent"></div>
+        </div>
+    </div>
+    
+    <div id="iframeModal" class="iframe-modal">
+        <div class="iframe-header">
+            <div class="iframe-nav">
+                <button class="iframe-btn nav-btn" onclick="closeModal()" title="Volver">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="iframe-brand">QAXI<span>Browser Pro</span></div>
+            </div>
+            <div class="iframe-url-bar">
+                <i class="fa-solid fa-magnifying-glass" style="color: var(--titanium); font-size: 0.8rem;"></i>
+                <input type="text" id="browserSearchInput" placeholder="Buscar o escribir URL..." onkeypress="handleBrowserSearch(event)">
+                <button class="browser-search-btn" onclick="executeBrowserSearch()" title="Buscar">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+            <div class="iframe-actions">
+                <button class="iframe-btn" onclick="openGoogleDirectly()" title="Google"><i class="fa-brands fa-google"></i></button>
+                <button class="iframe-btn" onclick="openMapsInBrowser()" title="Maps"><i class="fa-solid fa-map"></i></button>
+                <button class="reader-mode-btn" id="readerModeBtn" onclick="toggleReaderMode()" title="Modo lectura">
+                    <i class="fa-solid fa-book-open"></i>
+                </button>
+                <button class="iframe-btn" onclick="refreshIframe()" title="Recargar"><i class="fa-solid fa-rotate-right"></i></button>
+                <button class="iframe-btn" onclick="openExternal()" title="Abrir externo"><i class="fa-solid fa-external-link-alt"></i></button>
+                <button class="iframe-btn close-btn" onclick="closeModal()" title="Cerrar"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+        <div class="iframe-wrapper">
+            <iframe id="resultFrame" class="iframe-content" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" onload="this.classList.add('iframe-loaded')"></iframe>
+            <div class="iframe-placeholder">
+                <div class="loading-spinner"></div>
+                <p>Cargando sitio...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 QAXI Search · El buscador inteligente</p>
+    </footer>
+    
+    <!-- Librerías JS - Carga diferida -->
+    <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    
+    <!-- Script principal - Carga al final -->
+    <script src="script.js"></script>
+</body>
+</html>
