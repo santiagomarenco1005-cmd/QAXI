@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAXI POS | Sistema de Gestión</title>
+    
+    <link rel="icon" href="logo.png" type="image/png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .sidebar-link:hover { background-color: #2563eb; color: white; transform: translateX(5px); }
+        .sidebar-link { transition: all 0.3s ease; }
+        
+        /* Loader */
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .hidden-force { display: none !important; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .logo-img { background: transparent !important; mix-blend-mode: multiply; }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col">
+
+    <div id="login-screen" class="absolute inset-0 z-50 bg-slate-900 flex items-center justify-center p-4">
+        <div class="glass max-w-md w-full p-8 rounded-2xl shadow-2xl border-t-4 border-blue-600 relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-600 rounded-full blur-3xl opacity-20"></div>
+
+            <div class="text-center mb-8 relative z-10">
+                <img src="logo.png" alt="QAXI Logo" class="logo-img w-16 h-16 mx-auto mb-4 rounded-xl shadow-lg">
+                <h1 class="text-3xl font-bold text-white tracking-tight">QAXI <span class="text-blue-500">POS</span></h1>
+                <p class="text-slate-400 text-sm mt-2">Inicia sesión para cargar tu negocio</p>
+            </div>
+
+            <form id="auth-form" class="space-y-4 relative z-10">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Correo Electrónico</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-envelope absolute left-3 top-3.5 text-slate-500"></i>
+                        <input type="email" id="email" class="w-full bg-slate-800 border border-slate-700 rounded-lg py-3 pl-10 text-white focus:outline-none focus:border-blue-500 transition" placeholder="tu@negocio.com" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Contraseña</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-3 top-3.5 text-slate-500"></i>
+                        <input type="password" id="password" class="w-full bg-slate-800 border border-slate-700 rounded-lg py-3 pl-10 text-white focus:outline-none focus:border-blue-500 transition" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <div id="auth-error" class="text-red-400 text-sm text-center hidden">Error de credenciales</div>
+
+                <button type="submit" id="btn-login" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-900/50 transition transform hover:scale-[1.02]">
+                    ENTRAR AL SISTEMA
+                </button>
+                
+                <!-- Registration is removed; credentials are given by the owner -->
+            </form>
+            
+            <div id="loading-overlay" class="absolute inset-0 bg-slate-900/90 flex flex-col items-center justify-center hidden z-20">
+                <div class="loader mb-3"></div>
+                <p class="text-white text-sm animate-pulse">Conectando...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-screen" class="flex h-full hidden-force">
+        
+        <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex">
+            <div>
+                <div class="p-6 flex items-center gap-3 border-b border-slate-800/50">
+                    <img src="logo.png" class="logo-img w-8 h-8 rounded" alt="QAXI">
+                    <h1 class="text-xl font-bold tracking-tight text-white">QAXI <span class="text-blue-500 text-xs bg-blue-900/30 px-2 py-1 rounded">POS</span></h1>
+                </div>
+                
+                <nav class="mt-6 px-4 space-y-2">
+                    <a href="#" onclick="window.app.showSection('dashboard')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white bg-slate-800/50" id="nav-dashboard">
+                        <i class="fa-solid fa-chart-line w-5"></i> Dashboard
+                    </a>
+                    <a href="#" onclick="window.app.showSection('pos')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white" id="nav-pos">
+                        <i class="fa-solid fa-cash-register w-5"></i> Punto de Venta
+                    </a>
+                    <a href="#" onclick="window.app.showSection('inventory')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white" id="nav-inventory">
+                        <i class="fa-solid fa-boxes-stacked w-5"></i> Inventario
+                    </a>
+                    <a href="#" onclick="window.app.showSection('history')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white" id="nav-history">
+                        <i class="fa-solid fa-clock-rotate-left w-5"></i> Historial
+                    </a>
+                    <a href="#" onclick="window.app.showTutorial()" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white" id="nav-tutorial">
+                        <i class="fa-solid fa-circle-question w-5"></i> Tutorial
+                    </a>
+                </nav>
+            </div>
+            
+            <div class="p-4 bg-slate-800/30 m-4 rounded-xl border border-slate-700/50">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 flex items-center justify-center text-xs font-bold text-white">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <p class="text-white text-xs font-bold truncate" id="user-email-display">Usuario</p>
+                        <p class="text-green-400 text-[10px]">● Conectado</p>
+                    </div>
+                </div>
+                <button onclick="window.app.logout()" class="w-full py-2 px-4 text-xs text-slate-300 bg-slate-800 hover:bg-red-900/80 hover:text-white rounded transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto bg-slate-950 p-4 md:p-8 relative">
+            
+            <div class="md:hidden flex justify-between items-center mb-6">
+                <div class="flex items-center gap-2">
+                    <img src="logo.png" class="logo-img w-8 h-8 rounded">
+                    <span class="text-white font-bold">QAXI POS</span>
+                </div>
+                <button onclick="window.app.logout()" class="text-red-400"><i class="fa-solid fa-power-off"></i></button>
+            </div>
+
+            <header class="hidden md:flex justify-between items-center mb-8">
+                <div>
+                    <h2 id="page-title" class="text-3xl font-bold text-white">Dashboard</h2>
+                    <p class="text-slate-400 text-sm" id="page-subtitle">Vista general de tu negocio.</p>
+                </div>
+            </header>
+
+            <section id="dashboard" class="fade-in block space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass p-6 rounded-xl border-l-4 border-blue-500">
+                        <p class="text-slate-400 text-sm font-medium">Ventas Totales</p>
+                        <h3 class="text-3xl font-bold text-white mt-2" id="dash-total">$0</h3>
+                    </div>
+                    <div class="glass p-6 rounded-xl border-l-4 border-cyan-500">
+                        <p class="text-slate-400 text-sm font-medium">Transacciones</p>
+                        <h3 class="text-3xl font-bold text-white mt-2" id="dash-count">0</h3>
+                    </div>
+                    <div class="glass p-6 rounded-xl border-l-4 border-orange-500">
+                        <p class="text-slate-400 text-sm font-medium">Valor Inventario</p>
+                        <h3 class="text-3xl font-bold text-white mt-2" id="dash-products">$0</h3>
+                    </div>
+                </div>
+                <div class="glass p-4 rounded-xl">
+                    <p class="text-slate-400 text-sm">Ganancia potencial estimada</p>
+                    <h4 class="text-white font-bold mt-2" id="dash-profit">$0</h4>
+                </div>
+                <div class="glass p-6 rounded-xl">
+                    <h3 class="text-white font-bold mb-4">Rendimiento</h3>
+                    <div class="h-64 w-full relative">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="pos" class="fade-in hidden h-[calc(100vh-140px)]">
+                <div class="flex flex-col lg:flex-row gap-6 h-full">
+                    <div class="lg:w-2/3 flex flex-col h-full">
+                        <div class="bg-slate-900 p-2 rounded-lg mb-4 flex gap-2">
+                            <div class="relative flex-1">
+                                <i class="fa-solid fa-search absolute left-3 top-3.5 text-slate-500"></i>
+                                <input type="text" id="search-pos" placeholder="Buscar producto..." class="w-full bg-slate-800 border-none text-white rounded px-10 py-3 focus:ring-2 focus:ring-blue-500" onkeyup="window.app.renderPOS()">
+                            </div>
+                        </div>
+                        <div id="pos-grid" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto pr-2 pb-20">
+                            </div>
+                    </div>
+                    <div class="lg:w-1/3 glass rounded-xl flex flex-col h-full border border-slate-700">
+                        <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                            <h3 class="font-bold text-white text-lg"><i class="fa-solid fa-receipt mr-2"></i>Orden</h3>
+                            <button onclick="window.app.clearCart()" class="text-xs text-red-400 hover:text-red-300">Vaciar</button>
+                        </div>
+                        <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3">
+                            <div class="text-center text-slate-500 mt-10">Carrito vacío</div>
+                        </div>
+                        <div class="p-4 bg-slate-900 border-t border-slate-700 rounded-b-xl">
+                            <div class="flex justify-between text-white text-xl font-bold mb-4">
+                                <span>Total</span>
+                                <span id="cart-total">$0</span>
+                            </div>
+                            <button onclick="window.app.processSale()" class="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold py-3 rounded-lg transition shadow-lg">
+                                COBRAR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="inventory" class="fade-in hidden pb-20">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                    <h3 class="text-xl text-white font-bold">Gestión de Productos</h3>
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <button onclick="window.app.addNewProduct()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 shadow-lg shadow-blue-900/30">
+                            <i class="fa-solid fa-plus"></i> Nuevo
+                        </button>
+                        <button onclick="window.app.exportInventoryCSV()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg font-medium transition flex items-center gap-2">
+                            <i class="fa-solid fa-file-csv"></i> Exportar
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="empty-inventory-msg" class="hidden text-center py-20">
+                    <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-600 text-3xl">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <h3 class="text-white text-xl font-bold">Inventario Vacío</h3>
+                    <p class="text-slate-400 mb-6">Agrega tus productos para empezar a vender.</p>
+                </div>
+
+                <div class="glass rounded-xl overflow-hidden overflow-x-auto" id="inventory-container">
+                    <table class="w-full text-left text-slate-400">
+                        <thead class="bg-slate-800 text-white uppercase text-xs font-bold">
+                            <tr>
+                                <th class="px-6 py-4">Producto</th>
+                                <th class="px-6 py-4">Precio</th>
+                                <th class="px-6 py-4">Valor</th>
+                                <th class="px-6 py-4">Stock</th>
+                                <th class="px-6 py-4 text-right">Editar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-table" class="divide-y divide-slate-700"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="history" class="fade-in hidden">
+                 <div class="glass rounded-xl overflow-hidden overflow-x-auto">
+                    <table class="w-full text-left text-slate-400">
+                        <thead class="bg-slate-800 text-white uppercase text-xs font-bold">
+                            <tr>
+                                <th class="px-6 py-4">Fecha</th>
+                                <th class="px-6 py-4">Total</th>
+                                <th class="px-6 py-4">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table" class="divide-y divide-slate-700"></tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script type="module">
+        // --- 1. FIREBASE IMPORTS & CONFIG ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
+            authDomain: "qaxi-93d6d.firebaseapp.com",
+            projectId: "qaxi-93d6d",
+            storageBucket: "qaxi-93d6d.firebasestorage.app",
+            messagingSenderId: "137240859996",
+            appId: "1:137240859996:web:73e14d28c77233be965d99",
+            measurementId: "G-C74Z1DWV54"
+        };
+
+        // Init
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- 2. GLOBAL STATE ---
+        let currentUser = null;
+        let products = [];
+        let sales = [];
+        let cart = [];
+        let myChart = null;
+        let lowStockThreshold = 5;
+
+        // Quick success sound (Web Audio API)
+        function playSuccessSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const o = ctx.createOscillator();
+                const g = ctx.createGain();
+                o.type = 'sine';
+                o.frequency.value = 880;
+                g.gain.value = 0.0015;
+                o.connect(g);
+                g.connect(ctx.destination);
+                o.start();
+                g.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.15);
+                o.stop(ctx.currentTime + 0.16);
+            } catch (e) {
+                // ignore audio errors
+                console.warn('Audio not supported', e);
+            }
+        }
+
+        // --- 3. EXPORTED FUNCTIONS (Attached to Window for HTML access) ---
+        window.app = {
+            logout: () => signOut(auth),
+            
+            showSection: (id) => {
+                document.querySelectorAll('section').forEach(el => el.classList.add('hidden'));
+                const section = document.getElementById(id);
+                if(section) {
+                    section.classList.remove('hidden');
+                    section.classList.add('fade-in');
+                }
+                
+                // Active link style
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('bg-slate-800/50', 'text-white'));
+                const navLink = document.getElementById(`nav-${id}`);
+                if(navLink) navLink.classList.add('bg-slate-800/50', 'text-white');
+
+                // Titles
+                const titles = { 'dashboard': 'Dashboard', 'pos': 'Punto de Venta', 'inventory': 'Inventario', 'history': 'Historial' };
+                document.getElementById('page-title').innerText = titles[id] || 'QAXI POS';
+                
+                if(id === 'pos') renderPOS();
+                if(id === 'dashboard') updateDashboard();
+            },
+
+            addToCart: (id) => {
+                const product = products.find(p => p.id === id);
+                if(product.stock <= 0) {
+                    Swal.fire({ toast: true, position: 'bottom-end', icon: 'error', title: 'Sin Stock', background: '#1e293b', color: '#fff', showConfirmButton: false, timer: 1500 });
+                    return;
+                }
+                const existing = cart.find(item => item.id === id);
+                if(existing) {
+                    if(existing.qty >= product.stock) return;
+                    existing.qty++;
+                } else {
+                    cart.push({ ...product, qty: 1 });
+                }
+                renderCart();
+            },
+
+            removeFromCart: (index) => {
+                cart.splice(index, 1);
+                renderCart();
+            },
+
+            clearCart: () => {
+                cart = [];
+                renderCart();
+            },
+
+            processSale: async () => {
+                if(cart.length === 0) return;
+                
+                Swal.fire({ title: 'Procesando...', allowOutsideClick: false, didOpen: () => Swal.showLoading(), background: '#1e293b', color: '#fff' });
+
+                // Update Local State
+                cart.forEach(cartItem => {
+                    const product = products.find(p => p.id === cartItem.id);
+                    if(product) product.stock -= cartItem.qty;
+                });
+
+                const total = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+                const newSale = {
+                    id: Date.now(),
+                    date: new Date().toISOString(),
+                    total: total,
+                    items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.price }))
+                };
+
+                sales.push(newSale);
+
+                // SAVE TO FIREBASE
+                try {
+                    const userRef = doc(db, "QAXI_POS_DATA", currentUser.uid);
+                    await updateDoc(userRef, {
+                        products: products, // Update stock
+                        sales: arrayUnion(newSale)
+                    });
+
+                    cart = [];
+                    renderCart();
+                    renderPOS();
+                    renderInventory();
+                    updateDashboard();
+                    playSuccessSound();
+
+                    Swal.fire({ icon: 'success', title: '¡Venta Guardada!', text: 'Venta registrada localmente', background: '#1e293b', color: '#fff', timer: 1600, showConfirmButton: false});
+
+                } catch (error) {
+                    console.error("Error saving sale:", error);
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo guardar.', background: '#1e293b', color: '#fff'});
+                }
+            },
+
+            addNewProduct: async () => {
+                const { value: formValues } = await Swal.fire({
+                    title: 'Nuevo Producto',
+                    background: '#1e293b', color: '#fff',
+                            html:
+                                '<input id="swal-name" class="swal2-input" placeholder="Nombre (ej. Coca Cola)" style="background:#334155; color:white; border:none;">' +
+                                '<input id="swal-price" type="number" class="swal2-input" placeholder="Precio (ej. 5000)" style="background:#334155; color:white; border:none;">' +
+                                '<input id="swal-cost" type="number" class="swal2-input" placeholder="Costo (ej. 3000)" style="background:#334155; color:white; border:none;">' +
+                                '<input id="swal-stock" type="number" class="swal2-input" placeholder="Stock Inicial" style="background:#334155; color:white; border:none;">' +
+                                '<div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-top:8px;">' +
+                                  '<label style="font-size:13px;color:#cbd5e1;">' +
+                                    '<input id="swal-addlogo" type="checkbox" style="margin-right:8px;" onchange="document.getElementById(\'swal-logo\').style.display = this.checked ? \"block\" : \"none\"">' +
+                                    'Agregar logo al producto' +
+                                  '</label>' +
+                                '</div>' +
+                                '<input id="swal-logo" type="file" accept="image/*" class="swal2-file" style="margin-top:8px; display:none;">' +
+                                '<input id="swal-image" type="file" accept="image/*" class="swal2-file" style="margin-top:8px;">',
+                            focusConfirm: false,
+                            preConfirm: () => {
+                                return new Promise((resolve) => {
+                                    const name = document.getElementById('swal-name').value;
+                                    const price = document.getElementById('swal-price').value;
+                                    const cost = document.getElementById('swal-cost').value || 0;
+                                    const stock = document.getElementById('swal-stock').value;
+                                    const fileInput = document.getElementById('swal-image');
+                                    const addLogo = document.getElementById('swal-addlogo').checked;
+                                    const logoInput = document.getElementById('swal-logo');
+                                    if (!name || !price || !stock) return Swal.showValidationMessage('Completa todos los campos');
+
+                                    const result = { image: null, logo: null };
+                                    const readers = [];
+
+                                    if (fileInput && fileInput.files && fileInput.files[0]) {
+                                        readers.push(new Promise((r) => {
+                                            const reader = new FileReader();
+                                            reader.onload = () => { result.image = reader.result; r(); };
+                                            reader.readAsDataURL(fileInput.files[0]);
+                                        }));
+                                    }
+
+                                    if (addLogo && logoInput && logoInput.files && logoInput.files[0]) {
+                                        readers.push(new Promise((r) => {
+                                            const reader = new FileReader();
+                                            reader.onload = () => { result.logo = reader.result; r(); };
+                                            reader.readAsDataURL(logoInput.files[0]);
+                                        }));
+                                    }
+
+                                    if (readers.length) {
+                                        Promise.all(readers).then(() => resolve([name, price, cost, stock, result.image, result.logo]));
+                                    } else {
+                                        resolve([name, price, cost, stock, null, null]);
+                                    }
+                                });
+                            }
+                });
+
+                if (formValues) {
+                    const newProd = {
+                        id: Date.now(),
+                        name: formValues[0],
+                        price: Number(formValues[1]),
+                        cost: Number(formValues[2]) || 0,
+                        stock: Number(formValues[3]) || 0,
+                        icon: 'fa-box',
+                        color: 'bg-blue-600',
+                        image: formValues[4] || null,
+                        logo: formValues[5] || null
+                    };
+
+                    products.push(newProd);
+                    
+                    // Sync Firebase
+                    try {
+                        await updateDoc(doc(db, "QAXI_POS_DATA", currentUser.uid), { products: products });
+                        renderInventory();
+                        renderPOS();
+                        updateDashboard();
+                        Swal.fire({ icon: 'success', title: 'Producto Agregado', toast: true, position: 'top-end', showConfirmButton: false, timer: 1500, background: '#1e293b', color: '#fff' });
+                    } catch (e) {
+                        console.error(e);
+                        Swal.fire('Error', 'No se pudo guardar', 'error');
+                    }
+                }
+            },
+
+            editStock: async (id) => {
+                const product = products.find(p => p.id === id);
+                const { value: newStock } = await Swal.fire({
+                    title: `Editar Stock: ${product.name}`,
+                    input: 'number',
+                    inputValue: product.stock,
+                    background: '#1e293b', color: '#fff',
+                    inputAttributes: { style: 'background:#334155; color:white; border:none; margin: 10px auto;' }
+                });
+
+                if (newStock) {
+                    product.stock = parseInt(newStock);
+                    await updateDoc(doc(db, "QAXI_POS_DATA", currentUser.uid), { products: products });
+                    renderInventory();
+                    renderPOS();
+                }
+            },
+            deleteProduct: async (id) => {
+                const product = products.find(p => p.id === id);
+                const confirm = await Swal.fire({ title: `Borrar ${product.name}?`, text: 'Esta acción no se puede deshacer.', icon: 'warning', showCancelButton: true, confirmButtonText: 'Borrar', background: '#1e293b', color: '#fff' });
+                if (confirm.isConfirmed) {
+                    products = products.filter(p => p.id !== id);
+                    try {
+                        await updateDoc(doc(db, "QAXI_POS_DATA", currentUser.uid), { products: products });
+                        renderInventory();
+                        renderPOS();
+                        updateDashboard();
+                        Swal.fire({ icon: 'success', title: 'Producto borrado', toast: true, position: 'top-end', showConfirmButton: false, timer: 1200, background: '#1e293b', color: '#fff' });
+                    } catch (e) {
+                        console.error(e);
+                        Swal.fire('Error', 'No se pudo guardar', 'error');
+                    }
+                }
+            },
+            
+            renderPOS: renderPOS // Expose helper
+        };
+
+        // --- Tutorial for new clients ---
+        window.app.showTutorial = async function() {
+            const steps = [
+                { title: 'Bienvenido a QAXI POS', text: 'Este breve tutorial te mostrará las funciones principales.' },
+                { title: 'Punto de Venta', text: 'En la sección Punto de Venta puedes buscar productos y añadirlos al carrito.' },
+                { title: 'Carrito y Cobro', text: 'Revisa el carrito a la derecha. Pulsa COBRAR para registrar la venta y actualizar stock.' },
+                { title: 'Inventario', text: 'En Inventario puedes agregar productos (con foto), editar stock y borrarlos.' },
+                { title: 'Cuenta', text: 'Cierra sesión con el botón en la esquina. Las credenciales te las entrega el propietario.' },
+                { title: 'Listo', text: '¡Eso es todo! Si necesitas repetir el tutorial, pulsa Tutorial en el menú.' }
+            ];
+
+            for (const step of steps) {
+                // eslint-disable-next-line no-await-in-loop
+                const res = await Swal.fire({ title: step.title, text: step.text, confirmButtonText: 'Siguiente', background: '#1e293b', color: '#fff' });
+                if (res.dismiss === Swal.DismissReason.cancel) break;
+            }
+        };
+
+        // --- 4. INTERNAL LOGIC ---
+
+        // Auth Listener with strict pos_active license check
+        onAuthStateChanged(auth, async (user) => {
+            const loginScreen = document.getElementById('login-screen');
+            const appScreen = document.getElementById('app-screen');
+            const loading = document.getElementById('loading-overlay');
+
+            if (user) {
+                // Usuario logueado, ahora verificamos sus permisos
+                currentUser = user;
+                document.getElementById('user-email-display').innerText = user.email;
+                loading.classList.remove('hidden'); 
+
+                try {
+                    const docRef = doc(db, "QAXI_POS_DATA", user.uid);
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+
+                        // 🔒 BLOQUEO DE SEGURIDAD ABSOLUTO 🔒
+                        // Verificamos estrictamente si tiene el servicio POS.
+                        // Usamos "=== true" para que undefined o null también denieguen el acceso.
+                        if (data.pos_active !== true) {
+                            
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Acceso Denegado',
+                                html: `
+                                    <p>Hola <b>${user.email}</b>,</p>
+                                    <p class="mt-2">Tu cuenta de QAXI es válida, pero <b>NO tienes contratado el servicio QAXI POS</b>.</p>
+                                    <p class="text-sm text-slate-400 mt-2">Si tienes otros planes activos (Web, Marketing), estos no incluyen el acceso al sistema de punto de venta.</p>
+                                `,
+                                confirmButtonText: 'Entendido, Cerrar Sesión',
+                                confirmButtonColor: '#ef4444',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                background: '#1e293b', 
+                                color: '#fff'
+                            }).then(() => {
+                                // Lo sacamos a la fuerza
+                                signOut(auth);
+                                location.reload();
+                            });
+                            
+                            loading.classList.add('hidden');
+                            return; // ⛔ AQUÍ SE MUERE EL PROCESO, NO CARGA NADA MÁS.
+                        }
+
+                        // SI PASA EL FILTRO, CARGAMOS SUS DATOS
+                        products = data.products || [];
+                        sales = data.sales || [];
+                        
+                        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Licencia POS: Activa', background: '#1e293b', color: '#fff', showConfirmButton: false, timer: 2000 });
+
+                    } else {
+                        // === CLIENTE NUEVO ===
+                        // Si se está registrando DESDE esta pantalla, asumimos que quiere el POS.
+                        // Le damos el permiso inicial.
+                        products = [];
+                        sales = [];
+                        
+                        await setDoc(docRef, { 
+                            products: [], 
+                            sales: [], 
+                            createdAt: new Date(),
+                            email: user.email,
+                            pos_active: true // ✅ SE ACTIVA AL REGISTRARSE AQUÍ
+                        });
+                        
+                        Swal.fire({ icon: 'info', title: 'Bienvenido a QAXI POS', text: 'Tu licencia ha sido activada.', background: '#1e293b', color: '#fff' });
+                        // Mostrar tutorial también para nuevos clientes
+                        if (window.app && typeof window.app.showTutorial === 'function') window.app.showTutorial();
+                    }
+
+                    // UI Update (Solo si pasó el filtro)
+                    renderInventory();
+                    renderPOS();
+                    renderHistory();
+                    updateDashboard();
+                    if (window.app && typeof window.app.showLowStockAlerts === 'function') window.app.showLowStockAlerts();
+                    
+                    loginScreen.classList.add('hidden-force');
+                    appScreen.classList.remove('hidden-force');
+
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                    Swal.fire('Error', 'Problema de conexión verificando licencia.', 'error');
+                    signOut(auth); // Por seguridad, si falla la red, cerramos sesión.
+                } finally {
+                    loading.classList.add('hidden');
+                }
+
+            } else {
+                // Logged Out
+                currentUser = null;
+                loginScreen.classList.remove('hidden-force');
+                appScreen.classList.add('hidden-force');
+                loading.classList.add('hidden');
+            }
+        });
+
+        // Login Logic (registration disabled; credentials provided by owner)
+        const authForm = document.getElementById('auth-form');
+        const btnLogin = document.getElementById('btn-login');
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('auth-error');
+            const loading = document.getElementById('loading-overlay');
+            
+            errorMsg.classList.add('hidden');
+            loading.classList.remove('hidden');
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                loading.classList.add('hidden');
+                errorMsg.innerText = error.message;
+                errorMsg.classList.remove('hidden');
+            }
+        });
+
+
+        // --- UI RENDER FUNCTIONS ---
+        
+        function renderPOS() {
+            const container = document.getElementById('pos-grid');
+            const search = document.getElementById('search-pos').value.toLowerCase();
+            container.innerHTML = '';
+
+            if(products.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center text-slate-500 py-10">No hay productos. Ve a Inventario para agregar.</div>`;
+                return;
+            }
+
+            const rows = [];
+            products.forEach(p => {
+                if(p.name.toLowerCase().includes(search)) {
+                    const badgeClass = p.stock < 5 ? 'text-red-400' : 'text-slate-500';
+                    const media = p.image ? `<img src="${p.image}" alt="${p.name}" class="h-10 w-10 object-cover rounded-lg mb-3 shadow-lg">` : `<div class="h-10 w-10 ${p.color || 'bg-blue-600'} rounded-lg flex items-center justify-center text-white mb-3 shadow-lg"><i class="fa-solid ${p.icon || 'fa-box'}"></i></div>`;
+                        const logoBadge = p.logo ? `<img src="${p.logo}" class="absolute top-2 left-2 w-8 h-8 rounded-full border border-white/10 shadow-sm" alt="logo">` : '';
+                        rows.push(`
+                            <div onclick=\"window.app.addToCart(${p.id})\" class=\"glass p-4 rounded-xl cursor-pointer hover:bg-slate-800 transition group relative border border-slate-700/50\">
+                                ${logoBadge}
+                                <div class=\"absolute top-2 right-2 text-[10px] font-bold ${p.stock < 5 ? 'text-red-400' : 'text-slate-500'}\">Stock: ${p.stock}</div>
+                                ${media}
+                                <h4 class=\"font-bold text-white text-sm truncate\">${p.name}</h4>
+                                <p class=\"text-blue-400 font-semibold text-xs mt-1\">$${p.price.toLocaleString()}</p>
+                            </div>
+                        `);
+                }
+            });
+
+            container.innerHTML = rows.join('');
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            if(cart.length === 0) {
+                container.innerHTML = '<div class="text-center text-slate-500 mt-10 text-sm">Carrito vacío</div>';
+                document.getElementById('cart-total').innerText = '$0';
+                return;
+            }
+            let total = 0;
+            const rows = [];
+            cart.forEach((item, index) => {
+                total += item.price * item.qty;
+                rows.push(`
+                    <div class="flex justify-between items-center bg-slate-800/50 p-2 rounded mb-2 border-l-2 border-blue-500">
+                        <div class="overflow-hidden w-2/3">
+                            <p class="text-white text-xs font-bold truncate">${item.name}</p>
+                            <p class="text-[10px] text-slate-400">${item.qty} x $${item.price.toLocaleString()}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-blue-400 font-bold text-xs">$${(item.price * item.qty).toLocaleString()}</span>
+                            <button onclick=\"window.app.removeFromCart(${index})\" class=\"text-slate-500 hover:text-red-400\"><i class=\"fa-solid fa-trash text-xs\"></i></button>
+                        </div>
+                    </div>
+                `);
+            });
+
+            container.innerHTML = rows.join('');
+            document.getElementById('cart-total').innerText = '$' + total.toLocaleString();
+        }
+
+        function renderInventory() {
+            const tbody = document.getElementById('inventory-table');
+            const container = document.getElementById('inventory-container');
+            const msg = document.getElementById('empty-inventory-msg');
+            
+            tbody.innerHTML = '';
+
+            if(products.length === 0) {
+                container.classList.add('hidden');
+                msg.classList.remove('hidden');
+                return;
+            } else {
+                container.classList.remove('hidden');
+                msg.classList.add('hidden');
+            }
+
+            const rows = [];
+            products.forEach(p => {
+                const imgHtml = p.image ? `<img src="${p.image}" class="w-8 h-8 rounded object-cover" alt="${p.name}">` : `<div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center text-xs text-blue-400"><i class="fa-solid ${p.icon}"></i></div>`;
+                const smallLogo = p.logo ? `<img src="${p.logo}" class="w-5 h-5 rounded-full ml-2 object-cover" alt="logo">` : '';
+                rows.push(`
+                    <tr class="hover:bg-slate-800/50 transition border-b border-slate-800/50 last:border-0">
+                        <td class="px-6 py-4 flex items-center gap-3">
+                            ${imgHtml}
+                            <span class="text-white font-medium text-sm">${p.name}</span>
+                            ${smallLogo}
+                        </td>
+                        <td class="px-6 py-4 text-sm">$${p.price.toLocaleString()}</td>
+                        <td class="px-6 py-4 text-sm">$${(p.price * p.stock).toLocaleString()}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 rounded text-[10px] font-bold ${p.stock < 5 ? 'bg-red-900/50 text-red-300' : 'bg-green-900/30 text-green-300'}">
+                                ${p.stock}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <button onclick=\"window.app.editStock(${p.id})\" class=\"text-blue-400 hover:text-white transition mr-3\"><i class=\"fa-solid fa-pen-to-square\"></i></button>
+                            <button onclick=\"window.app.deleteProduct(${p.id})\" class=\"text-red-400 hover:text-white transition\"><i class=\"fa-solid fa-trash\"></i></button>
+                        </td>
+                    </tr>
+                `);
+            });
+
+            tbody.innerHTML = rows.join('');
+        }
+
+        function renderHistory() {
+            const tbody = document.getElementById('history-table');
+            tbody.innerHTML = '';
+            // Show last 10 sales
+            sales.slice().reverse().slice(0, 10).forEach(s => {
+                const date = new Date(s.date).toLocaleDateString() + ' ' + new Date(s.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/50 border-b border-slate-800/50">
+                        <td class="px-6 py-4 text-xs text-slate-400">${date}</td>
+                        <td class="px-6 py-4 text-green-400 font-bold text-sm">$${s.total.toLocaleString()}</td>
+                        <td class="px-6 py-4"><span class="text-[10px] bg-blue-900/30 text-blue-300 px-2 py-1 rounded">Completado</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // --- Utilities for business owners ---
+        window.app.exportInventoryCSV = function() {
+            if (!products || products.length === 0) return Swal.fire('Info', 'No hay productos para exportar', 'info');
+            const rows = ['Nombre,Precio,Costo,Stock,Valor'];
+            products.forEach(p => {
+                const val = (p.price || 0) * (p.stock || 0);
+                rows.push(`"${p.name}",${p.price || 0},${p.cost || 0},${p.stock || 0},${val}`);
+            });
+            const csv = rows.join('\n');
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = `inventory_${Date.now()}.csv`; a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        window.app.showLowStockAlerts = function() {
+            const low = (products || []).filter(p => (p.stock || 0) <= (lowStockThreshold || 5));
+            if (low.length === 0) return;
+            const list = low.map(p => `• ${p.name} (stock: ${p.stock})`).join('<br>');
+            Swal.fire({ icon: 'warning', title: `${low.length} productos con bajo stock`, html: list, background: '#1e293b', color: '#fff' });
+        };
+
+        function updateDashboard() {
+            const totalSales = sales.reduce((sum, s) => sum + s.total, 0);
+            document.getElementById('dash-total').innerText = '$' + totalSales.toLocaleString();
+            document.getElementById('dash-count').innerText = sales.length;
+            // Valor total del inventario
+            const inventoryValue = products.reduce((sum, p) => sum + ((p.price || 0) * (p.stock || 0)), 0);
+            document.getElementById('dash-products').innerText = '$' + inventoryValue.toLocaleString();
+
+            // Ganancia potencial estimada (precio - costo) * stock
+            const potentialProfit = products.reduce((sum, p) => sum + (((p.price || 0) - (p.cost || 0)) * (p.stock || 0)), 0);
+            const profitEl = document.getElementById('dash-profit');
+            if (profitEl) profitEl.innerText = '$' + potentialProfit.toLocaleString();
+
+            // Simple Chart
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            if(myChart) myChart.destroy();
+
+            // Prepare Data (Last 5 Sales)
+            const lastSales = sales.slice(-5); 
+            const labels = lastSales.length ? lastSales.map(s => new Date(s.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})) : ['0', '0', '0'];
+            const dataPoints = lastSales.length ? lastSales.map(s => s.total) : [0, 0, 0];
+
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ventas',
+                        data: dataPoints,
+                        borderColor: '#3b82f6',
+                        backgroundColor: (context) => {
+                            const ctx = context.chart.ctx;
+                            const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+                            gradient.addColorStop(0, 'rgba(59,130,246,0.5)');
+                            gradient.addColorStop(1, 'rgba(59,130,246,0)');
+                            return gradient;
+                        },
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false },
+                        x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
