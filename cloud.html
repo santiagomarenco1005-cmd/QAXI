@@ -13,10 +13,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
     
-    <!-- Google Fonts - Más variedad y contraste -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,700;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;700&family=Pacifico&family=Oswald:wght@400;700&family=Bebas+Neue&family=Roboto+Slab:wght@400;700&family=Abril+Fatface&family=Permanent+Marker&family=Caveat:wght@400;700&family=Satisfy&family=Great+Vibes&family=Lobster&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -331,12 +327,357 @@
             display: flex; flex-direction: column; gap: 20px;
         }
         .msg {
-            max-width: 75%; padding: 15px 20px; border-radius: 12px;
-            font-size: 0.95rem; line-height: 1.6; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            max-width: 80%; padding: 18px 24px; border-radius: 12px;
+            font-size: 0.95rem; line-height: 1.7; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         .msg.ai { align-self: flex-start; background: #1a1a1a; border-left: 3px solid var(--gold); color: #ddd; }
         .msg.user { align-self: flex-end; background: #252525; color: white; border-right: 3px solid #555; }
-        .msg strong { display: block; font-size: 0.75rem; color: var(--gold); margin-bottom: 6px; letter-spacing: 1px; }
+        .msg strong { display: block; font-size: 0.75rem; color: var(--gold); margin-bottom: 8px; letter-spacing: 1px; }
+        
+        /* Estilos para contenido de IA */
+        .msg.ai h1, .msg.ai h2, .msg.ai h3 { color: #fff; margin: 16px 0 10px 0; }
+        .msg.ai h1 { font-size: 1.3rem; border-bottom: 1px solid #333; padding-bottom: 8px; }
+        .msg.ai h2 { font-size: 1.15rem; color: var(--gold); }
+        .msg.ai h3 { font-size: 1.05rem; }
+        .msg.ai p { margin: 10px 0; }
+        .msg.ai ul, .msg.ai ol { margin: 12px 0; padding-left: 24px; }
+        .msg.ai li { margin: 6px 0; }
+        .msg.ai code { 
+            background: #0d0d0d; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            color: #e06c75;
+        }
+        .msg.ai pre { 
+            background: #0a0a0a; 
+            padding: 15px; 
+            border-radius: 8px; 
+            overflow-x: auto;
+            border: 1px solid #333;
+            margin: 12px 0;
+        }
+        .msg.ai pre code { 
+            background: none; 
+            padding: 0; 
+            color: #abb2bf;
+            display: block;
+            line-height: 1.5;
+        }
+        .msg.ai blockquote {
+            border-left: 3px solid var(--gold);
+            margin: 12px 0;
+            padding: 10px 15px;
+            background: rgba(212, 175, 55, 0.05);
+            font-style: italic;
+        }
+        .msg.ai table { 
+            border-collapse: collapse; 
+            margin: 12px 0; 
+            width: 100%;
+        }
+        .msg.ai th, .msg.ai td { 
+            border: 1px solid #333; 
+            padding: 8px 12px; 
+            text-align: left;
+        }
+        .msg.ai th { background: #252525; color: var(--gold); }
+        .msg.ai a { color: var(--gold); text-decoration: none; }
+        .msg.ai a:hover { text-decoration: underline; }
+        .msg.ai hr { border: none; border-top: 1px solid #333; margin: 15px 0; }
+        
+        /* CARNET CREATOR */
+        .carnet-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            padding: 30px;
+            gap: 40px;
+            overflow: auto;
+        }
+        .carnet-form {
+            flex: 1;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .carnet-form label {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: -10px;
+        }
+        .carnet-form input, .carnet-form select {
+            padding: 12px;
+            background: #111;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .carnet-form input:focus, .carnet-form select:focus {
+            border-color: var(--gold);
+        }
+        .carnet-preview-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .carnet-card {
+            width: 350px;
+            height: 220px;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            display: flex;
+            gap: 15px;
+        }
+        .carnet-card.style-corporate {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+        }
+        .carnet-card.style-modern {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .carnet-card.style-elegant {
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
+            color: white;
+            border: 2px solid var(--gold);
+        }
+        .carnet-card.style-vibrant {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        .carnet-card.style-nature {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        .carnet-card.style-sunset {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: #333;
+        }
+        .carnet-photo {
+            width: 90px;
+            height: 110px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .carnet-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .carnet-photo i {
+            font-size: 2.5rem;
+            opacity: 0.5;
+        }
+        .carnet-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .carnet-company {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        .carnet-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .carnet-role {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        .carnet-id {
+            font-size: 0.75rem;
+            font-family: monospace;
+            opacity: 0.7;
+        }
+        .carnet-qr {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 5px;
+            padding: 3px;
+        }
+        .carnet-qr img {
+            width: 100%;
+            height: 100%;
+        }
+        .carnet-logo {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            opacity: 0.3;
+        }
+        .color-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .color-row input[type="color"] {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+        }
+        .photo-upload-btn {
+            background: var(--gold);
+            color: black;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .photo-upload-btn:hover {
+            transform: scale(1.02);
+        }
+        .share-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .share-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid #333;
+            background: #1a1a1a;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .share-btn:hover {
+            border-color: var(--gold);
+            color: white;
+        }
+        .share-btn.primary {
+            background: var(--gold);
+            color: black;
+            border-color: var(--gold);
+        }
+        .carnet-card.style-custom {
+            background: #333;
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+        
+        /* FIRMA PDF */
+        .firma-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            gap: 20px;
+            padding: 20px;
+        }
+        .firma-sidebar {
+            width: 280px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .firma-preview {
+            flex: 1;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+            position: relative;
+        }
+        .firma-canvas-container {
+            background: #0a0a0a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        #firmaCanvas {
+            background: transparent;
+            border-radius: 5px;
+            cursor: crosshair;
+        }
+        .firma-tools {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .firma-tool-btn {
+            padding: 8px 12px;
+            background: #222;
+            border: 1px solid #444;
+            color: #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+        .firma-tool-btn:hover {
+            border-color: var(--gold);
+            color: white;
+        }
+        .firma-tool-btn.active {
+            background: var(--gold);
+            color: black;
+            border-color: var(--gold);
+        }
+        .pdf-preview-container {
+            max-width: 100%;
+            max-height: 100%;
+            overflow: auto;
+            padding: 20px;
+        }
+        .pdf-preview-container canvas {
+            box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+        }
+        .firma-overlay {
+            position: absolute;
+            cursor: move;
+            border: 2px dashed var(--gold);
+            padding: 5px;
+            background: transparent;
+        }
+        .firma-overlay img {
+            max-width: 150px;
+            max-height: 80px;
+            pointer-events: none;
+        }
         .ai-input-area {
             height: 80px; background: #111; border-top: 1px solid #252525;
             display: flex; align-items: center; padding: 0 30px; gap: 15px;
@@ -449,18 +790,33 @@
         };
         try { firebase.initializeApp(firebaseConfig); var db = firebase.firestore(); } catch(e){ console.log("Offline or Config Error"); }
         
-        let IS_PREMIUM = false;
+        // NOTE: Restoring GROQ key in client per user request so QAXI AI works immediately.
+        // WARNING: embedding API keys in client code is insecure for production.
         const GROQ_KEY = "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";
+
+        // Ensure callGroqProxy exists: call the external API directly using the key.
+        window.callGroqProxy = async function({ forwardTo, payload }) {
+            return fetch(forwardTo, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_KEY}` },
+                body: JSON.stringify(payload)
+            });
+        };
+
+        let IS_PREMIUM = false;
         
         // Storage Keys
         const STORAGE_KEYS = {
             DOCS: 'qaxi_docs_content',
             SLIDES: 'qaxi_slides_data',
-            SHEETS: 'qaxi_sheets_data'
+            SHEETS: 'qaxi_sheets_data',
+            SHEETS_BOOK: 'qaxi_sheets_workbook'
         };
         
         // Docs & Sheets Vars
         let sheetRows = 20, sheetCols = 10;
+        let sheetsWorkbook = null; // will hold array of sheets
+        let activeSheetIdx = 0;
         let activeCell = {row:1, col:1};
         let pdfImages = [];
         let autoSaveTimer = null;
@@ -473,6 +829,10 @@
         let isDragging = false;
         let isResizing = false;
         let dragOffset = { x: 0, y: 0 };
+        
+        // AI Chat History
+        let aiChatHistory = [];
+        const MAX_HISTORY = 20; // Mantener últimos 20 mensajes para contexto
         
         // Warn before leaving if unsaved changes
         window.addEventListener('beforeunload', (e) => {
@@ -513,7 +873,13 @@
                 <div class="pro-tag">PRO</div>
             </div>
             <div class="app-icon" onclick="startApp('ai')" title="QAXI AI"><i class="fa-solid fa-brain"></i><span>AI</span></div>
+            <!-- QAXI Search removed -->
+            <div class="app-icon" onclick="startApp('carnet')" title="Creador de Carnets">
+                <i class="fa-solid fa-id-card"></i><span>CARNET</span>
+                <div class="pro-tag">PRO</div>
+            </div>
             <div class="app-icon" onclick="startApp('qr')" title="Generador QR"><i class="fa-solid fa-qrcode"></i><span>QR</span></div>
+            <div class="app-icon" onclick="startApp('firma')" title="Firmar PDF"><i class="fa-solid fa-signature"></i><span>FIRMA</span></div>
             <div style="flex:1"></div>
             <div class="app-icon" onclick="goHome()" title="Salir"><i class="fa-solid fa-power-off"></i></div>
         </div>
@@ -557,6 +923,29 @@
             // Save slides
             if (slides && slides.length > 0) {
                 localStorage.setItem(STORAGE_KEYS.SLIDES, JSON.stringify(slides));
+            }
+            // Save sheets (serialize grid values)
+            const grid = document.getElementById('mainGrid');
+            if (grid) {
+                try {
+                    const data = { rows: sheetRows, cols: sheetCols, values: [] };
+                    const trs = grid.querySelectorAll('tbody tr');
+                    trs.forEach(tr => {
+                        const rowVals = [];
+                        tr.querySelectorAll('td input').forEach(inp => rowVals.push(inp.value));
+                        data.values.push(rowVals);
+                    });
+                    localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify(data));
+                    // also save workbook if exists
+                    if (window.sheetsWorkbook && Array.isArray(window.sheetsWorkbook)) {
+                        // update active sheet values in workbook
+                        window.sheetsWorkbook[activeSheetIdx] = window.sheetsWorkbook[activeSheetIdx] || {};
+                        window.sheetsWorkbook[activeSheetIdx].rows = sheetRows;
+                        window.sheetsWorkbook[activeSheetIdx].cols = sheetCols;
+                        window.sheetsWorkbook[activeSheetIdx].values = data.values;
+                        localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
+                    }
+                } catch (e) { console.warn('Error saving sheets', e); }
             }
         }
         
@@ -603,6 +992,24 @@
             msg.innerText = "Verificando...";
 
             try {
+                if (!db) throw new Error('Firestore no inicializado');
+
+                // Primero intentar buscar documento con id = email
+                try {
+                    const docRef = db.collection('QAXI_Cloud').doc(email);
+                    const doc = await docRef.get();
+                    if (doc && doc.exists) {
+                        setProMode(email);
+                        closeLogin();
+                        document.getElementById('accessBtn').style.display = 'none';
+                        return;
+                    }
+                } catch (innerErr) {
+                    // ignore and fallback to query by field
+                    console.warn('Doc lookup failed, fallback to query', innerErr);
+                }
+
+                // Fallback: buscar campo 'email' en la colección
                 const q = db.collection("QAXI_Cloud").where("email", "==", email);
                 const querySnapshot = await q.get();
 
@@ -616,7 +1023,8 @@
                 }
             } catch(e) {
                 console.error(e);
-                msg.innerText = "Error de conexión/config.";
+                msg.style.color = "#ff4444";
+                msg.innerText = "Error de conexión/config. Comprueba Firebase.";
             }
         };
 
@@ -634,7 +1042,7 @@
         }
 
         window.startApp = function(id) {
-            if (id === 'slides' && !IS_PREMIUM) {
+            if ((id === 'slides' || id === 'carnet') && !IS_PREMIUM) {
                 return goPlans();
             }
 
@@ -651,7 +1059,10 @@
             if(id === 'pdf') loadPDF(stage, tools);
             if(id === 'qr') loadQR(stage, tools);
             if(id === 'ai') loadAI(stage, tools);
+            if(id === 'search') loadSearch(stage, tools);
             if(id === 'slides') loadSlides(stage, tools);
+            if(id === 'carnet') loadCarnet(stage, tools);
+            if(id === 'firma') loadFirma(stage, tools);
         };
 
         window.exitApp = function() { 
@@ -665,24 +1076,9 @@
         
         let savedSelection = null;
         
-        // Lista de fuentes con estilos muy distintos
+        // Lista de fuentes disponibles
         const FONTS = [
-            { name: 'Normal', value: 'Segoe UI, Arial, sans-serif' },
-            { name: 'Elegante Serif', value: 'Playfair Display, serif' },
-            { name: 'Clásica', value: 'Lora, serif' },
-            { name: 'Editorial', value: 'Merriweather, serif' },
-            { name: 'Moderna Bold', value: 'Oswald, sans-serif' },
-            { name: 'Impacto', value: 'Bebas Neue, sans-serif' },
-            { name: 'Roboto Slab', value: 'Roboto Slab, serif' },
-            { name: 'Título Artístico', value: 'Abril Fatface, serif' },
-            { name: 'Cursiva Elegante', value: 'Dancing Script, cursive' },
-            { name: 'Pacifico', value: 'Pacifico, cursive' },
-            { name: 'Manuscrita', value: 'Caveat, cursive' },
-            { name: 'Satisfy', value: 'Satisfy, cursive' },
-            { name: 'Great Vibes', value: 'Great Vibes, cursive' },
-            { name: 'Lobster', value: 'Lobster, cursive' },
-            { name: 'Marcador', value: 'Permanent Marker, cursive' },
-            { name: 'Cinzel Premium', value: 'Cinzel, serif' }
+            { name: 'Normal', value: "'Segoe UI', Arial, sans-serif" }
         ];
         
         function saveSelection() {
@@ -701,15 +1097,11 @@
         }
 
         function loadDocs(c, t) {
-            // Build font options with preview styling
-            let fontOptions = FONTS.map(f => 
-                `<option value="${f.value}" style="font-family: ${f.value}; font-size: 14px;">${f.name}</option>`
-            ).join('');
-            
             t.innerHTML = `
                 <button class="magic-btn" onclick="magicWriting()">
                     <i class="fa-solid fa-wand-magic-sparkles"></i> Escritura Mágica (Beta)
                 </button>
+                <button class="nav-btn" id="speechBtn" onclick="toggleSpeech()" title="Dictado por voz"><i class="fa-solid fa-microphone"></i> VOZ</button>
                 <div class="sep"></div>
                 <button class="nav-btn" onclick="clearDoc()">NUEVO</button>
                 <button class="nav-btn" onclick="exportDocPdf()">CONVERTIR A PDF</button>
@@ -718,31 +1110,13 @@
             c.innerHTML = `
                 <div style="display:flex; flex-direction:column; width:100%; height:100%;">
                     <div class="doc-toolbar">
-                        <!-- Fuente con Preview -->
-                        <div class="font-select-wrapper">
-                            <select class="tb-select" id="fontSelect" title="Fuente">
-                                ${fontOptions}
-                            </select>
-                        </div>
-                        
-                        <!-- Tamaño Real en PX -->
-                        <select class="tb-select" id="sizeSelect" title="Tamaño">
-                            <option value="12">12px</option>
-                            <option value="14">14px</option>
-                            <option value="16" selected>16px</option>
-                            <option value="18">18px</option>
-                            <option value="20">20px</option>
-                            <option value="24">24px</option>
-                            <option value="28">28px</option>
-                            <option value="32">32px</option>
-                            <option value="36">36px</option>
-                            <option value="48">48px</option>
-                            <option value="64">64px</option>
-                            <option value="72">72px</option>
+                        <!-- Selector de Fuente -->
+                        <select class="tb-select" id="fontSelect" title="Fuente">
+                            <option value="'Segoe UI', Arial, sans-serif">Normal</option>
                         </select>
-
+                        
                         <div class="sep"></div>
-
+                        
                         <!-- Estilos Básicos -->
                         <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('bold')" title="Negrita"><i class="fa-solid fa-bold"></i></button>
                         <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('italic')" title="Cursiva"><i class="fa-solid fa-italic"></i></button>
@@ -793,6 +1167,14 @@
                         <!-- Deshacer/Rehacer -->
                         <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('undo')" title="Deshacer"><i class="fa-solid fa-rotate-left"></i></button>
                         <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('redo')" title="Rehacer"><i class="fa-solid fa-rotate-right"></i></button>
+                        
+                        <div class="sep"></div>
+                        
+                        <!-- Herramientas adicionales -->
+                        <button class="tb-btn" onmousedown="event.preventDefault(); insertLink()" title="Insertar Enlace"><i class="fa-solid fa-link"></i></button>
+                        <button class="tb-btn" onmousedown="event.preventDefault(); insertImage()" title="Insertar Imagen"><i class="fa-solid fa-image"></i></button>
+                        <button class="tb-btn" onmousedown="event.preventDefault(); insertTable()" title="Insertar Tabla"><i class="fa-solid fa-table"></i></button>
+                        <button class="tb-btn" onmousedown="event.preventDefault(); insertHR()" title="Línea Horizontal"><i class="fa-solid fa-minus"></i></button>
                     </div>
                     
                     <div style="flex:1; overflow:auto; background:#111; display:flex; justify-content:center;">
@@ -826,19 +1208,11 @@
             paper.addEventListener('mouseup', saveSelection);
             paper.addEventListener('keyup', saveSelection);
             
-            // Font Select - Apply font directly with CSS
+            // Font Select
             const fontSelect = document.getElementById('fontSelect');
             fontSelect.addEventListener('mousedown', saveSelection);
             fontSelect.addEventListener('change', function() {
                 applyFontToSelection(this.value);
-                paper.focus();
-            });
-            
-            // Size Select
-            const sizeSelect = document.getElementById('sizeSelect');
-            sizeSelect.addEventListener('mousedown', saveSelection);
-            sizeSelect.addEventListener('change', function() {
-                applySizeToSelection(this.value);
                 paper.focus();
             });
             
@@ -883,26 +1257,13 @@
         
         window.applyFontToSelection = function(fontFamily) {
             restoreSelection();
-            const selection = window.getSelection();
             
-            if (selection.rangeCount > 0 && !selection.isCollapsed) {
-                const range = selection.getRangeAt(0);
-                
-                // Create wrapper span with font
-                const span = document.createElement('span');
-                span.style.fontFamily = fontFamily;
-                
-                // Extract and wrap content
-                const fragment = range.extractContents();
-                span.appendChild(fragment);
-                range.insertNode(span);
-                
-                // Re-select the new content
-                range.selectNodeContents(span);
-                selection.removeAllRanges();
-                selection.addRange(range);
-            }
+            // Usar execCommand con styleWithCSS para mejor compatibilidad de escritura
+            document.execCommand('styleWithCSS', false, true);
+            document.execCommand('fontName', false, fontFamily);
             
+            // Foco de vuelta al papel
+            document.getElementById('paper').focus();
             triggerAutoSave();
         }
         
@@ -931,12 +1292,131 @@
             triggerAutoSave();
         }
 
+        // --- Speech to Text for Docs ---
+        window._qaxi_recognition = null;
+        window._qaxi_recognizing = false;
+
+        window.toggleSpeech = function() {
+            if (window._qaxi_recognizing) return stopSpeech();
+            startSpeech();
+        }
+
+        function startSpeech() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) { alert('Tu navegador no soporta reconocimiento por voz. Usa Chrome/Edge/Safari en versiones recientes.'); return; }
+            if (!window._qaxi_recognition) {
+                window._qaxi_recognition = new SpeechRecognition();
+                window._qaxi_recognition.lang = 'es-ES';
+                window._qaxi_recognition.interimResults = true;
+                window._qaxi_recognition.maxAlternatives = 1;
+                let finalTranscript = '';
+                window._qaxi_recognition.onresult = (event) => {
+                    let interim = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript;
+                        } else {
+                            interim += event.results[i][0].transcript;
+                        }
+                    }
+                    // Insert interim+final into doc at caret
+                    const paper = document.getElementById('paper');
+                    if (!paper) return;
+                    // restore selection if exists
+                    restoreSelection();
+                    const sel = window.getSelection();
+                    if (!sel.rangeCount) {
+                        paper.focus();
+                    }
+                    // Insert finalTranscript when final arrives
+                    if (finalTranscript) {
+                        document.execCommand('insertText', false, finalTranscript + ' ');
+                        finalTranscript = '';
+                        triggerAutoSave();
+                    }
+                };
+                window._qaxi_recognition.onerror = (e) => { console.error('Speech error', e); };
+                window._qaxi_recognition.onend = () => { window._qaxi_recognizing = false; updateSpeechBtn(false); };
+            }
+            window._qaxi_recognition.start();
+            window._qaxi_recognizing = true;
+            updateSpeechBtn(true);
+        }
+
+        function stopSpeech() {
+            if (window._qaxi_recognition) window._qaxi_recognition.stop();
+            window._qaxi_recognizing = false;
+            updateSpeechBtn(false);
+        }
+
+        function updateSpeechBtn(active) {
+            const b = document.getElementById('speechBtn');
+            if (!b) return;
+            if (active) { b.style.background = 'var(--gold)'; b.style.color='black'; b.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> DETENER'; }
+            else { b.style.background = ''; b.style.color=''; b.innerHTML = '<i class="fa-solid fa-microphone"></i> VOZ'; }
+        }
+
         window.updateDocStats = () => {
             const paper = document.getElementById('paper');
             if (!paper) return;
             const text = paper.innerText.trim();
             const words = text ? text.split(/\s+/).filter(w => w.length > 0).length : 0;
             document.getElementById('docStats').innerText = `${words} palabras`;
+        };
+        
+        // === HERRAMIENTAS ADICIONALES DE DOCS ===
+        
+        window.insertLink = function() {
+            const url = prompt('Ingresa la URL del enlace:', 'https://');
+            if (url && url !== 'https://') {
+                const text = prompt('Texto del enlace (dejar vacío para usar la URL):', '');
+                const linkText = text || url;
+                document.execCommand('insertHTML', false, `<a href="${url}" target="_blank" style="color: #0066cc; text-decoration: underline;">${linkText}</a>`);
+                triggerAutoSave();
+            }
+        };
+        
+        window.insertImage = function() {
+            const url = prompt('Ingresa la URL de la imagen:', 'https://');
+            if (url && url !== 'https://') {
+                const width = prompt('Ancho de la imagen en píxeles (ej: 300):', '400');
+                document.execCommand('insertHTML', false, `<img src="${url}" style="max-width: ${width}px; height: auto; display: block; margin: 10px 0;" alt="Imagen">`);
+                triggerAutoSave();
+            }
+        };
+        
+        window.insertTable = function() {
+            const rows = prompt('Número de filas:', '3');
+            const cols = prompt('Número de columnas:', '3');
+            
+            if (rows && cols) {
+                let tableHTML = '<table style="border-collapse: collapse; width: 100%; margin: 15px 0;">';
+                
+                // Header row
+                tableHTML += '<tr>';
+                for (let c = 0; c < parseInt(cols); c++) {
+                    tableHTML += `<th style="border: 1px solid #ccc; padding: 10px; background: #f5f5f5; font-weight: bold;">Encabezado ${c+1}</th>`;
+                }
+                tableHTML += '</tr>';
+                
+                // Data rows
+                for (let r = 1; r < parseInt(rows); r++) {
+                    tableHTML += '<tr>';
+                    for (let c = 0; c < parseInt(cols); c++) {
+                        tableHTML += '<td style="border: 1px solid #ccc; padding: 10px;">Celda</td>';
+                    }
+                    tableHTML += '</tr>';
+                }
+                tableHTML += '</table>';
+                
+                document.execCommand('insertHTML', false, tableHTML);
+                triggerAutoSave();
+            }
+        };
+        
+        window.insertHR = function() {
+            document.execCommand('insertHTML', false, '<hr style="border: none; border-top: 2px solid #ccc; margin: 20px 0;">');
+            triggerAutoSave();
         };
         
         window.exportDocPdf = () => {
@@ -1132,6 +1612,8 @@
         
         function saveSlides() {
             localStorage.setItem(STORAGE_KEYS.SLIDES, JSON.stringify(slides));
+            // Also trigger the visual autosave indicator / centralized autosave
+            try { triggerAutoSave(); } catch(e){}
         }
         
         function renderCurrentSlide() {
@@ -1434,8 +1916,118 @@
 
         // === SHEETS ===
         function loadSheets(c, t) {
-            t.innerHTML = `<button class="nav-btn" onclick="addR()">+ FILA</button><button class="nav-btn" onclick="exportCSV()">CSV</button>`;
+            t.innerHTML = `<div style="display:flex; align-items:center; gap:8px;">
+                                <div id="sheetTabs" style="display:flex; gap:6px;"></div>
+                                <button class="nav-btn" onclick="addSheet()">+ NUEVA HOJA</button>
+                                <button class="nav-btn" onclick="addR()">+ FILA</button>
+                                <button class="nav-btn" onclick="exportCSV()">CSV</button>
+                                <button class="nav-btn" onclick="exportSheetsPdf()">EXPORTAR A PDF</button>
+                            </div>`;
+
+            // initialize workbook if not present
+            if (!window.sheetsWorkbook) {
+                const wb = localStorage.getItem(STORAGE_KEYS.SHEETS_BOOK);
+                if (wb) {
+                    try { window.sheetsWorkbook = JSON.parse(wb); } catch(e) { window.sheetsWorkbook = null; }
+                }
+            }
+            if (!window.sheetsWorkbook) {
+                // try older single-sheet storage
+                const saved = localStorage.getItem(STORAGE_KEYS.SHEETS);
+                let values = [];
+                if (saved) {
+                    try { const obj = JSON.parse(saved); values = obj.values || []; } catch(e){}
+                }
+                window.sheetsWorkbook = [{ name: 'Hoja 1', rows: sheetRows, cols: sheetCols, values }];
+                activeSheetIdx = 0;
+            }
+
+            // ensure active index exists
+            if (activeSheetIdx == null || activeSheetIdx >= window.sheetsWorkbook.length) activeSheetIdx = 0;
+
+            // render tabs and grid for active sheet
+            renderSheetTabs();
+            const active = window.sheetsWorkbook[activeSheetIdx];
+            sheetRows = active.rows || sheetRows;
+            sheetCols = active.cols || sheetCols;
             c.innerHTML = buildGrid(sheetRows, sheetCols);
+
+            // Load saved sheet values if any
+            try {
+                const saved = localStorage.getItem(STORAGE_KEYS.SHEETS);
+                if (saved) {
+                    const obj = JSON.parse(saved);
+                    if (obj.rows) sheetRows = obj.rows;
+                    if (obj.cols) sheetCols = obj.cols;
+                    // rebuild if sizes changed
+                    if (obj.rows !== undefined || obj.cols !== undefined) {
+                        c.innerHTML = buildGrid(sheetRows, sheetCols);
+                    }
+                    if (obj.values && obj.values.length) {
+                        const inputs = document.querySelectorAll('#mainGrid tbody tr');
+                        obj.values.forEach((r, ri) => {
+                            const tr = inputs[ri];
+                            if (!tr) return;
+                            const tinputs = tr.querySelectorAll('td input');
+                            r.forEach((val, ci) => {
+                                if (tinputs[ci]) tinputs[ci].value = val;
+                            });
+                        });
+                    }
+                }
+            } catch(e) { console.warn('Error loading sheets', e); }
+
+            // Attach autosave hooks to inputs
+            const grid = document.getElementById('mainGrid');
+            if (grid) {
+                grid.querySelectorAll('td input').forEach(inp => {
+                    inp.addEventListener('input', () => {
+                        // simple calc handling is still on change; provide immediate autosave
+                        triggerAutoSave();
+                    });
+                    // keep onchange calc behavior
+                    inp.addEventListener('change', () => { doCalc(inp); triggerAutoSave(); });
+                });
+                // fill values from workbook if available
+                const active = window.sheetsWorkbook[activeSheetIdx];
+                if (active && active.values && active.values.length) {
+                    const rows = document.querySelectorAll('#mainGrid tbody tr');
+                    active.values.forEach((r, ri) => {
+                        const tr = rows[ri]; if (!tr) return;
+                        const tinputs = tr.querySelectorAll('td input');
+                        r.forEach((val, ci) => { if (tinputs[ci]) tinputs[ci].value = val; });
+                    });
+                }
+            }
+        }
+
+        function renderSheetTabs() {
+            const cont = document.getElementById('sheetTabs');
+            if (!cont) return;
+            cont.innerHTML = '';
+            window.sheetsWorkbook.forEach((s, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'nav-btn';
+                btn.innerText = s.name || `Hoja ${i+1}`;
+                btn.style.border = i === activeSheetIdx ? '2px solid var(--gold)' : '';
+                btn.onclick = () => { switchSheet(i); };
+                cont.appendChild(btn);
+            });
+        }
+
+        function addSheet() {
+            const name = `Hoja ${window.sheetsWorkbook.length+1}`;
+            window.sheetsWorkbook.push({ name, rows: 20, cols: 10, values: [] });
+            activeSheetIdx = window.sheetsWorkbook.length - 1;
+            localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
+            loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
+        }
+
+        function switchSheet(idx) {
+            // before switching, save current grid values
+            try { triggerAutoSave(); } catch(e){}
+            activeSheetIdx = idx;
+            loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
         }
         function buildGrid(rows, cols) {
             let h = `<div class="grid-container"><table class="grid" id="mainGrid"><thead><tr id="hRow"><th></th>`;
@@ -1451,19 +2043,65 @@
         window.doCalc = (el) => {
             if(el.value.startsWith('=')) { try { el.value = math.evaluate(el.value.substring(1)); el.style.color='var(--gold)'; } catch(e){}}
         };
-        window.addR = () => { sheetRows++; loadSheets(document.getElementById('wsContent'), document.getElementById('appTools')); };
+        window.addR = () => { sheetRows++; loadSheets(document.getElementById('wsContent'), document.getElementById('appTools')); triggerAutoSave(); };
         window.exportCSV = () => alert("Exportando CSV...");
+
+        window.exportSheetsPdf = async function() {
+            const grid = document.getElementById('mainGrid');
+            if (!grid) { alert('No hay hoja para exportar'); return; }
+
+            // Clone table and replace inputs with their text values for rendering
+            const clone = grid.cloneNode(true);
+            clone.style.width = '100%';
+            clone.querySelectorAll('input').forEach(inp => {
+                const span = document.createElement('span');
+                span.textContent = inp.value || '';
+                span.style.display = 'inline-block';
+                span.style.padding = '4px 6px';
+                inp.parentNode.replaceChild(span, inp);
+            });
+
+            const container = document.createElement('div');
+            container.style.position = 'fixed';
+            container.style.left = '-9999px';
+            container.style.background = 'white';
+            container.style.padding = '20px';
+            container.appendChild(clone);
+            document.body.appendChild(container);
+
+            try {
+                const cvs = await html2canvas(container, { scale: 2, useCORS: true });
+                const pdf = new jspdf.jsPDF('p', 'pt', [cvs.width, cvs.height]);
+                pdf.addImage(cvs.toDataURL('image/png'), 'PNG', 0, 0, cvs.width, cvs.height);
+                pdf.save('QAXI_Sheet.pdf');
+            } catch (e) {
+                console.error(e);
+                alert('Error al exportar a PDF');
+            } finally {
+                container.remove();
+            }
+        };
 
 
         // === QAXI AI ===
         function loadAI(c, t) {
+            // Limpiar historial al cargar la app
+            aiChatHistory = [];
+            // attachments array for this AI session
+            window.aiAttachments = [];
+
             c.innerHTML = `
                 <div class="ai-box">
                     <div class="chat-window" id="aiChat">
                         <div class="msg ai">
                             <strong>QAXI AI</strong>
-                            <p>Hola. Soy tu inteligencia artificial Titanium. ¿En qué te ayudo hoy?</p>
+                            <p>Hola. Soy QAXI AI. ¿En qué te puedo ayudar hoy?</p>
                         </div>
+                    </div>
+                    <div style="padding:8px 20px; display:flex; gap:8px; align-items:center; background:#0a0a0a; border-top:1px solid #252525;">
+                        <input type="file" id="aiAttachInput" style="display:none" onchange="addAIAttach(this.files)">
+                        <button class="nav-btn" onclick="document.getElementById('aiAttachInput').click()">Adjuntar</button>
+                        <div id="aiAttachList" style="display:flex; gap:8px; align-items:center;"></div>
                     </div>
                     <div class="ai-input-area">
                         <input type="text" id="aiInput" placeholder="Pregúntame lo que quieras..." onkeydown="if(event.key === 'Enter') askQaxiAI()">
@@ -1471,6 +2109,108 @@
                     </div>
                 </div>
             `;
+            
+            // helper to add attachment previews
+            window.addAIAttach = async function(files) {
+                if (!files || files.length === 0) return;
+                for (const f of files) {
+                    const reader = new FileReader();
+                    await new Promise((res) => {
+                        reader.onload = (e) => {
+                            // limit size: if >1.5MB, keep only metadata and small preview
+                            let data = e.target.result;
+                            if (data.length > 1_500_000) {
+                                data = data.slice(0, 200000) + '...';
+                            }
+                            const item = { name: f.name, type: f.type, size: f.size, data };
+                            aiAttachments.push(item);
+                            renderAIAttachList();
+                            res();
+                        };
+                        reader.readAsDataURL(f);
+                    });
+                }
+            };
+
+            window.renderAIAttachList = function() {
+                const list = document.getElementById('aiAttachList'); list.innerHTML = '';
+                aiAttachments.forEach((a, idx) => {
+                    const div = document.createElement('div');
+                    div.style.display = 'flex'; div.style.alignItems='center'; div.style.gap='6px';
+                    div.style.padding='4px 6px'; div.style.background='#111'; div.style.border='1px solid #2a2a2a'; div.style.borderRadius='6px';
+                    let thumb = '';
+                    if (a.type.startsWith('image/')) thumb = `<img src="${a.data}" style="width:36px;height:24px;object-fit:cover;border-radius:4px;">`;
+                    else thumb = `<i class="fa-solid fa-paperclip" style="color:#aaa"></i>`;
+                    div.innerHTML = `${thumb}<span style="font-size:0.75rem;color:#ccc;margin-left:4px;">${a.name}</span><button style="margin-left:6px;background:transparent;border:none;color:#ff6666;cursor:pointer;" onclick="aiAttachments.splice(${idx},1);renderAIAttachList();">x</button>`;
+                    list.appendChild(div);
+                });
+            };
+        }
+        
+        // === FUNCIÓN DE BÚSQUEDA WEB ===
+        async function searchWeb(query) {
+            try {
+                // Usar DuckDuckGo Instant Answer API (gratuita)
+                const searchUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+                
+                const response = await fetch(searchUrl);
+                const data = await response.json();
+                
+                let results = [];
+                
+                // Abstract (respuesta principal)
+                if (data.Abstract) {
+                    results.push({
+                        title: data.Heading || 'Resultado',
+                        snippet: data.Abstract,
+                        source: data.AbstractSource || 'DuckDuckGo'
+                    });
+                }
+                
+                // Respuesta instantánea
+                if (data.Answer) {
+                    results.push({
+                        title: 'Respuesta Directa',
+                        snippet: data.Answer,
+                        source: 'DuckDuckGo'
+                    });
+                }
+                
+                // Temas relacionados
+                if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+                    data.RelatedTopics.slice(0, 5).forEach(topic => {
+                        if (topic.Text) {
+                            results.push({
+                                title: topic.FirstURL ? topic.FirstURL.split('/').pop().replace(/_/g, ' ') : 'Info',
+                                snippet: topic.Text,
+                                source: 'Wikipedia'
+                            });
+                        }
+                    });
+                }
+                
+                return results;
+            } catch (e) {
+                console.error('Error en búsqueda:', e);
+                return [];
+            }
+        }
+        
+        // Detectar si la pregunta necesita búsqueda web
+        function needsWebSearch(prompt) {
+            const searchKeywords = [
+                'busca', 'buscar', 'búsqueda', 'investiga', 'googlea', 'google',
+                'qué es', 'quien es', 'quién es', 'qué son', 'donde queda', 'dónde queda',
+                'última noticia', 'últimas noticias', 'actualidad', 'reciente',
+                'precio de', 'cotización', 'clima en', 'tiempo en',
+                'cómo está', 'como esta', 'qué pasó', 'que paso',
+                'información sobre', 'info sobre', 'datos de', 'datos sobre',
+                'define', 'definición', 'significado de',
+                'en internet', 'en la web', 'online'
+            ];
+            
+            const lowerPrompt = prompt.toLowerCase();
+            return searchKeywords.some(kw => lowerPrompt.includes(kw));
         }
 
         window.askQaxiAI = async function() {
@@ -1485,31 +2225,308 @@
             const lDiv = document.createElement('div'); lDiv.className = 'msg ai'; lDiv.id = 'ai-loader';
             lDiv.innerHTML = `<strong>QAXI AI</strong><p>Pensando...</p>`; chat.appendChild(lDiv); chat.scrollTop = chat.scrollHeight;
 
+            // Agregar mensaje del usuario al historial
+            aiChatHistory.push({ role: "user", content: prompt });
+            
+            // Limitar historial para no exceder tokens
+            if (aiChatHistory.length > MAX_HISTORY) {
+                aiChatHistory = aiChatHistory.slice(-MAX_HISTORY);
+            }
+
             try {
-                const systemPrompt = "Eres QAXI AI, un asistente de inteligencia artificial avanzado integrado en la plataforma QAXI Cloud. Tienes dos funciones principales: 1) Eres un experto en conocimientos generales (historia, programación, matemáticas, ciencia, redacción creativa, etc.) y debes responder cualquier duda del usuario con precisión y elegancia. 2) Conoces el contexto de esta plataforma (Titanium Suite), que tiene herramientas de Docs, Sheets, PDF, Slides y QR. Respuesas breves, profesionales y útiles.";
+                // Verificar si necesita búsqueda web
+                let webContext = '';
+                if (needsWebSearch(prompt)) {
+                    document.getElementById('ai-loader').innerHTML = `<strong>QAXI AI</strong><p>🔍 Buscando en la web...</p>`;
+                    
+                    const searchResults = await searchWeb(prompt);
+                    
+                    if (searchResults.length > 0) {
+                        webContext = '\n\n## INFORMACIÓN DE LA WEB (Búsqueda reciente):\n';
+                        searchResults.forEach((r, i) => {
+                            webContext += `\n**${i+1}. ${r.title}** (${r.source}):\n${r.snippet}\n`;
+                        });
+                        webContext += '\n---\nUsa esta información para responder de forma precisa y actualizada.\n';
+                    }
+                    
+                    document.getElementById('ai-loader').innerHTML = `<strong>QAXI AI</strong><p>Analizando resultados...</p>`;
+                }
+                
+                // Obtener fecha actual formateada
+                const now = new Date();
+                const fechaActual = now.toLocaleDateString('es-ES', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                // Include attachments metadata for model context (if any)
+                let attachContext = '';
+                if (window.aiAttachments && window.aiAttachments.length) {
+                    attachContext = '\n\n## ADJUNTOS:\n' + window.aiAttachments.map((a, i) => `- ${a.name} (${a.type || 'unknown'}, ${Math.round((a.size||0)/1024)} KB)`).join('\n');
+                }
+
+                const systemPrompt = `Eres QAXI AI, un asistente de inteligencia artificial de última generación integrado en QAXI Cloud - Titanium Suite.
+
+## INFORMACIÓN TEMPORAL
+- Fecha y hora actual: ${fechaActual}
+- Tu conocimiento base está actualizado hasta 2024-2025
+- TIENES ACCESO A BÚSQUEDA WEB para información actualizada
+
+## TUS CAPACIDADES
+1. **Búsqueda Web**: Puedes buscar información actualizada en internet cuando el usuario lo solicite o cuando detectes que necesitas datos recientes.
+2. **Conocimiento General**: Historia, ciencia, tecnología, programación, matemáticas, literatura, arte, cultura, actualidad mundial, deportes, entretenimiento.
+3. **Programación**: Experto en múltiples lenguajes (Python, JavaScript, HTML/CSS, Java, C++, SQL, etc.). Puedes escribir, explicar y depurar código.
+4. **Matemáticas**: Desde aritmética básica hasta cálculo, álgebra, estadística y más.
+5. **Redacción**: Creativa, académica, profesional, emails, ensayos, historias.
+6. **Análisis**: Puedes analizar textos, datos, argumentos y dar opiniones fundamentadas.
+7. **Idiomas**: Puedes ayudar con traducciones y explicaciones en múltiples idiomas.
+
+## CONTEXTO DE PLATAFORMA
+Estás integrado en QAXI Cloud que incluye:
+- **DOCS**: Editor de documentos con formato rico
+- **SHEETS**: Hojas de cálculo con fórmulas matemáticas
+- **PDF**: Conversor de imágenes a PDF
+- **SLIDES**: Presentaciones profesionales (PRO)
+- **QR**: Generador de códigos QR
+
+## ESTILO DE RESPUESTA
+- Sé conciso pero completo
+- Usa formato Markdown cuando sea útil (listas, código, negritas)
+- Mantén un tono profesional pero amigable
+- Si usaste búsqueda web, menciona brevemente que consultaste información actualizada
+- Puedes usar emojis ocasionalmente para dar personalidad 🚀
+
+## FORMATO REQUERIDO PARA LAS RESPUESTAS
+- Comienza con un **Resumen breve** (1-2 líneas).
+- Luego **Puntos clave** en viñetas.
+- Después, si aplica, **Pasos detallados / Solución**.
+- Incluye un **Ejemplo** o fragmento de código si es relevante.
+- Finaliza con **Recursos / Referencias** y **Preguntas de seguimiento**.
+Usa encabezados Markdown para cada sección y sé lo más claro y accionable posible.
+${attachContext}
+${webContext}`;
+
+                // Construir mensajes con historial
+                const messages = [
+                    { role: "system", content: systemPrompt },
+                    ...aiChatHistory
+                ];
 
                 const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${GROQ_KEY}` },
                     body: JSON.stringify({
-                        messages: [{ role: "system", content: systemPrompt }, { role: "user", content: prompt }],
-                        model: "llama-3.3-70b-versatile", temperature: 0.7
+                        messages: messages,
+                        model: "llama-3.3-70b-versatile",
+                        temperature: 0.7,
+                        max_tokens: 2048,
+                        top_p: 0.9
                     })
                 });
 
-                if(!response.ok) throw new Error("Error API");
+                if(!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error?.message || "Error de conexión");
+                }
+                
                 const data = await response.json();
+                const aiResponse = data.choices[0].message.content;
+                
+                // Agregar respuesta al historial
+                aiChatHistory.push({ role: "assistant", content: aiResponse });
+                
                 document.getElementById('ai-loader').remove();
                 
                 const rDiv = document.createElement('div'); rDiv.className = 'msg ai';
-                rDiv.innerHTML = `<strong>QAXI AI</strong><div>${marked.parse(data.choices[0].message.content)}</div>`;
+                rDiv.innerHTML = `<strong>QAXI AI</strong><div>${marked.parse(aiResponse)}</div>`;
                 chat.appendChild(rDiv); chat.scrollTop = chat.scrollHeight;
 
             } catch(e) { 
                 console.error(e);
-                document.getElementById('ai-loader').innerHTML = `<strong>QAXI AI</strong><p>Error al conectar. Intenta de nuevo.</p>`;
+                // Remover el último mensaje del usuario del historial si falló
+                aiChatHistory.pop();
+                const loader = document.getElementById('ai-loader');
+                if (loader) {
+                    loader.innerHTML = `<strong>QAXI AI</strong><p>⚠️ ${e.message || 'Error al conectar. Intenta de nuevo.'}</p>`;
+                }
             }
         };
+
+        // ========================================
+        // === QAXI SEARCH APP ===
+        // ========================================
+        function loadSearch(c, t) {
+            c.innerHTML = `
+                <div class="search-container" style="display:flex; flex-direction:column; width:100%; height:100%; padding:20px; overflow-y:auto; align-items: center;">
+                    <div id="searchHero" style="display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; transition:0.3s; width: 100%; max-width: 800px;">
+                        <h1 style="font-family:var(--font-brand); font-size:4rem; color:var(--text); margin-bottom:30px; letter-spacing: 2px;">
+                            <span style="color:var(--gold); text-shadow: 0 0 20px var(--gold-glow);">QAXI</span> SEARCH
+                        </h1>
+                        <div style="position:relative; width:100%; max-width:650px;">
+                            <input type="text" id="searchInput" placeholder="¿Qué quieres descubrir hoy?" 
+                                style="width:100%; padding:20px 55px 20px 25px; background:rgba(20,20,20,0.8); border:1px solid #444; 
+                                border-radius:50px; color:white; font-size:1.2rem; box-shadow: 0 10px 40px rgba(0,0,0,0.4); outline:none; transition: all 0.3s ease;"
+                                onfocus="this.style.borderColor='var(--gold)'; this.style.boxShadow='0 10px 40px rgba(212,175,55,0.1)';"
+                                onblur="this.style.borderColor='#444'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.4)';"
+                                onkeydown="if(event.key === 'Enter') performQaxiSearch()">
+                            <button onclick="performQaxiSearch()" style="position:absolute; right:15px; top:50%; transform:translateY(-50%); 
+                                background:none; border:none; color:var(--gold); font-size:1.4rem; cursor:pointer; transition: 0.2s;"
+                                onmouseover="this.style.transform='translateY(-50%) scale(1.1)'; this.style.textShadow='0 0 10px var(--gold)'"
+                                onmouseout="this.style.transform='translateY(-50%) scale(1)'; this.style.textShadow='none'">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                        <div style="margin-top:25px; font-size:0.9rem; color:#666; display: flex; gap: 10px; align-items: center;">
+                            <span>Potenciado por</span>
+                            <span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 12px; color: #aaa; display: flex; align-items: center; gap: 5px;">
+                                <i class="fa-brands fa-google"></i> Google
+                            </span>
+                            <span>&</span>
+                            <span style="background: rgba(212,175,55,0.1); padding: 4px 10px; border-radius: 12px; color: var(--gold); display: flex; align-items: center; gap: 5px;">
+                                <i class="fa-solid fa-brain"></i> QAXI AI
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div id="searchResults" style="display:none; width:100%; max-width:900px; margin:0 auto; padding-top: 20px;">
+                        <!-- Top Bar -->
+                        <div style="display:flex; align-items:center; gap:20px; margin-bottom:30px; border-bottom:1px solid #333; padding-bottom:20px; position: sticky; top: 0; background: var(--bg); z-index: 10; padding-top: 10px;">
+                            <div style="font-family:var(--font-brand); font-size:1.8rem; color:white; cursor:pointer; display: flex; align-items: center;" onclick="loadSearch(document.getElementById('wsContent'), document.getElementById('appTools'))">
+                                <span style="color:var(--gold);">Q</span>S
+                            </div>
+                            <div style="position: relative; flex: 1;">
+                                <input type="text" id="searchInput2" placeholder="Buscar..." 
+                                    style="width: 100%; padding:12px 20px; background:#111; border:1px solid #333; border-radius:25px; color:white; font-size: 1rem;"
+                                    onkeydown="if(event.key === 'Enter') performQaxiSearch(this.value)">
+                                <i class="fa-solid fa-search" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #666;"></i>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                            <!-- Left Col: AI & Top Result -->
+                            <div style="flex: 2; min-width: 300px;">
+                                <!-- AI Overview -->
+                                <div id="aiOverview" style="background:linear-gradient(180deg, rgba(212, 175, 55, 0.08) 0%, rgba(20,20,20,0) 100%); border:1px solid rgba(212, 175, 55, 0.3); border-radius:16px; padding:25px; margin-bottom:30px; display:none;">
+                                    <h3 style="margin-top:0; color:var(--gold); display:flex; align-items:center; gap:10px; font-size: 1.1rem; margin-bottom: 15px;">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i> QAXI AI Generativo
+                                    </h3>
+                                    <div id="aiContent" style="line-height:1.7; color:#e0e0e0; font-size: 0.95rem;"></div>
+                                </div>
+
+                                <!-- Web Results -->
+                                <div id="webResultsList"></div>
+                            </div>
+                            
+                            <!-- Right Col: Google Direct -->
+                            <div style="flex: 1; min-width: 250px;">
+                                <div style="background:#111; padding:20px; border-radius:12px; border:1px solid #333; position: sticky; top: 100px;">
+                                    <h4 style="margin:0 0 15px 0; color:#888; font-size: 0.8rem; text-transform: uppercase;">Fuentes Externas</h4>
+                                    <a id="googleLink" href="#" target="_blank" style="display: block; text-decoration:none; margin-bottom: 10px;">
+                                        <div style="padding: 15px; background: #202124; border-radius: 8px; border: 1px solid #5f6368; display: flex; align-items: center; gap: 15px; transition: 0.2s;" onmouseover="this.style.background='#303134'" onmouseout="this.style.background='#202124'">
+                                            <div style="font-size: 1.5rem; color: white;"><i class="fa-brands fa-google"></i></div>
+                                            <div>
+                                                <div style="color: #dadce0; font-weight: 500;">Google Search</div>
+                                                <div style="color: #9aa0a6; font-size: 0.8rem;">Ver resultados completos</div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <div style="font-size: 0.8rem; color: #666; margin-top: 15px; line-height: 1.4;">
+                                        QAXI Search utiliza fuentes públicas y algoritmos de IA para sintetizar información. Para navegar profundamente, usa el enlace a Google.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function performQaxiSearch(val) {
+            const input1 = document.getElementById('searchInput');
+            const input2 = document.getElementById('searchInput2');
+            const query = val || (input1 ? input1.value : input2.value);
+            
+            if (!query) return;
+            
+            // Switch UI
+            const hero = document.getElementById('searchHero');
+            const results = document.getElementById('searchResults');
+            const list = document.getElementById('webResultsList');
+            const aiSection = document.getElementById('aiOverview');
+            const aiContent = document.getElementById('aiContent');
+            const googleLink = document.getElementById('googleLink');
+            
+            if(hero) hero.style.display = 'none';
+            results.style.display = 'block';
+            if(input2) input2.value = query;
+            googleLink.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+            
+            // Clear previous
+            list.innerHTML = '';
+            aiContent.innerHTML = '<div style="display:flex; align-items:center; gap:10px; color:#888;"><i class="fa-solid fa-circle-notch fa-spin"></i> Generando respuesta inteligente...</div>';
+            aiSection.style.display = 'block';
+            
+            // 1. Get Web Data
+            const webData = await searchWeb(query);
+            
+            // 2. Render Results List
+            let listHtml = '';
+            if(webData.length > 0) {
+                webData.forEach(item => {
+                    listHtml += `
+                        <div class="result-item" style="margin-bottom:25px; padding-bottom: 15px; border-bottom: 1px solid #222;">
+                            <div style="font-size:0.75rem; color:#888; margin-bottom:5px; display: flex; align-items: center; gap: 6px;">
+                                <img src="https://www.google.com/s2/favicons?domain=${item.source}&sz=16" style="width:14px; height:14px; opacity: 0.7; border-radius: 2px;">
+                                ${item.source || 'Web'}
+                            </div>
+                            <div style="color:#8ab4f8; font-size:1.2rem; margin-bottom:6px; cursor: pointer; text-decoration: underline;" onclick="window.open('https://www.google.com/search?q=${encodeURIComponent(item.title)}')">${item.title}</div>
+                            <div style="color:#ccc; font-size:0.9rem; line-height:1.5;">${item.snippet}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                listHtml += `<div style="padding:20px 0; color:#666;">No se encontraron resultados directos en la vista rápida.</div>`;
+            }
+            list.innerHTML = listHtml;
+            
+            // 3. Generate AI Summary (using Groq)
+            try {
+                const systemPrompt = `Eres QAXI SEARCH, un motor de respuestas inteligente. 
+Responde a la búsqueda: "${query}".
+Usa esta información extraída de la web si es útil:
+${webData.map(r => `[${r.source}]: ${r.snippet}`).join('\n')}
+
+Instrucciones:
+1. Responde directamente a la intención del usuario.
+2. Usa formato Markdown limpio.
+3. Sé objetivo y verificable.
+4. Si es una pregunta factual, da la respuesta exacta al principio.
+5. Cita las fuentes entre paréntesis si usas la info provista.`;
+
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${GROQ_KEY}` },
+                    body: JSON.stringify({
+                        messages: [{ role: "system", content: systemPrompt }, { role: "user", content: query }],
+                        model: "llama-3.3-70b-versatile",
+                        temperature: 0.4,
+                        max_tokens: 800
+                    })
+                });
+                
+                const data = await response.json();
+                const text = data.choices ? data.choices[0].message.content : "No se pudo generar el resumen.";
+                aiContent.innerHTML = marked.parse(text);
+                
+            } catch(e) {
+                console.error(e);
+                aiContent.innerHTML = "QAXI AI no está disponible en este momento.";
+            }
+        }
 
         // === QR ===
         function loadQR(c, t) {
@@ -1528,6 +2545,579 @@
             const txt = document.getElementById('qrText').value;
             if(txt) document.getElementById('qrOutput').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(txt)}">`;
         }
+        
+        // ========================================
+        // === CARNET CREATOR ===
+        // ========================================
+        
+        let carnetPhoto = null;
+        let carnetBgImage = null;
+        
+        function loadCarnet(c, t) {
+            t.innerHTML = `
+                <button class="nav-btn" onclick="clearCarnet()">NUEVO</button>
+            `;
+            
+            c.innerHTML = `
+                <div class="carnet-container">
+                    <div class="carnet-form">
+                        <h3 style="color: var(--gold); margin-bottom: 10px;"><i class="fa-solid fa-id-card"></i> Crear Carnet</h3>
+                        
+                        <label>Empresa / Organización</label>
+                        <input type="text" id="carnetCompany" placeholder="Nombre de la empresa" oninput="updateCarnetPreview()">
+                        
+                        <label>Nombre Completo</label>
+                        <input type="text" id="carnetName" placeholder="Juan Pérez" oninput="updateCarnetPreview()">
+                        
+                        <label>Cargo / Rol</label>
+                        <input type="text" id="carnetRole" placeholder="Gerente de Ventas" oninput="updateCarnetPreview()">
+                        
+                        <label>Número de ID / Código</label>
+                        <input type="text" id="carnetId" placeholder="EMP-001" oninput="updateCarnetPreview()">
+                        
+                        <label>Email (para código QR)</label>
+                        <input type="email" id="carnetEmail" placeholder="correo@empresa.com" oninput="updateCarnetPreview()">
+                        
+                        <label>Estilo del Carnet</label>
+                        <select id="carnetStyle" onchange="updateCarnetPreview()">
+                            <option value="corporate">Corporativo (Azul Oscuro)</option>
+                            <option value="modern">Moderno (Morado)</option>
+                            <option value="elegant">Elegante (Negro + Dorado)</option>
+                            <option value="vibrant">Vibrante (Rosa)</option>
+                            <option value="nature">Natural (Verde)</option>
+                            <option value="sunset">Atardecer (Naranja)</option>
+                            <option value="custom">🖼️ Fondo Personalizado</option>
+                        </select>
+                        
+                        <div id="customBgSection" style="display:none;">
+                            <label>Imagen de Fondo</label>
+                            <input type="file" id="carnetBgInput" accept="image/*" style="display:none" onchange="loadCarnetBg(this)">
+                            <button class="photo-upload-btn" onclick="document.getElementById('carnetBgInput').click()" style="background:#555;">
+                                <i class="fa-solid fa-image"></i> Subir Fondo
+                            </button>
+                        </div>
+                        
+                        <label>Foto del Empleado</label>
+                        <input type="file" id="carnetPhotoInput" accept="image/*" style="display:none" onchange="loadCarnetPhoto(this)">
+                        <button class="photo-upload-btn" onclick="document.getElementById('carnetPhotoInput').click()">
+                            <i class="fa-solid fa-camera"></i> Subir Foto
+                        </button>
+                    </div>
+                    
+                    <div class="carnet-preview-area">
+                        <p style="color: #666; margin-bottom: 15px; font-size: 0.8rem;">Vista Previa</p>
+                        <div id="carnetPreview" class="carnet-card style-corporate">
+                            <div class="carnet-photo" id="carnetPhotoPreview">
+                                <div style="text-align:center; font-size:0.6rem; opacity:0.7;"><i class="fa-solid fa-user" style="font-size:1.5rem; display:block; margin-bottom:3px;"></i>FOTO</div>
+                            </div>
+                            <div class="carnet-info">
+                                <div class="carnet-company" id="previewCompany">EMPRESA</div>
+                                <div class="carnet-name" id="previewName">Nombre Completo</div>
+                                <div class="carnet-role" id="previewRole">Cargo</div>
+                                <div class="carnet-id" id="previewId">ID: ---</div>
+                            </div>
+                            <div class="carnet-qr" id="previewQR">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=QAXI" alt="QR">
+                            </div>
+                            <div class="carnet-logo"><i class="fa-solid fa-building"></i></div>
+                        </div>
+                        
+                        <div class="share-options">
+                            <button class="share-btn primary" onclick="downloadCarnet()">
+                                <i class="fa-solid fa-download"></i> Descargar PNG
+                            </button>
+                            <button class="share-btn" onclick="downloadCarnetPDF()">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                            <button class="share-btn" onclick="shareCarnetWhatsApp()">
+                                <i class="fa-brands fa-whatsapp"></i> Enviar
+                            </button>
+                            <button class="share-btn" onclick="shareCarnetEmail()">
+                                <i class="fa-solid fa-envelope"></i> Email
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            carnetPhoto = null;
+            carnetBgImage = null;
+        }
+        
+        window.updateCarnetPreview = function() {
+            const company = document.getElementById('carnetCompany').value || 'EMPRESA';
+            const name = document.getElementById('carnetName').value || 'Nombre Completo';
+            const role = document.getElementById('carnetRole').value || 'Cargo';
+            const id = document.getElementById('carnetId').value || '---';
+            const email = document.getElementById('carnetEmail').value || 'contacto@empresa.com';
+            const style = document.getElementById('carnetStyle').value;
+            
+            document.getElementById('previewCompany').innerText = company.toUpperCase();
+            document.getElementById('previewName').innerText = name;
+            document.getElementById('previewRole').innerText = role;
+            document.getElementById('previewId').innerText = `ID: ${id}`;
+            
+            // Actualizar QR con vCard
+            const vCardData = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nORG:${company}\nTITLE:${role}\nEMAIL:${email}\nEND:VCARD`;
+            document.getElementById('previewQR').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(vCardData)}" alt="QR">`;
+            
+            // Mostrar/ocultar sección de fondo personalizado
+            const customSection = document.getElementById('customBgSection');
+            if (style === 'custom') {
+                customSection.style.display = 'block';
+            } else {
+                customSection.style.display = 'none';
+            }
+            
+            // Actualizar estilo
+            const card = document.getElementById('carnetPreview');
+            card.className = `carnet-card style-${style}`;
+            
+            // Si es custom y hay imagen de fondo
+            if (style === 'custom' && carnetBgImage) {
+                card.style.backgroundImage = `url(${carnetBgImage})`;
+            } else {
+                card.style.backgroundImage = '';
+            }
+        }
+        
+        window.loadCarnetBg = function(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    carnetBgImage = e.target.result;
+                    updateCarnetPreview();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        window.loadCarnetPhoto = function(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    carnetPhoto = e.target.result;
+                    document.getElementById('carnetPhotoPreview').innerHTML = `<img src="${carnetPhoto}" alt="Foto">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        window.clearCarnet = function() {
+            document.getElementById('carnetCompany').value = '';
+            document.getElementById('carnetName').value = '';
+            document.getElementById('carnetRole').value = '';
+            document.getElementById('carnetId').value = '';
+            document.getElementById('carnetEmail').value = '';
+            document.getElementById('carnetStyle').value = 'corporate';
+            carnetPhoto = null;
+            carnetBgImage = null;
+            document.getElementById('carnetPhotoPreview').innerHTML = '<div style="text-align:center; font-size:0.6rem; opacity:0.7;"><i class="fa-solid fa-user" style="font-size:1.5rem; display:block; margin-bottom:3px;"></i>FOTO</div>';
+            document.getElementById('customBgSection').style.display = 'none';
+            updateCarnetPreview();
+        }
+        
+        window.downloadCarnet = async function() {
+            const card = document.getElementById('carnetPreview');
+            const canvas = await html2canvas(card, { scale: 3, useCORS: true });
+            const link = document.createElement('a');
+            link.download = `carnet_${document.getElementById('carnetName').value || 'empleado'}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        window.downloadCarnetPDF = async function() {
+            const card = document.getElementById('carnetPreview');
+            const canvas = await html2canvas(card, { scale: 3, useCORS: true });
+            const pdf = new jspdf.jsPDF('l', 'mm', [90, 55]);
+            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 90, 55);
+            pdf.save(`carnet_${document.getElementById('carnetName').value || 'empleado'}.pdf`);
+        }
+        
+        window.shareCarnetWhatsApp = async function() {
+            const name = document.getElementById('carnetName').value || 'Empleado';
+            const company = document.getElementById('carnetCompany').value || 'Empresa';
+            const message = `¡Hola! Te comparto el carnet de ${name} de ${company}. Creado con QAXI Cloud.`;
+            
+            // Primero descargar, luego abrir WhatsApp
+            alert('Primero se descargará el carnet. Luego podrás adjuntarlo en WhatsApp.');
+            await downloadCarnet();
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+        }
+        
+        window.shareCarnetEmail = function() {
+            const name = document.getElementById('carnetName').value || 'Empleado';
+            const company = document.getElementById('carnetCompany').value || 'Empresa';
+            const email = document.getElementById('carnetEmail').value || '';
+            const subject = `Carnet de Identificación - ${name}`;
+            const body = `Hola ${name},\n\nTe enviamos tu carnet de identificación de ${company}.\n\nPor favor, descarga el carnet adjunto o genéralo desde QAXI Cloud.\n\nSaludos,\n${company}`;
+            
+            window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+            
+            // También descargar
+            downloadCarnet();
+        }
+        
+        // ========================================
+        // === FIRMA PDF ===
+        // ========================================
+        
+        let firmaCanvas = null;
+        let firmaCtx = null;
+        let isDrawing = false;
+        let firmaColor = '#000000';
+        let firmaWidth = 2;
+        let firmaImage = null;
+        let pdfForSign = null;
+        let firmaOverlays = [];
+        
+        function loadFirma(c, t) {
+            t.innerHTML = `
+                <button class="nav-btn" onclick="clearFirmaCanvas()">LIMPIAR FIRMA</button>
+                <button class="nav-btn" onclick="saveFirmaAsImage()">GUARDAR FIRMA</button>
+                <button class="nav-btn" onclick="exportSignedPDF()" style="border-color:var(--gold); color:var(--gold)">EXPORTAR PDF FIRMADO</button>
+            `;
+            
+            c.innerHTML = `
+                <div class="firma-container">
+                    <div class="firma-sidebar">
+                        <h3 style="color: var(--gold); margin: 0 0 10px 0;"><i class="fa-solid fa-signature"></i> Crear Firma</h3>
+                        
+                        <p style="color: #888; font-size: 0.8rem; margin: 0;">Dibuja tu firma aquí:</p>
+                        <div class="firma-canvas-container">
+                            <canvas id="firmaCanvas" width="240" height="100"></canvas>
+                        </div>
+                        
+                        <div class="firma-tools">
+                            <button class="firma-tool-btn" onclick="setFirmaColor('#000000')" style="background:#000; color:#fff;">Negro</button>
+                            <button class="firma-tool-btn" onclick="setFirmaColor('#0000aa')" style="background:#0000aa; color:#fff;">Azul</button>
+                            <button class="firma-tool-btn" onclick="setFirmaColor('#aa0000')" style="background:#aa0000; color:#fff;">Rojo</button>
+                        </div>
+                        
+                        <div style="margin-top: 10px;">
+                            <label style="font-size: 0.8rem; color: #888;">Grosor: </label>
+                            <input type="range" min="1" max="6" value="2" id="firmaWidthSlider" oninput="setFirmaWidth(this.value)" style="width: 100%;">
+                        </div>
+                        
+                        <div class="sep" style="width:100%; height:1px; background:#333; margin: 15px 0;"></div>
+                        
+                        <p style="color: #888; font-size: 0.8rem; margin: 0;">O sube una imagen de firma:</p>
+                        <input type="file" id="firmaImageInput" accept="image/*" style="display:none" onchange="loadFirmaImage(this)">
+                        <button class="firma-tool-btn" onclick="document.getElementById('firmaImageInput').click()" style="width:100%;">
+                            <i class="fa-solid fa-upload"></i> Subir Imagen
+                        </button>
+                        
+                        <div class="sep" style="width:100%; height:1px; background:#333; margin: 15px 0;"></div>
+                        
+                        <h4 style="color: var(--gold); margin: 0 0 10px 0;"><i class="fa-solid fa-file-pdf"></i> Cargar PDF</h4>
+                        <input type="file" id="pdfSignInput" accept="application/pdf" style="display:none" onchange="loadPDFtoSign(this)">
+                        <button class="firma-tool-btn" onclick="document.getElementById('pdfSignInput').click()" style="width:100%; background:var(--gold); color:black;">
+                            <i class="fa-solid fa-file-arrow-up"></i> Seleccionar PDF
+                        </button>
+                        
+                        <p id="pdfSignStatus" style="color: #666; font-size: 0.75rem; margin-top: 10px;"></p>
+                    </div>
+                    
+                    <div class="firma-preview" id="firmaPreviewArea">
+                        <p style="color: #666; font-size: 0.9rem;"><i class="fa-solid fa-file-pdf" style="font-size: 3rem; display: block; margin-bottom: 15px; opacity: 0.3;"></i>Carga un PDF para firmarlo</p>
+                    </div>
+                </div>
+            `;
+            
+            // Inicializar canvas de firma (fondo transparente)
+            firmaCanvas = document.getElementById('firmaCanvas');
+            firmaCtx = firmaCanvas.getContext('2d');
+            // Ensure transparent background by clearing
+            firmaCtx.clearRect(0, 0, firmaCanvas.width, firmaCanvas.height);
+            firmaCtx.strokeStyle = firmaColor;
+            firmaCtx.lineWidth = firmaWidth;
+            firmaCtx.lineCap = 'round';
+            firmaCtx.lineJoin = 'round';
+            
+            // Eventos de dibujo
+            firmaCanvas.addEventListener('mousedown', startDrawing);
+            firmaCanvas.addEventListener('mousemove', draw);
+            firmaCanvas.addEventListener('mouseup', stopDrawing);
+            firmaCanvas.addEventListener('mouseout', stopDrawing);
+            
+            // Touch events
+            firmaCanvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = firmaCanvas.getBoundingClientRect();
+                startDrawing({ offsetX: touch.clientX - rect.left, offsetY: touch.clientY - rect.top });
+            });
+            firmaCanvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = firmaCanvas.getBoundingClientRect();
+                draw({ offsetX: touch.clientX - rect.left, offsetY: touch.clientY - rect.top });
+            });
+            firmaCanvas.addEventListener('touchend', stopDrawing);
+            
+            firmaOverlays = [];
+            pdfForSign = null;
+        }
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            firmaCtx.beginPath();
+            firmaCtx.moveTo(e.offsetX, e.offsetY);
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            firmaCtx.lineTo(e.offsetX, e.offsetY);
+            firmaCtx.stroke();
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        window.setFirmaColor = function(color) {
+            firmaColor = color;
+            firmaCtx.strokeStyle = color;
+        }
+        
+        window.setFirmaWidth = function(width) {
+            firmaWidth = parseInt(width);
+            firmaCtx.lineWidth = firmaWidth;
+        }
+        
+        window.clearFirmaCanvas = function() {
+            // Clear to transparent
+            firmaCtx.clearRect(0, 0, firmaCanvas.width, firmaCanvas.height);
+            firmaImage = null;
+        }
+        
+        window.saveFirmaAsImage = function() {
+            const link = document.createElement('a');
+            link.download = 'mi_firma.png';
+            link.href = firmaCanvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        window.loadFirmaImage = function(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    firmaImage = e.target.result;
+                    // Mostrar en el canvas
+                    const img = new Image();
+                    img.onload = () => {
+                        // keep background transparent
+                        firmaCtx.clearRect(0, 0, firmaCanvas.width, firmaCanvas.height);
+                        const scale = Math.min(firmaCanvas.width / img.width, firmaCanvas.height / img.height) * 0.9;
+                        const w = img.width * scale;
+                        const h = img.height * scale;
+                        firmaCtx.drawImage(img, (firmaCanvas.width - w) / 2, (firmaCanvas.height - h) / 2, w, h);
+                    };
+                    img.src = firmaImage;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        window.loadPDFtoSign = async function(input) {
+            if (!input.files || !input.files[0]) return;
+            
+            const file = input.files[0];
+            document.getElementById('pdfSignStatus').innerText = 'Cargando PDF...';
+            
+            // Cargar PDF.js si no está cargado
+            if (!window.pdfjsLib) {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+                document.head.appendChild(script);
+                await new Promise(resolve => script.onload = resolve);
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            }
+            
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const typedArray = new Uint8Array(e.target.result);
+                    pdfForSign = await pdfjsLib.getDocument(typedArray).promise;
+                    
+                    document.getElementById('pdfSignStatus').innerText = `PDF cargado: ${pdfForSign.numPages} página(s)`;
+                    
+                    // Renderizar primera página
+                    await renderPDFPage(1);
+                    
+                } catch (err) {
+                    console.error(err);
+                    document.getElementById('pdfSignStatus').innerText = 'Error al cargar PDF';
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        
+        async function renderPDFPage(pageNum) {
+            if (!pdfForSign) return;
+            
+            const page = await pdfForSign.getPage(pageNum);
+            const scale = 1.5;
+            const viewport = page.getViewport({ scale });
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = 'pdfCanvas';
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            
+            const ctx = canvas.getContext('2d');
+            await page.render({ canvasContext: ctx, viewport }).promise;
+            
+            const previewArea = document.getElementById('firmaPreviewArea');
+            previewArea.innerHTML = `
+                <div class="pdf-preview-container" style="position: relative;">
+                    <p style="color: #888; font-size: 0.75rem; margin-bottom: 10px;">Haz clic donde quieras colocar la firma:</p>
+                    <div id="pdfCanvasWrapper" style="position: relative; display: inline-block;"></div>
+                    <div style="margin-top: 15px;">
+                        <button class="firma-tool-btn active" onclick="addFirmaToPosition()"><i class="fa-solid fa-plus"></i> Añadir firma al PDF</button>
+                        <button class="firma-tool-btn" onclick="removeFirmaOverlays()"><i class="fa-solid fa-trash"></i> Quitar firmas</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('pdfCanvasWrapper').appendChild(canvas);
+            
+            // Clic para posicionar firma
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                placeSignature(x, y);
+            });
+        }
+        
+        function placeSignature(x, y) {
+            const wrapper = document.getElementById('pdfCanvasWrapper');
+            const firmaData = firmaCanvas.toDataURL('image/png');
+            
+            const overlay = document.createElement('div');
+            overlay.className = 'firma-overlay';
+            overlay.style.left = (x - 75) + 'px';
+            overlay.style.top = (y - 40) + 'px';
+            overlay.innerHTML = `<img src="${firmaData}" alt="Firma">`;
+            
+            // Hacer draggable
+            let isDraggingOverlay = false;
+            let offsetX, offsetY;
+            
+            overlay.addEventListener('mousedown', (e) => {
+                isDraggingOverlay = true;
+                offsetX = e.clientX - overlay.offsetLeft;
+                offsetY = e.clientY - overlay.offsetTop;
+                e.stopPropagation();
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDraggingOverlay) return;
+                overlay.style.left = (e.clientX - offsetX) + 'px';
+                overlay.style.top = (e.clientY - offsetY) + 'px';
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDraggingOverlay = false;
+            });
+            
+            wrapper.appendChild(overlay);
+            firmaOverlays.push(overlay);
+        }
+        
+        window.addFirmaToPosition = function() {
+            alert('Haz clic en el PDF donde deseas colocar tu firma. Puedes arrastrarla para ajustar la posición.');
+        }
+        
+        window.removeFirmaOverlays = function() {
+            firmaOverlays.forEach(o => o.remove());
+            firmaOverlays = [];
+        }
+        
+        window.exportSignedPDF = async function() {
+            const pdfCanvas = document.getElementById('pdfCanvas');
+            if (!pdfCanvas) {
+                alert('Primero carga un PDF');
+                return;
+            }
+            
+            // Crear canvas combinado
+            const wrapper = document.getElementById('pdfCanvasWrapper');
+            const finalCanvas = await html2canvas(wrapper, { scale: 2, useCORS: true });
+            
+            // Crear PDF
+            const pdf = new jspdf.jsPDF({
+                orientation: pdfCanvas.width > pdfCanvas.height ? 'l' : 'p',
+                unit: 'px',
+                format: [pdfCanvas.width, pdfCanvas.height]
+            });
+            
+            pdf.addImage(finalCanvas.toDataURL('image/png'), 'PNG', 0, 0, pdfCanvas.width, pdfCanvas.height);
+            pdf.save('documento_firmado.pdf');
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Seguridad QAXI CLOUD (Compat)
+        try {
+            const authCompat = firebase.auth();
+
+            authCompat.onAuthStateChanged(async (user) => {
+                const loginOverlay = document.getElementById('loginModal') || document.getElementById('login-overlay');
+                const appContent = document.querySelector('.main-container') || document.getElementById('app-content');
+
+                if (user) {
+                    console.log('Verificando licencia Cloud para:', user.email);
+                    try {
+                        const userRef = db.collection('QAXI_CLOUD_DATA').doc(user.uid);
+                        const docSnap = await userRef.get();
+
+                        if (docSnap.exists) {
+                            const data = docSnap.data();
+                            if (data.cloud_active !== true) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Acceso Restringido',
+                                    html: `
+                                        <p>Hola <b>${user.email}</b>,</p>
+                                        <p class="mt-2">Eres usuario de QAXI, pero <b>NO tienes activa la licencia QAXI CLOUD</b>.</p>
+                                        <p class="text-sm text-gray-400 mt-2">Tener el POS o la Web no te da acceso automático a la Nube Titanium.</p>
+                                    `,
+                                    confirmButtonText: 'Cerrar Sesión',
+                                    confirmButtonColor: '#ef4444',
+                                    allowOutsideClick: false,
+                                    background: '#0f172a',
+                                    color: '#fff'
+                                }).then(() => { authCompat.signOut(); location.reload(); });
+                                return;
+                            }
+                            console.log('Licencia Cloud Válida');
+                        } else {
+                            await userRef.set({
+                                email: user.email,
+                                createdAt: new Date(),
+                                cloud_active: true,
+                                plan: 'Titanium Trial',
+                                storage_used: 0
+                            });
+                            Swal.fire({ icon: 'success', title: 'Bienvenido a la Nube', text: 'Espacio inicial configurado.', background: '#0f172a', color: '#fff', timer: 2000, showConfirmButton: false });
+                        }
+
+                        if (loginOverlay) loginOverlay.style.display = 'none';
+                        if (appContent) appContent.style.display = 'block';
+
+                    } catch (err) {
+                        console.error('Error de seguridad:', err);
+                        Swal.fire('Error', 'No se pudo verificar tu licencia.', 'error');
+                        authCompat.signOut();
+                    }
+                } else {
+                    if (loginOverlay) loginOverlay.style.display = 'flex';
+                    if (appContent) appContent.style.display = 'none';
+                }
+            });
+        } catch(e) { console.warn('Auth compat no disponible', e); }
     </script>
 </body>
 </html>
