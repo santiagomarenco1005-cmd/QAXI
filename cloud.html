@@ -877,6 +877,9 @@
         let liveCloudSync = false;
         let liveUnsubscribe = null;
         let cloudMeetings = [];
+        let selectedMeetingId = null;
+        // messages cache: { [meetingId]: [ { id, sender, text, created } ] }
+        let liveMessagesCache = {};
         
         // Warn before leaving if unsaved changes
         window.addEventListener('beforeunload', (e) => {
@@ -2651,9 +2654,8 @@ Instrucciones:
                 <button class="nav-btn" onclick="createLiveMeeting()" style="border-color:var(--gold); color:var(--gold);">NUEVA REUNIÓN</button>
                 <button class="nav-btn" onclick="openSelectedMeeting()">UNIRSE</button>
                 <button class="nav-btn" onclick="copySelectedLink()">COPIAR ENLACE</button>
-                <button class="nav-btn" onclick="testMediaPermissions()">PROBAR CÁMARA</button>
                 <div class="sep"></div>
-                <button class="nav-btn" onclick="openLiveInNewTab()">ABRIR PÁGINA OFICIAL DE QAXI LIVE</button>
+                <button class="nav-btn" onclick="openLiveInNewTab()">Visita nuestra pagina oficial de QAXI Live (https://qaxilive.netlify.app/)</button>
                 <div class="sep"></div>
                 <button class="nav-btn" id="cloudSyncBtn" onclick="toggleLiveCloudSync()">Sincronizar (Nube)</button>
             `;
@@ -2677,24 +2679,7 @@ Instrucciones:
                         </div>
                         <div style="flex:1; overflow:auto; display:flex; position:relative;">
                                 <div id="livePreviewWrapper" style="flex:1; position:relative;">
-                                    <iframe id="liveIframe" src="https://qaxilive.netlify.app" style="flex:1; width:100%; height:100%; border:none; border-radius:8px;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" allow="camera; microphone; fullscreen; autoplay"></iframe>
-                                    <div id="livePreviewOverlay" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.4)); color:#ddd; text-align:center; padding:20px; gap:12px;">
-                                        <div style="max-width:720px; text-align:left;">
-                                            <div style="font-size:1.1rem; font-weight:700; color:var(--gold); margin-bottom:6px;">Permisos de Cámara y Micrófono</div>
-                                            <div style="color:#bbb; margin-bottom:8px;">Algunos navegadores y políticas de seguridad no permiten pedir cámara/micrófono desde un iframe o desde otro dominio. Si al entrar a una reunión ves mensajes como "Permiso denegado" o no aparecen las opciones de cámara/micrófono, sigue estos pasos:</div>
-                                            <ol style="color:#ccc; margin:0 0 8px 18px;">
-                                                <li>Abrir la reunión en una pestaña nueva haciendo clic en <strong>Abrir página oficial de QAXI Live</strong>.</li>
-                                                <li>En la pestaña nueva (sitio oficial de QAXI Live) permite cuando el navegador pregunte por <strong>Cámara</strong> y <strong>Micrófono</strong>.</li>
-                                                <li>Si el permiso no aparece, revisa los ajustes del navegador para permitir cámara/micrófono para <strong>https://qaxilive.netlify.app</strong> o para la pestaña abierta.</li>
-                                            </ol>
-                                            <div style="color:#bbb; margin-top:6px;">Nota: también es importante servir <code>cloud.html</code> desde HTTPS o desde un servidor local (no abrirlo con <em>file://</em>), ya que los permisos suelen requerir un contexto seguro.</div>
-                                        </div>
-                                        <div style="display:flex; gap:8px;">
-                                            <button class="nav-btn" onclick="openLiveInNewTab()" style="border-color:var(--gold); color:var(--gold);">Abrir página oficial de QAXI Live</button>
-                                            <button class="nav-btn" onclick="testMediaPermissions()">Probar permisos aquí</button>
-                                        </div>
-                                        <div style="font-size:0.85rem; color:#999; max-width:700px; text-align:center;">Si después de esto sigue sin funcionar, abre directamente https://qaxilive.netlify.app en una pestaña nueva y únete desde allí.</div>
-                                    </div>
+                                    <iframe id="liveIframe" src="https://qaxilive.netlify.app" style="flex:1; width:100%; height:100%; border:none; border-radius:8px;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" allow="fullscreen; autoplay"></iframe>
                                 </div>
                             </div>
                     </div>
@@ -2770,7 +2755,7 @@ Instrucciones:
             list.slice().reverse().forEach(m => {
                 const el = document.createElement('div');
                 el.style.padding = '10px';
-                el.style.border = '1px solid #222';
+                el.style.border = selectedMeetingId === m.id ? '2px solid var(--gold)' : '1px solid #222';
                 el.style.borderRadius = '8px';
                 el.style.marginBottom = '8px';
                 el.style.display = 'flex';
@@ -2778,7 +2763,7 @@ Instrucciones:
                 el.style.alignItems = 'center';
                 const dispDate = formatDate(m.created);
                 el.innerHTML = `
-                    <div style="flex:1; margin-right:8px;"><div style="font-weight:700; color:#ddd;">${m.name || m.id}</div><div style="font-size:0.8rem; color:#888;">${dispDate}</div></div>
+                    <div style="flex:1; margin-right:8px; cursor:pointer;" onclick="selectMeeting('${m.id}')"><div style="font-weight:700; color:#ddd;">${m.name || m.id}</div><div style="font-size:0.8rem; color:#888;">${dispDate}</div></div>
                     <div style="display:flex; gap:6px;">
                         <button class="nav-btn" onclick="joinMeeting('${m.id}')">Entrar</button>
                         <button class="nav-btn" onclick="copyLink('${m.id}')">Copiar</button>
@@ -2787,6 +2772,8 @@ Instrucciones:
                 `;
                 container.appendChild(el);
             });
+            // ensure preview updates for selected meeting
+            renderLivePreview();
         }
 
         function createLiveMeeting(openAfter = false) {
@@ -2820,6 +2807,8 @@ Instrucciones:
                 meetings.push({ id, name, created });
                 saveMeetingsToStorage(meetings);
                 renderLiveMeetings();
+                // select newly created meeting
+                selectMeeting(id);
             }
             if (nameInput) nameInput.value = '';
             if (openAfter) joinMeeting(id);
@@ -2832,7 +2821,7 @@ Instrucciones:
             if (iframe) {
                 try { iframe.src = url; } catch(e) { /* ignore */ }
             }
-            // Open the meeting in a new tab to allow camera/mic permissions
+            // Open the meeting in a new tab
             try {
                 window.open(url, '_blank', 'noopener');
             } catch(e) {
@@ -2841,48 +2830,8 @@ Instrucciones:
             }
         }
 
-        // Test local getUserMedia permissions (runs on this origin)
-        async function testMediaPermissions() {
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                alert('Tu navegador no soporta getUserMedia. Usa Chrome/Edge/Safari recientes.');
-                return;
-            }
-
-            const overlay = document.getElementById('livePreviewOverlay');
-            if (overlay) {
-                overlay.innerHTML = '<div style="color:#ddd;"><i class="fa-solid fa-circle-notch fa-spin"></i> Solicitando permiso...</div>';
-            }
-
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                // stop tracks immediately (we just wanted to test permissions)
-                stream.getTracks().forEach(t => t.stop());
-                if (overlay) {
-                    overlay.innerHTML = '<div style="color:#d4ffb8; font-weight:700;">Permisos concedidos en este sitio</div><div style="color:#bbb;">Nota: esto solo prueba permisos para QAXI Cloud. La reunión en QAXI Live (otro dominio) deberá pedir permisos también en su pestaña.</div>';
-                    setTimeout(() => { if (overlay) overlay.style.display = 'none'; }, 2200);
-                }
-            } catch (err) {
-                console.error('getUserMedia error', err);
-                const msg = (err && err.name) ? `${err.name}: ${err.message || ''}` : (err.message || 'Error de permisos');
-                if (overlay) {
-                    overlay.innerHTML = `
-                        <div style="color:#ffb3b3; font-weight:700;">Permiso denegado o no disponible</div>
-                        <div style="color:#bbb; max-width:680px; margin-top:6px;">${msg}</div>
-                        <div style="text-align:left; color:#ccc; max-width:700px; margin-top:10px;">Prueba lo siguiente:
-                            <ol style="margin:6px 0 0 18px; color:#ccc;">
-                                <li>Abrir la reunión en una pestaña nueva usando <strong>Abrir página oficial de QAXI Live</strong>.</li>
-                                <li>En la pestaña nueva (sitio oficial de QAXI Live) acepta los permisos de Cámara y Micrófono cuando el navegador lo pregunte.</li>
-                                <li>Si no aparece la petición, revisa los ajustes del navegador y habilita cámara/micrófono para <strong>https://qaxilive.netlify.app</strong>.</li>
-                            </ol>
-                        </div>
-                        <div style="margin-top:10px; display:flex; gap:8px;"><button class="nav-btn" onclick="openLiveInNewTab()" style="border-color:var(--gold); color:var(--gold);">Abrir página oficial de QAXI Live</button><button class="nav-btn" onclick="testMediaPermissions()">Volver a probar</button></div>
-                        <div style="font-size:0.85rem; color:#999; max-width:700px; text-align:center; margin-top:8px;">Si continúas con problemas, abre directamente https://qaxilive.netlify.app en una pestaña y únete desde allí.</div>
-                    `;
-                }
-                // Show guidance
-                alert('No se pudo acceder a la cámara/micrófono aquí. Abre la reunión en una pestaña nueva (botón «Abrir página oficial de QAXI Live») y permite Cámara y Micrófono cuando el sitio lo solicite. También puedes abrir directamente https://qaxilive.netlify.app y unirte desde allí. Revisa los ajustes del navegador si hace falta.');
-            }
-        }
+        // No-op: permissions overlay removed (live works directly)
+        function testMediaPermissions() { return; }
 
         // ---- Cloud sync helpers ----
         function toggleLiveCloudSync() {
@@ -2939,6 +2888,10 @@ Instrucciones:
             let list = loadMeetingsFromStorage();
             list = list.filter(m => m.id !== id);
             saveMeetingsToStorage(list);
+            // clear messages for this meeting
+            try { localStorage.removeItem(STORAGE_KEYS.LIVE + '_MSG_' + id); delete liveMessagesCache[id]; } catch(e){}
+            // if the deleted meeting was selected, clear selection
+            if (selectedMeetingId === id) { selectedMeetingId = null; }
             renderLiveMeetings();
         }
 
@@ -2961,6 +2914,91 @@ Instrucciones:
             const iframe = document.getElementById('liveIframe');
             const url = iframe ? iframe.src || 'https://qaxilive.netlify.app' : 'https://qaxilive.netlify.app';
             window.open(url, '_blank');
+        }
+
+        function selectMeeting(id) {
+            selectedMeetingId = id;
+            renderLiveMeetings();
+            renderLivePreview();
+        }
+
+        function renderLivePreview() {
+            const wrapper = document.getElementById('livePreviewWrapper');
+            if (!wrapper) return;
+            const meeting = (getActiveMeetingsList() || []).find(m => m.id === selectedMeetingId) || null;
+            // current iframe src (keep current or default)
+            const currentSrc = (document.getElementById('liveIframe') || {}).src || `https://qaxilive.netlify.app`;
+            // load messages for meeting
+            const msgs = selectedMeetingId ? loadMessagesFromStorage(selectedMeetingId) : [];
+            liveMessagesCache[selectedMeetingId] = msgs;
+
+            wrapper.innerHTML = `
+                <div style="display:flex; flex-direction:column; height:100%;">
+                    <div style="flex:1; min-height:320px; border-bottom:1px solid #222;">
+                        <iframe id="liveIframe" src="${currentSrc}" style="width:100%; height:100%; border:none; border-radius:8px;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" allow="fullscreen; autoplay"></iframe>
+                    </div>
+                    <div style="height:260px; display:flex; flex-direction:column; background:#050505; padding:10px; gap:8px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="font-weight:700; color:#ddd;">${meeting ? (meeting.name || meeting.id) : 'Ninguna reunión seleccionada'}</div>
+                            <div style="color:#888; font-size:0.85rem;">Gestionar reunión</div>
+                        </div>
+                        <div id="liveChatMessages" style="flex:1; overflow:auto; padding:8px; background:#0a0a0a; border:1px solid #222; border-radius:6px;"></div>
+                        <div style="display:flex; gap:8px;">
+                            <input id="liveChatInput" placeholder="Escribe un mensaje..." style="flex:1; padding:8px; background:#050505; border:1px solid #222; color:#ddd; border-radius:6px;" onkeydown="if(event.key==='Enter') sendLiveMessage()">
+                            <button class="nav-btn" onclick="sendLiveMessage()">Enviar</button>
+                            <button class="nav-btn" onclick="joinMeeting(selectedMeetingId)">Entrar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // render messages
+            setTimeout(() => { // allow DOM to mount
+                const listEl = document.getElementById('liveChatMessages');
+                if (!listEl) return;
+                listEl.innerHTML = '';
+                (liveMessagesCache[selectedMeetingId] || []).forEach(m => {
+                    const d = document.createElement('div');
+                    d.style.marginBottom = '8px';
+                    d.innerHTML = `<div style="font-size:0.85rem; color:#aaa;">${m.sender} <span style='color:#777; font-size:0.75rem; margin-left:8px;'>${new Date(m.created).toLocaleTimeString()}</span></div><div style="background:#111; padding:8px; border-radius:6px; color:#ddd;">${m.text}</div>`;
+                    listEl.appendChild(d);
+                });
+                listEl.scrollTop = listEl.scrollHeight;
+            }, 50);
+        }
+
+        function loadMessagesFromStorage(meetingId) {
+            if (!meetingId) return [];
+            try {
+                const raw = localStorage.getItem(STORAGE_KEYS.LIVE + '_MSG_' + meetingId) || '[]';
+                return JSON.parse(raw);
+            } catch(e) { return []; }
+        }
+
+        function saveMessagesToStorage(meetingId, messages) {
+            try { localStorage.setItem(STORAGE_KEYS.LIVE + '_MSG_' + meetingId, JSON.stringify(messages || [])); } catch(e){}
+        }
+
+        async function sendLiveMessage() {
+            const meetingId = selectedMeetingId;
+            if (!meetingId) return alert('Selecciona una reunión primero.');
+            const inp = document.getElementById('liveChatInput');
+            if (!inp) return;
+            const text = inp.value.trim();
+            if (!text) return;
+            const msg = { id: 'm-' + Date.now().toString(36), sender: 'Tú', text, created: Date.now() };
+            liveMessagesCache[meetingId] = liveMessagesCache[meetingId] || [];
+            liveMessagesCache[meetingId].push(msg);
+            saveMessagesToStorage(meetingId, liveMessagesCache[meetingId]);
+            inp.value = '';
+            renderLivePreview();
+
+            // attempt to mirror to Firestore if enabled
+            if (liveCloudSync && typeof db !== 'undefined' && db) {
+                try {
+                    await db.collection('qaxi_live_messages').add(Object.assign({ meetingId }, msg));
+                } catch(e) { console.warn('Firestore msg write failed', e); }
+            }
         }
         
         // ========================================
