@@ -2651,37 +2651,48 @@ Instrucciones:
         function loadLive(c, t) {
             // Toolbar
             t.innerHTML = `
-                <button class="nav-btn" onclick="createLiveMeeting()" style="border-color:var(--gold); color:var(--gold);">NUEVA REUNIÓN</button>
-                <button class="nav-btn" onclick="openSelectedMeeting()">UNIRSE</button>
-                <button class="nav-btn" onclick="copySelectedLink()">COPIAR ENLACE</button>
-                <div class="sep"></div>
-                <button class="nav-btn" onclick="openLiveInNewTab()">Visita nuestra pagina oficial de QAXI Live (https://qaxilive.netlify.app/)</button>
-                <div class="sep"></div>
-                <button class="nav-btn" id="cloudSyncBtn" onclick="toggleLiveCloudSync()">Sincronizar (Nube)</button>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="font-weight:700; color:var(--gold); font-family:var(--font-brand);">QAXI Live — PRO</div>
+                </div>
             `;
 
-            // Main content: left panel (meetings) + right panel (iframe preview)
+            // Main content: single wide panel (PRO interface)
             c.innerHTML = `
-                <div style="display:flex; width:100%; height:100%; gap:20px; padding:20px;">
-                    <div style="width:320px; background:#0f0f0f; border:1px solid #222; border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:10px;">
-                        <h3 style="margin:0; color:var(--gold); font-family:var(--font-brand);">QAXI Live</h3>
-                        <div style="font-size:0.85rem; color:#aaa;">Gestiona tus reuniones en la nube. Crea, programa y comparte.</div>
-                        <div style="flex:1; overflow:auto; margin-top:8px;" id="liveMeetingsList"></div>
-                        <div style="display:flex; gap:8px; margin-top:8px;">
-                            <input id="newMeetingName" placeholder="Nombre (opcional)" style="flex:1; padding:8px; background:#050505; border:1px solid #333; color:#ddd; border-radius:6px;">
-                            <button class="nav-btn" onclick="createLiveMeeting(true)">Crear</button>
+                <div style="display:flex; width:100%; height:100%; gap:0; padding:16px;">
+                    <div style="flex:1; background:#050505; border:1px solid #222; border-radius:10px; display:flex; flex-direction:column; overflow:hidden;">
+                        <div style="padding:12px; border-bottom:1px solid #222; display:flex; align-items:center; gap:10px; justify-content:space-between;">
+                            <div style="display:flex; align-items:center; gap:10px;"><div style="font-weight:700; color:var(--gold); font-family:var(--font-brand);">QAXI Live — Interfaz PRO</div></div>
+                            <div style="display:flex; gap:8px; align-items:center;"></div>
                         </div>
-                    </div>
-                    <div style="flex:1; background:#050505; border:1px solid #222; border-radius:10px; display:flex; flex-direction:column;">
-                        <div style="padding:12px; border-bottom:1px solid #222; display:flex; align-items:center; gap:10px;">
-                            <div style="font-weight:700; color:#ddd;">Vista previa</div>
-                            <div style="color:#888; font-size:0.85rem;">(si la web lo permite, se mostrará aquí)</div>
-                        </div>
-                        <div style="flex:1; overflow:auto; display:flex; position:relative;">
-                                <div id="livePreviewWrapper" style="flex:1; position:relative;">
-                                    <iframe id="liveIframe" src="https://qaxilive.netlify.app" style="flex:1; width:100%; height:100%; border:none; border-radius:8px;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" allow="fullscreen; autoplay"></iframe>
+                        <div id="livePreviewWrapper" style="flex:1; display:flex; flex-direction:column; min-height:0;">
+                            <div style="flex:1; min-height:420px; border-bottom:1px solid #222; display:flex;">
+                                <iframe id="liveIframe" src="https://qaxilive.netlify.app" style="flex:1; width:100%; height:100%; border:none; border-radius:8px;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" allow="fullscreen; autoplay"></iframe>
+                            </div>
+                            <div style="height:320px; display:flex; gap:12px; padding:12px; background:#070707;">
+                                <div style="flex:1; display:flex; flex-direction:column; gap:8px;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <div style="font-weight:700; color:#ddd;">Sala: <span id="liveRoomName" style="color:var(--gold); font-weight:800;">QAXI Live</span></div>
+                                        <div style="color:#888; font-size:0.85rem;">Controles</div>
+                                    </div>
+                                    <div id="liveChatMessages" style="flex:1; overflow:auto; padding:8px; background:#0a0a0a; border:1px solid #222; border-radius:6px;"></div>
+                                    <div style="display:flex; gap:8px;">
+                                        <input id="liveChatInput" placeholder="Escribe un mensaje..." style="flex:1; padding:8px; background:#050505; border:1px solid #222; color:#ddd; border-radius:6px;" onkeydown="if(event.key==='Enter') sendLiveMessage()">
+                                        <button class="nav-btn" onclick="sendLiveMessage()">Enviar</button>
+                                        <button class="nav-btn" onclick="joinMeeting(selectedMeetingId)">Entrar</button>
+                                    </div>
+                                </div>
+                                <div style="width:320px; display:flex; flex-direction:column; gap:8px;">
+                                    <div style="background:#0f0f0f; padding:10px; border-radius:8px; border:1px solid #222;">
+                                        <div style="font-size:0.9rem; color:#ccc; margin-bottom:8px;">Reuniones recientes</div>
+                                        <div id="liveMeetingsList" style="max-height:180px; overflow:auto;"></div>
+                                    </div>
+                                    <div style="display:flex; gap:8px;">
+                                        <input id="newMeetingNameSide" placeholder="Nombre (opcional)" style="flex:1; padding:8px; background:#050505; border:1px solid #333; color:#ddd; border-radius:6px;">
+                                        <button class="nav-btn" onclick="createLiveMeeting(true)" style="border-color:var(--gold); color:var(--gold);">Crear</button>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -2934,20 +2945,8 @@ Instrucciones:
 
             wrapper.innerHTML = `
                 <div style="display:flex; flex-direction:column; height:100%;">
-                    <div style="flex:1; min-height:320px; border-bottom:1px solid #222;">
+                    <div style="flex:1; min-height:320px;">
                         <iframe id="liveIframe" src="${currentSrc}" style="width:100%; height:100%; border:none; border-radius:8px;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" allow="fullscreen; autoplay"></iframe>
-                    </div>
-                    <div style="height:260px; display:flex; flex-direction:column; background:#050505; padding:10px; gap:8px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div style="font-weight:700; color:#ddd;">${meeting ? (meeting.name || meeting.id) : 'Ninguna reunión seleccionada'}</div>
-                            <div style="color:#888; font-size:0.85rem;">Gestionar reunión</div>
-                        </div>
-                        <div id="liveChatMessages" style="flex:1; overflow:auto; padding:8px; background:#0a0a0a; border:1px solid #222; border-radius:6px;"></div>
-                        <div style="display:flex; gap:8px;">
-                            <input id="liveChatInput" placeholder="Escribe un mensaje..." style="flex:1; padding:8px; background:#050505; border:1px solid #222; color:#ddd; border-radius:6px;" onkeydown="if(event.key==='Enter') sendLiveMessage()">
-                            <button class="nav-btn" onclick="sendLiveMessage()">Enviar</button>
-                            <button class="nav-btn" onclick="joinMeeting(selectedMeetingId)">Entrar</button>
-                        </div>
                     </div>
                 </div>
             `;
