@@ -324,15 +324,17 @@
         }
         .chat-window {
             flex: 1; overflow-y: auto; padding: 30px;
-            display: flex; flex-direction: column; gap: 20px;
+            display: flex; flex-direction: column; gap: 20px; align-items: center;
         }
         .msg {
-            max-width: 80%; padding: 18px 24px; border-radius: 12px;
-            font-size: 0.95rem; line-height: 1.7; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            width: 100%; max-width: 900px; padding: 14px 18px; border-radius: 12px;
+            font-size: 0.98rem; line-height: 1.6; box-shadow: 0 2px 10px rgba(0,0,0,0.25);
         }
-        .msg.ai { align-self: flex-start; background: #1a1a1a; border-left: 3px solid var(--gold); color: #ddd; }
+        /* AI responses: centered and minimalist */
+        .msg.ai { align-self: center; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.03); color: #ddd; text-align: center; }
+        /* User messages remain right-aligned */
         .msg.user { align-self: flex-end; background: #252525; color: white; border-right: 3px solid #555; }
-        .msg strong { display: block; font-size: 0.75rem; color: var(--gold); margin-bottom: 8px; letter-spacing: 1px; }
+        .msg strong { display: none; }
         
         /* Estilos para contenido de IA */
         .msg.ai h1, .msg.ai h2, .msg.ai h3 { color: #fff; margin: 16px 0 10px 0; }
@@ -386,6 +388,17 @@
         .msg.ai a { color: var(--gold); text-decoration: none; }
         .msg.ai a:hover { text-decoration: underline; }
         .msg.ai hr { border: none; border-top: 1px solid #333; margin: 15px 0; }
+        /* Input bar styled like modern chat UIs */
+        .ai-input-wrap { display:flex; justify-content:center; padding:12px; border-top:1px solid rgba(255,255,255,0.02); }
+        .ai-input-pill { width:100%; max-width:900px; display:flex; gap:8px; align-items:center; background: rgba(255,255,255,0.02); padding:8px; border-radius:999px; border:1px solid rgba(255,255,255,0.03); }
+        .ai-input-pill input[type="text"] { flex:1; background:transparent; border:none; color: #e0e0e0; padding:10px 12px; font-size:1rem; }
+        .ai-input-pill input[type="text"]:focus { outline:none; }
+        .ai-attach-btn { background:transparent; border:none; color:#aaa; padding:6px; cursor:pointer; }
+        .ai-send-btn { background:var(--gold); color:black; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
+        .ai-response { text-align:center; }
+        .ai-sender { font-size:0.85rem; color:var(--gold); margin-bottom:6px; text-align:center; font-weight:700; }
+        .ai-response-short { color:#ddd; }
+        .ai-response-full { color:#ddd; text-align:left; }
         
         /* CARNET CREATOR */
         .carnet-container {
@@ -788,14 +801,39 @@
             messagingSenderId: "137240859996",
             appId: "1:137240859996:web:73e14d28c77233be965d99"
         };
-        try { firebase.initializeApp(firebaseConfig); var db = firebase.firestore(); } catch(e){ console.log("Offline or Config Error"); }
-        
-        // NOTE: Restoring GROQ key in client per user request so QAXI AI works immediately.
-        // WARNING: embedding API keys in client code is insecure for production.
-        const GROQ_KEY = "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";
 
-        // Ensure callGroqProxy exists: call the external API directly using the key.
+        window.toggleAiExpand = function(btn) {
+            try {
+                const msg = btn.closest('.msg');
+                if(!msg) return;
+                const full = msg.querySelector('.ai-response-full');
+                const short = msg.querySelector('.ai-response-short');
+                if(!full || !short) return;
+                if (full.style.display === 'none') {
+                    full.style.display = 'block';
+                    short.style.display = 'none';
+                    btn.innerText = 'Ver menos';
+                } else {
+                    full.style.display = 'none';
+                    short.style.display = 'block';
+                    btn.innerText = 'Ver más';
+                }
+            } catch(e){ console.warn('toggleAiExpand', e); }
+        };
+
+        // === QAXI STORE ===
+        // Store app removed by user request. (loadStore / purchaseProduct intentionally omitted)
+        try { firebase.initializeApp(firebaseConfig); var db = firebase.firestore(); } catch(e){ console.log("Offline or Config Error"); }
+
+        // GROQ API key: read from localStorage (no hard-coded key)
+        let GROQ_KEY = localStorage.getItem('qaxi_groq_key') || '';
+
+        window.setGroqKey = function(key){ GROQ_KEY = key || ''; try{ if(key) localStorage.setItem('qaxi_groq_key', key); else localStorage.removeItem('qaxi_groq_key'); }catch(e){} };
+        window.clearGroqKey = function(){ GROQ_KEY = ''; try{ localStorage.removeItem('qaxi_groq_key'); }catch(e){} };
+
+        // Helper to call Groq/OpenAI endpoint using dynamic key
         window.callGroqProxy = async function({ forwardTo, payload }) {
+            if(!GROQ_KEY) throw new Error('MISSING_API_KEY');
             return fetch(forwardTo, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_KEY}` },
@@ -810,7 +848,9 @@
             DOCS: 'qaxi_docs_content',
             SLIDES: 'qaxi_slides_data',
             SHEETS: 'qaxi_sheets_data',
-            SHEETS_BOOK: 'qaxi_sheets_workbook'
+            SHEETS_BOOK: 'qaxi_sheets_workbook',
+            LIVE: 'qaxi_live_meetings',
+            LIVE_SETTINGS: 'qaxi_live_settings'
         };
         
         // Docs & Sheets Vars
@@ -833,6 +873,10 @@
         // AI Chat History
         let aiChatHistory = [];
         const MAX_HISTORY = 20; // Mantener últimos 20 mensajes para contexto
+        // Live sync variables
+        let liveCloudSync = false;
+        let liveUnsubscribe = null;
+        let cloudMeetings = [];
         
         // Warn before leaving if unsaved changes
         window.addEventListener('beforeunload', (e) => {
@@ -873,11 +917,14 @@
                 <div class="pro-tag">PRO</div>
             </div>
             <div class="app-icon" onclick="startApp('ai')" title="QAXI AI"><i class="fa-solid fa-brain"></i><span>AI</span></div>
+            <!-- Store removed per user request -->
             <!-- QAXI Search removed -->
             <div class="app-icon" onclick="startApp('carnet')" title="Creador de Carnets">
                 <i class="fa-solid fa-id-card"></i><span>CARNET</span>
                 <div class="pro-tag">PRO</div>
             </div>
+            <div class="app-icon" onclick="startApp('live')" title="QAXI Live"><i class="fa-solid fa-video"></i><span>LIVE</span></div>
+            
             <div class="app-icon" onclick="startApp('qr')" title="Generador QR"><i class="fa-solid fa-qrcode"></i><span>QR</span></div>
             <div class="app-icon" onclick="startApp('firma')" title="Firmar PDF"><i class="fa-solid fa-signature"></i><span>FIRMA</span></div>
             <div style="flex:1"></div>
@@ -1060,6 +1107,7 @@
             if(id === 'qr') loadQR(stage, tools);
             if(id === 'ai') loadAI(stage, tools);
             if(id === 'search') loadSearch(stage, tools);
+            if(id === 'live') loadLive(stage, tools);
             if(id === 'slides') loadSlides(stage, tools);
             if(id === 'carnet') loadCarnet(stage, tools);
             if(id === 'firma') loadFirma(stage, tools);
@@ -1096,12 +1144,39 @@
             }
         }
 
+        // Insert plain text reliably at current selection/caret
+        window.insertTextAtSelection = function(text) {
+            try {
+                restoreSelection();
+                const sel = window.getSelection();
+                const paper = document.getElementById('paper');
+                if (!sel.rangeCount) {
+                    if (paper) {
+                        const range = document.createRange();
+                        range.selectNodeContents(paper);
+                        range.collapse(false);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }
+                }
+                if (!sel.rangeCount) return;
+                const range = sel.getRangeAt(0);
+                range.deleteContents();
+                const tn = document.createTextNode(text);
+                range.insertNode(tn);
+                // move caret after inserted node
+                range.setStartAfter(tn);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } catch (e) { console.warn('insertTextAtSelection failed', e); }
+        };
+
         function loadDocs(c, t) {
             t.innerHTML = `
                 <button class="magic-btn" onclick="magicWriting()">
                     <i class="fa-solid fa-wand-magic-sparkles"></i> Escritura Mágica (Beta)
                 </button>
-                <button class="nav-btn" id="speechBtn" onclick="toggleSpeech()" title="Dictado por voz"><i class="fa-solid fa-microphone"></i> VOZ</button>
                 <div class="sep"></div>
                 <button class="nav-btn" onclick="clearDoc()">NUEVO</button>
                 <button class="nav-btn" onclick="exportDocPdf()">CONVERTIR A PDF</button>
@@ -1310,6 +1385,20 @@
                 window._qaxi_recognition.interimResults = true;
                 window._qaxi_recognition.maxAlternatives = 1;
                 let finalTranscript = '';
+                // Ensure caret is placed in the doc so recognized text is inserted
+                try {
+                    const paper = document.getElementById('paper');
+                    if (paper) {
+                        const sel = window.getSelection();
+                        if (!savedSelection || !sel.rangeCount) {
+                            const range = document.createRange();
+                            range.selectNodeContents(paper);
+                            range.collapse(false);
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+                        }
+                    }
+                } catch (e) { console.warn('Could not position caret for speech:', e); }
                 window._qaxi_recognition.onresult = (event) => {
                     let interim = '';
                     for (let i = event.resultIndex; i < event.results.length; ++i) {
@@ -1319,21 +1408,15 @@
                             interim += event.results[i][0].transcript;
                         }
                     }
-                    // Insert interim+final into doc at caret
-                    const paper = document.getElementById('paper');
-                    if (!paper) return;
-                    // restore selection if exists
-                    restoreSelection();
-                    const sel = window.getSelection();
-                    if (!sel.rangeCount) {
-                        paper.focus();
-                    }
-                    // Insert finalTranscript when final arrives
-                    if (finalTranscript) {
-                        document.execCommand('insertText', false, finalTranscript + ' ');
-                        finalTranscript = '';
-                        triggerAutoSave();
-                    }
+                        // Insert final transcript at caret (use reliable Range method)
+                        const paper = document.getElementById('paper');
+                        if (!paper) return;
+                        restoreSelection();
+                        if (finalTranscript) {
+                            window.insertTextAtSelection(finalTranscript + ' ');
+                            finalTranscript = '';
+                            triggerAutoSave();
+                        }
                 };
                 window._qaxi_recognition.onerror = (e) => { console.error('Speech error', e); };
                 window._qaxi_recognition.onend = () => { window._qaxi_recognizing = false; updateSpeechBtn(false); };
@@ -1557,7 +1640,8 @@
                 <div class="sep"></div>
                 <input type="color" id="bgColorPicker" onchange="changeSlideBg(this.value)" value="#ffffff" title="Color de Fondo">
                 <div class="sep"></div>
-                <button class="nav-btn" onclick="deleteSelectedElement()" style="border-color:#ff4444; color:#ff4444;">ELIMINAR</button>
+                <button class="nav-btn" onclick="deleteSelectedElement()" style="border-color:#ff4444; color:#ff4444;">ELIMINAR ELEMENTO</button>
+                <button class="nav-btn" onclick="deleteSlide()" style="background:transparent;border-color:#6b1616;color:#ff9b9b;">ELIMINAR SLIDE</button>
                 <div class="sep"></div>
                 <button class="nav-btn" onclick="exportSlides()" style="border-color:var(--gold); color:var(--gold)">EXPORTAR PDF</button>
             `;
@@ -1892,6 +1976,18 @@
             saveSlides();
         }
 
+        window.deleteSlide = function() {
+            if (!confirm('¿Confirmas eliminar la diapositiva actual? Esta acción no se puede deshacer.')) return;
+            slides.splice(currentSlideIdx, 1);
+            if (slides.length === 0) {
+                slides = [{ id: Date.now(), elements: [], bg: '#ffffff' }];
+            }
+            if (currentSlideIdx >= slides.length) currentSlideIdx = slides.length - 1;
+            renderCurrentSlide();
+            renderThumbs();
+            saveSlides();
+        }
+
         window.exportSlides = async function() {
             const pdf = new jspdf.jsPDF('l', 'mm', 'a4');
             const w = pdf.internal.pageSize.getWidth();
@@ -1917,9 +2013,12 @@
         // === SHEETS ===
         function loadSheets(c, t) {
             t.innerHTML = `<div style="display:flex; align-items:center; gap:8px;">
-                                <div id="sheetTabs" style="display:flex; gap:6px;"></div>
-                                <button class="nav-btn" onclick="addSheet()">+ NUEVA HOJA</button>
-                                <button class="nav-btn" onclick="addR()">+ FILA</button>
+                                                <div id="sheetTabs" style="display:flex; gap:6px;"></div>
+                                                <button class="nav-btn" onclick="newWorkbook()" style="border-color:var(--gold); color:var(--gold)">NUEVO LIBRO</button>
+                                                <button class="nav-btn" onclick="addSheet()">+ NUEVA HOJA</button>
+                                                <button class="nav-btn" onclick="deleteCurrentSheet()" style="background:transparent;border-color:#6b1616;color:#ff9b9b;">BORRAR HOJA</button>
+                                                <button class="nav-btn" onclick="addR()">AGREGAR FILA</button>
+                                                <button class="nav-btn" onclick="addC()">AGREGAR COLUMNA</button>
                                 <button class="nav-btn" onclick="exportCSV()">CSV</button>
                                 <button class="nav-btn" onclick="exportSheetsPdf()">EXPORTAR A PDF</button>
                             </div>`;
@@ -2016,18 +2115,46 @@
         }
 
         function addSheet() {
+            try { autoSaveAll(); } catch(e){}
             const name = `Hoja ${window.sheetsWorkbook.length+1}`;
             window.sheetsWorkbook.push({ name, rows: 20, cols: 10, values: [] });
             activeSheetIdx = window.sheetsWorkbook.length - 1;
             localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
+            try { triggerAutoSave(); } catch(e){}
         }
 
         function switchSheet(idx) {
             // before switching, save current grid values
-            try { triggerAutoSave(); } catch(e){}
+            try { autoSaveAll(); } catch(e){}
             activeSheetIdx = idx;
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
+        }
+
+        function deleteCurrentSheet() {
+            if (!window.sheetsWorkbook || window.sheetsWorkbook.length <= 1) {
+                alert('No puedes borrar la única hoja.');
+                return;
+            }
+            try { autoSaveAll(); } catch(e){}
+            const name = window.sheetsWorkbook[activeSheetIdx].name || `Hoja ${activeSheetIdx+1}`;
+            if (!confirm(`¿Confirmas borrar la hoja "${name}"? Esta acción no se puede deshacer.`)) return;
+            window.sheetsWorkbook.splice(activeSheetIdx, 1);
+            if (activeSheetIdx >= window.sheetsWorkbook.length) activeSheetIdx = window.sheetsWorkbook.length - 1;
+            localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
+            loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
+            try { triggerAutoSave(); } catch(e){}
+        }
+
+        function newWorkbook() {
+            try { autoSaveAll(); } catch(e){}
+            if (!confirm('¿Crear un nuevo libro de cálculo? Se reemplazarán las hojas actuales.')) return;
+            window.sheetsWorkbook = [{ name: 'Hoja 1', rows: 20, cols: 10, values: [] }];
+            activeSheetIdx = 0;
+            sheetRows = 20; sheetCols = 10;
+            localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
+            loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
+            try { triggerAutoSave(); } catch(e){}
         }
         function buildGrid(rows, cols) {
             let h = `<div class="grid-container"><table class="grid" id="mainGrid"><thead><tr id="hRow"><th></th>`;
@@ -2043,7 +2170,30 @@
         window.doCalc = (el) => {
             if(el.value.startsWith('=')) { try { el.value = math.evaluate(el.value.substring(1)); el.style.color='var(--gold)'; } catch(e){}}
         };
-        window.addR = () => { sheetRows++; loadSheets(document.getElementById('wsContent'), document.getElementById('appTools')); triggerAutoSave(); };
+        window.addR = () => {
+            try { autoSaveAll(); } catch(e){}
+            // update active workbook and persist
+            sheetRows++;
+            if (window.sheetsWorkbook && window.sheetsWorkbook[activeSheetIdx]) {
+                window.sheetsWorkbook[activeSheetIdx].rows = sheetRows;
+                // ensure values array has rows
+                window.sheetsWorkbook[activeSheetIdx].values = window.sheetsWorkbook[activeSheetIdx].values || [];
+            }
+            localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
+            loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
+            try { triggerAutoSave(); } catch(e){}
+        };
+        window.addC = () => {
+            try { autoSaveAll(); } catch(e){}
+            sheetCols++;
+            if (window.sheetsWorkbook && window.sheetsWorkbook[activeSheetIdx]) {
+                window.sheetsWorkbook[activeSheetIdx].cols = sheetCols;
+                window.sheetsWorkbook[activeSheetIdx].values = window.sheetsWorkbook[activeSheetIdx].values || [];
+            }
+            localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
+            loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
+            try { triggerAutoSave(); } catch(e){}
+        };
         window.exportCSV = () => alert("Exportando CSV...");
 
         window.exportSheetsPdf = async function() {
@@ -2087,64 +2237,20 @@
         function loadAI(c, t) {
             // Limpiar historial al cargar la app
             aiChatHistory = [];
-            // attachments array for this AI session
-            window.aiAttachments = [];
 
             c.innerHTML = `
-                <div class="ai-box">
-                    <div class="chat-window" id="aiChat">
-                        <div class="msg ai">
-                            <strong>QAXI AI</strong>
-                            <p>Hola. Soy QAXI AI. ¿En qué te puedo ayudar hoy?</p>
+                <div class="ai-box" style="display:flex; flex-direction:column; height:100%;">
+                    <div class="chat-window" id="aiChat" style="flex:1; overflow:auto; padding:12px;"></div>
+                    <div class="ai-input-wrap">
+                        <div class="ai-input-pill">
+                            <input type="text" id="aiInput" placeholder="Pregunta o comando..." onkeydown="if(event.key === 'Enter') askQaxiAI()">
+                            <button class="ai-send-btn" onclick="askQaxiAI()" title="Enviar"><i class="fa-solid fa-paper-plane"></i></button>
                         </div>
-                    </div>
-                    <div style="padding:8px 20px; display:flex; gap:8px; align-items:center; background:#0a0a0a; border-top:1px solid #252525;">
-                        <input type="file" id="aiAttachInput" style="display:none" onchange="addAIAttach(this.files)">
-                        <button class="nav-btn" onclick="document.getElementById('aiAttachInput').click()">Adjuntar</button>
-                        <div id="aiAttachList" style="display:flex; gap:8px; align-items:center;"></div>
-                    </div>
-                    <div class="ai-input-area">
-                        <input type="text" id="aiInput" placeholder="Pregúntame lo que quieras..." onkeydown="if(event.key === 'Enter') askQaxiAI()">
-                        <button onclick="askQaxiAI()"><i class="fa-solid fa-paper-plane"></i></button>
                     </div>
                 </div>
             `;
             
-            // helper to add attachment previews
-            window.addAIAttach = async function(files) {
-                if (!files || files.length === 0) return;
-                for (const f of files) {
-                    const reader = new FileReader();
-                    await new Promise((res) => {
-                        reader.onload = (e) => {
-                            // limit size: if >1.5MB, keep only metadata and small preview
-                            let data = e.target.result;
-                            if (data.length > 1_500_000) {
-                                data = data.slice(0, 200000) + '...';
-                            }
-                            const item = { name: f.name, type: f.type, size: f.size, data };
-                            aiAttachments.push(item);
-                            renderAIAttachList();
-                            res();
-                        };
-                        reader.readAsDataURL(f);
-                    });
-                }
-            };
-
-            window.renderAIAttachList = function() {
-                const list = document.getElementById('aiAttachList'); list.innerHTML = '';
-                aiAttachments.forEach((a, idx) => {
-                    const div = document.createElement('div');
-                    div.style.display = 'flex'; div.style.alignItems='center'; div.style.gap='6px';
-                    div.style.padding='4px 6px'; div.style.background='#111'; div.style.border='1px solid #2a2a2a'; div.style.borderRadius='6px';
-                    let thumb = '';
-                    if (a.type.startsWith('image/')) thumb = `<img src="${a.data}" style="width:36px;height:24px;object-fit:cover;border-radius:4px;">`;
-                    else thumb = `<i class="fa-solid fa-paperclip" style="color:#aaa"></i>`;
-                    div.innerHTML = `${thumb}<span style="font-size:0.75rem;color:#ccc;margin-left:4px;">${a.name}</span><button style="margin-left:6px;background:transparent;border:none;color:#ff6666;cursor:pointer;" onclick="aiAttachments.splice(${idx},1);renderAIAttachList();">x</button>`;
-                    list.appendChild(div);
-                });
-            };
+            
         }
         
         // === FUNCIÓN DE BÚSQUEDA WEB ===
@@ -2223,7 +2329,7 @@
             chat.appendChild(uDiv); input.value = ''; chat.scrollTop = chat.scrollHeight;
 
             const lDiv = document.createElement('div'); lDiv.className = 'msg ai'; lDiv.id = 'ai-loader';
-            lDiv.innerHTML = `<strong>QAXI AI</strong><p>Pensando...</p>`; chat.appendChild(lDiv); chat.scrollTop = chat.scrollHeight;
+            lDiv.innerHTML = `<div class="ai-response">Pensando...</div>`; chat.appendChild(lDiv); chat.scrollTop = chat.scrollHeight;
 
             // Agregar mensaje del usuario al historial
             aiChatHistory.push({ role: "user", content: prompt });
@@ -2237,7 +2343,7 @@
                 // Verificar si necesita búsqueda web
                 let webContext = '';
                 if (needsWebSearch(prompt)) {
-                    document.getElementById('ai-loader').innerHTML = `<strong>QAXI AI</strong><p>🔍 Buscando en la web...</p>`;
+                    document.getElementById('ai-loader').innerHTML = `<div class="ai-response">🔍 Buscando en la web...</div>`;
                     
                     const searchResults = await searchWeb(prompt);
                     
@@ -2249,7 +2355,7 @@
                         webContext += '\n---\nUsa esta información para responder de forma precisa y actualizada.\n';
                     }
                     
-                    document.getElementById('ai-loader').innerHTML = `<strong>QAXI AI</strong><p>Analizando resultados...</p>`;
+                    document.getElementById('ai-loader').innerHTML = `<div class="ai-response">Analizando resultados...</div>`;
                 }
                 
                 // Obtener fecha actual formateada
@@ -2263,50 +2369,14 @@
                     minute: '2-digit'
                 });
                 
-                // Include attachments metadata for model context (if any)
+                // Attachments disabled: keep empty context
                 let attachContext = '';
-                if (window.aiAttachments && window.aiAttachments.length) {
-                    attachContext = '\n\n## ADJUNTOS:\n' + window.aiAttachments.map((a, i) => `- ${a.name} (${a.type || 'unknown'}, ${Math.round((a.size||0)/1024)} KB)`).join('\n');
-                }
 
-                const systemPrompt = `Eres QAXI AI, un asistente de inteligencia artificial de última generación integrado en QAXI Cloud - Titanium Suite.
-
-## INFORMACIÓN TEMPORAL
-- Fecha y hora actual: ${fechaActual}
-- Tu conocimiento base está actualizado hasta 2024-2025
-- TIENES ACCESO A BÚSQUEDA WEB para información actualizada
-
-## TUS CAPACIDADES
-1. **Búsqueda Web**: Puedes buscar información actualizada en internet cuando el usuario lo solicite o cuando detectes que necesitas datos recientes.
-2. **Conocimiento General**: Historia, ciencia, tecnología, programación, matemáticas, literatura, arte, cultura, actualidad mundial, deportes, entretenimiento.
-3. **Programación**: Experto en múltiples lenguajes (Python, JavaScript, HTML/CSS, Java, C++, SQL, etc.). Puedes escribir, explicar y depurar código.
-4. **Matemáticas**: Desde aritmética básica hasta cálculo, álgebra, estadística y más.
-5. **Redacción**: Creativa, académica, profesional, emails, ensayos, historias.
-6. **Análisis**: Puedes analizar textos, datos, argumentos y dar opiniones fundamentadas.
-7. **Idiomas**: Puedes ayudar con traducciones y explicaciones en múltiples idiomas.
-
-## CONTEXTO DE PLATAFORMA
-Estás integrado en QAXI Cloud que incluye:
-- **DOCS**: Editor de documentos con formato rico
-- **SHEETS**: Hojas de cálculo con fórmulas matemáticas
-- **PDF**: Conversor de imágenes a PDF
-- **SLIDES**: Presentaciones profesionales (PRO)
-- **QR**: Generador de códigos QR
-
-## ESTILO DE RESPUESTA
-- Sé conciso pero completo
-- Usa formato Markdown cuando sea útil (listas, código, negritas)
-- Mantén un tono profesional pero amigable
-- Si usaste búsqueda web, menciona brevemente que consultaste información actualizada
-- Puedes usar emojis ocasionalmente para dar personalidad 🚀
-
-## FORMATO REQUERIDO PARA LAS RESPUESTAS
-- Comienza con un **Resumen breve** (1-2 líneas).
-- Luego **Puntos clave** en viñetas.
-- Después, si aplica, **Pasos detallados / Solución**.
-- Incluye un **Ejemplo** o fragmento de código si es relevante.
-- Finaliza con **Recursos / Referencias** y **Preguntas de seguimiento**.
-Usa encabezados Markdown para cada sección y sé lo más claro y accionable posible.
+                const systemPrompt = `Eres QAXI AI, el asistente integrado en QAXI Cloud.
+Responde siempre de forma breve, elegante y útil. Empieza con un resumen de 1-2 líneas, seguido de hasta 3 viñetas con puntos clave.
+Si la respuesta requiere más detalle, proporciona el resumen y ofrece extenderla (el cliente usa un botón "Ver más").
+Cuando uses búsquedas web o adjuntos, menciónalo brevemente.
+Fecha: ${fechaActual}
 ${attachContext}
 ${webContext}`;
 
@@ -2315,6 +2385,15 @@ ${webContext}`;
                     { role: "system", content: systemPrompt },
                     ...aiChatHistory
                 ];
+
+                if(!GROQ_KEY) {
+                    // Show friendly message in chat if no API key configured
+                    document.getElementById('ai-loader').remove();
+                    const warn = document.createElement('div'); warn.className = 'msg ai';
+                    warn.innerHTML = `<div class="ai-response"><span style="color:#ffcc66;">QAXI AI no está configurado. Ejecuta window.setGroqKey('<tu_api_key>') en la consola.</span></div>`;
+                    chat.appendChild(warn); chat.scrollTop = chat.scrollHeight;
+                    return;
+                }
 
                 const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
@@ -2332,7 +2411,7 @@ ${webContext}`;
                     const errorData = await response.json().catch(() => ({}));
                     throw new Error(errorData.error?.message || "Error de conexión");
                 }
-                
+
                 const data = await response.json();
                 const aiResponse = data.choices[0].message.content;
                 
@@ -2340,9 +2419,21 @@ ${webContext}`;
                 aiChatHistory.push({ role: "assistant", content: aiResponse });
                 
                 document.getElementById('ai-loader').remove();
-                
+
                 const rDiv = document.createElement('div'); rDiv.className = 'msg ai';
-                rDiv.innerHTML = `<strong>QAXI AI</strong><div>${marked.parse(aiResponse)}</div>`;
+                // Build a short preview and a full view, with toggle
+                let shortText = (aiResponse || '').split(/\n\n/)[0] || aiResponse || '';
+                if (shortText.length > 350) shortText = shortText.slice(0,350) + '...';
+                const shortHtml = marked.parse(shortText);
+                const fullHtml = marked.parse(aiResponse || '');
+                rDiv.innerHTML = `
+                    <div class="ai-sender">QAXI AI</div>
+                    <div class="ai-response-short">${shortHtml}</div>
+                    <div class="ai-response-full" style="display:none">${fullHtml}</div>
+                    <div style="text-align:center; margin-top:8px;">
+                        <button class="nav-btn" onclick="toggleAiExpand(this)">Ver más</button>
+                    </div>
+                `;
                 chat.appendChild(rDiv); chat.scrollTop = chat.scrollHeight;
 
             } catch(e) { 
@@ -2359,6 +2450,8 @@ ${webContext}`;
         // ========================================
         // === QAXI SEARCH APP ===
         // ========================================
+                // === QAXI LIVE (REUNIONES) ===
+                
         function loadSearch(c, t) {
             c.innerHTML = `
                 <div class="search-container" style="display:flex; flex-direction:column; width:100%; height:100%; padding:20px; overflow-y:auto; align-items: center;">
@@ -2544,6 +2637,330 @@ Instrucciones:
         window.generateQR = function() {
             const txt = document.getElementById('qrText').value;
             if(txt) document.getElementById('qrOutput').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(txt)}">`;
+        }
+
+        
+
+        // ========================================
+        // === QAXI LIVE (REUNIONES EN LA NUBE) ===
+        // ========================================
+
+        function loadLive(c, t) {
+            // Toolbar
+            t.innerHTML = `
+                <button class="nav-btn" onclick="createLiveMeeting()" style="border-color:var(--gold); color:var(--gold);">NUEVA REUNIÓN</button>
+                <button class="nav-btn" onclick="openSelectedMeeting()">UNIRSE</button>
+                <button class="nav-btn" onclick="copySelectedLink()">COPIAR ENLACE</button>
+                <button class="nav-btn" onclick="testMediaPermissions()">PROBAR CÁMARA</button>
+                <div class="sep"></div>
+                <button class="nav-btn" onclick="openLiveInNewTab()">ABRIR PÁGINA OFICIAL DE QAXI LIVE</button>
+                <div class="sep"></div>
+                <button class="nav-btn" id="cloudSyncBtn" onclick="toggleLiveCloudSync()">Sincronizar (Nube)</button>
+            `;
+
+            // Main content: left panel (meetings) + right panel (iframe preview)
+            c.innerHTML = `
+                <div style="display:flex; width:100%; height:100%; gap:20px; padding:20px;">
+                    <div style="width:320px; background:#0f0f0f; border:1px solid #222; border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:10px;">
+                        <h3 style="margin:0; color:var(--gold); font-family:var(--font-brand);">QAXI Live</h3>
+                        <div style="font-size:0.85rem; color:#aaa;">Gestiona tus reuniones en la nube. Crea, programa y comparte.</div>
+                        <div style="flex:1; overflow:auto; margin-top:8px;" id="liveMeetingsList"></div>
+                        <div style="display:flex; gap:8px; margin-top:8px;">
+                            <input id="newMeetingName" placeholder="Nombre (opcional)" style="flex:1; padding:8px; background:#050505; border:1px solid #333; color:#ddd; border-radius:6px;">
+                            <button class="nav-btn" onclick="createLiveMeeting(true)">Crear</button>
+                        </div>
+                    </div>
+                    <div style="flex:1; background:#050505; border:1px solid #222; border-radius:10px; display:flex; flex-direction:column;">
+                        <div style="padding:12px; border-bottom:1px solid #222; display:flex; align-items:center; gap:10px;">
+                            <div style="font-weight:700; color:#ddd;">Vista previa</div>
+                            <div style="color:#888; font-size:0.85rem;">(si la web lo permite, se mostrará aquí)</div>
+                        </div>
+                        <div style="flex:1; overflow:auto; display:flex; position:relative;">
+                                <div id="livePreviewWrapper" style="flex:1; position:relative;">
+                                    <iframe id="liveIframe" src="https://qaxilive.netlify.app" style="flex:1; width:100%; height:100%; border:none; border-radius:8px;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" allow="camera; microphone; fullscreen; autoplay"></iframe>
+                                    <div id="livePreviewOverlay" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.4)); color:#ddd; text-align:center; padding:20px; gap:12px;">
+                                        <div style="max-width:720px; text-align:left;">
+                                            <div style="font-size:1.1rem; font-weight:700; color:var(--gold); margin-bottom:6px;">Permisos de Cámara y Micrófono</div>
+                                            <div style="color:#bbb; margin-bottom:8px;">Algunos navegadores y políticas de seguridad no permiten pedir cámara/micrófono desde un iframe o desde otro dominio. Si al entrar a una reunión ves mensajes como "Permiso denegado" o no aparecen las opciones de cámara/micrófono, sigue estos pasos:</div>
+                                            <ol style="color:#ccc; margin:0 0 8px 18px;">
+                                                <li>Abrir la reunión en una pestaña nueva haciendo clic en <strong>Abrir página oficial de QAXI Live</strong>.</li>
+                                                <li>En la pestaña nueva (sitio oficial de QAXI Live) permite cuando el navegador pregunte por <strong>Cámara</strong> y <strong>Micrófono</strong>.</li>
+                                                <li>Si el permiso no aparece, revisa los ajustes del navegador para permitir cámara/micrófono para <strong>https://qaxilive.netlify.app</strong> o para la pestaña abierta.</li>
+                                            </ol>
+                                            <div style="color:#bbb; margin-top:6px;">Nota: también es importante servir <code>cloud.html</code> desde HTTPS o desde un servidor local (no abrirlo con <em>file://</em>), ya que los permisos suelen requerir un contexto seguro.</div>
+                                        </div>
+                                        <div style="display:flex; gap:8px;">
+                                            <button class="nav-btn" onclick="openLiveInNewTab()" style="border-color:var(--gold); color:var(--gold);">Abrir página oficial de QAXI Live</button>
+                                            <button class="nav-btn" onclick="testMediaPermissions()">Probar permisos aquí</button>
+                                        </div>
+                                        <div style="font-size:0.85rem; color:#999; max-width:700px; text-align:center;">Si después de esto sigue sin funcionar, abre directamente https://qaxilive.netlify.app en una pestaña nueva y únete desde allí.</div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            `;
+
+            renderLiveMeetings();
+            // If Firestore is available, enable cloud sync automatically
+            try { if (typeof db !== 'undefined' && db) enableLiveCloudSync(); } catch(e){}
+        }
+
+        function loadMeetingsFromStorage() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEYS.LIVE) || '[]';
+                const arr = JSON.parse(raw);
+                // Normalize items: ensure `created` is a number timestamp
+                const normalized = (Array.isArray(arr) ? arr : []).map(item => {
+                    const it = Object.assign({}, item);
+                    if (!it.created) it.created = Date.now();
+                    // if created is string numeric, parse it
+                    if (typeof it.created === 'string' && /^\d+$/.test(it.created)) it.created = parseInt(it.created, 10);
+                    // if created is ISO date string, try Date.parse
+                    if (typeof it.created === 'string' && isNaN(it.created)) {
+                        const p = Date.parse(it.created);
+                        if (!isNaN(p)) it.created = p; else it.created = Date.now();
+                    }
+                    if (typeof it.created !== 'number' || isNaN(it.created)) it.created = Date.now();
+                    return it;
+                });
+                // Save back normalized list to avoid repeated invalid dates
+                try { localStorage.setItem(STORAGE_KEYS.LIVE, JSON.stringify(normalized)); } catch(e){}
+                return normalized;
+            } catch (e) { return []; }
+        }
+
+        function getActiveMeetingsList() {
+            if (liveCloudSync && Array.isArray(cloudMeetings) && cloudMeetings.length) return cloudMeetings.slice();
+            return loadMeetingsFromStorage();
+        }
+
+        function formatDate(ts) {
+            try {
+                const d = (typeof ts === 'number') ? new Date(ts) : new Date(Number(ts));
+                if (isNaN(d.getTime())) return '—';
+                // show relative if within 24h
+                const diff = Date.now() - d.getTime();
+                const oneHour = 1000 * 60 * 60;
+                const oneDay = oneHour * 24;
+                if (diff < oneHour) {
+                    const m = Math.max(1, Math.floor(diff / (1000 * 60)));
+                    return m + ' min';
+                } else if (diff < oneDay) {
+                    const h = Math.max(1, Math.floor(diff / oneHour));
+                    return h + ' h';
+                }
+                return d.toLocaleString();
+            } catch(e) { return '—'; }
+        }
+
+        function saveMeetingsToStorage(list) {
+            try { localStorage.setItem(STORAGE_KEYS.LIVE, JSON.stringify(list || [])); } catch(e){}
+        }
+
+        function renderLiveMeetings() {
+            const list = getActiveMeetingsList();
+            const container = document.getElementById('liveMeetingsList');
+            if (!container) return;
+            if (list.length === 0) {
+                container.innerHTML = '<div style="color:#888; padding:12px;">No hay reuniones. Crea una nueva.</div>';
+                return;
+            }
+            container.innerHTML = '';
+            list.slice().reverse().forEach(m => {
+                const el = document.createElement('div');
+                el.style.padding = '10px';
+                el.style.border = '1px solid #222';
+                el.style.borderRadius = '8px';
+                el.style.marginBottom = '8px';
+                el.style.display = 'flex';
+                el.style.justifyContent = 'space-between';
+                el.style.alignItems = 'center';
+                const dispDate = formatDate(m.created);
+                el.innerHTML = `
+                    <div style="flex:1; margin-right:8px;"><div style="font-weight:700; color:#ddd;">${m.name || m.id}</div><div style="font-size:0.8rem; color:#888;">${dispDate}</div></div>
+                    <div style="display:flex; gap:6px;">
+                        <button class="nav-btn" onclick="joinMeeting('${m.id}')">Entrar</button>
+                        <button class="nav-btn" onclick="copyLink('${m.id}')">Copiar</button>
+                        <button class="nav-btn" onclick="deleteMeeting('${m.id}')" style="background:#441111; border-color:#662222; color:#fff;">Borrar</button>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function createLiveMeeting(openAfter = false) {
+            const nameInput = document.getElementById('newMeetingName');
+            const name = nameInput ? nameInput.value.trim() : '';
+            const id = 'qaxi-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
+            const created = Date.now();
+            // If cloud sync enabled and db available, write to Firestore
+            if (liveCloudSync && typeof db !== 'undefined' && db) {
+                try {
+                    db.collection('qaxi_live_meetings').doc(id).set({ id, name, created })
+                    .then(() => {
+                        // success: Firestore onSnapshot will update UI
+                    }).catch(err => {
+                        console.warn('Firestore write failed', err);
+                        // fallback to local
+                        const meetings = loadMeetingsFromStorage();
+                        meetings.push({ id, name, created });
+                        saveMeetingsToStorage(meetings);
+                        renderLiveMeetings();
+                    });
+                } catch(e) {
+                    console.warn('Firestore error', e);
+                    const meetings = loadMeetingsFromStorage();
+                    meetings.push({ id, name, created });
+                    saveMeetingsToStorage(meetings);
+                    renderLiveMeetings();
+                }
+            } else {
+                const meetings = loadMeetingsFromStorage();
+                meetings.push({ id, name, created });
+                saveMeetingsToStorage(meetings);
+                renderLiveMeetings();
+            }
+            if (nameInput) nameInput.value = '';
+            if (openAfter) joinMeeting(id);
+        }
+
+        function joinMeeting(id) {
+            const iframe = document.getElementById('liveIframe');
+            const url = `https://qaxilive.netlify.app/?room=${encodeURIComponent(id)}`;
+            // Update preview if available
+            if (iframe) {
+                try { iframe.src = url; } catch(e) { /* ignore */ }
+            }
+            // Open the meeting in a new tab to allow camera/mic permissions
+            try {
+                window.open(url, '_blank', 'noopener');
+            } catch(e) {
+                // fallback: navigate current window
+                window.location.href = url;
+            }
+        }
+
+        // Test local getUserMedia permissions (runs on this origin)
+        async function testMediaPermissions() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('Tu navegador no soporta getUserMedia. Usa Chrome/Edge/Safari recientes.');
+                return;
+            }
+
+            const overlay = document.getElementById('livePreviewOverlay');
+            if (overlay) {
+                overlay.innerHTML = '<div style="color:#ddd;"><i class="fa-solid fa-circle-notch fa-spin"></i> Solicitando permiso...</div>';
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                // stop tracks immediately (we just wanted to test permissions)
+                stream.getTracks().forEach(t => t.stop());
+                if (overlay) {
+                    overlay.innerHTML = '<div style="color:#d4ffb8; font-weight:700;">Permisos concedidos en este sitio</div><div style="color:#bbb;">Nota: esto solo prueba permisos para QAXI Cloud. La reunión en QAXI Live (otro dominio) deberá pedir permisos también en su pestaña.</div>';
+                    setTimeout(() => { if (overlay) overlay.style.display = 'none'; }, 2200);
+                }
+            } catch (err) {
+                console.error('getUserMedia error', err);
+                const msg = (err && err.name) ? `${err.name}: ${err.message || ''}` : (err.message || 'Error de permisos');
+                if (overlay) {
+                    overlay.innerHTML = `
+                        <div style="color:#ffb3b3; font-weight:700;">Permiso denegado o no disponible</div>
+                        <div style="color:#bbb; max-width:680px; margin-top:6px;">${msg}</div>
+                        <div style="text-align:left; color:#ccc; max-width:700px; margin-top:10px;">Prueba lo siguiente:
+                            <ol style="margin:6px 0 0 18px; color:#ccc;">
+                                <li>Abrir la reunión en una pestaña nueva usando <strong>Abrir página oficial de QAXI Live</strong>.</li>
+                                <li>En la pestaña nueva (sitio oficial de QAXI Live) acepta los permisos de Cámara y Micrófono cuando el navegador lo pregunte.</li>
+                                <li>Si no aparece la petición, revisa los ajustes del navegador y habilita cámara/micrófono para <strong>https://qaxilive.netlify.app</strong>.</li>
+                            </ol>
+                        </div>
+                        <div style="margin-top:10px; display:flex; gap:8px;"><button class="nav-btn" onclick="openLiveInNewTab()" style="border-color:var(--gold); color:var(--gold);">Abrir página oficial de QAXI Live</button><button class="nav-btn" onclick="testMediaPermissions()">Volver a probar</button></div>
+                        <div style="font-size:0.85rem; color:#999; max-width:700px; text-align:center; margin-top:8px;">Si continúas con problemas, abre directamente https://qaxilive.netlify.app en una pestaña y únete desde allí.</div>
+                    `;
+                }
+                // Show guidance
+                alert('No se pudo acceder a la cámara/micrófono aquí. Abre la reunión en una pestaña nueva (botón «Abrir página oficial de QAXI Live») y permite Cámara y Micrófono cuando el sitio lo solicite. También puedes abrir directamente https://qaxilive.netlify.app y unirte desde allí. Revisa los ajustes del navegador si hace falta.');
+            }
+        }
+
+        // ---- Cloud sync helpers ----
+        function toggleLiveCloudSync() {
+            if (!db) return alert('Firebase no está inicializado o no hay acceso.');
+            if (liveCloudSync) disableLiveCloudSync(); else enableLiveCloudSync();
+        }
+
+        function enableLiveCloudSync() {
+            if (!db) return alert('Firebase no está disponible.');
+            liveCloudSync = true;
+            startLiveSyncListeners();
+            const btn = document.getElementById('cloudSyncBtn'); if (btn) { btn.style.borderColor = 'var(--gold)'; btn.style.color = 'var(--gold)'; btn.innerText = 'Sincronizando (Nube)'; }
+        }
+
+        function disableLiveCloudSync() {
+            liveCloudSync = false;
+            if (liveUnsubscribe) { try { liveUnsubscribe(); } catch(e){} liveUnsubscribe = null; }
+            const btn = document.getElementById('cloudSyncBtn'); if (btn) { btn.style.borderColor = ''; btn.style.color = '#ccc'; btn.innerText = 'Sincronizar (Nube)'; }
+            // fall back to local storage list
+            renderLiveMeetings();
+        }
+
+        function startLiveSyncListeners() {
+            if (!db) return;
+            try {
+                liveUnsubscribe = db.collection('qaxi_live_meetings').orderBy('created', 'asc').onSnapshot(snapshot => {
+                    const arr = [];
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        arr.push({ id: data.id || doc.id, name: data.name || '', created: data.created || Date.now() });
+                    });
+                    cloudMeetings = arr;
+                    // Mirror to localStorage so offline still works
+                    try { localStorage.setItem(STORAGE_KEYS.LIVE, JSON.stringify(cloudMeetings)); } catch(e){}
+                    renderLiveMeetings();
+                }, err => {
+                    console.error('Live sync error', err);
+                    alert('Error sincronizando con Firestore: ' + (err.message || err));
+                });
+            } catch(e) { console.error('startLiveSyncListeners error', e); }
+        }
+
+        function copyLink(id) {
+            const url = `https://qaxilive.netlify.app/?room=${encodeURIComponent(id)}`;
+            try { navigator.clipboard.writeText(url); alert('Enlace copiado al portapapeles'); } catch(e) { prompt('Copia el enlace manualmente', url); }
+        }
+
+        function deleteMeeting(id) {
+            if (liveCloudSync && typeof db !== 'undefined' && db) {
+                try {
+                    db.collection('qaxi_live_meetings').doc(id).delete().catch(e => console.warn('Firestore delete failed', e));
+                } catch(e) { console.warn('Firestore delete error', e); }
+            }
+            let list = loadMeetingsFromStorage();
+            list = list.filter(m => m.id !== id);
+            saveMeetingsToStorage(list);
+            renderLiveMeetings();
+        }
+
+        function openSelectedMeeting() {
+            const container = document.getElementById('liveMeetingsList');
+            if (!container) return alert('Selecciona una reunión de la lista.');
+            // If there's at least one, open the most recent
+            const list = getActiveMeetingsList();
+            if (!list.length) return alert('No hay reuniones creadas.');
+            joinMeeting(list[list.length - 1].id);
+        }
+
+        function copySelectedLink() {
+            const list = getActiveMeetingsList();
+            if (!list.length) return alert('No hay reuniones creadas.');
+            copyLink(list[list.length - 1].id);
+        }
+
+        function openLiveInNewTab() {
+            const iframe = document.getElementById('liveIframe');
+            const url = iframe ? iframe.src || 'https://qaxilive.netlify.app' : 'https://qaxilive.netlify.app';
+            window.open(url, '_blank');
         }
         
         // ========================================
@@ -2824,11 +3241,14 @@ Instrucciones:
                 </div>
             `;
             
-            // Inicializar canvas de firma (fondo transparente)
+            // Inicializar canvas de firma (fondo blanco para mejor visibilidad/imprenta)
             firmaCanvas = document.getElementById('firmaCanvas');
             firmaCtx = firmaCanvas.getContext('2d');
-            // Ensure transparent background by clearing
-            firmaCtx.clearRect(0, 0, firmaCanvas.width, firmaCanvas.height);
+            // Fill white background so signature is visible and exports with white
+            try {
+                firmaCtx.fillStyle = '#ffffff';
+                firmaCtx.fillRect(0, 0, firmaCanvas.width, firmaCanvas.height);
+            } catch(e) { firmaCtx.clearRect(0, 0, firmaCanvas.width, firmaCanvas.height); }
             firmaCtx.strokeStyle = firmaColor;
             firmaCtx.lineWidth = firmaWidth;
             firmaCtx.lineCap = 'round';
@@ -2886,8 +3306,8 @@ Instrucciones:
         }
         
         window.clearFirmaCanvas = function() {
-            // Clear to transparent
-            firmaCtx.clearRect(0, 0, firmaCanvas.width, firmaCanvas.height);
+            // Fill white background again
+            try { firmaCtx.fillStyle = '#ffffff'; firmaCtx.fillRect(0, 0, firmaCanvas.width, firmaCanvas.height); } catch(e) { try { firmaCtx.clearRect(0,0,firmaCanvas.width,firmaCanvas.height); } catch(e){} }
             firmaImage = null;
         }
         
