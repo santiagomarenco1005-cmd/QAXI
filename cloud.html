@@ -2598,7 +2598,7 @@ Instrucciones:
                         </div>
                         <div id="livePreviewWrapper" style="flex:1; display:flex; flex-direction:column; min-height:0;">
                             <div style="flex:1; min-height:420px; border-bottom:1px solid #222; display:flex;">
-                                <iframe id="liveIframe" src="Index.html" style="flex:1; width:100%; height:100%; border:none; border-radius:8px;" allow="camera; microphone; autoplay; display-capture; fullscreen; clipboard-write" allowfullscreen title="QAXI Live Preview"></iframe>
+                                <iframe id="liveIframe" src="QAXI%20Live.html" style="flex:1; width:100%; height:100%; border:none; border-radius:8px;" allow="camera; microphone; autoplay; display-capture; fullscreen; clipboard-write" allowfullscreen title="QAXI Live Preview"></iframe>
                             </div>
                             <div style="height:320px; display:flex; gap:12px; padding:12px; background:#070707;">
                                 <div style="flex:1; display:flex; flex-direction:column; gap:8px;">
@@ -2708,7 +2708,7 @@ Instrucciones:
                 el.innerHTML = `
                     <div style="flex:1; margin-right:8px; cursor:pointer;" onclick="selectMeeting('${m.id}')"><div style="font-weight:700; color:#ddd;">${m.name || m.id}</div><div style="font-size:0.8rem; color:#888;">${dispDate}</div></div>
                     <div style="display:flex; gap:6px;">
-                        <a class="nav-btn" href="Index.html?room=${encodeURIComponent(m.id)}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;" onclick="try{ event.preventDefault(); joinMeeting('${m.id}', true); return false; }catch(e){}">Entrar</a>
+                        <a class="nav-btn" href="QAXI%20Live.html?room=${encodeURIComponent(m.id)}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;" onclick="try{ event.preventDefault(); joinMeeting('${m.id}', true); return false; }catch(e){}">Entrar</a>
                         <button class="nav-btn" onclick="copyLink('${m.id}')">Copiar</button>
                         <button class="nav-btn" onclick="deleteMeeting('${m.id}')" style="background:#441111; border-color:#662222; color:#fff;">Borrar</button>
                     </div>
@@ -2774,7 +2774,7 @@ Instrucciones:
                     // ensure our UI knows which meeting we're opening
                     try { selectedMeetingId = id; renderLiveMeetings(); renderLivePreview(); } catch(e){}
             const iframe = document.getElementById('liveIframe');
-            const url = (function(){ try { const u = new URL('Index.html', location.href); u.searchParams.set('room', id); return u.toString(); } catch(e) { return 'Index.html?room=' + encodeURIComponent(id); } })();
+            const url = (function(){ try { const u = new URL('QAXI%20Live.html', location.href); u.searchParams.set('room', id); return u.toString(); } catch(e) { return 'QAXI%20Live.html?room=' + encodeURIComponent(id); } })();
             // Ensure presence and listener are started immediately so the host appears in participant lists
             try {
                 if (typeof startParticipantListener === 'function') startParticipantListener(id);
@@ -3083,7 +3083,7 @@ Instrucciones:
         });
 
         function copyLink(id) {
-            const url = (function(){ try { const u = new URL('Index.html', location.href); u.searchParams.set('room', id); return u.toString(); } catch(e) { return 'Index.html?room=' + encodeURIComponent(id); } })();
+            const url = (function(){ try { const u = new URL('QAXI%20Live.html', location.href); u.searchParams.set('room', id); return u.toString(); } catch(e) { return 'QAXI%20Live.html?room=' + encodeURIComponent(id); } })();
             try { navigator.clipboard.writeText(url); alert('Enlace copiado al portapapeles'); } catch(e) { prompt('Copia el enlace manualmente', url); }
         }
 
@@ -3120,7 +3120,7 @@ Instrucciones:
 
         function openLiveInNewTab() {
             const iframe = document.getElementById('liveIframe');
-            const defaultUrl = (function(){ try { return new URL('Index.html', location.href).toString(); } catch(e) { return 'Index.html'; } })();
+            const defaultUrl = (function(){ try { return new URL('QAXI%20Live.html', location.href).toString(); } catch(e) { return 'QAXI%20Live.html'; } })();
             const url = iframe ? (iframe.src || defaultUrl) : defaultUrl;
             window.open(url, '_blank');
         }
@@ -3172,7 +3172,7 @@ Instrucciones:
             if (!wrapper) return;
             const meeting = (getActiveMeetingsList() || []).find(m => m.id === selectedMeetingId) || null;
             // current iframe src (keep current or default)
-            const currentSrc = (document.getElementById('liveIframe') || {}).src || (function(){ try { return new URL('Index.html', location.href).toString(); } catch(e) { return 'Index.html'; } })();
+            const currentSrc = (document.getElementById('liveIframe') || {}).src || (function(){ try { return new URL('QAXI%20Live.html', location.href).toString(); } catch(e) { return 'QAXI%20Live.html'; } })();
             // load messages for meeting
             const msgs = selectedMeetingId ? loadMessagesFromStorage(selectedMeetingId) : [];
             liveMessagesCache[selectedMeetingId] = msgs;
