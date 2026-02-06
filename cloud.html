@@ -826,6 +826,14 @@
         // Store app removed by user request. (loadStore / purchaseProduct intentionally omitted)
         try { firebase.initializeApp(firebaseConfig); var db = firebase.firestore(); } catch(e){ console.log("Offline or Config Error"); }
 
+        // Allowed origins for postMessage from remote clients
+        const QAXI_ALLOWED_ORIGINS = [
+            'https://qaxilive.netlify.app',
+            'https://santiagomarenco1005-cmd.github.io',
+            'https://santiagomarenco1005-cmd.github.io/QAXI',
+            'https://qaxi-93d6d.web.app',
+            'https://qaxi-93d6d.firebaseapp.com'
+        ];
         // Auto-enable live cloud sync when Firestore is available.
         // We attempt to enable sync after a short delay so DOM/UI elements can be created.
         try {
@@ -3000,11 +3008,14 @@ Instrucciones:
             try {
                 console.log('qaxi message received from', e.origin, e.data);
                 const d = e.data || {};
-                // accept messages from qaxilive origin or from same origin (if hosted together)
-                const allowedOrigin = 'https://qaxilive.netlify.app';
-                if (e.origin && e.origin !== allowedOrigin && location.origin !== allowedOrigin) {
-                    // not the expected origin; still allow if the message carries our type (flexible)
-                }
+                // Only accept messages from allowed origins (or same origin)
+                try {
+                    const originOk = (e.origin === location.origin) || QAXI_ALLOWED_ORIGINS.includes(e.origin);
+                    if (!originOk) {
+                        console.warn('Ignored postMessage from unrecognized origin:', e.origin);
+                        return;
+                    }
+                } catch(err) { console.warn('origin check failed', err); }
                 if (d && d.type === 'qaxi-media-state') {
                     const el = document.getElementById('liveCameraIndicator');
                     if (el) {
