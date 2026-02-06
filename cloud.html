@@ -825,6 +825,30 @@
         // Store app removed by user request. (loadStore / purchaseProduct intentionally omitted)
         try { firebase.initializeApp(firebaseConfig); var db = firebase.firestore(); } catch(e){ console.log("Offline or Config Error"); }
 
+        // If the page is opened via file://, warn the user visually and in console
+        if (location.protocol === 'file:') {
+            console.warn('Serving via file:// - some features (Firebase, fetch) require HTTP. Use a local server.');
+            try {
+                const fw = document.createElement('div');
+                fw.id = 'qaxi-file-warning';
+                fw.style.cssText = 'position:fixed;left:0;right:0;top:0;padding:8px 12px;background:#442200;color:#ffebcc;text-align:center;font-weight:700;z-index:9999;font-family:system-ui;';
+                fw.innerText = 'Atención: estás abriendo el archivo con file:// — sirve la carpeta con un servidor local (python3 -m http.server) para activar Firebase y la IA.';
+                document.addEventListener('DOMContentLoaded', ()=> document.body.appendChild(fw));
+            } catch(e){}
+        }
+
+        // Auto-enable live cloud sync if Firestore initialized
+        try {
+            if (typeof db !== 'undefined' && db) {
+                if (typeof enableLiveCloudSync === 'function') {
+                    try { enableLiveCloudSync(); } catch(e){ console.log('enableLiveCloudSync() failed', e); }
+                } else {
+                    // enableLiveCloudSync is defined later; schedule a deferred attempt after load
+                    window.addEventListener('load', () => { try { if (typeof enableLiveCloudSync === 'function') enableLiveCloudSync(); } catch(e){} });
+                }
+            }
+        } catch(e){}
+
         // GROQ API key: read from localStorage (no hard-coded key)
         let GROQ_KEY = localStorage.getItem('qaxi_groq_key') || '';
 
@@ -1175,150 +1199,11 @@
             } catch (e) { console.warn('insertTextAtSelection failed', e); }
         };
 
-        function loadDocs(c, t) {
-            t.innerHTML = `
-                <button class="magic-btn" onclick="magicWriting()">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Escritura Mágica (Beta)
-                </button>
-                <div class="sep"></div>
-                <button class="nav-btn" onclick="clearDoc()">NUEVO</button>
-                <button class="nav-btn" onclick="exportDocPdf()">CONVERTIR A PDF</button>
-                <button class="nav-btn" onclick="window.print()">IMPRIMIR</button>
-            `;
-            c.innerHTML = `
-                <div style="display:flex; flex-direction:column; width:100%; height:100%;">
-                    <div class="doc-toolbar">
-                        <!-- Selector de Fuente -->
-                        <select class="tb-select" id="fontSelect" title="Fuente">
-                            <option value="'Segoe UI', Arial, sans-serif">Normal</option>
-                        </select>
-                        
-                        <div class="sep"></div>
-                        
-                        <!-- Estilos Básicos -->
-                        <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('bold')" title="Negrita"><i class="fa-solid fa-bold"></i></button>
-                        <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('italic')" title="Cursiva"><i class="fa-solid fa-italic"></i></button>
-                        <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('underline')" title="Subrayado"><i class="fa-solid fa-underline"></i></button>
-                        <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('strikeThrough')" title="Tachado"><i class="fa-solid fa-strikethrough"></i></button>
-                        
-                        <div class="sep"></div>
-                        
-                        <!-- Color Texto -->
-                        <div style="display:flex; align-items:center;">
-                            <label style="font-size:11px; color:#888; margin-right:4px;"><i class="fa-solid fa-font"></i></label>
-                            <input type="color" id="colorTx" value="#000000" style="border:none; width:24px; height:24px; background:none; cursor:pointer; padding:0;">
-                        </div>
-                        
-                        <!-- Color Fondo -->
-                        <div style="display:flex; align-items:center; margin-left:5px;">
-                            <label style="font-size:11px; color:#888; margin-right:4px;"><i class="fa-solid fa-highlighter"></i></label>
-                            <input type="color" id="colorBg" value="#ffff00" style="border:none; width:24px; height:24px; background:none; cursor:pointer; padding:0;">
-                        </div>
-
-                        <div class="sep"></div>
-
-                        <!-- Alineaciones -->
-                        <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('justifyLeft')" title="Izquierda"><i class="fa-solid fa-align-left"></i></button>
-                        <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('justifyCenter')" title="Centro"><i class="fa-solid fa-align-center"></i></button>
-                        <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('justifyRight')" title="Derecha"><i class="fa-solid fa-align-right"></i></button>
-                        <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('justifyFull')" title="Justificar"><i class="fa-solid fa-align-justify"></i></button>
-                        
-                        <div class="sep"></div>
-                        
-                        <!-- Listas -->
-                        <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('insertUnorderedList')" title="Lista"><i class="fa-solid fa-list-ul"></i></button>
-                        <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('insertOrderedList')" title="Lista Numérica"><i class="fa-solid fa-list-ol"></i></button>
-                        
-                        <div class="sep"></div>
-
-                        <!-- Encabezados -->
-                        <select class="tb-select" id="headingSelect" title="Formato">
-                            <option value="div">Párrafo</option>
-                            <option value="h1">Título 1</option>
-                            <option value="h2">Título 2</option>
-                            <option value="h3">Subtítulo</option>
-                            <option value="blockquote">Cita</option>
-                        </select>
-                        
-                        <div class="sep"></div>
-                        
-                        <!-- Deshacer/Rehacer -->
-                        <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('undo')" title="Deshacer"><i class="fa-solid fa-rotate-left"></i></button>
-                        <button class="tb-btn" onmousedown="event.preventDefault(); applyFormat('redo')" title="Rehacer"><i class="fa-solid fa-rotate-right"></i></button>
-                        
-                        <div class="sep"></div>
-                        
-                        <!-- Herramientas adicionales -->
-                        <button class="tb-btn" onmousedown="event.preventDefault(); insertLink()" title="Insertar Enlace"><i class="fa-solid fa-link"></i></button>
-                        <button class="tb-btn" onmousedown="event.preventDefault(); insertImage()" title="Insertar Imagen"><i class="fa-solid fa-image"></i></button>
-                        <button class="tb-btn" onmousedown="event.preventDefault(); insertTable()" title="Insertar Tabla"><i class="fa-solid fa-table"></i></button>
-                        <button class="tb-btn" onmousedown="event.preventDefault(); insertHR()" title="Línea Horizontal"><i class="fa-solid fa-minus"></i></button>
-                    </div>
-                    
-                    <div style="flex:1; overflow:auto; background:#111; display:flex; justify-content:center;">
-                        <div id="paper" contenteditable="true">
-                            <h1>Nuevo Documento</h1>
-                            <p>Comienza a escribir...</p>
-                        </div>
-                    </div>
-                    <div class="doc-status">
-                        <span id="docStats">0 palabras</span>
-                        <div class="autosave-indicator" id="autosaveIndicator">
-                            <i class="fa-solid fa-cloud"></i> Auto-guardado activo
-                        </div>
-                    </div>
-                </div>`;
-            
-            const paper = document.getElementById('paper');
-            
-            // Load saved content
-            const savedContent = localStorage.getItem(STORAGE_KEYS.DOCS);
-            if (savedContent) {
-                paper.innerHTML = savedContent;
-            }
-            
-            paper.addEventListener('input', () => {
-                updateDocStats();
-                triggerAutoSave();
-            });
-            
-            // Save selection events
-            paper.addEventListener('mouseup', saveSelection);
-            paper.addEventListener('keyup', saveSelection);
-            
-            // Font Select
-            const fontSelect = document.getElementById('fontSelect');
-            fontSelect.addEventListener('mousedown', saveSelection);
-            fontSelect.addEventListener('change', function() {
-                applyFontToSelection(this.value);
-                paper.focus();
-            });
-            
-            // Heading Select
-            const headingSelect = document.getElementById('headingSelect');
-            headingSelect.addEventListener('mousedown', saveSelection);
-            headingSelect.addEventListener('change', function() {
-                restoreSelection();
-                document.execCommand('formatBlock', false, this.value);
-                paper.focus();
-                triggerAutoSave();
-            });
-            
-            // Color inputs
-            document.getElementById('colorTx').addEventListener('input', function() {
-                restoreSelection();
-                document.execCommand('foreColor', false, this.value);
-                triggerAutoSave();
-            });
-            
-            document.getElementById('colorBg').addEventListener('input', function() {
-                restoreSelection();
-                document.execCommand('hiliteColor', false, this.value);
-                triggerAutoSave();
-            });
-            
-            updateDocStats();
-        }
+        // (Removed duplicate old loadLive implementation to avoid parse conflicts.)
+        /*
+            Removed an accidental raw HTML block that was inserted into the script.
+            The toolbar/markup is defined elsewhere correctly. Keeping file parsable.
+        */
         
         window.clearDoc = function() {
             if (confirm('¿Crear un nuevo documento? Se perderá el contenido actual.')) {
@@ -2390,8 +2275,8 @@ ${webContext}`;
                 ];
 
                 if(!GROQ_KEY) {
-                    // Show friendly message in chat if no API key configured
-                    document.getElementById('ai-loader').remove();
+                    // Show friendly message in chat if no API key configured (be defensive if loader missing)
+                    const loaderEl = document.getElementById('ai-loader'); if (loaderEl) loaderEl.remove();
                     const warn = document.createElement('div'); warn.className = 'msg ai';
                     warn.innerHTML = `<div class="ai-response"><span style="color:#ffcc66;">QAXI AI no está configurado. Ejecuta window.setGroqKey('<tu_api_key>') en la consola.</span></div>`;
                     chat.appendChild(warn); chat.scrollTop = chat.scrollHeight;
@@ -2666,7 +2551,7 @@ Instrucciones:
                         </div>
                         <div id="livePreviewWrapper" style="flex:1; display:flex; flex-direction:column; min-height:0;">
                             <div style="flex:1; min-height:420px; border-bottom:1px solid #222; display:flex;">
-                                <iframe id="liveIframe" src="https://qaxilive.netlify.app" style="flex:1; width:100%; height:100%; border:none; border-radius:8px;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" allow="fullscreen; autoplay"></iframe>
+                                <iframe id="liveIframe" src="https://qaxilive.netlify.app" style="flex:1; width:100%; height:100%; border:none; border-radius:8px;" allow="camera; microphone; autoplay; display-capture; fullscreen; clipboard-write" allowfullscreen title="QAXI Live Preview"></iframe>
                             </div>
                             <div style="height:320px; display:flex; gap:12px; padding:12px; background:#070707;">
                                 <div style="flex:1; display:flex; flex-direction:column; gap:8px;">
@@ -2776,7 +2661,7 @@ Instrucciones:
                 el.innerHTML = `
                     <div style="flex:1; margin-right:8px; cursor:pointer;" onclick="selectMeeting('${m.id}')"><div style="font-weight:700; color:#ddd;">${m.name || m.id}</div><div style="font-size:0.8rem; color:#888;">${dispDate}</div></div>
                     <div style="display:flex; gap:6px;">
-                        <button class="nav-btn" onclick="joinMeeting('${m.id}')">Entrar</button>
+                        <a class="nav-btn" href="https://qaxilive.netlify.app/?room=${encodeURIComponent(m.id)}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;" onclick="try{ event.preventDefault(); joinMeeting('${m.id}', true); return false; }catch(e){}">Entrar</a>
                         <button class="nav-btn" onclick="copyLink('${m.id}')">Copiar</button>
                         <button class="nav-btn" onclick="deleteMeeting('${m.id}')" style="background:#441111; border-color:#662222; color:#fff;">Borrar</button>
                     </div>
@@ -2825,14 +2710,59 @@ Instrucciones:
             if (openAfter) joinMeeting(id);
         }
 
-        function joinMeeting(id) {
+        function prefersEmbed() {
+            try { return localStorage.getItem('qaxi_live_preferEmbed') === 'true'; } catch(e) { return false; }
+        }
+
+        function setPreferEmbed(val){ try{ if(val) localStorage.setItem('qaxi_live_preferEmbed','true'); else localStorage.removeItem('qaxi_live_preferEmbed'); }catch(e){} }
+
+        function isSafari() {
+            try {
+                const ua = navigator.userAgent || '';
+                return /Safari/.test(ua) && !/Chrome|Chromium|Android/.test(ua);
+            } catch(e) { return false; }
+        }
+
+        function joinMeeting(id, forceTop = false) {
             const iframe = document.getElementById('liveIframe');
             const url = `https://qaxilive.netlify.app/?room=${encodeURIComponent(id)}`;
-            // Update preview if available
-            if (iframe) {
-                try { iframe.src = url; } catch(e) { /* ignore */ }
+
+            // If caller forces a top-level open (user clicked Entrar), open a new tab/window
+            if (forceTop) {
+                try { window.open(url, '_blank', 'noopener'); return; } catch(e) { try { window.location.href = url; return; } catch(e2){} }
             }
-            // Open the meeting in a new tab
+
+            // If this is Safari, force same-tab navigation so the remote origin can request camera/mic permissions.
+            if (isSafari()) {
+                const prev = location.href;
+                try {
+                    // If we are inside a frame, try to navigate the top frame first (forces top-level).
+                    if (window.top && window.top !== window) {
+                        try { window.top.location.href = url; } catch(e) { /* may throw cross-origin */ }
+                    } else {
+                        // Try direct same-tab navigation first
+                        try { window.location.href = url; } catch(e) { /* ignore */ }
+                    }
+                } catch(e) { try { window.location.href = url; } catch(e2){} }
+
+                // If after a short delay the location didn't change, show a visible link the user can click.
+                setTimeout(() => { try { if (location.href === prev) showManualOpen(url); } catch(e){} }, 600);
+                return;
+            }
+
+            // If user prefers embedded view and an iframe exists, try to load in the preview first.
+            if (prefersEmbed() && iframe) {
+                try {
+                    iframe.src = url;
+                    // Focus preview visually
+                    iframe.scrollIntoView({behavior:'smooth', block:'center'});
+                    return;
+                } catch(e) {
+                    console.warn('Embed failed, falling back to new tab', e);
+                }
+            }
+
+            // Default/fallback: open the meeting in a new tab
             try {
                 window.open(url, '_blank', 'noopener');
             } catch(e) {
@@ -2927,6 +2857,42 @@ Instrucciones:
             window.open(url, '_blank');
         }
 
+        // Show a manual banner with a direct link if automatic navigation is blocked (helps Safari/user-gesture)
+        function showManualOpen(url) {
+            try {
+                // Remove existing
+                const prev = document.getElementById('qaxi-manual-open-banner'); if (prev) prev.remove();
+                const b = document.createElement('div');
+                b.id = 'qaxi-manual-open-banner';
+                b.style.cssText = 'position:fixed;left:12px;right:12px;bottom:20px;z-index:99999;background:linear-gradient(90deg,#111,#0d0d0d);border:1px solid #333;padding:14px 16px;border-radius:10px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,0.6);';
+                b.innerHTML = `<div style="flex:1;color:#eee;font-size:0.95rem">Si no aparece el diálogo de permisos, pulsa el botón Abajo para abrir QAXI Live en la misma pestaña.</div>
+                               <a id="qaxi-manual-open-btn" href="${url}" style="background:var(--gold);color:#000;padding:10px 14px;border-radius:8px;font-weight:700;text-decoration:none;">Abrir QAXI Live</a>
+                               <button id="qaxi-manual-close" style="margin-left:8px;background:transparent;border:1px solid #444;color:#ccc;padding:8px 10px;border-radius:8px;">Cerrar</button>`;
+                document.body.appendChild(b);
+                document.getElementById('qaxi-manual-close').addEventListener('click', () => { try{ b.remove(); }catch(e){} });
+            } catch(e) { console.warn('showManualOpen error', e); }
+        }
+
+        // Show a small notice for browsers that block getUserMedia in cross-origin iframes (Safari)
+        function showIframeSafariNotice() {
+            try {
+                const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                // only show for Safari-like browsers where iframe camera is often blocked
+                if (!isSafari) return;
+
+                // attach a small notice near livePreviewWrapper if present
+                const wrapper = document.getElementById('livePreviewWrapper');
+                if (!wrapper) return;
+                if (document.getElementById('qaxi-iframe-safari-note')) return; // already added
+
+                const note = document.createElement('div');
+                note.id = 'qaxi-iframe-safari-note';
+                note.style.cssText = 'position:absolute;right:18px;top:18px;z-index:2100;background:#111;border:1px solid #444;padding:10px 12px;border-radius:8px;color:#ffd;box-shadow:0 6px 18px rgba(0,0,0,0.6);font-size:0.9rem;';
+                note.innerHTML = `<div style="margin-bottom:8px;">Safari puede bloquear la cámara dentro de iframes.</div><div style="display:flex;gap:8px;justify-content:flex-end;"><button class="nav-btn" onclick="openLiveInNewTab()" style="border-color:var(--gold);color:var(--gold);">Abrir en nueva pestaña</button></div>`;
+                wrapper.appendChild(note);
+            } catch (e) { /* ignore */ }
+        }
+
         function selectMeeting(id) {
             selectedMeetingId = id;
             renderLiveMeetings();
@@ -2943,10 +2909,21 @@ Instrucciones:
             const msgs = selectedMeetingId ? loadMessagesFromStorage(selectedMeetingId) : [];
             liveMessagesCache[selectedMeetingId] = msgs;
 
+            const _embedChecked = prefersEmbed() ? 'checked' : '';
             wrapper.innerHTML = `
                 <div style="display:flex; flex-direction:column; height:100%;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:6px 6px 10px 6px;">
+                        <div style="color:#ddd; font-size:0.95rem;">Vista previa</div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <label style="font-size:0.85rem; color:#ccc; display:flex; align-items:center; gap:8px;">
+                                <input id="qaxi-embed-toggle" type="checkbox" ${_embedChecked} onchange="setPreferEmbed(this.checked); renderLivePreview();" />
+                                Abrir embebido
+                            </label>
+                            <button class="nav-btn" style="font-size:0.85rem;" onclick="openLiveInNewTab()">Abrir en nueva pestaña</button>
+                        </div>
+                    </div>
                     <div style="flex:1; min-height:320px;">
-                        <iframe id="liveIframe" src="${currentSrc}" style="width:100%; height:100%; border:none; border-radius:8px;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" allow="fullscreen; autoplay"></iframe>
+                        <iframe id="liveIframe" src="${currentSrc}" style="width:100%; height:100%; border:none; border-radius:8px;" allow="camera; microphone; autoplay; display-capture; fullscreen; clipboard-write" allowfullscreen title="QAXI Live Preview"></iframe>
                     </div>
                 </div>
             `;
