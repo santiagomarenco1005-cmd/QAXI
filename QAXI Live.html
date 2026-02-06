@@ -337,7 +337,7 @@
                 </div>
                 <div style="flex:1;display:flex;gap:12px;">
                     <div style="flex:1;overflow:hidden;">
-                        <iframe id="proLiveIframe" src="https://qaxilive.netlify.app" style="width:100%;height:100%;border:none;background:#000;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" allow="fullscreen; autoplay"></iframe>
+                        <iframe id="proLiveIframe" src="./QAXI%20Live.html" style="width:100%;height:100%;border:none;background:#000;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" allow="fullscreen; autoplay"></iframe>
                     </div>
                     <div style="width:360px;background:#0f0f0f;border-left:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;padding:12px;">
                         <div style="font-weight:700;color:#ddd;margin-bottom:8px;">Reuniones</div>
@@ -494,7 +494,20 @@
                     this._listenParticipants(); this._listenHands(); this._listenReactions(); this._listenTyping();
 
                     // set up RTCPeerConnection
-                    this.state.pc = new RTCPeerConnection(this.config.servers);
+                    const pc = new RTCPeerConnection(this.config.servers);
+                    this.state.pc = pc;
+                    // expose a safe reference for debugging in the console (idempotent)
+                    try{ window._pc = window._pc || this.state.pc; }catch(e){}
+
+                    // lightweight logging for debugging WebRTC lifecycle
+                    try{
+                        pc.addEventListener('icecandidate', ev => console.log('[QAXI][pc][icecandidate]', this.state.roomId, this.state.clientId, ev && ev.candidate ? (ev.candidate.toJSON ? ev.candidate.toJSON() : ev.candidate) : null));
+                        pc.addEventListener('iceconnectionstatechange', ev => console.log('[QAXI][pc][iceConnectionState]', this.state.roomId, this.state.clientId, pc.iceConnectionState));
+                        pc.addEventListener('connectionstatechange', ev => console.log('[QAXI][pc][connectionState]', this.state.roomId, this.state.clientId, pc.connectionState));
+                        pc.addEventListener('signalingstatechange', ev => console.log('[QAXI][pc][signalingState]', this.state.roomId, this.state.clientId, pc.signalingState));
+                        pc.addEventListener('track', ev => console.log('[QAXI][pc][track:event]', this.state.roomId, this.state.clientId, ev && ev.streams && ev.streams[0] ? 'stream' : ev));
+                    }catch(e){ console.warn('pc logging attach failed', e); }
+
                     this.state.pc.ontrack = e => {
                         if(e.streams && e.streams[0]){
                             this.state.remoteStream = e.streams[0];
@@ -509,9 +522,9 @@
                                 this._startMonitoring(this.state.remoteStream, 'remote');
                             }catch(e){}
                         }
-                        document.getElementById('wait-msg').style.display='none';
+                        const _waitMsg_1 = document.getElementById('wait-msg'); if(_waitMsg_1) _waitMsg_1.style.display='none';
                     };
-                    this.state.pc.onconnectionstatechange = ()=>{ const s=this.state.pc.connectionState; if(s==='connected') this.updateStatus('En vivo','#10b981'); if(s==='disconnected' || s==='failed') this.updateStatus('Desconectado','#ef4444'); };
+                    this.state.pc.onconnectionstatechange = ()=>{ const s=this.state.pc.connectionState; console.log('[QAXI][pc][onconnectionstatechange]', this.state.roomId, this.state.clientId, s); if(s==='connected') this.updateStatus('En vivo','#10b981'); if(s==='disconnected' || s==='failed') this.updateStatus('Desconectado','#ef4444'); };
 
                     // add local tracks
                     this.state.localStream.getTracks().forEach(t=> this.state.pc.addTrack(t, this.state.localStream));
@@ -525,16 +538,16 @@
                         await roomRef.set({ answer: { type: answer.type, sdp: answer.sdp } }, { merge:true });
 
                         const offerCandidates = roomRef.collection('offerCandidates'); const answerCandidates = roomRef.collection('answerCandidates');
-                        this.state.pc.onicecandidate = e=>{ if(e.candidate) answerCandidates.add(e.candidate.toJSON()); };
+                        this.state.pc.onicecandidate = e=>{ console.log('[QAXI][pc][guest][onicecandidate]', this.state.roomId, this.state.clientId, e && e.candidate ? (e.candidate.toJSON ? e.candidate.toJSON() : e.candidate) : null); if(e.candidate) answerCandidates.add(e.candidate.toJSON()); };
                         offerCandidates.onSnapshot(s=> s.docChanges().forEach(c=>{ if(c.type==='added') this.state.pc.addIceCandidate(new RTCIceCandidate(c.doc.data())); }));
                     } else {
                         // host
-                        this.state.isHost = true; document.getElementById('wait-msg').style.display='flex';
+                        this.state.isHost = true; const _waitMsg_2 = document.getElementById('wait-msg'); if(_waitMsg_2) _waitMsg_2.style.display='flex';
                         const offerCandidates = roomRef.collection('offerCandidates'); const answerCandidates = roomRef.collection('answerCandidates');
-                        this.state.pc.onicecandidate = e=>{ if(e.candidate) offerCandidates.add(e.candidate.toJSON()); };
+                        this.state.pc.onicecandidate = e=>{ console.log('[QAXI][pc][host][onicecandidate]', this.state.roomId, this.state.clientId, e && e.candidate ? (e.candidate.toJSON ? e.candidate.toJSON() : e.candidate) : null); if(e.candidate) offerCandidates.add(e.candidate.toJSON()); };
                         const offer = await this.state.pc.createOffer(); await this.state.pc.setLocalDescription(offer);
                         await roomRef.set({ offer:{type:offer.type,sdp:offer.sdp}, hostId:this.state.clientId });
-                        roomRef.onSnapshot(async s=>{ const data=s.data(); if(!this.state.pc.currentRemoteDescription && data && data.answer){ await this.state.pc.setRemoteDescription(new RTCSessionDescription(data.answer)); document.getElementById('wait-msg').style.display='none'; this.updateStatus('En vivo','#10b981'); } });
+                        roomRef.onSnapshot(async s=>{ const data=s.data(); if(!this.state.pc.currentRemoteDescription && data && data.answer){ await this.state.pc.setRemoteDescription(new RTCSessionDescription(data.answer)); const _waitMsg_3 = document.getElementById('wait-msg'); if(_waitMsg_3) _waitMsg_3.style.display='none'; this.updateStatus('En vivo','#10b981'); } });
                         answerCandidates.onSnapshot(s=> s.docChanges().forEach(c=>{ if(c.type==='added') this.state.pc.addIceCandidate(new RTCIceCandidate(c.doc.data())); }));
                     }
 
@@ -966,19 +979,25 @@
             // (Previously showed a banner recommending running a local server.)
 
             // global error handlers to report uncaught errors and keep UI responsive
+            // lightweight bootstrap diagnostics available on window for remote inspection
+            try{ window._appBootstrap = window._appBootstrap || { started: Date.now(), ready:false, errors:[] }; }catch(e){}
+
             window.addEventListener('error', (ev)=>{
-                try{ const b = document.getElementById('app-error-banner'); const t = document.getElementById('app-error-text'); if(b && t){ t.innerText = (ev && ev.message) ? ('Error: '+ev.message) : 'Error en la aplicación (revisa consola)'; b.style.display='flex'; }
-                }catch(e){}
+                try{ window._appBootstrap = window._appBootstrap || { started: Date.now(), ready:false, errors:[] }; window._appBootstrap.errors.push(String(ev && ev.message ? ev.message : ev)); const b = document.getElementById('app-error-banner'); const t = document.getElementById('app-error-text'); if(b && t){ t.innerText = (ev && ev.message) ? ('Error: '+ev.message) : 'Error en la aplicación (revisa consola)'; b.style.display='flex'; } }catch(e){}
                 console.error('Uncaught error', ev.error || ev.message || ev);
             });
+
             window.addEventListener('unhandledrejection', (ev)=>{
-                try{ const b = document.getElementById('app-error-banner'); const t = document.getElementById('app-error-text'); if(b && t){ t.innerText = (ev && ev.reason && ev.reason.message) ? ('Error: '+ev.reason.message) : 'Promise rejection (revisa consola)'; b.style.display='flex'; }
-                }catch(e){}
+                try{ window._appBootstrap = window._appBootstrap || { started: Date.now(), ready:false, errors:[] }; const msg = (ev && ev.reason && ev.reason.message) ? ev.reason.message : String(ev.reason||ev); window._appBootstrap.errors.push(msg); const b = document.getElementById('app-error-banner'); const t = document.getElementById('app-error-text'); if(b && t){ t.innerText = (ev && ev.reason && ev.reason.message) ? ('Error: '+ev.reason.message) : 'Promise rejection (revisa consola)'; b.style.display='flex'; } }catch(e){}
                 console.error('Unhandled rejection', ev.reason || ev);
             });
             try{
+                window._appBootstrap = window._appBootstrap || { started: Date.now(), ready:false, errors:[] };
                 App.init();
+                window._appBootstrap.ready = true;
+                try{ window._appReady = true; localStorage.setItem('_qaxi_app_ready', Date.now().toString()); }catch(e){}
             }catch(e){
+                try{ window._appBootstrap = window._appBootstrap || { started: Date.now(), ready:false, errors:[] }; window._appBootstrap.errors.push(String(e && e.message ? e.message : e)); window._appReady = false; localStorage.setItem('_qaxi_app_error', JSON.stringify({ time: Date.now(), message: (e && e.message) ? e.message : String(e) })); }catch(err){}
                 console.error('App.init failed', e);
                 try{ const b = document.getElementById('app-error-banner'); const t = document.getElementById('app-error-text'); if(b && t){ t.innerText = 'Error inicializando: '+(e && e.message ? e.message : String(e)); b.style.display='flex'; } }catch(e){}
             }
@@ -993,17 +1012,139 @@
             function _saveProMeetings(list){ try{ localStorage.setItem('qaxi_live_meetings', JSON.stringify(list||[])); }catch(e){} }
             function renderProMeetings(){ try{ const list=_loadProMeetings(); const cont=document.getElementById('proLiveMeetingsList'); if(!cont) return; cont.innerHTML=''; if(!list.length){ cont.innerHTML='<div style="color:#888; padding:8px;">No hay reuniones. Crea una nueva.</div>'; return; } list.slice().reverse().forEach(m=>{ const el=document.createElement('div'); el.style.padding='8px'; el.style.marginBottom='8px'; el.style.border='1px solid #222'; el.style.borderRadius='6px'; el.style.display='flex'; el.style.justifyContent='space-between'; el.style.alignItems='center'; el.innerHTML = `<div style="flex:1;cursor:pointer;color:#ddd;" onclick="joinProMeeting('${m.id}')"><div style='font-weight:700;color:#fff;'>${m.name||m.id}</div><div style='font-size:12px;color:#999;'>${new Date(m.created).toLocaleString()}</div></div><div style='display:flex;gap:6px;'><button onclick="joinProMeeting('${m.id}')" class='btn-aux' style='padding:6px;border-radius:6px;'>Entrar</button><button onclick="copyProLink('${m.id}')" class='btn-aux' style='padding:6px;border-radius:6px;'>Copiar</button></div>`; cont.appendChild(el); }); }catch(e){console.warn('renderProMeetings',e);} }
             function createProRoom(){ try{ const name = (document.getElementById('proNewMeetingName')||{value:''}).value || (document.getElementById('proRoomInput')||{value:''}).value || ''; const id = 'qaxi-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8); const created = Date.now(); const list=_loadProMeetings(); list.push({id,name,created}); _saveProMeetings(list); renderProMeetings(); // open in iframe
-                const iframe = document.getElementById('proLiveIframe'); if(iframe) iframe.src = `https://qaxilive.netlify.app/?room=${encodeURIComponent(id)}`; document.getElementById('proRoomInput').value = id; document.getElementById('liveRoomName') && (document.getElementById('liveRoomName').innerText = name || id);
+                const iframe = document.getElementById('proLiveIframe'); if(iframe) iframe.src = `./QAXI%20Live.html?room=${encodeURIComponent(id)}`; document.getElementById('proRoomInput').value = id; document.getElementById('liveRoomName') && (document.getElementById('liveRoomName').innerText = name || id);
             }catch(e){console.error(e);} }
             function createProRoomQuick(){ createProRoom(); }
-            function joinProRoom(){ try{ const val = (document.getElementById('proRoomInput')||{value:''}).value.trim(); if(!val) return alert('Ingresa el código de sala o selecciona una reunión.'); const iframe = document.getElementById('proLiveIframe'); if(iframe) iframe.src = `https://qaxilive.netlify.app/?room=${encodeURIComponent(val)}`; document.getElementById('liveRoomName') && (document.getElementById('liveRoomName').innerText = val); }catch(e){console.warn(e);} }
-            function joinProMeeting(id){ try{ const iframe = document.getElementById('proLiveIframe'); if(iframe) iframe.src = `https://qaxilive.netlify.app/?room=${encodeURIComponent(id)}`; document.getElementById('proRoomInput').value = id; document.getElementById('liveRoomName') && (document.getElementById('liveRoomName').innerText = id); }catch(e){console.warn(e);} }
-            function copyProLink(id){ try{ const url = `https://qaxilive.netlify.app/?room=${encodeURIComponent(id)}`; navigator.clipboard.writeText(url).then(()=>alert('Enlace copiado al portapapeles')).catch(()=>prompt('Copiar enlace', url)); }catch(e){console.warn(e);} }
+            function joinProRoom(){ try{ const val = (document.getElementById('proRoomInput')||{value:''}).value.trim(); if(!val) return alert('Ingresa el código de sala o selecciona una reunión.'); const iframe = document.getElementById('proLiveIframe'); if(iframe) iframe.src = `./QAXI%20Live.html?room=${encodeURIComponent(val)}`; document.getElementById('liveRoomName') && (document.getElementById('liveRoomName').innerText = val); }catch(e){console.warn(e);} }
+            function joinProMeeting(id){ try{ const iframe = document.getElementById('proLiveIframe'); if(iframe) iframe.src = `./QAXI%20Live.html?room=${encodeURIComponent(id)}`; document.getElementById('proRoomInput').value = id; document.getElementById('liveRoomName') && (document.getElementById('liveRoomName').innerText = id); }catch(e){console.warn(e);} }
+            function copyProLink(id){ try{ const url = `./QAXI%20Live.html?room=${encodeURIComponent(id)}`; navigator.clipboard.writeText(url).then(()=>alert('Enlace copiado al portapapeles')).catch(()=>prompt('Copiar enlace', url)); }catch(e){console.warn(e);} }
             // Save display name from lobby then join
             function joinWithName(){ try{ const name = (document.getElementById('displayNameLobby')||{value:''}).value.trim(); if(name) try{ localStorage.setItem('qaxi_displayName', name); }catch(e){}; window.connectToRoom && window.connectToRoom(); }catch(e){console.warn(e);} }
             function createNewRoomWithName(){ try{ const name = (document.getElementById('displayNameLobby')||{value:''}).value.trim(); if(name) try{ localStorage.setItem('qaxi_displayName', name); }catch(e){}; window.createNewRoom && window.createNewRoom(); }catch(e){console.warn(e);} }
             // Copy the code shown in header (after 'Código:')
             function copyHeaderCode(){ try{ const el = document.getElementById('header-code'); if(!el) return; const raw = el.innerText || el.textContent || ''; const parts = raw.split(':'); const code = parts.slice(1).join(':').trim(); if(!code || code==='-'){ alert('No hay código para copiar'); return; } navigator.clipboard.writeText(code).then(()=>{ const btn = document.getElementById('copy-code-btn'); if(btn){ btn.classList.add('copied'); setTimeout(()=>{ try{ btn.classList.remove('copied'); }catch(e){} },900); } try{ const tmp = document.createElement('div'); tmp.style.position='fixed'; tmp.style.top='18px'; tmp.style.left='50%'; tmp.style.transform='translateX(-50%)'; tmp.style.padding='8px 12px'; tmp.style.background='rgba(0,0,0,0.8)'; tmp.style.color='#fff'; tmp.style.borderRadius='8px'; tmp.style.zIndex=9999; tmp.innerText='Código copiado'; document.body.appendChild(tmp); setTimeout(()=>tmp.remove(),900); }catch(e){} }).catch(()=>{ prompt('Copiar código', code); }); }catch(e){console.warn(e);} }
         </script>
+
+    <script>
+    // SimpleRTC: minimal Firestore signaling and auto-join when URL contains ?room=
+    (function(){
+        window.SimpleRTC = {
+            pc: null,
+            roomRef: null,
+            localStream: null,
+            remoteStream: null,
+            async join(roomId){
+                try{
+                    if(!roomId) throw new Error('no roomId');
+                    if(!window.firebase || !firebase.firestore) return alert('Firebase no inicializado. Abre la página desde el servidor donde config esté presente.');
+                    const db = firebase.firestore();
+                    this.roomRef = db.collection('rooms').doc(roomId);
+
+                    // If the main App exists, update its state so presence/listeners work
+                    try{
+                        if(window.App && window.App.state){
+                            App.state.roomId = roomId;
+                            App.state.roomRef = this.roomRef;
+                            App.state.refs = App.state.refs || {};
+                            App.state.refs.participants = this.roomRef.collection('participants');
+                            // start the participant listener in the App if available
+                            try{ if(typeof App._listenParticipants === 'function') App._listenParticipants(); }catch(e){}
+                            // add our presence document so the UI shows participants
+                            try{ if(typeof App._addParticipant === 'function') App._addParticipant().catch(()=>{}); }catch(e){}
+                        }
+                    }catch(e){}
+
+                    // get media
+                    try{ this.localStream = await navigator.mediaDevices.getUserMedia({video:true,audio:true}); }catch(e){ alert('Permite cámara y micrófono en el navegador.'); throw e; }
+                    // show local preview if available
+                    try{ const lv = document.getElementById('localVideo'); if(lv) lv.srcObject = this.localStream; }catch(e){}
+
+                    this.pc = new RTCPeerConnection((window.App && App.config && App.config.servers) ? App.config.servers : { iceServers: [{ urls: ['stun:stun1.l.google.com:19302'] }] });
+                    window._pc = this.pc;
+
+                    // remote stream container
+                    this.remoteStream = new MediaStream();
+                    const rv = document.getElementById('remoteVideo'); if(rv) rv.srcObject = this.remoteStream;
+
+                    this.pc.addEventListener('track', e => { e.streams[0] && e.streams[0].getTracks().forEach(t=> this.remoteStream.addTrack(t)); console.log('[SimpleRTC] track'); });
+
+                    // add local tracks
+                    this.localStream.getTracks().forEach(t=> this.pc.addTrack(t, this.localStream));
+
+                    // ICE candidates -> Firestore
+                    const offerCandidates = this.roomRef.collection('offerCandidates');
+                    const answerCandidates = this.roomRef.collection('answerCandidates');
+
+                    this.pc.addEventListener('icecandidate', event => {
+                        if(!event.candidate) return;
+                        const c = event.candidate.toJSON();
+                        // if we are the offerer, push to offerCandidates, else to answerCandidates
+                        if(this.isOfferer) offerCandidates.add(c).catch(()=>{}); else answerCandidates.add(c).catch(()=>{});
+                    });
+
+                    const roomSnap = await this.roomRef.get();
+                    if(!roomSnap.exists){
+                        // create offer
+                        this.isOfferer = true;
+                        const offer = await this.pc.createOffer();
+                        await this.pc.setLocalDescription(offer);
+                        await this.roomRef.set({ offer: { type: offer.type, sdp: offer.sdp } });
+
+                        // listen for remote answer
+                        this.roomRef.onSnapshot(async snap => {
+                            const data = snap.data();
+                            if(!this.pc.currentRemoteDescription && data && data.answer){
+                                const answerDesc = new RTCSessionDescription(data.answer);
+                                await this.pc.setRemoteDescription(answerDesc);
+                                console.log('[SimpleRTC] remote answer applied');
+                            }
+                        });
+
+                        // listen for answer candidates
+                        answerCandidates.onSnapshot(snap => snap.docChanges().forEach(ch => { if(ch.type === 'added'){ const c = ch.doc.data(); this.pc.addIceCandidate(new RTCIceCandidate(c)).catch(()=>{}); } }));
+                        console.log('[SimpleRTC] created room and offer');
+                    } else {
+                        // join existing -> accept offer and create answer
+                        this.isOfferer = false;
+                        const data = roomSnap.data();
+                        if(data && data.offer){
+                            await this.pc.setRemoteDescription(new RTCSessionDescription(data.offer));
+                            const answer = await this.pc.createAnswer();
+                            await this.pc.setLocalDescription(answer);
+                            await this.roomRef.update({ answer: { type: answer.type, sdp: answer.sdp } });
+                            // listen for offer candidates
+                            const offerCandCol = this.roomRef.collection('offerCandidates');
+                            offerCandCol.onSnapshot(snap => snap.docChanges().forEach(ch => { if(ch.type === 'added'){ const c = ch.doc.data(); this.pc.addIceCandidate(new RTCIceCandidate(c)).catch(()=>{}); } }));
+                            console.log('[SimpleRTC] joined and answered');
+                        } else {
+                            console.warn('[SimpleRTC] room has no offer');
+                        }
+                        // also listen for answer candidates (in case late)
+                        answerCandidates.onSnapshot(snap => snap.docChanges().forEach(ch => { if(ch.type === 'added'){ const c = ch.doc.data(); this.pc.addIceCandidate(new RTCIceCandidate(c)).catch(()=>{}); } }));
+                    }
+
+                    // basic connection state logging
+                    this.pc.addEventListener('connectionstatechange', ()=> console.log('[SimpleRTC] connectionState', this.pc.connectionState));
+
+                }catch(err){ console.error('[SimpleRTC] join error', err); }
+            }
+        };
+
+        // Auto-join if ?room= present in URL after app ready
+        (function autoJoinFromUrl(){
+            const params = new URLSearchParams(location.search);
+            const rid = params.get('room');
+            if(!rid) return;
+            const waitAndJoin = ()=>{
+                if(window._appReady || (window.App && window.App.state)){
+                    setTimeout(()=>{ try{ window.SimpleRTC.join(rid); }catch(e){ console.error(e); } }, 250);
+                } else {
+                    setTimeout(waitAndJoin, 200);
+                }
+            };
+            waitAndJoin();
+        })();
+    })();
+    </script>
 </body>
 </html>
