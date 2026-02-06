@@ -794,12 +794,13 @@
     <!-- Firebase Config -->
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
-            authDomain: "qaxi-93d6d.firebaseapp.com",
-            projectId: "qaxi-93d6d",
-            storageBucket: "qaxi-93d6d.firebasestorage.app",
-            messagingSenderId: "137240859996",
-            appId: "1:137240859996:web:73e14d28c77233be965d99"
+              apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
+              authDomain: "qaxi-93d6d.firebaseapp.com",
+              projectId: "qaxi-93d6d",
+              storageBucket: "qaxi-93d6d.firebasestorage.app",
+              messagingSenderId: "137240859996",
+              appId: "1:137240859996:web:73e14d28c77233be965d99",
+              measurementId: "G-C74Z1DWV54"
         };
 
         window.toggleAiExpand = function(btn) {
@@ -2816,37 +2817,102 @@ Instrucciones:
             } catch(e) { console.error('startLiveSyncListeners error', e); }
         }
 
-        // --- Participant presence helpers (minimal Firestore presence) ---
-        let participantUnsubscribe = null;
+        // --- Participant presence helpers (aggregate across qaxi_live_meetings and rooms) ---
+        let participantUnsubscribes = [];
         let localPresenceDocId = null;
+        const _participantMaps = { main: new Map(), rooms: new Map() };
+
+        function _updateParticipantUI() {
+            try {
+                const cntEl = document.getElementById('liveParticipantsCount');
+                const indicator = document.getElementById('liveCameraIndicator');
+                // merge keys
+                const keys = new Set([..._participantMaps.main.keys(), ..._participantMaps.rooms.keys()]);
+                const count = keys.size;
+                if (cntEl) cntEl.innerText = (count > 0) ? String(count) : '0';
+
+                // if any participant reports camera:true, treat camera as on
+                let anyCameraOn = false;
+                for (const k of keys) {
+                    const a = _participantMaps.main.get(k) || _participantMaps.rooms.get(k);
+                    if (a && a.camera === true) { anyCameraOn = true; break; }
+                }
+                if (indicator) {
+                    if (anyCameraOn) {
+                        indicator.style.background = '#4a4';
+                        indicator.style.boxShadow = '0 0 6px rgba(74,170,74,0.6)';
+                    } else {
+                        indicator.style.background = '#822';
+                        indicator.style.boxShadow = 'none';
+                    }
+                }
+            } catch (e) { /* ignore */ }
+        }
 
         function startParticipantListener(meetingId) {
             try {
                 stopParticipantListener();
-                const cntEl = document.getElementById('liveParticipantsCount');
-                if (!meetingId) { if (cntEl) cntEl.innerText = '—'; return; }
-                if (!db) { if (cntEl) cntEl.innerText = '—'; return; }
-                const col = db.collection('qaxi_live_meetings').doc(meetingId).collection('participants');
-                participantUnsubscribe = col.onSnapshot(snap => {
-                    if (cntEl) cntEl.innerText = String(snap.size || 0);
-                }, e => { if (cntEl) cntEl.innerText = '—'; });
-                // register local presence so host shows up
-                try { addLocalPresence(meetingId); } catch(e){}
+                if (!meetingId) { _clearParticipantMaps(); _updateParticipantUI(); return; }
+                if (!db) { _clearParticipantMaps(); _updateParticipantUI(); return; }
+
+                // reset maps
+                _participantMaps.main = new Map();
+                _participantMaps.rooms = new Map();
+
+                // listen to qaxi_live_meetings/{meetingId}/participants
+                try {
+                    const colMain = db.collection('qaxi_live_meetings').doc(meetingId).collection('participants');
+                    const unsubMain = colMain.onSnapshot(snap => {
+                        try {
+                            _participantMaps.main.clear();
+                            snap.forEach(doc => _participantMaps.main.set(doc.id, doc.data()));
+                            _updateParticipantUI();
+                        } catch(e) { console.warn('participant main snapshot handler', e); }
+                    }, e => { console.warn('participant main listener error', e); _updateParticipantUI(); });
+                    participantUnsubscribes.push(unsubMain);
+                } catch(e) { console.warn('startParticipantListener main', e); }
+
+                // listen to rooms/{meetingId}/participants (if remote app uses "rooms")
+                try {
+                    const colRooms = db.collection('rooms').doc(meetingId).collection('participants');
+                    const unsubRooms = colRooms.onSnapshot(snap => {
+                        try {
+                            _participantMaps.rooms.clear();
+                            snap.forEach(doc => _participantMaps.rooms.set(doc.id, doc.data()));
+                            _updateParticipantUI();
+                        } catch(e) { console.warn('participant rooms snapshot handler', e); }
+                    }, e => { console.warn('participant rooms listener error', e); _updateParticipantUI(); });
+                    participantUnsubscribes.push(unsubRooms);
+                } catch(e) { console.warn('startParticipantListener rooms', e); }
+
+                // register local presence so host shows up in both paths
+                try { addLocalPresence(meetingId); } catch(e){ console.warn('addLocalPresence failed', e); }
             } catch(e) { console.warn('startParticipantListener', e); }
+        }
+
+        function _clearParticipantMaps() {
+            _participantMaps.main = new Map();
+            _participantMaps.rooms = new Map();
         }
 
         function stopParticipantListener() {
             try {
-                if (participantUnsubscribe) { participantUnsubscribe(); participantUnsubscribe = null; }
+                participantUnsubscribes.forEach(u => { try { u(); } catch(e){} });
+                participantUnsubscribes = [];
             } catch(e) {}
             try { removeLocalPresence(); } catch(e){}
+            _clearParticipantMaps();
+            _updateParticipantUI();
         }
 
         function addLocalPresence(meetingId) {
             try {
                 if (!db || !meetingId) return;
                 localPresenceDocId = 'p-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
-                db.collection('qaxi_live_meetings').doc(meetingId).collection('participants').doc(localPresenceDocId).set({ id: localPresenceDocId, ts: Date.now() }).catch(()=>{});
+                const doc = { id: localPresenceDocId, ts: Date.now(), camera: false, source: 'cloud' };
+                // write to both known paths if possible
+                try { db.collection('qaxi_live_meetings').doc(meetingId).collection('participants').doc(localPresenceDocId).set(doc).catch(()=>{}); } catch(e){}
+                try { db.collection('rooms').doc(meetingId).collection('participants').doc(localPresenceDocId).set(doc).catch(()=>{}); } catch(e){}
                 window.addEventListener('beforeunload', removeLocalPresence);
             } catch(e) { console.warn('addLocalPresence', e); }
         }
@@ -2854,25 +2920,40 @@ Instrucciones:
         function removeLocalPresence() {
             try {
                 if (!db || !selectedMeetingId || !localPresenceDocId) return;
-                db.collection('qaxi_live_meetings').doc(selectedMeetingId).collection('participants').doc(localPresenceDocId).delete().catch(()=>{});
+                try { db.collection('qaxi_live_meetings').doc(selectedMeetingId).collection('participants').doc(localPresenceDocId).delete().catch(()=>{}); } catch(e){}
+                try { db.collection('rooms').doc(selectedMeetingId).collection('participants').doc(localPresenceDocId).delete().catch(()=>{}); } catch(e){}
             } catch(e) { /* ignore */ }
             localPresenceDocId = null;
         }
 
-        // Listen to postMessage from embedded Live app to reflect camera state
+        // Listen to postMessage from embedded Live app to reflect camera state and sync to presence
         window.addEventListener('message', (e) => {
             try {
                 const d = e.data || {};
+                // accept messages from qaxilive origin or from same origin (if hosted together)
+                const allowedOrigin = 'https://qaxilive.netlify.app';
+                if (e.origin && e.origin !== allowedOrigin && location.origin !== allowedOrigin) {
+                    // not the expected origin; still allow if the message carries our type (flexible)
+                }
                 if (d && d.type === 'qaxi-media-state') {
                     const el = document.getElementById('liveCameraIndicator');
-                    if (!el) return;
-                    if (d.camera) {
-                        el.style.background = '#4a4';
-                        el.style.boxShadow = '0 0 6px rgba(74,170,74,0.6)';
-                    } else {
-                        el.style.background = '#822';
-                        el.style.boxShadow = 'none';
+                    if (el) {
+                        if (d.camera) {
+                            el.style.background = '#4a4';
+                            el.style.boxShadow = '0 0 6px rgba(74,170,74,0.6)';
+                        } else {
+                            el.style.background = '#822';
+                            el.style.boxShadow = 'none';
+                        }
                     }
+
+                    // If we have a local presence doc, update its camera field so others see it
+                    try {
+                        if (db && selectedMeetingId && localPresenceDocId) {
+                            db.collection('qaxi_live_meetings').doc(selectedMeetingId).collection('participants').doc(localPresenceDocId).set({ camera: !!d.camera }, { merge: true }).catch(()=>{});
+                            db.collection('rooms').doc(selectedMeetingId).collection('participants').doc(localPresenceDocId).set({ camera: !!d.camera }, { merge: true }).catch(()=>{});
+                        }
+                    } catch(e) { console.warn('sync camera to presence failed', e); }
                 }
             } catch(e) { /* ignore */ }
         });
