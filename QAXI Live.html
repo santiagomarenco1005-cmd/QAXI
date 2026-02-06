@@ -573,9 +573,18 @@
                     if(lv){ try{ lv.srcObject = stream; lv.style.transform = 'none'; lv.style.webkitTransform = 'none'; lv.play().catch(()=>{}); }catch(e){} }
                     try{ const lp = document.getElementById('local-preview'); if(lp) { lp.style.display='block'; const av = lp.querySelector('.local-avatar'); if(av) av.remove(); } }catch(e){}
                     // ensure UI shows camera-on icon and start audio monitoring
-                    try{ const camTrack = stream && stream.getVideoTracks && stream.getVideoTracks()[0]; const btnIcon = document.getElementById('btn-cam-icon'); if(btnIcon) btnIcon.className = camTrack ? 'fas fa-video' : 'fas fa-video-slash'; }catch(e){}
+                    try{ this._updateCamIcon(); }catch(e){}
                     try{ this._startMonitoring(stream, 'local', {local:true}); }catch(e){}
                     try{ this._updateCamPlaceholder(); }catch(e){}
+                },
+
+                // centralize camera icon state update
+                _updateCamIcon(){
+                    try{
+                        const btnIcon = document.getElementById('btn-cam-icon');
+                        const hasVideo = this.state.localStream && this.state.localStream.getVideoTracks && this.state.localStream.getVideoTracks().length;
+                        if(btnIcon){ btnIcon.className = hasVideo ? 'fas fa-video' : 'fas fa-video-slash'; }
+                    }catch(e){ console.warn('_updateCamIcon', e); }
                 },
 
                 // show placeholder when cam off
@@ -639,7 +648,7 @@
                              const audioTracks = (this.state.localStream && this.state.localStream.getAudioTracks()) || [];
                              this.state.localStream = new MediaStream(audioTracks);
                              document.getElementById('localVideo').srcObject = this.state.localStream;
-                             document.getElementById('btn-cam-icon').className = 'fas fa-video-slash';
+                             try{ this._updateCamIcon(); }catch(e){}
                              this._updateCamPlaceholder();
                          } else {
                              // TURN ON: request camera and replace sender track
@@ -654,7 +663,7 @@
                              if(this.state.localStream){ try{ this.state.localStream.getTracks().forEach(t=>{ if(t.readyState!=='ended') t.stop(); }); }catch(e){} }
                              this.state.localStream = merged;
                              const lv = document.getElementById('localVideo'); if(lv){ lv.srcObject = merged; try{ lv.style.transform='none'; lv.style.webkitTransform='none'; }catch(e){} }
-                             document.getElementById('btn-cam-icon').className = 'fas fa-video';
+                             try{ this._updateCamIcon(); }catch(e){}
                              this._startMonitoring(merged, 'local', {local:true});
                              this._updateCamPlaceholder();
                          }
@@ -759,6 +768,7 @@
                                 try{ localV.srcObject = (this.state.localStream && this.state.localStream.getAudioTracks && this.state.localStream.getAudioTracks().length) ? new MediaStream(this.state.localStream.getAudioTracks()) : null; }catch(e){}
                             }
                         }
+                        try{ this._updateCamIcon(); }catch(e){}
                     }catch(e){ console.warn('_stopAllCameraHardware', e); }
                 },
                 // oculta/restaura la previsualización local SOLO para el usuario (cuando abre el chat)
