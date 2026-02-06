@@ -2759,6 +2759,8 @@ Instrucciones:
         }
 
         function joinMeeting(id, forceTop = false) {
+                    // ensure our UI knows which meeting we're opening
+                    try { selectedMeetingId = id; renderLiveMeetings(); renderLivePreview(); } catch(e){}
             const iframe = document.getElementById('liveIframe');
             const url = `https://qaxilive.netlify.app/?room=${encodeURIComponent(id)}`;
             // Ensure presence and listener are started immediately so the host appears in participant lists
@@ -2861,6 +2863,8 @@ Instrucciones:
         // --- Participant presence helpers (aggregate across qaxi_live_meetings and rooms) ---
         let participantUnsubscribes = [];
         let localPresenceDocId = null;
+        let localPresenceMeetingId = null;
+        let localPresenceHeartbeat = null;
         const _participantMaps = { main: new Map(), rooms: new Map() };
 
         function _updateParticipantUI() {
@@ -2927,7 +2931,7 @@ Instrucciones:
                 } catch(e) { console.warn('startParticipantListener rooms', e); }
 
                 // register local presence so host shows up in both paths
-                try { addLocalPresence(meetingId); } catch(e){ console.warn('addLocalPresence failed', e); }
+                try { addLocalPresence(meetingId).catch(()=>{}); } catch(e){ console.warn('addLocalPresence failed', e); }
             } catch(e) { console.warn('startParticipantListener', e); }
         }
 
@@ -2950,6 +2954,7 @@ Instrucciones:
             try {
                 if (!db || !meetingId) return Promise.reject(new Error('No DB or meetingId'));
                 localPresenceDocId = 'p-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
+                localPresenceMeetingId = meetingId;
                 const doc = { id: localPresenceDocId, ts: Date.now(), camera: false, source: 'cloud' };
                 window.addEventListener('beforeunload', removeLocalPresence);
                 // attempt to write to both paths and surface errors
@@ -2957,6 +2962,19 @@ Instrucciones:
                 try { promises.push(db.collection('qaxi_live_meetings').doc(meetingId).collection('participants').doc(localPresenceDocId).set(doc)); } catch(e){ console.warn('write main presence failed', e); }
                 try { promises.push(db.collection('rooms').doc(meetingId).collection('participants').doc(localPresenceDocId).set(doc)); } catch(e){ console.warn('write rooms presence failed', e); }
                 return Promise.all(promises).then(() => {
+                    // start heartbeat to refresh timestamp so presence feels realtime
+                    try {
+                        if (localPresenceHeartbeat) clearInterval(localPresenceHeartbeat);
+                        localPresenceHeartbeat = setInterval(() => {
+                            try {
+                                if (db && localPresenceMeetingId && localPresenceDocId) {
+                                    const now = Date.now();
+                                    db.collection('qaxi_live_meetings').doc(localPresenceMeetingId).collection('participants').doc(localPresenceDocId).set({ ts: now }, { merge: true }).catch(()=>{});
+                                    db.collection('rooms').doc(localPresenceMeetingId).collection('participants').doc(localPresenceDocId).set({ ts: now }, { merge: true }).catch(()=>{});
+                                }
+                            } catch(e){}
+                        }, 20000);
+                    } catch(e){}
                     console.log('Local presence written:', localPresenceDocId);
                 }).catch(err => {
                     console.error('addLocalPresence error', err);
@@ -2967,11 +2985,14 @@ Instrucciones:
 
         function removeLocalPresence() {
             try {
-                if (!db || !selectedMeetingId || !localPresenceDocId) return;
-                try { db.collection('qaxi_live_meetings').doc(selectedMeetingId).collection('participants').doc(localPresenceDocId).delete().catch(()=>{}); } catch(e){}
-                try { db.collection('rooms').doc(selectedMeetingId).collection('participants').doc(localPresenceDocId).delete().catch(()=>{}); } catch(e){}
+                const mid = localPresenceMeetingId || selectedMeetingId;
+                if (!db || !mid || !localPresenceDocId) return;
+                try { db.collection('qaxi_live_meetings').doc(mid).collection('participants').doc(localPresenceDocId).delete().catch(()=>{}); } catch(e){}
+                try { db.collection('rooms').doc(mid).collection('participants').doc(localPresenceDocId).delete().catch(()=>{}); } catch(e){}
+                if (localPresenceHeartbeat) { try { clearInterval(localPresenceHeartbeat); } catch(e){} localPresenceHeartbeat = null; }
             } catch(e) { /* ignore */ }
             localPresenceDocId = null;
+            localPresenceMeetingId = null;
         }
 
         // Listen to postMessage from embedded Live app to reflect camera state and sync to presence
@@ -2998,10 +3019,25 @@ Instrucciones:
 
                     // If we have a local presence doc, update its camera field so others see it
                     try {
-                        if (db && selectedMeetingId && localPresenceDocId) {
-                            db.collection('qaxi_live_meetings').doc(selectedMeetingId).collection('participants').doc(localPresenceDocId).set({ camera: !!d.camera }, { merge: true }).catch(()=>{});
-                            db.collection('rooms').doc(selectedMeetingId).collection('participants').doc(localPresenceDocId).set({ camera: !!d.camera }, { merge: true }).catch(()=>{});
-                        }
+                        // ensure we have a presence doc; create if missing
+                        const ensurePresence = () => {
+                            if (db && (selectedMeetingId || localPresenceMeetingId)) {
+                                const mid = localPresenceMeetingId || selectedMeetingId;
+                                if (!localPresenceDocId) {
+                                    return addLocalPresence(mid).catch(()=>{});
+                                }
+                            }
+                            return Promise.resolve();
+                        };
+                        ensurePresence().then(() => {
+                            try {
+                                if (db && (selectedMeetingId || localPresenceMeetingId) && localPresenceDocId) {
+                                    const mid = localPresenceMeetingId || selectedMeetingId;
+                                    db.collection('qaxi_live_meetings').doc(mid).collection('participants').doc(localPresenceDocId).set({ camera: !!d.camera }, { merge: true }).catch(()=>{});
+                                    db.collection('rooms').doc(mid).collection('participants').doc(localPresenceDocId).set({ camera: !!d.camera }, { merge: true }).catch(()=>{});
+                                }
+                            } catch(e){}
+                        }).catch(() => {});
                     } catch(e) { console.warn('sync camera to presence failed', e); }
                 }
             } catch(e) { /* ignore */ }
