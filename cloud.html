@@ -2707,7 +2707,7 @@ Instrucciones:
                 selectMeeting(id);
             }
             if (nameInput) nameInput.value = '';
-            if (openAfter) joinMeeting(id);
+            if (openAfter) joinMeeting(id, true);
         }
 
         function prefersEmbed() {
@@ -2911,7 +2911,7 @@ Instrucciones:
 
             const _embedChecked = prefersEmbed() ? 'checked' : '';
             wrapper.innerHTML = `
-                <div style="display:flex; flex-direction:column; height:100%;">
+                <div style="display:flex; flex-direction:column; height:100%; gap:8px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:6px 6px 10px 6px;">
                         <div style="color:#ddd; font-size:0.95rem;">Vista previa</div>
                         <div style="display:flex; align-items:center; gap:8px;">
@@ -2922,8 +2922,25 @@ Instrucciones:
                             <button class="nav-btn" style="font-size:0.85rem;" onclick="openLiveInNewTab()">Abrir en nueva pestaña</button>
                         </div>
                     </div>
-                    <div style="flex:1; min-height:320px;">
-                        <iframe id="liveIframe" src="${currentSrc}" style="width:100%; height:100%; border:none; border-radius:8px;" allow="camera; microphone; autoplay; display-capture; fullscreen; clipboard-write" allowfullscreen title="QAXI Live Preview"></iframe>
+                    <div style="flex:1; min-height:280px; display:flex; gap:12px;">
+                        <div style="flex:1;">
+                            <iframe id="liveIframe" src="${currentSrc}" style="width:100%; height:100%; border:none; border-radius:8px;" allow="camera; microphone; autoplay; display-capture; fullscreen; clipboard-write" allowfullscreen title="QAXI Live Preview"></iframe>
+                        </div>
+                        <div style="width:260px; background:#0b0b0b; border:1px solid #222; border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:8px;">
+                            <div style="color:#ddd; font-weight:700;">Compartir reunión</div>
+                            <div id="shareArea" style="font-size:0.85rem; color:#ccc;">
+                                ${ selectedMeetingId ? `<div style=\"word-break:break-all; margin-bottom:6px;\"><a id=\"shareLink\" href=\"https://qaxilive.netlify.app/?room=${encodeURIComponent(selectedMeetingId)}\" target=\"_blank\">https://qaxilive.netlify.app/?room=${encodeURIComponent(selectedMeetingId)}</a></div>` : '<div style="color:#777;">Selecciona una reunión</div>' }
+                                <div style="display:flex; gap:8px; margin-top:6px;">
+                                    <button id="copyShareBtn" class="nav-btn" style="flex:1;">Copiar enlace</button>
+                                    <button id="openOnPhoneBtn" class="nav-btn" style="flex:1;">Abrir</button>
+                                </div>
+                                <div id="qrWrap" style="margin-top:8px; text-align:center;"></div>
+                                <div style="font-size:0.8rem; color:#888; margin-top:8px;">Si el indicador de cámara sigue encendido, cierra la pestaña del anfitrión o usa el botón "Parar cámara".</div>
+                                <div style="display:flex; gap:8px; margin-top:6px;">
+                                    <button id="stopCamBtn" class="nav-btn" style="flex:1; background:#331111; border-color:#662222; color:#fff;">Parar cámara</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -2940,6 +2957,33 @@ Instrucciones:
                     listEl.appendChild(d);
                 });
                 listEl.scrollTop = listEl.scrollHeight;
+
+                // Attach share controls (copy, open, QR, stop camera)
+                try {
+                    const copyBtn = document.getElementById('copyShareBtn');
+                    const openBtn = document.getElementById('openOnPhoneBtn');
+                    const stopBtn = document.getElementById('stopCamBtn');
+                    const shareLink = document.getElementById('shareLink');
+                    const qrWrap = document.getElementById('qrWrap');
+                    if (shareLink && copyBtn) {
+                        copyBtn.onclick = () => { try { navigator.clipboard.writeText(shareLink.href); alert('Enlace copiado'); } catch(e) { prompt('Copia el enlace manualmente', shareLink.href); } };
+                        openBtn.onclick = () => { try { window.open(shareLink.href, '_blank'); } catch(e){ window.location.href = shareLink.href; } };
+                        if (qrWrap) qrWrap.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(shareLink.href)}" style="border-radius:6px;">`;
+                    }
+                    if (stopBtn) {
+                        stopBtn.onclick = () => {
+                            try {
+                                const iframe = document.getElementById('liveIframe');
+                                if (iframe && iframe.contentWindow) {
+                                    iframe.contentWindow.postMessage({ type: 'qaxi-stop-camera' }, '*');
+                                    alert('Se ha solicitado detener la cámara en la sala. Si no funciona, cierra la pestaña del anfitrión.');
+                                } else {
+                                    alert('No se encontró la vista previa. Abre la sala en otra pestaña y cierra la sesión para apagar la cámara.');
+                                }
+                            } catch(e) { console.warn(e); alert('No se pudo enviar la orden de detener la cámara.'); }
+                        };
+                    }
+                } catch(e) { /* ignore */ }
             }, 50);
         }
 
