@@ -826,6 +826,40 @@
         // Store app removed by user request. (loadStore / purchaseProduct intentionally omitted)
         try { firebase.initializeApp(firebaseConfig); var db = firebase.firestore(); } catch(e){ console.log("Offline or Config Error"); }
 
+        // Auto-enable live cloud sync when Firestore is available.
+        // We attempt to enable sync after a short delay so DOM/UI elements can be created.
+        try {
+            if (typeof db !== 'undefined' && db) {
+                setTimeout(() => {
+                    try {
+                        if (typeof enableLiveCloudSync === 'function') {
+                            enableLiveCloudSync();
+                        } else {
+                            // Fallback: mark flag and start listeners directly
+                            liveCloudSync = true;
+                            if (typeof startLiveSyncListeners === 'function') startLiveSyncListeners();
+                        }
+                    } catch (e) { console.warn('auto-enableLiveCloudSync failed', e); }
+                }, 150);
+            }
+        } catch (e) { console.warn('auto-enable init check failed', e); }
+
+        // Quick Firestore test write to surface permission errors early
+        (function testFirestoreWrite(){
+            try {
+                if (!window.db) return;
+                const tdoc = db.collection('qaxi_debug').doc('test_write');
+                tdoc.set({ ts: Date.now(), ok: true }).then(() => {
+                    console.log('Firestore test write succeeded');
+                    // cleanup
+                    setTimeout(() => { try { tdoc.delete().catch(()=>{}); } catch(e){} }, 2000);
+                }).catch(err => {
+                    console.error('Firestore test write failed:', err);
+                    alert('Error de Firestore: no se puede escribir. Revisa las reglas de Firestore o la configuración del proyecto. (' + (err.message||err) + ')');
+                });
+            } catch(e) { console.warn('testFirestoreWrite error', e); }
+        })();
+
         // If the page is opened via file://, warn the user visually and in console
         if (location.protocol === 'file:') {
             console.warn('Serving via file:// - some features (Firebase, fetch) require HTTP. Use a local server.');
@@ -2727,6 +2761,13 @@ Instrucciones:
         function joinMeeting(id, forceTop = false) {
             const iframe = document.getElementById('liveIframe');
             const url = `https://qaxilive.netlify.app/?room=${encodeURIComponent(id)}`;
+            // Ensure presence and listener are started immediately so the host appears in participant lists
+            try {
+                if (typeof startParticipantListener === 'function') startParticipantListener(id);
+            } catch(e) { console.warn('startParticipantListener on join failed', e); }
+            try {
+                if (typeof addLocalPresence === 'function') addLocalPresence(id).catch(()=>{});
+            } catch(e) { console.warn('addLocalPresence on join failed', e); }
 
             // If caller forces a top-level open (user clicked Entrar), open a new tab/window
             if (forceTop) {
@@ -2907,13 +2948,20 @@ Instrucciones:
 
         function addLocalPresence(meetingId) {
             try {
-                if (!db || !meetingId) return;
+                if (!db || !meetingId) return Promise.reject(new Error('No DB or meetingId'));
                 localPresenceDocId = 'p-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
                 const doc = { id: localPresenceDocId, ts: Date.now(), camera: false, source: 'cloud' };
-                // write to both known paths if possible
-                try { db.collection('qaxi_live_meetings').doc(meetingId).collection('participants').doc(localPresenceDocId).set(doc).catch(()=>{}); } catch(e){}
-                try { db.collection('rooms').doc(meetingId).collection('participants').doc(localPresenceDocId).set(doc).catch(()=>{}); } catch(e){}
                 window.addEventListener('beforeunload', removeLocalPresence);
+                // attempt to write to both paths and surface errors
+                const promises = [];
+                try { promises.push(db.collection('qaxi_live_meetings').doc(meetingId).collection('participants').doc(localPresenceDocId).set(doc)); } catch(e){ console.warn('write main presence failed', e); }
+                try { promises.push(db.collection('rooms').doc(meetingId).collection('participants').doc(localPresenceDocId).set(doc)); } catch(e){ console.warn('write rooms presence failed', e); }
+                return Promise.all(promises).then(() => {
+                    console.log('Local presence written:', localPresenceDocId);
+                }).catch(err => {
+                    console.error('addLocalPresence error', err);
+                    alert('No se pudo registrar la presencia en Firestore: ' + (err.message || err));
+                });
             } catch(e) { console.warn('addLocalPresence', e); }
         }
 
@@ -2929,6 +2977,7 @@ Instrucciones:
         // Listen to postMessage from embedded Live app to reflect camera state and sync to presence
         window.addEventListener('message', (e) => {
             try {
+                console.log('qaxi message received from', e.origin, e.data);
                 const d = e.data || {};
                 // accept messages from qaxilive origin or from same origin (if hosted together)
                 const allowedOrigin = 'https://qaxilive.netlify.app';
