@@ -2729,6 +2729,7 @@ Instrucciones:
 
             // If caller forces a top-level open (user clicked Entrar), open a new tab/window
             if (forceTop) {
+                try { if (typeof db !== 'undefined' && db) addLocalPresence(id); } catch(e){}
                 try { window.open(url, '_blank', 'noopener'); return; } catch(e) { try { window.location.href = url; return; } catch(e2){} }
             }
 
@@ -2814,6 +2815,67 @@ Instrucciones:
                 });
             } catch(e) { console.error('startLiveSyncListeners error', e); }
         }
+
+        // --- Participant presence helpers (minimal Firestore presence) ---
+        let participantUnsubscribe = null;
+        let localPresenceDocId = null;
+
+        function startParticipantListener(meetingId) {
+            try {
+                stopParticipantListener();
+                const cntEl = document.getElementById('liveParticipantsCount');
+                if (!meetingId) { if (cntEl) cntEl.innerText = '—'; return; }
+                if (!db) { if (cntEl) cntEl.innerText = '—'; return; }
+                const col = db.collection('qaxi_live_meetings').doc(meetingId).collection('participants');
+                participantUnsubscribe = col.onSnapshot(snap => {
+                    if (cntEl) cntEl.innerText = String(snap.size || 0);
+                }, e => { if (cntEl) cntEl.innerText = '—'; });
+                // register local presence so host shows up
+                try { addLocalPresence(meetingId); } catch(e){}
+            } catch(e) { console.warn('startParticipantListener', e); }
+        }
+
+        function stopParticipantListener() {
+            try {
+                if (participantUnsubscribe) { participantUnsubscribe(); participantUnsubscribe = null; }
+            } catch(e) {}
+            try { removeLocalPresence(); } catch(e){}
+        }
+
+        function addLocalPresence(meetingId) {
+            try {
+                if (!db || !meetingId) return;
+                localPresenceDocId = 'p-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
+                db.collection('qaxi_live_meetings').doc(meetingId).collection('participants').doc(localPresenceDocId).set({ id: localPresenceDocId, ts: Date.now() }).catch(()=>{});
+                window.addEventListener('beforeunload', removeLocalPresence);
+            } catch(e) { console.warn('addLocalPresence', e); }
+        }
+
+        function removeLocalPresence() {
+            try {
+                if (!db || !selectedMeetingId || !localPresenceDocId) return;
+                db.collection('qaxi_live_meetings').doc(selectedMeetingId).collection('participants').doc(localPresenceDocId).delete().catch(()=>{});
+            } catch(e) { /* ignore */ }
+            localPresenceDocId = null;
+        }
+
+        // Listen to postMessage from embedded Live app to reflect camera state
+        window.addEventListener('message', (e) => {
+            try {
+                const d = e.data || {};
+                if (d && d.type === 'qaxi-media-state') {
+                    const el = document.getElementById('liveCameraIndicator');
+                    if (!el) return;
+                    if (d.camera) {
+                        el.style.background = '#4a4';
+                        el.style.boxShadow = '0 0 6px rgba(74,170,74,0.6)';
+                    } else {
+                        el.style.background = '#822';
+                        el.style.boxShadow = 'none';
+                    }
+                }
+            } catch(e) { /* ignore */ }
+        });
 
         function copyLink(id) {
             const url = `https://qaxilive.netlify.app/?room=${encodeURIComponent(id)}`;
@@ -2909,38 +2971,18 @@ Instrucciones:
             const msgs = selectedMeetingId ? loadMessagesFromStorage(selectedMeetingId) : [];
             liveMessagesCache[selectedMeetingId] = msgs;
 
-            const _embedChecked = prefersEmbed() ? 'checked' : '';
             wrapper.innerHTML = `
-                <div style="display:flex; flex-direction:column; height:100%; gap:8px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:6px 6px 10px 6px;">
-                        <div style="color:#ddd; font-size:0.95rem;">Vista previa</div>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <label style="font-size:0.85rem; color:#ccc; display:flex; align-items:center; gap:8px;">
-                                <input id="qaxi-embed-toggle" type="checkbox" ${_embedChecked} onchange="setPreferEmbed(this.checked); renderLivePreview();" />
-                                Abrir embebido
-                            </label>
-                            <button class="nav-btn" style="font-size:0.85rem;" onclick="openLiveInNewTab()">Abrir en nueva pestaña</button>
+                <div style="display:flex; flex-direction:column; height:100%;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px;">
+                        <div style="color:#ddd; font-size:0.95rem; font-weight:700;">QAXI Live — Interfaz PRO</div>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <div id="liveCameraIndicator" style="width:10px; height:10px; border-radius:50%; background:#4a4; box-shadow:0 0 6px rgba(74,170,74,0.6);"></div>
+                            <div style="color:#ccc; font-size:0.9rem;">Participantes: <span id="liveParticipantsCount">—</span></div>
+                            <button class="nav-btn" style="font-size:0.85rem;" onclick="if(selectedMeetingId) joinMeeting(selectedMeetingId, true)">Entrar</button>
                         </div>
                     </div>
-                    <div style="flex:1; min-height:280px; display:flex; gap:12px;">
-                        <div style="flex:1;">
-                            <iframe id="liveIframe" src="${currentSrc}" style="width:100%; height:100%; border:none; border-radius:8px;" allow="camera; microphone; autoplay; display-capture; fullscreen; clipboard-write" allowfullscreen title="QAXI Live Preview"></iframe>
-                        </div>
-                        <div style="width:260px; background:#0b0b0b; border:1px solid #222; border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:8px;">
-                            <div style="color:#ddd; font-weight:700;">Compartir reunión</div>
-                            <div id="shareArea" style="font-size:0.85rem; color:#ccc;">
-                                ${ selectedMeetingId ? `<div style=\"word-break:break-all; margin-bottom:6px;\"><a id=\"shareLink\" href=\"https://qaxilive.netlify.app/?room=${encodeURIComponent(selectedMeetingId)}\" target=\"_blank\">https://qaxilive.netlify.app/?room=${encodeURIComponent(selectedMeetingId)}</a></div>` : '<div style="color:#777;">Selecciona una reunión</div>' }
-                                <div style="display:flex; gap:8px; margin-top:6px;">
-                                    <button id="copyShareBtn" class="nav-btn" style="flex:1;">Copiar enlace</button>
-                                    <button id="openOnPhoneBtn" class="nav-btn" style="flex:1;">Abrir</button>
-                                </div>
-                                <div id="qrWrap" style="margin-top:8px; text-align:center;"></div>
-                                <div style="font-size:0.8rem; color:#888; margin-top:8px;">Si el indicador de cámara sigue encendido, cierra la pestaña del anfitrión o usa el botón "Parar cámara".</div>
-                                <div style="display:flex; gap:8px; margin-top:6px;">
-                                    <button id="stopCamBtn" class="nav-btn" style="flex:1; background:#331111; border-color:#662222; color:#fff;">Parar cámara</button>
-                                </div>
-                            </div>
-                        </div>
+                    <div style="flex:1; min-height:320px;">
+                        <iframe id="liveIframe" src="${currentSrc}" style="width:100%; height:100%; border:none; border-radius:8px;" allow="camera; microphone; autoplay; display-capture; fullscreen; clipboard-write" allowfullscreen title="QAXI Live Preview"></iframe>
                     </div>
                 </div>
             `;
@@ -2957,33 +2999,7 @@ Instrucciones:
                     listEl.appendChild(d);
                 });
                 listEl.scrollTop = listEl.scrollHeight;
-
-                // Attach share controls (copy, open, QR, stop camera)
-                try {
-                    const copyBtn = document.getElementById('copyShareBtn');
-                    const openBtn = document.getElementById('openOnPhoneBtn');
-                    const stopBtn = document.getElementById('stopCamBtn');
-                    const shareLink = document.getElementById('shareLink');
-                    const qrWrap = document.getElementById('qrWrap');
-                    if (shareLink && copyBtn) {
-                        copyBtn.onclick = () => { try { navigator.clipboard.writeText(shareLink.href); alert('Enlace copiado'); } catch(e) { prompt('Copia el enlace manualmente', shareLink.href); } };
-                        openBtn.onclick = () => { try { window.open(shareLink.href, '_blank'); } catch(e){ window.location.href = shareLink.href; } };
-                        if (qrWrap) qrWrap.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(shareLink.href)}" style="border-radius:6px;">`;
-                    }
-                    if (stopBtn) {
-                        stopBtn.onclick = () => {
-                            try {
-                                const iframe = document.getElementById('liveIframe');
-                                if (iframe && iframe.contentWindow) {
-                                    iframe.contentWindow.postMessage({ type: 'qaxi-stop-camera' }, '*');
-                                    alert('Se ha solicitado detener la cámara en la sala. Si no funciona, cierra la pestaña del anfitrión.');
-                                } else {
-                                    alert('No se encontró la vista previa. Abre la sala en otra pestaña y cierra la sesión para apagar la cámara.');
-                                }
-                            } catch(e) { console.warn(e); alert('No se pudo enviar la orden de detener la cámara.'); }
-                        };
-                    }
-                } catch(e) { /* ignore */ }
+                try { startParticipantListener(selectedMeetingId); } catch(e){ /* ignore */ }
             }, 50);
         }
 
