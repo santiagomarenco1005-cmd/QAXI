@@ -997,7 +997,7 @@
                 <i class="fa-solid fa-id-card"></i><span>CARNET</span>
                 <div class="pro-tag">PRO</div>
             </div>
-            <div class="app-icon" onclick="startApp('live')" title="QAXI Live"><i class="fa-solid fa-video"></i><span>LIVE</span></div>
+            <div class="app-icon" onclick="startApp('live')" title="QAXI Live" style="display:none"><i class="fa-solid fa-video"></i><span>LIVE</span></div>
             
             <div class="app-icon" onclick="startApp('qr')" title="Generador QR"><i class="fa-solid fa-qrcode"></i><span>QR</span></div>
             <div class="app-icon" onclick="startApp('firma')" title="Firmar PDF"><i class="fa-solid fa-signature"></i><span>FIRMA</span></div>
@@ -1181,7 +1181,7 @@
             if(id === 'qr') loadQR(stage, tools);
             if(id === 'ai') loadAI(stage, tools);
             if(id === 'search') loadSearch(stage, tools);
-            if(id === 'live') loadLive(stage, tools);
+            if(id === 'live') { console.warn('QAXI Live está oculto'); return; }
             if(id === 'slides') loadSlides(stage, tools);
             if(id === 'carnet') loadCarnet(stage, tools);
             if(id === 'firma') loadFirma(stage, tools);
