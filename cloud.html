@@ -243,7 +243,9 @@
             background: #0a0a0a; color: #ddd; border: 1px solid #333;
             padding: 6px 10px; font-size: 0.8rem; border-radius: 4px; cursor: pointer;
         }
-        .tb-select:focus, .tb-input:focus { border-color: var(--gold); }
+            .tb-select:focus, .tb-input:focus { border-color: var(--gold); }
+            .toolbar-group { display:flex; gap:8px; align-items:center; }
+            .doc-toolbar .toolbar-group select.tb-select { min-width: 120px; }
         .sep { width: 1px; height: 24px; background: #333; margin: 0 6px; }
         #paper {
             width: 794px; min-height: 1123px;
@@ -872,16 +874,9 @@
             } catch(e) { console.warn('testFirestoreWrite error', e); }
         })();
 
-        // If the page is opened via file://, warn the user visually and in console
+        // Note: file:// warning removed per user request.
         if (location.protocol === 'file:') {
-            console.warn('Serving via file:// - some features (Firebase, fetch) require HTTP. Use a local server.');
-            try {
-                const fw = document.createElement('div');
-                fw.id = 'qaxi-file-warning';
-                fw.style.cssText = 'position:fixed;left:0;right:0;top:0;padding:8px 12px;background:#442200;color:#ffebcc;text-align:center;font-weight:700;z-index:9999;font-family:system-ui;';
-                fw.innerText = 'Atención: estás abriendo el archivo con file:// — sirve la carpeta con un servidor local (python3 -m http.server) para activar Firebase y la IA.';
-                document.addEventListener('DOMContentLoaded', ()=> document.body.appendChild(fw));
-            } catch(e){}
+            // warning intentionally disabled
         }
 
         // Auto-enable live cloud sync if Firestore initialized
@@ -1382,6 +1377,176 @@
             document.getElementById('docStats').innerText = `${words} palabras`;
         };
         
+        // Build a Pages-like Docs UI when the app is opened
+        window.loadDocs = function(stage, tools) {
+            try {
+                // Tools (toolbar) - Pages-like features: grouped for clarity
+                tools.innerHTML = `
+                    <div class="doc-toolbar">
+                        <div class="toolbar-group">
+                            <select id="templateSelect" class="tb-select" onchange="applyTemplate(this.value)">
+                                <option value="blank">Plantilla: Blanco</option>
+                                <option value="letter">Plantilla: Carta</option>
+                                <option value="report">Plantilla: Informe</option>
+                                <option value="resume">Plantilla: CV</option>
+                            </select>
+                            <select id="marginSelect" class="tb-select" onchange="setMargins(this.value)">
+                                <option value="normal">Márgenes: Normal</option>
+                                <option value="narrow">Márgenes: Estrecho</option>
+                                <option value="wide">Márgenes: Ancho</option>
+                            </select>
+                            <select id="columnsSelect" class="tb-select" onchange="setColumns(this.value)">
+                                <option value="1">1 columna</option>
+                                <option value="2">2 columnas</option>
+                                <option value="3">3 columnas</option>
+                            </select>
+                            <select id="pageSize" class="tb-select" onchange="setPageSize(this.value)">
+                                <option value="a4">A4</option>
+                                <option value="letter">Letter</option>
+                            </select>
+                        </div>
+                        <div class="sep"></div>
+                        <div class="toolbar-group">
+                            <select id="styleSelect" class="tb-select" onchange="applyParagraphStyle(this.value)">
+                                <option value="normal">Normal</option>
+                                <option value="h1">Encabezado 1</option>
+                                <option value="h2">Encabezado 2</option>
+                                <option value="h3">Encabezado 3</option>
+                            </select>
+                            <button class="tb-btn" title="Negrita" onclick="applyFormat('bold')"><i class="fa-solid fa-bold"></i></button>
+                            <button class="tb-btn" title="Cursiva" onclick="applyFormat('italic')"><i class="fa-solid fa-italic"></i></button>
+                            <button class="tb-btn" title="Subrayado" onclick="applyFormat('underline')"><i class="fa-solid fa-underline"></i></button>
+                            <button class="tb-btn" title="Alinear izquierda" onclick="alignText('left')"><i class="fa-solid fa-align-left"></i></button>
+                            <button class="tb-btn" title="Centrar" onclick="alignText('center')"><i class="fa-solid fa-align-center"></i></button>
+                            <button class="tb-btn" title="Alinear derecha" onclick="alignText('right')"><i class="fa-solid fa-align-right"></i></button>
+                        </div>
+                        <div class="sep"></div>
+                        <div class="toolbar-group" style="margin-left:auto;">
+                            <select id="fontSelect" class="tb-select" onchange="applyFontToSelection(this.value)"></select>
+                            <input id="sizeInput" class="tb-input" type="number" min="8" max="72" value="14" style="width:64px" onchange="applySizeToSelection(this.value)" title="Tamaño de fuente" />
+                            <div id="docStats" style="color:#999;font-size:0.9rem;padding-left:8px"></div>
+                        </div>
+                    </div>
+                `;
+
+                // Populate fonts select
+                const fontSelect = tools.querySelector('#fontSelect');
+                if (fontSelect && Array.isArray(FONTS)) {
+                    fontSelect.innerHTML = FONTS.map(f => `<option value="${f.value}">${f.name}</option>`).join('');
+                }
+
+                // Stage (paper) - centered page look
+                stage.innerHTML = `
+                    <div style="display:flex;flex-direction:column;height:100%;">
+                        <div style="padding:12px;border-bottom:1px solid #111;background:transparent;color:#ddd;">
+                            <div class="ws-title">Documento</div>
+                        </div>
+                        <div style="flex:1;display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding:20px;">
+                            <div id="paper" contenteditable="true">
+                                <h1>Nuevo Documento</h1>
+                                <p>Comienza a escribir...</p>
+                                <div class="page-footer" contenteditable="true" style="display:none;padding-top:8px;color:#666;font-size:0.85rem">Pie de página</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Bind interactions
+                const paper = document.getElementById('paper');
+                if (paper) {
+                    paper.addEventListener('input', () => { triggerAutoSave(); updateDocStats(); });
+                    paper.addEventListener('mouseup', saveSelection);
+                    paper.addEventListener('keyup', saveSelection);
+                    paper.focus();
+                }
+
+                // Initialize default layout
+                setMargins('normal');
+                setColumns(1);
+                setPageSize('a4');
+                updateDocStats();
+            } catch (e) { console.warn('loadDocs failed', e); }
+        };
+
+        // Helper functions for Word-like toolbar
+        window.applyParagraphStyle = function(val) {
+            try {
+                if (val === 'normal') document.execCommand('formatBlock', false, 'p');
+                else if (val === 'h1') document.execCommand('formatBlock', false, 'h1');
+                else if (val === 'h2') document.execCommand('formatBlock', false, 'h2');
+                else if (val === 'h3') document.execCommand('formatBlock', false, 'h3');
+                triggerAutoSave();
+            } catch(e){console.warn('applyParagraphStyle',e)}
+        };
+
+        window.alignText = function(mode) {
+            try {
+                if (mode === 'left') document.execCommand('justifyLeft');
+                if (mode === 'center') document.execCommand('justifyCenter');
+                if (mode === 'right') document.execCommand('justifyRight');
+                if (mode === 'justify') document.execCommand('justifyFull');
+                triggerAutoSave();
+            } catch(e){console.warn('alignText',e)}
+        };
+
+        window.setTextColor = function(color) { try{ document.execCommand('foreColor', false, color); triggerAutoSave(); }catch(e){console.warn(e)} };
+        window.setHighlight = function(color) { try{ document.execCommand('backColor', false, color); triggerAutoSave(); }catch(e){console.warn(e)} };
+
+        window.doIndent = function(){ try{ document.execCommand('indent'); triggerAutoSave(); }catch(e){console.warn(e)} };
+        window.doOutdent = function(){ try{ document.execCommand('outdent'); triggerAutoSave(); }catch(e){console.warn(e)} };
+
+        window.doUndo = function(){ try{ document.execCommand('undo'); }catch(e){console.warn(e)} };
+        window.doRedo = function(){ try{ document.execCommand('redo'); }catch(e){console.warn(e)} };
+
+        window.setLineSpacing = function(val){ try{ const p = document.getElementById('paper'); if(p) p.style.lineHeight = val; triggerAutoSave(); }catch(e){console.warn(e)} };
+
+        // Pages-like helpers: templates, margins, columns, header/footer, page size
+        window.applyTemplate = function(name) {
+            const paper = document.getElementById('paper'); if(!paper) return;
+            try {
+                if (name === 'blank') {
+                    paper.innerHTML = '<h1>Nuevo Documento</h1><p>Comienza a escribir...</p><div class="page-footer" contenteditable="true" style="display:none;padding-top:8px;color:#666;font-size:0.85rem">Pie de página</div>';
+                } else if (name === 'letter' || name === 'report') {
+                    paper.innerHTML = '<h1>Informe Ejecutivo</h1><p>Resumen ejecutivo... Escribe aquí el contenido principal del informe. Usa estilos y formato desde la barra de herramientas.</p><div class="page-footer" contenteditable="true" style="display:block;padding-top:6px;color:#666;font-size:0.85rem">Página 1</div>';
+                } else if (name === 'resume') {
+                    paper.innerHTML = '<h2>Perfil</h2><p>Breve perfil profesional...</p><h3>Experiencia</h3><p>- Puesto • Empresa • Fechas</p><div class="page-footer" contenteditable="true" style="display:block;padding-top:6px;color:#666;font-size:0.85rem">Contacto: correo@ejemplo.com</div>';
+                }
+                triggerAutoSave();
+                updateDocStats();
+            } catch(e){ console.warn('applyTemplate', e); }
+        };
+
+        window.setMargins = function(val) {
+            const paper = document.getElementById('paper'); if(!paper) return;
+            try {
+                if (val === 'narrow') { paper.style.padding = '18px 24px'; }
+                else if (val === 'wide') { paper.style.padding = '80px 80px'; }
+                else { paper.style.padding = '50px'; }
+                triggerAutoSave();
+            } catch(e){console.warn('setMargins', e)}
+        };
+
+        window.setColumns = function(n) {
+            const paper = document.getElementById('paper'); if(!paper) return;
+            try {
+                const count = parseInt(n,10) || 1;
+                paper.style.columnCount = count;
+                paper.style.columnGap = (count > 1) ? '36px' : '';
+                triggerAutoSave();
+            } catch(e){console.warn('setColumns', e)}
+        };
+
+        // header option removed — footer stays editable via templates only
+
+        window.setPageSize = function(sz) {
+            const paper = document.getElementById('paper'); if(!paper) return;
+            try {
+                if (sz === 'letter') { paper.style.width = '816px'; paper.style.minHeight = '1056px'; }
+                else { paper.style.width = '794px'; paper.style.minHeight = '1123px'; }
+                triggerAutoSave();
+            } catch(e){console.warn('setPageSize', e)}
+        };
+
         // === HERRAMIENTAS ADICIONALES DE DOCS ===
         
         window.insertLink = function() {
@@ -1953,7 +2118,9 @@
                                                 <button class="nav-btn" onclick="addSheet()">+ NUEVA HOJA</button>
                                                 <button class="nav-btn" onclick="deleteCurrentSheet()" style="background:transparent;border-color:#6b1616;color:#ff9b9b;">BORRAR HOJA</button>
                                                 <button class="nav-btn" onclick="addR()">AGREGAR FILA</button>
+                                                <button class="nav-btn" onclick="delR()" style="background:transparent;border-color:#6b1616;color:#ff9b9b;">BORRAR FILA</button>
                                                 <button class="nav-btn" onclick="addC()">AGREGAR COLUMNA</button>
+                                                <button class="nav-btn" onclick="delC()" style="background:transparent;border-color:#6b1616;color:#ff9b9b;">BORRAR COLUMNA</button>
                                 <button class="nav-btn" onclick="exportCSV()">CSV</button>
                                 <button class="nav-btn" onclick="exportSheetsPdf()">EXPORTAR A PDF</button>
                             </div>`;
@@ -2124,6 +2291,37 @@
             if (window.sheetsWorkbook && window.sheetsWorkbook[activeSheetIdx]) {
                 window.sheetsWorkbook[activeSheetIdx].cols = sheetCols;
                 window.sheetsWorkbook[activeSheetIdx].values = window.sheetsWorkbook[activeSheetIdx].values || [];
+            }
+            localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
+            loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
+            try { triggerAutoSave(); } catch(e){}
+        };
+        window.delR = () => {
+            try { autoSaveAll(); } catch(e){}
+            if (sheetRows <= 1) { alert('No se puede borrar la última fila'); return; }
+            sheetRows--;
+            if (window.sheetsWorkbook && window.sheetsWorkbook[activeSheetIdx]) {
+                const wb = window.sheetsWorkbook[activeSheetIdx];
+                wb.rows = sheetRows;
+                wb.values = wb.values || [];
+                if (wb.values.length > sheetRows) wb.values.length = sheetRows;
+            }
+            localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
+            loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
+            try { triggerAutoSave(); } catch(e){}
+        };
+        window.delC = () => {
+            try { autoSaveAll(); } catch(e){}
+            if (sheetCols <= 1) { alert('No se puede borrar la última columna'); return; }
+            sheetCols--;
+            if (window.sheetsWorkbook && window.sheetsWorkbook[activeSheetIdx]) {
+                const wb = window.sheetsWorkbook[activeSheetIdx];
+                wb.cols = sheetCols;
+                wb.values = wb.values || [];
+                // trim each row array
+                for (let r = 0; r < wb.values.length; r++) {
+                    if (Array.isArray(wb.values[r]) && wb.values[r].length > sheetCols) wb.values[r].length = sheetCols;
+                }
             }
             localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
