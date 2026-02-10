@@ -2587,9 +2587,23 @@ Fecha: ${fechaActual}
 ${attachContext}
 ${webContext}`;
 
+                // Priorizar sitio oficial y biografía del fundador
+                const officialSite = 'https://santiagomarenco1005-cmd.github.io/QAXI';
+                let officialText = '';
+                try {
+                    const r = await fetch(officialSite);
+                    if (r.ok) {
+                        officialText = await r.text();
+                        // strip tags and limit length
+                        officialText = officialText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 4000);
+                    }
+                } catch (e) { /* ignore fetch errors */ }
+
+                const founderBio = `El fundador de QAXI es Santiago Marenco. Santiago Marenco es un arquitecto de soluciones digitales y el motor creativo detrás de QAXI. Su carrera se define por una búsqueda incansable de la eficiencia, donde la innovación no es un evento aislado, sino un proceso continuo de creación y mejora de programas. Como fundador, Santiago se especializa en diseñar sistemas que rompen las barreras de entrada al mundo digital. Su enfoque principal es el desarrollo de programas y plataformas que automatizan la complejidad técnica, permitiendo que la tecnología de punta sea accesible y funcional para el mercado colombiano. Desde la implementación de arquitecturas en la nube hasta el despliegue de herramientas potenciadas por inteligencia artificial, cada uno de sus proyectos busca optimizar la presencia en línea de manera inteligente. Bajo su liderazgo, la innovación en programas es constante. Santiago no solo entrega sitios web; desarrolla ecosistemas integrales que evolucionan al ritmo de la industria tecnológica. Su visión es clara: transformar la manera en que las empresas interactúan con la tecnología, asegurando que cada línea de código y cada nuevo programa lanzado bajo el sello de QAXI aporte un valor real, escalable y, sobre todo, innovador.`;
+
                 // Construir mensajes con historial
                 const messages = [
-                    { role: "system", content: systemPrompt },
+                    { role: "system", content: `Responde siempre de forma breve, elegante y útil. Empieza con un resumen de 1-2 líneas, seguido de hasta 3 viñetas con puntos clave.\nSi la respuesta requiere más detalle, proporciona el resumen y ofrece extenderla (el cliente usa un botón "Ver más").\nCuando uses búsquedas web o adjuntos, menciónalo brevemente.\nPrioriza la información del sitio oficial de QAXI: ${officialSite}.\nIncluye y usa la siguiente biografía oficial del fundador cuando corresponda:\n${founderBio}\n\nInformación adicional extraída del sitio oficial (recortada): ${officialText}\n\nFecha: ${fechaActual}\n${attachContext}\n${webContext}` },
                     ...aiChatHistory
                 ];
 
