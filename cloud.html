@@ -235,10 +235,15 @@
         }
         .tb-btn {
             background: transparent; border: 1px solid transparent; color: #aaa; cursor: pointer;
-            width: 32px; height: 32px; border-radius: 4px; display: flex; justify-content: center; align-items: center;
+            min-width: 32px; min-height: 32px; border-radius: 4px; display: inline-flex; justify-content: center; align-items: center; padding:6px;
             transition: 0.2s;
         }
         .tb-btn:hover { background: #252525; color: white; border-color: #333; }
+        /* Reusable button styles to keep label text inside the button */
+        .btn-primary { display:inline-flex; align-items:center; gap:8px; white-space:nowrap; padding:8px 12px; border-radius:10px; border:2px solid var(--gold); color:var(--gold); background: rgba(212,175,55,0.04); font-weight:700; font-size:0.95rem; width:auto; height:auto; min-height:36px; }
+        .btn-icon-text i { margin-right:6px; font-size:1.05rem; }
+        .btn-compact { padding:6px 10px; font-size:0.9rem; border-radius:8px; }
+        .doc-toolbar .toolbar-group { display:flex; gap:8px; align-items:center; }
         .tb-select, .tb-input {
             background: #0a0a0a; color: #ddd; border: 1px solid #333;
             padding: 6px 10px; font-size: 0.8rem; border-radius: 4px; cursor: pointer;
@@ -1388,7 +1393,7 @@
                 tools.innerHTML = `
                     <div class="doc-toolbar">
                         <div class="toolbar-group">
-                            <button class="tb-btn" title="Crear nuevo documento" onclick="clearDoc()" style="border:2px solid var(--gold); color:var(--gold); background: rgba(212,175,55,0.04); padding:6px 10px; border-radius:8px; font-weight:700;"><i class="fa-solid fa-file" style="margin-right:8px"></i> Crear nuevo</button>
+                            <button class="tb-btn crear-btn btn-primary btn-icon-text" title="Crear nuevo documento" onclick="clearDoc()"><i class="fa-solid fa-file"></i><span>Crear nuevo</span></button>
                         </div>
 
                         <div class="sep"></div>
@@ -1409,7 +1414,7 @@
                             <button class="tb-btn" title="Alinear derecha" onclick="alignText('right')"><i class="fa-solid fa-align-right"></i></button>
                             <button class="tb-btn" title="Deshacer" onclick="doUndo()"><i class="fa-solid fa-rotate-left"></i></button>
                             <button class="tb-btn" title="Rehacer" onclick="doRedo()"><i class="fa-solid fa-rotate-right"></i></button>
-                            <button class="tb-btn" title="Exportar a PDF" onclick="exportDocPdf()"><i class="fa-solid fa-file-pdf"></i></button>
+                            <button class="tb-btn export-doc-btn btn-primary btn-icon-text btn-compact" title="Exportar a PDF" onclick="exportDocPdf()"><i class="fa-solid fa-file-pdf"></i><span>Exportar a PDF</span></button>
                             <div id="docStats" style="color:#999;font-size:0.9rem;padding-left:8px"></div>
                         </div>
                     </div>
@@ -2125,7 +2130,7 @@
                                                 <button class="nav-btn" onclick="addC()">AGREGAR COLUMNA</button>
                                                 <button class="nav-btn" onclick="delC()" style="background:transparent;border-color:#6b1616;color:#ff9b9b;">BORRAR COLUMNA</button>
                                 <button class="nav-btn" onclick="exportCSV()">CSV</button>
-                                <button class="nav-btn" onclick="exportSheetsPdf()" style="padding:10px 14px; font-size:1rem; border-radius:8px; border:2px solid var(--gold); color:var(--gold);">EXPORTAR A PDF</button>
+                                <button class="nav-btn export-sheets-btn btn-primary btn-icon-text btn-compact" onclick="exportSheetsPdf()"><i class="fa-solid fa-file-pdf"></i><span>EXPORTAR A PDF</span></button>
                             </div>`;
 
             // initialize workbook if not present
