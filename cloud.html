@@ -1034,34 +1034,35 @@
         function autoSaveAll() {
             const paper = document.getElementById('paper');
             if (paper) {
-                localStorage.setItem(STORAGE_KEYS.DOCS, paper.innerHTML);
+                try { localStorage.setItem(STORAGE_KEYS.DOCS, paper.innerHTML); } catch(e){}
             }
             // Save slides
             if (slides && slides.length > 0) {
-                localStorage.setItem(STORAGE_KEYS.SLIDES, JSON.stringify(slides));
+                try { localStorage.setItem(STORAGE_KEYS.SLIDES, JSON.stringify(slides)); } catch(e){}
             }
-            // Save sheets (serialize grid values)
+            // Save sheets (serialize grid values + headers)
             const grid = document.getElementById('mainGrid');
             if (grid) {
-                try {
-                    const data = { rows: sheetRows, cols: sheetCols, values: [] };
-                    const trs = grid.querySelectorAll('tbody tr');
-                    trs.forEach(tr => {
-                        const rowVals = [];
-                        tr.querySelectorAll('td input').forEach(inp => rowVals.push(inp.value));
-                        data.values.push(rowVals);
-                    });
-                    localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify(data));
-                    // also save workbook if exists
-                    if (window.sheetsWorkbook && Array.isArray(window.sheetsWorkbook)) {
-                        // update active sheet values in workbook
-                        window.sheetsWorkbook[activeSheetIdx] = window.sheetsWorkbook[activeSheetIdx] || {};
-                        window.sheetsWorkbook[activeSheetIdx].rows = sheetRows;
-                        window.sheetsWorkbook[activeSheetIdx].cols = sheetCols;
-                        window.sheetsWorkbook[activeSheetIdx].values = data.values;
-                        localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
-                    }
-                } catch (e) { console.warn('Error saving sheets', e); }
+                    try {
+                        const data = { rows: sheetRows, cols: sheetCols, values: [], headers: wb.headers || Array.from({length: sheetCols}, (_,i)=>String.fromCharCode(65+i)) };
+                        const trs = grid.querySelectorAll('tbody tr');
+                        trs.forEach(tr => {
+                            const rowVals = [];
+                            tr.querySelectorAll('td input').forEach(inp => rowVals.push(inp.value));
+                            data.values.push(rowVals);
+                        });
+                        const headerEls = grid.querySelectorAll('thead th.col-header');
+                        headerEls.forEach(th => data.headers.push((th.innerText || '').trim()));
+                        try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify(data)); } catch(e){}
+                        if (window.sheetsWorkbook && Array.isArray(window.sheetsWorkbook)) {
+                            window.sheetsWorkbook[activeSheetIdx] = window.sheetsWorkbook[activeSheetIdx] || {};
+                            window.sheetsWorkbook[activeSheetIdx].rows = sheetRows;
+                            window.sheetsWorkbook[activeSheetIdx].cols = sheetCols;
+                            window.sheetsWorkbook[activeSheetIdx].values = data.values;
+                            window.sheetsWorkbook[activeSheetIdx].headers = data.headers;
+                            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
+                        }
+                } catch(e) { console.warn('Error saving sheets', e); }
             }
         }
         
@@ -1249,8 +1250,11 @@
         
         window.clearDoc = function() {
             if (confirm('¿Crear un nuevo documento? Se perderá el contenido actual.')) {
-                document.getElementById('paper').innerHTML = '<h1>Nuevo Documento</h1><p>Comienza a escribir...</p>';
-                localStorage.removeItem(STORAGE_KEYS.DOCS);
+                const defaultHtml = '<h1>Nuevo Documento</h1><p>Comienza a escribir...</p>';
+                const p = document.getElementById('paper');
+                if (p) p.innerHTML = defaultHtml;
+                try { localStorage.setItem(STORAGE_KEYS.DOCS, defaultHtml); } catch(e){}
+                try { triggerAutoSave(); } catch(e){}
             }
         }
 
@@ -1380,50 +1384,32 @@
         // Build a Pages-like Docs UI when the app is opened
         window.loadDocs = function(stage, tools) {
             try {
-                // Tools (toolbar) - Pages-like features: grouped for clarity
+                // Minimal Docs toolbar: focused, minimal controls, clear/create new
                 tools.innerHTML = `
                     <div class="doc-toolbar">
                         <div class="toolbar-group">
-                            <select id="templateSelect" class="tb-select" onchange="applyTemplate(this.value)">
-                                <option value="blank">Plantilla: Blanco</option>
-                                <option value="letter">Plantilla: Carta</option>
-                                <option value="report">Plantilla: Informe</option>
-                                <option value="resume">Plantilla: CV</option>
-                            </select>
-                            <select id="marginSelect" class="tb-select" onchange="setMargins(this.value)">
-                                <option value="normal">Márgenes: Normal</option>
-                                <option value="narrow">Márgenes: Estrecho</option>
-                                <option value="wide">Márgenes: Ancho</option>
-                            </select>
-                            <select id="columnsSelect" class="tb-select" onchange="setColumns(this.value)">
-                                <option value="1">1 columna</option>
-                                <option value="2">2 columnas</option>
-                                <option value="3">3 columnas</option>
-                            </select>
-                            <select id="pageSize" class="tb-select" onchange="setPageSize(this.value)">
-                                <option value="a4">A4</option>
-                                <option value="letter">Letter</option>
-                            </select>
+                            <button class="tb-btn" title="Crear nuevo documento" onclick="clearDoc()" style="border:2px solid var(--gold); color:var(--gold); background: rgba(212,175,55,0.04); padding:6px 10px; border-radius:8px; font-weight:700;"><i class="fa-solid fa-file" style="margin-right:8px"></i> Crear nuevo</button>
                         </div>
+
                         <div class="sep"></div>
+
                         <div class="toolbar-group">
-                            <select id="styleSelect" class="tb-select" onchange="applyParagraphStyle(this.value)">
-                                <option value="normal">Normal</option>
-                                <option value="h1">Encabezado 1</option>
-                                <option value="h2">Encabezado 2</option>
-                                <option value="h3">Encabezado 3</option>
-                            </select>
+                            <select id="fontSelect" class="tb-select" onchange="applyFontToSelection(this.value)"></select>
+                            <input id="sizeInput" class="tb-input" type="number" min="8" max="72" value="14" style="width:64px" onchange="applySizeToSelection(this.value)" title="Tamaño de fuente" />
                             <button class="tb-btn" title="Negrita" onclick="applyFormat('bold')"><i class="fa-solid fa-bold"></i></button>
                             <button class="tb-btn" title="Cursiva" onclick="applyFormat('italic')"><i class="fa-solid fa-italic"></i></button>
                             <button class="tb-btn" title="Subrayado" onclick="applyFormat('underline')"><i class="fa-solid fa-underline"></i></button>
+                        </div>
+
+                        <div class="sep"></div>
+
+                        <div class="toolbar-group" style="margin-left:auto;">
                             <button class="tb-btn" title="Alinear izquierda" onclick="alignText('left')"><i class="fa-solid fa-align-left"></i></button>
                             <button class="tb-btn" title="Centrar" onclick="alignText('center')"><i class="fa-solid fa-align-center"></i></button>
                             <button class="tb-btn" title="Alinear derecha" onclick="alignText('right')"><i class="fa-solid fa-align-right"></i></button>
-                        </div>
-                        <div class="sep"></div>
-                        <div class="toolbar-group" style="margin-left:auto;">
-                            <select id="fontSelect" class="tb-select" onchange="applyFontToSelection(this.value)"></select>
-                            <input id="sizeInput" class="tb-input" type="number" min="8" max="72" value="14" style="width:64px" onchange="applySizeToSelection(this.value)" title="Tamaño de fuente" />
+                            <button class="tb-btn" title="Deshacer" onclick="doUndo()"><i class="fa-solid fa-rotate-left"></i></button>
+                            <button class="tb-btn" title="Rehacer" onclick="doRedo()"><i class="fa-solid fa-rotate-right"></i></button>
+                            <button class="tb-btn" title="Exportar a PDF" onclick="exportDocPdf()"><i class="fa-solid fa-file-pdf"></i></button>
                             <div id="docStats" style="color:#999;font-size:0.9rem;padding-left:8px"></div>
                         </div>
                     </div>
@@ -1442,19 +1428,22 @@
                             <div class="ws-title">Documento</div>
                         </div>
                         <div style="flex:1;display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding:20px;">
-                            <div id="paper" contenteditable="true">
-                                <h1>Nuevo Documento</h1>
-                                <p>Comienza a escribir...</p>
-                                <div class="page-footer" contenteditable="true" style="display:none;padding-top:8px;color:#666;font-size:0.85rem">Pie de página</div>
-                            </div>
-                        </div>
+                                    <div id="paper" contenteditable="true">
+                                        ${localStorage.getItem(STORAGE_KEYS.DOCS) || '<h1>Nuevo Documento</h1><p>Comienza a escribir...</p>'}
+                                        <div class="page-footer" contenteditable="true" style="display:none;padding-top:8px;color:#666;font-size:0.85rem">Pie de página</div>
+                                    </div>
+                                </div>
                     </div>
                 `;
 
                 // Bind interactions
                 const paper = document.getElementById('paper');
                 if (paper) {
-                    paper.addEventListener('input', () => { triggerAutoSave(); updateDocStats(); });
+                    paper.addEventListener('input', () => {
+                        try { localStorage.setItem(STORAGE_KEYS.DOCS, paper.innerHTML); } catch(e){}
+                        triggerAutoSave();
+                        updateDocStats();
+                    });
                     paper.addEventListener('mouseup', saveSelection);
                     paper.addEventListener('keyup', saveSelection);
                     paper.focus();
@@ -1732,6 +1721,8 @@
         
         function loadSlides(c, t) {
             t.innerHTML = `
+                <button class="nav-btn" onclick="clearSlides()" style="border-color:var(--gold); color:var(--gold)">CREAR NUEVO SLIDES</button>
+                <div class="sep"></div>
                 <button class="nav-btn" onclick="addSlide()">+ SLIDE</button>
                 <button class="nav-btn" onclick="addSlideText()">+ TEXTO</button>
                 <button class="nav-btn" onclick="addSlideTitle()">+ TÍTULO</button>
@@ -2063,6 +2054,18 @@
             input.value = '';
         }
         
+        window.clearSlides = function() {
+            try { autoSaveAll(); } catch(e){}
+            if (!confirm('¿Crear una nueva presentación? Se perderán las diapositivas actuales.')) return;
+            slides = [{ id: 1, elements: [ { id: 1, type: 'title', content: 'Título de la Presentación', x: 50, y: 50, width: 700, height: 60, fontSize: 36, fontFamily: 'Cinzel' } ], bg: '#ffffff' }];
+            currentSlideIdx = 0;
+            selectedElement = null;
+            renderCurrentSlide();
+            renderThumbs();
+            saveSlides();
+            try { triggerAutoSave(); } catch(e){}
+        }
+
         window.deleteSelectedElement = function() {
             if (!selectedElement) {
                 alert('Selecciona un elemento para eliminar.');
@@ -2122,7 +2125,7 @@
                                                 <button class="nav-btn" onclick="addC()">AGREGAR COLUMNA</button>
                                                 <button class="nav-btn" onclick="delC()" style="background:transparent;border-color:#6b1616;color:#ff9b9b;">BORRAR COLUMNA</button>
                                 <button class="nav-btn" onclick="exportCSV()">CSV</button>
-                                <button class="nav-btn" onclick="exportSheetsPdf()">EXPORTAR A PDF</button>
+                                <button class="nav-btn" onclick="exportSheetsPdf()" style="padding:10px 14px; font-size:1rem; border-radius:8px; border:2px solid var(--gold); color:var(--gold);">EXPORTAR A PDF</button>
                             </div>`;
 
             // initialize workbook if not present
@@ -2151,7 +2154,9 @@
             const active = window.sheetsWorkbook[activeSheetIdx];
             sheetRows = active.rows || sheetRows;
             sheetCols = active.cols || sheetCols;
-            c.innerHTML = buildGrid(sheetRows, sheetCols);
+            const defaultHeaders = Array.from({length: sheetCols}, (_,i) => String.fromCharCode(65+i));
+            if (!active.headers) active.headers = defaultHeaders.slice();
+            c.innerHTML = buildGrid(sheetRows, sheetCols, active.headers);
 
             // Load saved sheet values if any
             try {
@@ -2178,9 +2183,24 @@
                 }
             } catch(e) { console.warn('Error loading sheets', e); }
 
-            // Attach autosave hooks to inputs
+            // Attach autosave hooks to inputs and header editing
             const grid = document.getElementById('mainGrid');
             if (grid) {
+                // header edit handlers
+                grid.querySelectorAll('thead th.col-header').forEach(th => {
+                    th.addEventListener('input', () => {
+                        try {
+                            const col = parseInt(th.dataset.col,10);
+                            const label = th.innerText.trim() || String.fromCharCode(65+col);
+                            const wb = window.sheetsWorkbook[activeSheetIdx] = window.sheetsWorkbook[activeSheetIdx] || {};
+                            wb.headers = wb.headers || defaultHeaders.slice();
+                            wb.headers[col] = label;
+                            try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values || [], headers: wb.headers })); } catch(e){}
+                            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
+                            try { triggerAutoSave(); } catch(e){}
+                        } catch(e){}
+                    });
+                });
                 grid.querySelectorAll('td input').forEach(inp => {
                     inp.addEventListener('input', () => {
                         // simple calc handling is still on change; provide immediate autosave
@@ -2251,16 +2271,20 @@
         function newWorkbook() {
             try { autoSaveAll(); } catch(e){}
             if (!confirm('¿Crear un nuevo libro de cálculo? Se reemplazarán las hojas actuales.')) return;
+            // Recreate a fresh, empty workbook and clear previous sheet snapshots
             window.sheetsWorkbook = [{ name: 'Hoja 1', rows: 20, cols: 10, values: [] }];
             activeSheetIdx = 0;
             sheetRows = 20; sheetCols = 10;
-            localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
+            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
+            try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: 20, cols: 10, values: [] })); } catch(e){}
+            // Rerender sheets UI
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
             try { triggerAutoSave(); } catch(e){}
         }
-        function buildGrid(rows, cols) {
+        function buildGrid(rows, cols, headers) {
+            const hdrs = Array.isArray(headers) ? headers : Array.from({length: cols}, (_,i) => String.fromCharCode(65+i));
             let h = `<div class="grid-container"><table class="grid" id="mainGrid"><thead><tr id="hRow"><th></th>`;
-            for(let i=0; i<cols; i++) h += `<th>${String.fromCharCode(65+i)}</th>`;
+            for(let i=0; i<cols; i++) h += `<th contenteditable="true" data-col="${i}" class="col-header" style="min-width:48px; padding:8px; text-align:center;">${hdrs[i] || String.fromCharCode(65+i)}</th>`;
             h += `</tr></thead><tbody>`;
             for(let r=1; r<=rows; r++) {
                 h += `<tr><th style="background:#1f1f1f;">${r}</th>`;
@@ -2277,23 +2301,66 @@
             // update active workbook and persist
             sheetRows++;
             if (window.sheetsWorkbook && window.sheetsWorkbook[activeSheetIdx]) {
-                window.sheetsWorkbook[activeSheetIdx].rows = sheetRows;
-                // ensure values array has rows
-                window.sheetsWorkbook[activeSheetIdx].values = window.sheetsWorkbook[activeSheetIdx].values || [];
+                const wb = window.sheetsWorkbook[activeSheetIdx];
+                wb.rows = sheetRows;
+                wb.values = wb.values || [];
+                // ensure each row array exists and append a new empty row
+                const newRow = Array(sheetCols).fill('');
+                wb.values.push(newRow);
+                // ensure values length matches rows
+                if (wb.values.length < sheetRows) {
+                    while (wb.values.length < sheetRows) wb.values.push(Array(sheetCols).fill(''));
+                }
+                // persist both single-sheet and workbook storage so loadSheets reads consistent state
+                try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values, headers: wb.headers || Array.from({length: sheetCols}, (_,i)=>String.fromCharCode(65+i)) })); } catch(e){}
             }
-            localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
+            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
+            // focus newly added row's first cell if present
+            setTimeout(() => {
+                try {
+                    const grid = document.getElementById('mainGrid');
+                    if (!grid) return;
+                    const rows = grid.querySelectorAll('tbody tr');
+                    const last = rows[rows.length-1];
+                    if (last) { const inp = last.querySelector('td input'); if (inp) inp.focus(); }
+                } catch(e){}
+            }, 80);
             try { triggerAutoSave(); } catch(e){}
         };
         window.addC = () => {
             try { autoSaveAll(); } catch(e){}
             sheetCols++;
             if (window.sheetsWorkbook && window.sheetsWorkbook[activeSheetIdx]) {
-                window.sheetsWorkbook[activeSheetIdx].cols = sheetCols;
-                window.sheetsWorkbook[activeSheetIdx].values = window.sheetsWorkbook[activeSheetIdx].values || [];
+                const wb = window.sheetsWorkbook[activeSheetIdx];
+                wb.cols = sheetCols;
+                wb.values = wb.values || [];
+                // ensure each existing row expands by one empty cell
+                if (wb.values.length === 0) {
+                    // create rows if none exist
+                    for (let r = 0; r < sheetRows; r++) wb.values.push(Array(sheetCols).fill(''));
+                } else {
+                    for (let r = 0; r < wb.values.length; r++) {
+                        if (!Array.isArray(wb.values[r])) wb.values[r] = Array(sheetCols).fill('');
+                        else wb.values[r].push('');
+                    }
+                }
+                try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values, headers: wb.headers || Array.from({length: sheetCols}, (_,i)=>String.fromCharCode(65+i)) })); } catch(e){}
             }
-            localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
+            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
+            // focus first cell of newly added column
+            setTimeout(() => {
+                try {
+                    const grid = document.getElementById('mainGrid');
+                    if (!grid) return;
+                    const firstRow = grid.querySelector('tbody tr');
+                    if (firstRow) {
+                        const inputs = firstRow.querySelectorAll('td input');
+                        const last = inputs[inputs.length-1]; if (last) last.focus();
+                    }
+                } catch(e){}
+            }, 80);
             try { triggerAutoSave(); } catch(e){}
         };
         window.delR = () => {
@@ -2305,8 +2372,9 @@
                 wb.rows = sheetRows;
                 wb.values = wb.values || [];
                 if (wb.values.length > sheetRows) wb.values.length = sheetRows;
+                try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values, headers: wb.headers || Array.from({length: sheetCols}, (_,i)=>String.fromCharCode(65+i)) })); } catch(e){}
             }
-            localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
+            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
             try { triggerAutoSave(); } catch(e){}
         };
@@ -2322,8 +2390,9 @@
                 for (let r = 0; r < wb.values.length; r++) {
                     if (Array.isArray(wb.values[r]) && wb.values[r].length > sheetCols) wb.values[r].length = sheetCols;
                 }
+                try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values, headers: wb.headers || Array.from({length: sheetCols}, (_,i)=>String.fromCharCode(65+i)) })); } catch(e){}
             }
-            localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
+            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
             try { triggerAutoSave(); } catch(e){}
         };

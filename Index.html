@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SM SEGUROS</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="SM SEGUROS - Agencia de seguros con más de 12 años de experiencia. Cotiza seguros de auto, salud, vida, hogar, mascotas y viaje. Asesoría personalizada en Barranquilla y toda Colombia.">
+    <meta name="keywords" content="seguros, seguros colombia, seguro de auto, seguro de salud, seguro de vida, seguro hogar, seguro mascotas, seguro viaje, SURA, Allianz, AXA, Bolívar, Barranquilla">
+    <meta name="author" content="SM SEGUROS">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://smseguros.co/">
+    <meta property="og:title" content="SM SEGUROS">
+    <meta property="og:description" content="Cotiza tu seguro de auto, salud, vida, hogar y más. Más de 12 años protegiendo familias con pasión y transparencia.">
+    <meta property="og:image" content="nuevo-logo-sm.jpg">
+    <meta property="og:locale" content="es_CO">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SM SEGUROS">
+    <meta name="twitter:description" content="Cotiza tu seguro de auto, salud, vida, hogar y más. Asesoría personalizada con pasión y transparencia.">
+    <meta name="twitter:image" content="nuevo-logo-sm.jpg">
+
+    <link rel="preload" as="image" href="nuevo-logo-sm.jpg">
+    <link rel="apple-touch-icon" href="nuevo-logo-sm.jpg">
+    <link rel="icon" type="image/jpeg" href="nuevo-logo-sm.jpg">
+    <meta name="apple-mobile-web-app-title" content="SM SEGUROS">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0033A0;
+            --secondary: #00AEC7;
+            --text-dark: #1a252f;
+            --text-muted: #546e7a;
+            --radius: 24px;
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --header-height: 100px;
+        }
+
+        /* MEJORA DE SCROLL */
+        html { 
+            scroll-behavior: smooth; 
+            scroll-padding-top: var(--header-height);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; }
+        
+        body { 
+            background-color: #f4f7fd; 
+            color: var(--text-dark); 
+            line-height: 1.6; 
+            font-size: 18px; 
+            overflow-x: hidden;
+        }
+
+        /* FONDO OPTIMIZADO PARA GPU */
+        .bg-shape { 
+            position: fixed; 
+            border-radius: 50%; 
+            filter: blur(80px); 
+            z-index: -1; 
+            opacity: 0.4;
+            transform: translateZ(0);
+            will-change: transform; 
+            pointer-events: none;
+        }
+        
+        .shape1 { 
+            top: -10%; left: -10%; width: 500px; height: 500px; 
+            background: var(--secondary); 
+            animation: float 20s infinite alternate ease-in-out; 
+        }
+        .shape2 { 
+            bottom: -10%; right: -5%; width: 400px; height: 400px; 
+            background: var(--primary); 
+            animation: float 25s infinite alternate-reverse ease-in-out; 
+        }
+        
+        @keyframes float { 
+            from { transform: translate3d(0,0,0) rotate(0deg); } 
+            to { transform: translate3d(30px, 30px, 0) rotate(5deg); } 
+        }
+
+        /* HEADER OPTIMIZADO */
+        header {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 0.8rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+            height: var(--header-height);
+            transition: transform 0.3s ease;
+        }
+
+        .brand-container { display: flex; align-items: center; text-decoration: none; }
+        .logo-img-full { height: 70px; width: auto; display: block; min-width: 70px; }
+
+        .nav-menu { list-style: none; display: flex; gap: 30px; align-items: center; }
+        .nav-menu a {
+            text-decoration: none; color: var(--text-dark); font-weight: 600; font-size: 1.1rem; transition: color 0.2s; position: relative;
+        }
+        .nav-menu a::after { content: ''; position: absolute; width: 0; height: 3px; bottom: -5px; left: 0; background: var(--secondary); transition: width 0.3s; border-radius: 2px; }
+        .nav-menu a:hover { color: var(--primary); }
+        .nav-menu a:hover::after { width: 100%; }
+        
+        .btn-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white !important; padding: 10px 25px; border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0, 174, 199, 0.2); transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-header:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0, 174, 199, 0.3); }
+
+        /* SECCIONES */
+        section { padding: 4rem 20px; max-width: 1150px; margin: 0 auto; }
+        .section-title { 
+            text-align: center; font-size: 2.8rem; color: var(--primary); margin-bottom: 1rem; font-weight: 800; letter-spacing: -1px;
+        }
+        .section-desc {
+            text-align: center; font-size: 1.25rem; margin-bottom: 3rem; color: var(--text-muted); max-width: 700px; margin-left: auto; margin-right: auto;
+        }
+
+        /* HERO */
+        #inicio { text-align: center; padding-top: 2rem; min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .hero-title { font-size: 4rem; line-height: 1.1; margin-bottom: 1.5rem; color: var(--text-dark); }
+        .hero-title span { color: var(--primary); background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-text { font-size: 1.5rem; color: var(--text-muted); max-width: 750px; margin: 0 auto 2.5rem auto; font-weight: 500; }
+
+        /* LOGOS ASEGURADORAS */
+        .insurer-logos-container {
+            margin-top: 1rem;
+            display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 40px; padding: 20px;
+            /* isolation: isolate;  -- removed to allow logos to blend with page background */
+        }
+        .insurer-logo { 
+            height: 60px; width: auto; object-fit: contain; transition: transform 0.3s ease; cursor: pointer; 
+            /* mix-blend-mode: multiply;  -- removed: use transparent images or SVGs instead */
+            background: transparent;
+            display: inline-block;
+            will-change: transform; 
+        }
+        .insurer-logo.large {
+            height: 96px;
+        }
+        .insurer-logo:hover { transform: scale(1.05); }
+
+        /* NOSOTROS - DISEÑO CON VIDEO */
+        .about-card {
+            background: rgba(255, 255, 255, 0.85); padding: 3.5rem; border-radius: 30px; box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(255,255,255,0.8); 
+        }
+        
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .video-wrapper {
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: #000;
+            line-height: 0;
+        }
+
+        .styled-video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .about-text { font-size: 1.3rem; line-height: 1.8; color: var(--text-dark); margin-bottom: 2rem; text-align: left; }
+        .texto-destacado { color: var(--primary); font-weight: 800; display: inline-block; }
+        
+        .values-grid { display: flex; justify-content: flex-start; gap: 15px; flex-wrap: wrap; }
+        .value-item {
+            background: white; padding: 10px 20px; border-radius: 50px;
+            color: var(--primary); font-weight: 700; font-size: 1rem; border: 2px solid var(--primary);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 10px; transition: 0.2s;
+        }
+        .value-item:hover { background: var(--primary); color: white; transform: translateY(-2px); }
+
+        @media (min-width: 900px) {
+             .about-card { backdrop-filter: blur(10px); }
+        }
+
+        /* COTIZADOR */
+        .cotizador-wrapper { background: white; border-radius: 30px; box-shadow: var(--shadow-soft); overflow: hidden; border: 1px solid rgba(0,0,0,0.05); }
+        
+        .swipe-hint {
+            display: block;
+            background: #eefbff;
+            color: var(--primary);
+            text-align: center;
+            font-size: 0.95rem;
+            padding: 10px;
+            font-weight: 700;
+            border-bottom: 1px solid #dcefef;
+            animation: pulse 2.5s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; transform: scale(1.01); } 100% { opacity: 0.8; transform: scale(1); } }
+
+        .tabs { 
+            display: flex; background: #f8faff; padding: 15px; gap: 15px; 
+            overflow-x: auto; border-bottom: 1px solid #eee; padding-bottom: 10px; 
+            -webkit-overflow-scrolling: touch; 
+        }
+        .tabs::-webkit-scrollbar { height: 4px; }
+        .tabs::-webkit-scrollbar-track { background: #e0e0e0; border-radius: 10px; }
+        .tabs::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 10px; }
+
+        .tab-btn {
+            flex: 1; padding: 1rem; border: none; background: white; cursor: pointer;
+            font-weight: 700; font-size: 1rem; color: var(--text-muted); transition: background 0.2s, color 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px; 
+            min-width: 140px; border-radius: 15px; border: 1px solid transparent; white-space: nowrap;
+        }
+        .tab-btn:hover { background: #f0f4f8; color: var(--primary); }
+        .tab-btn.active { background: white; color: var(--primary); border-color: var(--secondary); box-shadow: 0 4px 12px rgba(0, 174, 199, 0.1); }
+        
+        .form-content { padding: 3rem; display: none; }
+        .form-content.active { display: block; animation: fadeUp 0.4s ease; } 
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .form-header h3 { font-size: 1.8rem; color: var(--primary); margin-bottom: 5px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+        .full-width { grid-column: span 2; }
+        
+        label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 0.95rem; color: var(--text-dark); }
+        input, select { width: 100%; padding: 14px 18px; border: 2px solid #e1e8ed; border-radius: 12px; background: #f8faff; font-size: 1rem; transition: border-color 0.2s; }
+        input:focus, select:focus { border-color: var(--secondary); background: white; box-shadow: 0 0 0 3px rgba(0, 174, 199, 0.1); outline: none; }
+        
+        .cta-btn {
+            width: 100%; margin-top: 2rem; padding: 1.2rem; 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            color: white; border: none; border-radius: 16px; font-size: 1.2rem; font-weight: 800; cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 51, 160, 0.2); transition: transform 0.2s; display: flex; align-items: center; justify-content: center; gap: 12px;
+        }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0, 51, 160, 0.25); }
+
+        /* FOOTER */
+        footer { background: white; padding: 3rem 2rem; text-align: center; margin-top: 4rem; border-top: 1px solid #eee; }
+        
+        /* SOCIAL & WHATSAPP */
+        .social-link {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 45px; height: 45px; margin: 10px;
+            background: #f0f4f8; color: #E1306C;
+            border-radius: 50%; text-decoration: none; font-size: 1.3rem;
+            transition: 0.2s;
+        }
+        .social-link:hover { background: #E1306C; color: white; transform: translateY(-3px); }
+
+        .whatsapp-float { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: linear-gradient(135deg, #25d366, #128c7e); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 6px 15px rgba(37, 211, 102, 0.3); z-index: 2000; transition: transform 0.3s; text-decoration: none; }
+        .whatsapp-float:hover { transform: scale(1.05); }
+
+        /* MENÚ MÓVIL HAMBURGUESA */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            z-index: 1001;
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.1);
+            z-index: 999;
+            padding: 100px 30px 40px;
+            transition: right 0.4s ease;
+        }
+        .mobile-nav.active {
+            right: 0;
+        }
+        .mobile-nav ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .mobile-nav a {
+            display: block;
+            padding: 18px 15px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #eee;
+            transition: all 0.2s;
+        }
+        .mobile-nav a:hover {
+            background: #f8faff;
+            color: var(--primary);
+            padding-left: 25px;
+        }
+        .mobile-nav .btn-mobile {
+            display: block;
+            margin-top: 25px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white !important;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ANIMACIONES DE SCROLL */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .animate-on-scroll.delay-1 { transition-delay: 0.1s; }
+        .animate-on-scroll.delay-2 { transition-delay: 0.2s; }
+        .animate-on-scroll.delay-3 { transition-delay: 0.3s; }
+        .animate-on-scroll.delay-4 { transition-delay: 0.4s; }
+
+        .fade-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in-left.animated {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .fade-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in-right.animated {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .scale-in.animated {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        @media (max-width: 900px) {
+            .hero-title { font-size: 2.8rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+            .nav-menu { display: none; } 
+            header { justify-content: space-between; }
+            .menu-toggle { display: flex; }
+            .about-card { padding: 2rem; }
+            .about-grid { grid-template-columns: 1fr; gap: 30px; }
+            .about-text { text-align: center; }
+            .values-grid { justify-content: center; }
+            .insurer-logo.large { height: 72px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-shape shape1"></div>
+    <div class="bg-shape shape2"></div>
+
+    <header>
+        <a href="#" class="brand-container">
+            <img src="nuevo-logo-sm.jpg" alt="SM Seguros" class="logo-img-full" fetchpriority="high">
+        </a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#soluciones">Cotizador</a></li>
+                <li><a href="#contacto" class="btn-header">Contacto</a></li>
+            </ul>
+        </nav>
+        <!-- Menú Móvil -->
+        <button class="menu-toggle" onclick="toggleMenu()" aria-label="Abrir menú">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <!-- Menú Móvil Desplegable -->
+    <div class="overlay" onclick="toggleMenu()"></div>
+    <nav class="mobile-nav">
+        <ul>
+            <li><a href="#inicio" onclick="toggleMenu()">Inicio</a></li>
+            <li><a href="#nosotros" onclick="toggleMenu()">Nosotros</a></li>
+            <li><a href="#soluciones" onclick="toggleMenu()">Cotizador</a></li>
+            <li><a href="#contacto" class="btn-mobile" onclick="toggleMenu()">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <section id="inicio">
+        <h1 class="hero-title animate-on-scroll">Tu Tranquilidad <br>es <span>Nuestra Prioridad</span></h1>
+        <p class="hero-text animate-on-scroll delay-1">Expertos en seguros. Asesoría personalizada con pasión y transparencia.</p>
+        
+            <div class="insurer-logos-container animate-on-scroll delay-2">
+            <img src="logo-sura.webp" alt="Sura" class="insurer-logo large" title="Seguros SURA">
+            <img src="AZ_Logo_Twitter_438x220px.webp" alt="Allianz" class="insurer-logo logo-no-bg large" title="Allianz Seguros">
+            <img src="images (1).png" alt="AXA Colpatria" class="insurer-logo logo-no-bg large" title="AXA Colpatria">
+            <img src="images.png" alt="Seguros Bolívar" class="insurer-logo logo-no-bg large" title="Seguros Bolívar">
+        </div>
+    </section>
+
+    <section id="nosotros">
+        <div class="about-card">
+            <h2 class="section-title animate-on-scroll" style="margin-bottom: 3rem;">Quiénes Somos</h2>
+            <div class="about-grid">
+                <div class="video-wrapper fade-in-left">
+                    <video class="styled-video" controls playsinline preload="auto" poster="nuevo-logo-sm.jpg">
+                        <source src="video-nosotros.mp4" type="video/mp4">
+                        <source src="video-output-78472F51-FD19-4CF7-9ACB-165F7C17E731-1.mov" type="video/quicktime">
+                        Tu navegador no soporta el video.
+                    </video>
+                </div>
+                <div class="about-text-content fade-in-right">
+                    <p class="about-text">
+                        Somos una agencia de seguros con más de <span class="texto-destacado">12 años de experiencia</span> acompañando a nuestros clientes. Nuestra pasión, empeño y transparencia nos definen.
+                        <br><br>
+                        Estamos contigo <span class="texto-destacado">antes y después</span> de adquirir tu solución, garantizando un respaldo total.
+                    </p>
+                    <div class="values-grid">
+                        <span class="value-item"><i class="fas fa-heart"></i> Pasión</span>
+                        <span class="value-item"><i class="fas fa-handshake"></i> Respeto</span>
+                        <span class="value-item"><i class="fas fa-shield-alt"></i> Integridad</span>
+                        <span class="value-item"><i class="fas fa-search"></i> Transparencia</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="soluciones">
+        <h2 class="section-title animate-on-scroll">Cotiza tu Seguro</h2>
+        <p class="section-desc animate-on-scroll delay-1">Selecciona la solución que necesitas y recibe asesoría inmediata vía WhatsApp.</p>
+        
+        <div class="cotizador-wrapper scale-in">
+            <div class="swipe-hint">
+                <i class="fas fa-arrows-alt-h"></i> Desliza para cotizar o ver más seguros
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openTab('auto')"><i class="fas fa-car"></i> Autos</button>
+                <button class="tab-btn" onclick="openTab('salud')"><i class="fas fa-heartbeat"></i> Salud</button>
+                <button class="tab-btn" onclick="openTab('vida')"><i class="fas fa-user-shield"></i> Vida</button>
+                <button class="tab-btn" onclick="openTab('mascotas')"><i class="fas fa-dog"></i> Mascotas</button>
+                <button class="tab-btn" onclick="openTab('hogar')"><i class="fas fa-home"></i> Hogar</button>
+                <button class="tab-btn" onclick="openTab('viaje')"><i class="fas fa-plane"></i> Viaje</button>
+            </div>
+
+            <div id="auto" class="form-content active">
+                <div class="form-header">
+                    <h3>Seguro de Autos</h3>
+                    <p>Cobertura total: RCE, Pérdida Total/Parcial y Asistencia 24/7.</p>
+                </div>
+                <form>
+                    <div class="form-grid">
+                        <div><label>Nombre Completo</label><input type="text" id="auto-nombre" placeholder="Tu nombre"></div>
+                        <div><label>Cédula / NIT</label><input type="number" id="auto-cedula" placeholder="Sin puntos ni guiones"></div>
+                        <div><label>Placa</label><input type="text" id="auto-placa" style="text-transform:uppercase;" placeholder="Ej: ABC123"></div>
+                        <div><label>Modelo (Año)</label><input type="number" id="auto-modelo" placeholder="Ej: 2023"></div>
+                        <div><label>Fecha de Nacimiento</label><input type="date" id="auto-nacimiento"></div>
+                        <div class="full-width"><label>Referencia Completa</label><input type="text" id="auto-referencia" placeholder="Marca, Línea y Versión (Ej: Mazda CX-30 Touring)"></div>
+                    </div>
+                    <button type="button" class="cta-btn" onclick="enviarWhatsapp('auto')">
+                        <i class="fab fa-whatsapp" style="font-size: 1.5rem;"></i> Solicitar Cotización Auto
+                    </button>
+                </form>
+            </div>
+
+            <div id="salud" class="form-content">
+                <div class="form-header">
+                    <h3>Salud Global y Clásica</h3>
+                    <p>Acceso directo a especialistas y las mejores clínicas.</p>
+                </div>
+                <form>
+                    <div class="form-grid">
+                        <div><label>Nombre Titular</label><input type="text" id="salud-nombre"></div>
+                        <div><label>Cédula / NIT</label><input type="number" id="salud-cedula" placeholder="Documento del titular"></div>
+                        <div><label>Fecha de Nacimiento</label><input type="date" id="salud-nacimiento"></div>
+                        <div class="full-width">
+                            <label>Tipo de Plan de Interés</label>
+                            <select id="salud-tipo">
+                                <option>Salud Global (Cobertura Internacional)</option>
+                                <option>Salud Clásica (Premium Nacional)</option>
+                                <option>Quiero comparar ambos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="button" class="cta-btn" onclick="enviarWhatsapp('salud')">
+                        <i class="fab fa-whatsapp" style="font-size: 1.5rem;"></i> Solicitar Cotización Salud
+                    </button>
+                </form>
+            </div>
+
+            <div id="vida" class="form-content">
+                <div class="form-header">
+                    <h3>Seguro de Vida</h3>
+                    <p>Garantiza el futuro financiero y bienestar de tu familia.</p>
+                </div>
+                <form>
+                    <div class="form-grid">
+                        <div><label>Nombre Completo</label><input type="text" id="vida-nombre"></div>
+                        <div><label>Cédula / NIT</label><input type="number" id="vida-cedula" placeholder="Documento de identidad"></div>
+                        <div><label>Fecha de Nacimiento</label><input type="date" id="vida-nacimiento"></div>
+                        <div><label>Ocupación Principal</label><input type="text" id="vida-ocupacion"></div>
+                        <div class="full-width"><label>Valor Asegurado Deseado (Aprox)</label><input type="number" id="vida-valor" placeholder="$"></div>
+                    </div>
+                    <button type="button" class="cta-btn" onclick="enviarWhatsapp('vida')">
+                        <i class="fab fa-whatsapp" style="font-size: 1.5rem;"></i> Solicitar Cotización Vida
+                    </button>
+                </form>
+            </div>
+
+            <div id="mascotas" class="form-content">
+                <div class="form-header">
+                    <h3>Seguro para Mascotas</h3>
+                    <p>Protege a tu peludito con la mejor cobertura veterinaria y de responsabilidad civil.</p>
+                </div>
+                <form>
+                    <div class="form-grid">
+                        <div><label>Nombre (Propietario)</label><input type="text" id="mascota-propietario" placeholder="Tu nombre"></div>
+                        <div><label>Cédula / NIT</label><input type="number" id="mascota-cedula" placeholder="Número de documento"></div>
+                        <div><label>Fecha de Nacimiento (Propietario)</label><input type="date" id="mascota-nac-propietario"></div>
+                        <div><label>Nombre de Mascota</label><input type="text" id="mascota-nombre" placeholder="Ej: Firulais"></div>
+                        <div><label>Raza</label><input type="text" id="mascota-raza" placeholder="Ej: Golden Retriever"></div>
+                        <div><label>Edad Mascota (Años)</label><input type="number" id="mascota-edad" placeholder="Ej: 3"></div>
+                    </div>
+                    <button type="button" class="cta-btn" onclick="enviarWhatsapp('mascotas')">
+                        <i class="fab fa-whatsapp" style="font-size: 1.5rem;"></i> Solicitar Cotización Mascotas
+                    </button>
+                </form>
+            </div>
+
+            <div id="hogar" class="form-content">
+                <div class="form-header">
+                    <h3>Seguro de Hogar</h3>
+                    <p>Protege tu patrimonio (estructura y contenidos) contra todo riesgo.</p>
+                </div>
+                <form>
+                    <div class="form-grid">
+                        <div><label>Nombre del Propietario</label><input type="text" id="hogar-nombre"></div>
+                        <div><label>Cédula / NIT</label><input type="number" id="hogar-cedula" placeholder="Documento propietario"></div>
+                        <div><label>Ciudad</label><input type="text" id="hogar-ciudad"></div>
+                        <div><label>Dirección del Inmueble</label><input type="text" id="hogar-direccion" placeholder="Dirección completa"></div>
+                        <div class="full-width">
+                            <label>Tipo de Inmueble</label>
+                            <select id="hogar-tipo">
+                                <option>Apartamento</option>
+                                <option>Casa</option>
+                                <option>Finca de Recreo</option>
+                            </select>
+                        </div>
+                        <div class="full-width"><label>Valor Estimado Contenidos</label><input type="number" id="hogar-contenidos" placeholder="Muebles, electrodomésticos, etc."></div>
+                    </div>
+                    <button type="button" class="cta-btn" onclick="enviarWhatsapp('hogar')">
+                        <i class="fab fa-whatsapp" style="font-size: 1.5rem;"></i> Solicitar Cotización Hogar
+                    </button>
+                </form>
+            </div>
+
+            <div id="viaje" class="form-content">
+                <div class="form-header">
+                    <h3>Seguro de Viaje</h3>
+                    <p>Viaja tranquilo con cobertura médica y asistencia internacional.</p>
+                </div>
+                <form>
+                    <div class="form-grid">
+                        <div class="full-width"><label>Destino</label><input type="text" id="viaje-destino" placeholder="Ej: España, Estados Unidos..."></div>
+                        <div><label>Fecha de Ida</label><input type="date" id="viaje-ida"></div>
+                        <div><label>Fecha de Vuelta</label><input type="date" id="viaje-vuelta"></div>
+                        <div><label>Número de Personas</label><input type="number" id="viaje-personas" placeholder="Ej: 2"></div>
+                    </div>
+                    <button type="button" class="cta-btn" onclick="enviarWhatsapp('viaje')">
+                        <i class="fab fa-whatsapp" style="font-size: 1.5rem;"></i> Solicitar Cotización Viaje
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <a href="https://wa.me/573014633995" class="whatsapp-float" target="_blank" title="Chatear en WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <footer id="contacto">
+        <h2 style="color:var(--primary); margin-bottom:25px; font-weight: 800;">Contáctanos</h2>
+        <p class="footer-info"><i class="fas fa-envelope" style="color: var(--secondary); margin-right: 8px;"></i> <strong>Email:</strong> santiago.marenco@asesorsura.com</p>
+        <p class="footer-info"><i class="fas fa-phone-alt" style="color: var(--secondary); margin-right: 8px;"></i> <strong>Móvil 1:</strong> +57 301 4633995</p>
+        <p class="footer-info"><i class="fas fa-phone-alt" style="color: var(--secondary); margin-right: 8px;"></i> <strong>Móvil 2:</strong> +57 318 3471986</p>
+        
+        <br>
+        <a href="https://www.instagram.com/smsegurosltda/" target="_blank" class="social-link" title="Síguenos en Instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <br>
+
+        <br>
+        <p style="font-size: 0.95rem; opacity: 0.7;">&copy; 2025 SM SEGUROS. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        function openTab(tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("form-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove('active');
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove('active');
+            }
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add('active');
+            var clickedBtn = document.querySelector(`button[onclick="openTab('${tabName}')"]`);
+            if(clickedBtn) clickedBtn.classList.add('active');
+        }
+
+        function enviarWhatsapp(tipo) {
+            const tel = "573014633995";
+            let msg = "";
+            
+            if(tipo === 'auto') {
+                let n = document.getElementById('auto-nombre').value;
+                let cc = document.getElementById('auto-cedula').value; 
+                let p = document.getElementById('auto-placa').value;
+                let r = document.getElementById('auto-referencia').value;
+                // AGREGADO: Fecha de Nacimiento
+                let fn = document.getElementById('auto-nacimiento').value;
+
+                msg = `Hola SM SEGUROS, deseo cotizar AUTO para: ${n}. CC/NIT: ${cc}. Placa: ${p}. F.Nacimiento: ${fn}. Referencia: ${r}`;
+            } else if (tipo === 'salud') {
+                let n = document.getElementById('salud-nombre').value;
+                let cc = document.getElementById('salud-cedula').value; 
+                let t = document.getElementById('salud-tipo').value;
+                // CAMBIO: Fecha de Nacimiento (Edad eliminada) y Preexistencias eliminada
+                let fn = document.getElementById('salud-nacimiento').value;
+
+                msg = `Hola SM SEGUROS, deseo cotizar SALUD (${t}) para: ${n}. CC/NIT: ${cc}. F.Nacimiento: ${fn}`;
+            } else if (tipo === 'vida') {
+                let n = document.getElementById('vida-nombre').value;
+                let cc = document.getElementById('vida-cedula').value; 
+                let v = document.getElementById('vida-valor').value;
+                msg = `Hola SM SEGUROS, deseo cotizar VIDA para: ${n}. CC/NIT: ${cc}. Valor aprox: ${v}`;
+            } else if (tipo === 'mascotas') {
+                let prop = document.getElementById('mascota-propietario').value;
+                let cc = document.getElementById('mascota-cedula').value; 
+                let fnac = document.getElementById('mascota-nac-propietario').value;
+                let petName = document.getElementById('mascota-nombre').value;
+                let raza = document.getElementById('mascota-raza').value;
+                let edad = document.getElementById('mascota-edad').value;
+                
+                msg = `Hola SM SEGUROS, deseo cotizar SEGURO PARA MASCOTAS.\n\n*Datos Propietario:*\nNombre: ${prop}\nCC/NIT: ${cc}\nF. Nac: ${fnac}\n\n*Datos Mascota:*\nNombre: ${petName}\nRaza: ${raza}\nEdad: ${edad} años`;
+            } else if (tipo === 'hogar') {
+                let n = document.getElementById('hogar-nombre').value;
+                let cc = document.getElementById('hogar-cedula').value; 
+                let c = document.getElementById('hogar-ciudad').value;
+                // AGREGADO: Dirección
+                let dir = document.getElementById('hogar-direccion').value;
+
+                msg = `Hola SM SEGUROS, deseo cotizar HOGAR en ${c}. Dirección: ${dir}. Propietario: ${n}. CC/NIT: ${cc}`;
+            } else if (tipo === 'viaje') {
+                let d = document.getElementById('viaje-destino').value;
+                let fi = document.getElementById('viaje-ida').value;
+                let fv = document.getElementById('viaje-vuelta').value;
+                let p = document.getElementById('viaje-personas').value;
+                msg = `Hola SM SEGUROS, deseo cotizar SEGURO DE VIAJE para ${p} personas. Destino: ${d}. Del ${fi} al ${fv}`;
+            }
+            
+            window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        // MENÚ MÓVIL
+        function toggleMenu() {
+            document.querySelector('.menu-toggle').classList.toggle('active');
+            document.querySelector('.mobile-nav').classList.toggle('active');
+            document.querySelector('.overlay').classList.toggle('active');
+            document.body.style.overflow = document.querySelector('.mobile-nav').classList.contains('active') ? 'hidden' : '';
+        }
+
+        // ANIMACIONES AL HACER SCROLL
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        // Observar todos los elementos con animaciones
+        document.addEventListener('DOMContentLoaded', () => {
+            const animatedElements = document.querySelectorAll('.animate-on-scroll, .fade-in-left, .fade-in-right, .scale-in');
+            animatedElements.forEach(el => observer.observe(el));
+        });
+
+        // Cerrar menú con tecla Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.querySelector('.mobile-nav').classList.contains('active')) {
+                toggleMenu();
+            }
+        });
+    </script>
+</body>
+</html>
