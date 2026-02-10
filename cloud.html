@@ -944,6 +944,87 @@
         // AI Chat History
         let aiChatHistory = [];
         const MAX_HISTORY = 20; // Mantener últimos 20 mensajes para contexto
+
+        // Helper: fetch official QAXI site with fallback and caching
+        async function fetchOfficialContentOnce() {
+            const officialSite = 'https://santiagomarenco1005-cmd.github.io/QAXI';
+            function cleanHtml(s) { try { return s.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0,4000); } catch(e){ return ''; } }
+
+            // Return cached copy if available
+            try { const cached = localStorage.getItem('qaxi_official_text'); if (cached) return { text: cached, fetched: true, fromCache: true }; } catch(e){}
+
+            // Direct fetch
+            try {
+                const r = await fetch(officialSite, { mode: 'cors' });
+                if (r && r.ok) {
+                    const t = await r.text();
+                    const cleaned = cleanHtml(t);
+                    if (cleaned) {
+                        try { localStorage.setItem('qaxi_official_text', cleaned); } catch(e){}
+                        return { text: cleaned, fetched: true, fromCache: false };
+                    }
+                }
+            } catch (e) { console.warn('fetchOfficialContentOnce: direct fetch failed', e); }
+
+            // Fallback via AllOrigins
+            try {
+                const proxy = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(officialSite);
+                const r2 = await fetch(proxy);
+                if (r2 && r2.ok) {
+                    const t2 = await r2.text();
+                    const cleaned2 = cleanHtml(t2);
+                    if (cleaned2) {
+                        try { localStorage.setItem('qaxi_official_text', cleaned2); } catch(e){}
+                        return { text: cleaned2, fetched: true, fromCache: false };
+                    }
+                }
+            } catch (e) { console.warn('fetchOfficialContentOnce: proxy fetch failed', e); }
+
+            return { text: '', fetched: false, fromCache: false };
+        }
+
+        // Expose a manual retry for the UI
+        window.qaxiRetryFetchOfficial = async function() {
+            try {
+                const res = await fetchOfficialContentOnce();
+                if (res.fetched) {
+                    console.info('QAXI: official site fetched via manual retry');
+                    return true;
+                }
+            } catch(e){ console.warn('qaxiRetryFetchOfficial failed', e); }
+            return false;
+        };
+
+        // Small helper UI: if GROQ_KEY is not set, show a floating button to set it (for hosted sites)
+        (function(){
+            try {
+                const showKeyUI = function(){
+                    if (document.getElementById('qaxiSetKeyBtn')) return;
+                    const btn = document.createElement('button');
+                    btn.id = 'qaxiSetKeyBtn';
+                    btn.innerText = 'Configurar AI';
+                    btn.title = 'Configurar la clave de QAXI AI (solo tú la verás en este navegador)';
+                    btn.style.position = 'fixed';
+                    btn.style.right = '18px';
+                    btn.style.bottom = '18px';
+                    btn.style.zIndex = 99999;
+                    btn.style.padding = '10px 12px';
+                    btn.style.borderRadius = '12px';
+                    btn.style.background = '#D4AF37';
+                    btn.style.color = 'black';
+                    btn.style.border = 'none';
+                    btn.style.cursor = 'pointer';
+                    btn.style.boxShadow = '0 6px 18px rgba(0,0,0,0.4)';
+                    btn.addEventListener('click', () => {
+                        const key = prompt('Introduce tu API key para QAXI AI (se guardará en este navegador):');
+                        if (key && key.trim()) { window.setGroqKey(key.trim()); alert('Clave guardada. Refresca o vuelve a usar la IA.'); }
+                    });
+                    document.body.appendChild(btn);
+                };
+                // show only if no key present
+                try { if (!localStorage.getItem('qaxi_groq_key')) { setTimeout(showKeyUI, 800); } } catch(e) { setTimeout(showKeyUI, 800); }
+            } catch(e) { console.warn('qaxi set key UI init failed', e); }
+        })();
         // Live sync variables
         let liveCloudSync = false;
         let liveUnsubscribe = null;
@@ -2527,6 +2608,44 @@
         }
 
         window.askQaxiAI = async function() {
+            try {
+                // Shortcut handlers: quick local responses to avoid calling the external API
+                const userEl = document.getElementById('aiInput');
+                const userText = userEl ? (userEl.value || '').trim() : '';
+                const chat = document.getElementById('aiChat') || document.querySelector('.chat-window');
+
+                // 1) Greeting: when the user only says "Hola" reply locally with a concise prompt
+                if (/^\s*hola[!¡.\?]?\s*$/i.test(userText)) {
+                    const aiResponse = 'Hola — ¿En qué te puedo ayudar hoy?';
+                    try { aiChatHistory.push({ role: 'assistant', content: aiResponse }); } catch(e){}
+                    try { const _l = document.getElementById('ai-loader'); if (_l && typeof _l.remove === 'function') _l.remove(); } catch(e){}
+                    if (chat) {
+                        const rDiv = document.createElement('div'); rDiv.className = 'msg ai';
+                        rDiv.innerHTML = marked.parse(aiResponse);
+                        chat.appendChild(rDiv); chat.scrollTop = chat.scrollHeight;
+                    }
+                    if (userEl) userEl.value = '';
+                    return;
+                }
+
+                // 2) Founder question: provide a concise, improved local bio for Santiago Marenco
+                if (/qu[ií]en.*fundador.*qaxi|qu[ií]en es el fundador de qaxi|fundador de qaxi/i.test(userText)) {
+                    const aiResponse = `Santiago Marenco — arquitecto de soluciones digitales y fundador de QAXI.\n\n- Enfocado en eficiencia e innovación, diseña sistemas en la nube y herramientas potenciadas por IA.\n- Transforma procesos complejos en soluciones accesibles para empresas colombianas.\n- Prioriza productos con valor escalable y utilidad real.\n\n¿Quieres más detalles o su historial profesional completo?`;
+                    try { aiChatHistory.push({ role: 'assistant', content: aiResponse }); } catch(e){}
+                    try { const _l = document.getElementById('ai-loader'); if (_l && typeof _l.remove === 'function') _l.remove(); } catch(e){}
+                    if (chat) {
+                        const rDiv = document.createElement('div'); rDiv.className = 'msg ai';
+                        const shortText = (aiResponse || '').split(/\n\n/)[0] || aiResponse;
+                        const shortHtml = marked.parse(shortText);
+                        const fullHtml = marked.parse(aiResponse);
+                        rDiv.innerHTML = `<div class="ai-response-short">${shortHtml}</div><div class="ai-response-full" style="display:none">${fullHtml}</div><div style="text-align:center; margin-top:8px;"><button class="btn-primary btn-compact" onclick="(function(b){ const p=b.parentNode; p.querySelector('.ai-response-full').style.display='block'; b.style.display='none'; })(this)">Ver más</button></div>`;
+                        chat.appendChild(rDiv); chat.scrollTop = chat.scrollHeight;
+                    }
+                    if (userEl) userEl.value = '';
+                    return;
+                }
+            } catch (e) { console.error('askQaxiAI shortcut error', e); }
+
             const input = document.getElementById('aiInput');
             const chat = document.getElementById('aiChat');
             const prompt = input.value.trim();
@@ -2590,20 +2709,56 @@ ${webContext}`;
                 // Priorizar sitio oficial y biografía del fundador
                 const officialSite = 'https://santiagomarenco1005-cmd.github.io/QAXI';
                 let officialText = '';
+                let fetchedOfficial = false;
+
+                // Try to reuse a cached copy first (helps offline and avoids CORS issues)
+                try { officialText = localStorage.getItem('qaxi_official_text') || ''; } catch(e) { officialText = ''; }
+
+                // Helper to clean HTML
+                function cleanHtml(s) { try { return s.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0,4000); } catch(e){ return ''; } }
+
+                // Try direct fetch (may fail due to CORS on some hosts)
                 try {
-                    const r = await fetch(officialSite);
-                    if (r.ok) {
-                        officialText = await r.text();
-                        // strip tags and limit length
-                        officialText = officialText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 4000);
+                    const r = await fetch(officialSite, { mode: 'cors' });
+                    if (r && r.ok) {
+                        const t = await r.text();
+                        officialText = cleanHtml(t) || officialText;
+                        fetchedOfficial = !!officialText;
                     }
-                } catch (e) { /* ignore fetch errors */ }
+                } catch (e) { console.warn('direct fetch of official site failed', e); }
+
+                // If direct fetch failed or returned empty, try a CORS proxy (AllOrigins)
+                if (!fetchedOfficial) {
+                    try {
+                        const proxy = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(officialSite);
+                        const r2 = await fetch(proxy);
+                        if (r2 && r2.ok) {
+                            const t2 = await r2.text();
+                            officialText = cleanHtml(t2) || officialText;
+                            fetchedOfficial = !!officialText;
+                        }
+                    } catch (e) { console.warn('proxy fetch of official site failed', e); }
+                }
+
+                // Cache a copy for future runs (best-effort)
+                try { if (officialText) localStorage.setItem('qaxi_official_text', officialText); } catch(e){ }
 
                 const founderBio = `El fundador de QAXI es Santiago Marenco. Santiago Marenco es un arquitecto de soluciones digitales y el motor creativo detrás de QAXI. Su carrera se define por una búsqueda incansable de la eficiencia, donde la innovación no es un evento aislado, sino un proceso continuo de creación y mejora de programas. Como fundador, Santiago se especializa en diseñar sistemas que rompen las barreras de entrada al mundo digital. Su enfoque principal es el desarrollo de programas y plataformas que automatizan la complejidad técnica, permitiendo que la tecnología de punta sea accesible y funcional para el mercado colombiano. Desde la implementación de arquitecturas en la nube hasta el despliegue de herramientas potenciadas por inteligencia artificial, cada uno de sus proyectos busca optimizar la presencia en línea de manera inteligente. Bajo su liderazgo, la innovación en programas es constante. Santiago no solo entrega sitios web; desarrolla ecosistemas integrales que evolucionan al ritmo de la industria tecnológica. Su visión es clara: transformar la manera en que las empresas interactúan con la tecnología, asegurando que cada línea de código y cada nuevo programa lanzado bajo el sello de QAXI aporte un valor real, escalable y, sobre todo, innovador.`;
 
-                // Construir mensajes con historial
+                // Nota para el sistema: si no pudimos obtener el contenido, indicarlo y dejar el link para referencia
+                const officialSnippet = officialText ? `Información adicional extraída del sitio oficial (recortada): ${officialText}` : `No se pudo obtener automáticamente el contenido del sitio oficial; consulta ${officialSite} para más detalles.`;
+
+                // Construir mensajes con historial (conocimiento del fundador, sitio y contexto; usar solo si es relevante)
                 const messages = [
-                    { role: "system", content: `Responde siempre de forma breve, elegante y útil. Empieza con un resumen de 1-2 líneas, seguido de hasta 3 viñetas con puntos clave.\nSi la respuesta requiere más detalle, proporciona el resumen y ofrece extenderla (el cliente usa un botón "Ver más").\nCuando uses búsquedas web o adjuntos, menciónalo brevemente.\nPrioriza la información del sitio oficial de QAXI: ${officialSite}.\nIncluye y usa la siguiente biografía oficial del fundador cuando corresponda:\n${founderBio}\n\nInformación adicional extraída del sitio oficial (recortada): ${officialText}\n\nFecha: ${fechaActual}\n${attachContext}\n${webContext}` },
+                    { role: "system", content: `Eres QAXI AI, el asistente integrado en QAXI Cloud. Responde siempre de forma breve y útil (resumen 1-2 líneas y hasta 3 viñetas cuando corresponda).
+Conocimiento clave (usar SOLO cuando sea relevante):
+- Fundador: Santiago Marenco.
+${founderBio}
+
+- Sitio oficial: ${officialSite}
+${officialSnippet}
+
+Usa esta información únicamente si el usuario pregunta o si es claramente relevante; no la menciones de forma proactiva en respuestas no relacionadas.` },
                     ...aiChatHistory
                 ];
 
