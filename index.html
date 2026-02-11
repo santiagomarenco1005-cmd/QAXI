@@ -116,6 +116,69 @@
             display: block;
         }
 
+        /* Site banner (logo.jpeg) */
+        .site-banner {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 14px 0 6px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0));
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .site-banner img {
+            max-width: 420px;
+            width: 90%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+        }
+
+        /* Hero banner (replaces hero text) */
+        .hero-banner {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0 36px; /* more bottom space so description is visible */
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-banner img {
+            max-width: 920px;
+            width: 86%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+        }
+
+        /* Animated hero description (silver shimmer + stagger reveal) */
+        .hero-desc {
+            font-size: clamp(1.4rem, 2.6vw, 2rem);
+            font-weight: 700;
+            margin-top: 12px;
+            text-align: center;
+            letter-spacing: 0.6px;
+            color: #e6e6e6; /* solid light color to ensure visibility */
+            text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Apply transparent text-fill only on engines that support background-clip:text */
+        /* Remove background-clip dependent visual to keep text visible across browsers */
+
+        .hero-char { display:inline-block; opacity:0; transform:translateY(8px); animation:charIn 420ms ease forwards; }
+
+        @keyframes charIn { to { opacity:1; transform:none; } }
+
+        @keyframes shine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
         .nav-container {
             display: flex;
             align-items: center;
@@ -167,6 +230,20 @@
         .cta-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Botón anual POS — más visible */
+        .annual-btn {
+            background: var(--gold) !important;
+            color: #000 !important;
+            border: none !important;
+            font-weight: 800 !important;
+            box-shadow: 0 8px 30px rgba(255,215,0,0.18);
+        }
+
+        .annual-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 12px 40px rgba(255,215,0,0.28);
         }
 
         .menu-toggle {
@@ -260,6 +337,16 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: popIn 0.8s ease-out;
+        }
+
+        .hero-small {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 14px;
+            opacity: 0.95;
+            max-width: 720px;
+            text-align: center;
+            line-height: 1.3;
         }
 
         @keyframes popIn {
@@ -951,6 +1038,70 @@
 
         .wa-float { position: fixed; bottom: 30px; right: 30px; background: #25D366; color: #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4); z-index: 2000; transition: 0.3s; text-decoration: none; }
         .wa-float:hover { transform: scale(1.1); box-shadow: 0 0 20px #25D366; }
+
+        /* --- NUESTRA TECNOLOGIA --- */
+        .tech-section {
+            padding: 36px 5%;
+            max-width: 1200px;
+            margin: 0 auto 24px;
+            text-align: center;
+        }
+
+        .tech-desc {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            margin-bottom: 22px;
+            font-size: 1rem;
+            max-width: 820px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tech-grid {
+            display: flex;
+            gap: 22px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .tech-item {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 18px 16px;
+            border-radius: 12px;
+            width: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+        }
+
+        .tech-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+            border-color: rgba(255,255,255,0.08);
+        }
+
+        .tech-logo {
+            max-width: 100%;
+            height: 56px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .tech-caption {
+            margin-top: 10px;
+            color: #e6e6e6;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 600px) {
+            .tech-item { width: 46%; }
+            .tech-logo { height: 46px; }
+        }
     </style>
 </head>
 <body>
@@ -983,14 +1134,37 @@
         </div>
     </header>
 
+    <!-- site-banner removed; banner moved into hero -->
+
     <section class="hero" id="hero">
-        <div id="userGreeting" style="margin-bottom: 20px; color: #aaa; font-size: 0.9rem; display: none;"></div>
-        <div class="q-watermark">Q.</div>
-        <h1>Desarrollo y mantenimiento<br>web por suscripción.</h1>
-        <p>Diseño minimalista. Automatización con IA.<br>Precio accesible. Modelo escalable.</p>
-        <div class="hero-btns">
-            <a href="https://wa.me/573213526875" target="_blank" class="cta-btn" style="font-size: 1.1rem; padding: 15px 30px; background-color: #25D366; border-color: #25D366; color: white;"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-            <a href="#pricing" class="cta-btn" style="font-size: 1.1rem; padding: 15px 30px; background: transparent; border: 1px solid #fff; color: #fff;">Ver Planes</a>
+        <div class="hero-banner">
+            <img src="logo.jpeg" alt="QAXI" />
+            <h2 id="heroDesc" class="hero-desc">Desarrollo Web Con IA.</h2>
+        </div>
+    </section>
+
+    <!-- NUESTRA TECNOLOGIA -->
+    <section id="tech" class="tech-section">
+        <h2 class="section-title">Nuestra Tecnología</h2>
+        <p class="tech-desc">Usamos las Tecnologias mas potentes del mercado</p>
+
+        <div class="tech-grid">
+            <div class="tech-item">
+                <img src="gemini.png" alt="Gemini" class="tech-logo">
+                <div class="tech-caption">Gemini</div>
+            </div>
+            <div class="tech-item">
+                <img src="github.jpg" alt="GitHub" class="tech-logo">
+                <div class="tech-caption">GitHub</div>
+            </div>
+            <div class="tech-item">
+                <img src="sublime.png" alt="Sublime Text" class="tech-logo">
+                <div class="tech-caption">Sublime Text</div>
+            </div>
+            <div class="tech-item">
+                <img src="visual.png" alt="Visual Studio Code" class="tech-logo">
+                <div class="tech-caption">Visual Studio Code</div>
+            </div>
         </div>
     </section>
 
@@ -1015,13 +1189,18 @@
                         <li><i class="fab fa-instagram" style="color:var(--gold);"></i> Creación y administración (Instagram)</li>
                         <li><i class="fas fa-camera" style="color:var(--gold);"></i> 10 Post/Stories mensuales</li>
                         <li><i class="fas fa-cloud" style="color:var(--gold);"></i> QAXI Cloud PRO</li>
+                        <li><i class="fas fa-image" style="color:var(--gold);"></i> Galería multimedia</li>
                     </ul>
                 </div>
                 <div class="premium-pricing">
                     <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:6px;">PLAN MENSUAL</div>
-                    <div style="font-size:3rem; font-weight:800;">150K <span style="font-size:1rem;">COP</span></div>
+                    <div style="font-size:3rem; font-weight:800;">149.900 <span style="font-size:1rem;">COP</span></div>
                     <div class="pricing-period">/ Mensual</div>
-                    <div style="margin-top:18px;"><button onclick="initPayment('Plan PRO', 150000, 'PLAN')" class="cta-btn" style="width:100%; background:var(--gold); color:#000;">Suscribirme PRO</button></div>
+                    <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">2 meses gratis Por pagar la suscripcion anual.</div>
+                    <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+                        <button onclick="initPayment('Plan PRO', 149900, 'PLAN')" class="cta-btn" style="width:100%; background:var(--gold); color:#000;">Suscribirme PRO</button>
+                        <button onclick="initPayment('Plan PRO Anual', 1499000, 'PLAN_ANNUAL')" class="cta-btn annual-btn" style="width:100%;">PAGAR ANUAL — 1.499.000 COP</button>
+                    </div>
                 </div>
             </div>
 
@@ -1043,9 +1222,13 @@
                 </div>
                 <div class="premium-pricing">
                     <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:6px;">PLAN MENSUAL</div>
-                    <div style="font-size:3rem; font-weight:800;">60K <span style="font-size:1rem;">COP</span></div>
+                    <div style="font-size:3rem; font-weight:800;">59.900 <span style="font-size:1rem;">COP</span></div>
                     <div class="pricing-period">/ Mensual</div>
-                    <div style="margin-top:18px;"><button onclick="initPayment('Plan Estándar', 60000, 'PLAN')" class="cta-btn" style="width:100%">Suscribirme</button></div>
+                    <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">2 meses gratis Por pagar la suscripcion anual.</div>
+                    <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+                        <button onclick="initPayment('Plan Estándar', 59900, 'PLAN')" class="cta-btn" style="width:100%">Suscribirme</button>
+                        <button onclick="initPayment('Plan Estándar Anual', 599000, 'PLAN_ANNUAL')" class="cta-btn annual-btn" style="width:100%">PAGAR ANUAL — 599.000 COP</button>
+                    </div>
                 </div>
             </div>
             </div>
@@ -1057,8 +1240,8 @@
         <div class="premium-card" data-tilt>
             <div class="premium-info">
                 <h3 style="font-size: 2rem; margin-bottom: 15px; line-height: 1.1;">Tu web es el motor,<br>el tráfico es la gasolina.</h3>
-                <p style="color: #ccc; margin-bottom: 20px; font-size: 1rem;">
-                    Tener una web increíble no sirve de nada si nadie la ve. En QAXI Traffic gestionamos tus campañas publicitarias para llevar clientes reales a tu negocio.
+                <p style="color:#ccc; margin-bottom: 20px; font-size: 1rem;">
+                    Tu web es el motor, nosotros ponemos el combustible. No sirve de nada tener el mejor sitio web si nadie lo visita. Con QAXI Traffic, llevamos a los clientes ideales directamente a tu puerta digital.
                 </p>
                 <ul class="premium-list">
                     <li><i class="fas fa-bullhorn"></i> Gestión de campañas en Google Ads o Meta Ads.</li>
@@ -1076,7 +1259,11 @@
                     <i class="fas fa-wallet" style="margin-right: 5px;"></i> 
                     Tú defines el presupuesto (Lo que pagas a Google o a Meta).
                 </div>
-                <button onclick="initPayment('QAXI Traffic', 100000, 'PREMIUM')" class="cta-btn" style="width: 100%;">CONTRATAR GESTIÓN</button>
+                <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">2 meses gratis Por pagar la suscripcion anual.</div>
+                <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+                    <button onclick="initPayment('QAXI Traffic', 100000, 'PREMIUM')" class="cta-btn" style="width: 100%;">CONTRATAR GESTIÓN</button>
+                    <button onclick="initPayment('QAXI Traffic Anual', 999000, 'PREMIUM_ANNUAL')" class="cta-btn annual-btn" style="width: 100%;">PAGAR ANUAL — 999.000 COP</button>
+                </div>
             </div>
         </div>
     </section>
@@ -1087,7 +1274,7 @@
             <div class="premium-info">
                 <h3 style="font-size: 2rem; margin-bottom: 15px; line-height: 1.1;">Diseño que enamora,<br>redes que venden.</h3>
                 <p style="color: #ccc; margin-bottom: 20px; font-size: 1rem;">
-                    Deja de sufrir con Canva. Nosotros diseñamos tus posts y stories con estilo profesional para que tú solo tengas que publicar y vender.
+                    Nos encargamos de la creación y administración de tus redes sociales — no necesitas publicar: publicamos contenido profesional y estratégico por ti.
                 </p>
                 <ul class="premium-list">
                     <li><i class="fas fa-palette"></i> Paquete mensual de piezas gráficas (Posts/Stories).</li>
@@ -1102,14 +1289,18 @@
             </div>
             <div class="premium-pricing">
                 <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 10px;">PAQUETE MENSUAL</div>
-                <div style="font-size: 3rem; font-weight: 800; line-height: 1;">250K <span style="font-size: 1rem;">COP</span></div>
+                <div style="font-size: 3rem; font-weight: 800; line-height: 1;">249.900 <span style="font-size: 1rem;">COP</span></div>
                 <div style="font-size: 0.8rem; color: #666; margin-top: 5px;">/ Mensual</div>
                 <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
                 <div style="font-size: 0.85rem; color: #fff; margin-bottom: 20px;">
                     <i class="fas fa-camera" style="margin-right: 5px;"></i> 
                     30 Posts o Stories al mes (No acumulables).
                 </div>
-                <button onclick="initPayment('QAXI Social', 250000, 'PREMIUM')" class="cta-btn" style="width: 100%;">CONTRATAR DISEÑO</button>
+                <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">2 meses gratis Por pagar la suscripcion anual.</div>
+                <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+                    <button onclick="initPayment('QAXI Social', 249900, 'PREMIUM')" class="cta-btn" style="width: 100%;">CONTRATAR DISEÑO</button>
+                    <button onclick="initPayment('QAXI Social Anual', 2499000, 'PREMIUM_ANNUAL')" class="cta-btn annual-btn" style="width: 100%;">PAGAR ANUAL — 2.499.000 COP</button>
+                </div>
             </div>
         </div>
     </section>
@@ -1123,17 +1314,22 @@
                 <ul class="premium-list">
                     <li><i class="fas fa-receipt"></i> Ventas rápidas</li>
                     <li><i class="fas fa-box"></i> Inventario en tiempo real</li>
-                    <li><i class="fas fa-chart-line"></i> Reportes simples</li>
+                    <li><i class="fas fa-file-csv"></i> Reporte de Inventario exportable (CSV)</li>
+                    <li><i class="fas fa-boxes"></i> Gestión de Productos</li>
+                    <li><i class="fas fa-tachometer-alt"></i> Dashboard (panel de control)</li>
+                    <li><i class="fas fa-history"></i> Historial de transacciones</li>
+                    <li><i class="fas fa-cloud-arrow-up"></i> Actualizaciones de software</li>
+                    <li><i class="fas fa-envelope"></i> Soporte Vía Email o WhatsApp</li>
                 </ul>
             </div>
             <div class="premium-pricing">
                 <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:6px;">PLAN MENSUAL</div>
                 <div style="font-size:3rem; font-weight:800;">39.900 <span style="font-size:1rem;">COP</span></div>
                 <div class="pricing-period">/ Mensual</div>
-                <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">Ahorro anual: <strong>390.000 COP/año</strong></div>
-                <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+                <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">2 meses gratis Por pagar la suscripcion anual.</div>
+                    <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
                     <button onclick="initPayment('QAXI POS', 39900, 'POS')" class="cta-btn" style="width:100%">CONTRATAR QAXI POS</button>
-                    <button onclick="initPayment('QAXI POS Anual', 390000, 'POS_ANNUAL')" class="cta-btn" style="width:100%; background:transparent; border:1px solid rgba(255,255,255,0.08);">PAGAR ANUAL — 390.000 COP</button>
+                    <button onclick="initPayment('QAXI POS Anual', 390000, 'POS_ANNUAL')" class="cta-btn annual-btn" style="width:100%;">PAGAR ANUAL — 390.000 COP</button>
                 </div>
             </div>
         </div>
@@ -1551,16 +1747,15 @@
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) {
-                authBtn.style.display = 'none';
-                accountBtn.style.display = 'inline-block';
-                userGreeting.style.display = 'block';
-                userGreeting.innerText = `Hola, ${user.email}`;
-                window.closeAuthModal();
-            } else {
-                authBtn.style.display = 'inline-block';
-                accountBtn.style.display = 'none';
-                userGreeting.style.display = 'none';
-            }
+                    authBtn.style.display = 'none';
+                    accountBtn.style.display = 'inline-block';
+                    if (userGreeting) userGreeting.style.display = 'none';
+                    window.closeAuthModal();
+                } else {
+                    authBtn.style.display = 'inline-block';
+                    accountBtn.style.display = 'none';
+                    if (userGreeting) userGreeting.style.display = 'none';
+                }
         });
 
         authForm.addEventListener('submit', async (e) => {
@@ -1665,6 +1860,21 @@
             if (event.target == tutorialModal) window.closeTutorialModal();
             if (event.target == learnModal) window.closeLearnModal();
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const desc = document.getElementById('heroDesc');
+            if(!desc) return;
+            const text = desc.textContent || '';
+            desc.textContent = '';
+            Array.from(text).forEach((ch, i) => {
+                const span = document.createElement('span');
+                span.className = 'hero-char';
+                span.textContent = ch === ' ' ? '\u00A0' : ch;
+                span.style.animationDelay = (i * 0.04) + 's';
+                desc.appendChild(span);
+            });
+        });
     </script>
 </body>
 </html>
