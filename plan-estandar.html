@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Estándar - Detalles Técnicos | QAXI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="icon.png" type="image/png">
+    
+    <style>
+        /* --- ESTILOS TITANIUM DARK --- */
+        :root {
+            --titanium-light: #e8e8e8;
+            --titanium-dark: #5c5c5c;
+            --bg: #000000;
+            --card-bg: #0a0a0a;
+            --border: #333;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header con Logo Grande */
+        header {
+            padding: 25px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.95);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-container { display: flex; align-items: center; gap: 15px; }
+        /* Logo más grande como pediste */
+        .logo-container img { width: 70px; height: auto; transition: 0.3s; } 
+        .logo-text { font-weight: 800; font-size: 1.8rem; color: #fff; letter-spacing: -1px; }
+        
+        .back-link {
+            color: var(--titanium-dark);
+            text-decoration: none;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        .back-link:hover { color: var(--titanium-light); }
+
+        /* Hero Metálico */
+        .plan-hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: radial-gradient(circle at center, #222 0%, #000 70%);
+            border-bottom: 1px solid #222;
+        }
+
+        .plan-badge {
+            background: linear-gradient(135deg, #333, #111);
+            color: var(--titanium-light);
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: inline-block;
+            margin-bottom: 25px;
+            border: 1px solid #444;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.05);
+        }
+
+        h1 { 
+            font-size: 4rem; 
+            margin-bottom: 20px; 
+            line-height: 1; 
+            background: linear-gradient(to right, #fff, #777);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .price-large { font-size: 2.5rem; font-weight: 700; color: #fff; margin: 20px 0; }
+        .price-period { font-size: 1rem; color: #666; font-weight: 400; }
+
+        /* Grid de Detalles */
+        .details-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 50px;
+            font-weight: 300;
+        }
+        .section-title span { font-weight: 800; color: #fff; }
+
+        /* Tarjetas Técnicas (Estilo Titanio) */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        @media(max-width: 768px) { .tech-grid { grid-template-columns: 1fr; } }
+
+        .tech-card {
+            background: #080808;
+            border: 1px solid #222;
+            padding: 35px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.4s;
+        }
+
+        .tech-card:hover {
+            border-color: var(--titanium-dark);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.05);
+        }
+
+        .tech-card h3 { 
+            color: #fff; 
+            font-size: 1.5rem; 
+            margin-bottom: 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+        }
+        
+        .tech-icon {
+            font-size: 1.5rem;
+            color: var(--titanium-light);
+            background: #222;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .tech-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; text-align: justify;}
+
+        /* Lista de características estilo checklist */
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+            background: #111;
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid #222;
+        }
+        .feature-item { display: flex; align-items: center; gap: 15px; color: #ddd; }
+        .feature-item i { color: #fff; font-size: 1.1rem; }
+
+        /* CTA Flotante Plateado */
+        .floating-cta {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #ffffff, #b0b0b0);
+            color: #000;
+            padding: 18px 35px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 5px 20px rgba(255,255,255,0.2);
+            transition: 0.3s;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 2px solid #fff;
+        }
+        .floating-cta:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 5px 30px rgba(255,255,255,0.4); 
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="icon.png" alt="QAXI Logo">
+            <span class="logo-text">QAXI</span>
+        </div>
+        <a href="index.html#pricing" class="back-link"><i class="fas fa-times"></i> Cerrar</a>
+    </header>
+
+    <section class="plan-hero">
+        <div class="plan-badge">Plan Estándar</div>
+        <h1>Ingeniería Digital<br>Profesional</h1>
+        <!-- Descripción eliminada por petición del cliente -->
+        <!-- Precio ocultado por petición del cliente -->
+    </section>
+
+    <div class="details-container">
+        
+        <div class="feature-list">
+            <div class="feature-item"><i class="fas fa-check-circle"></i> 1 Página Web Profesional</div>
+            <div class="feature-item"><i class="fas fa-globe"></i> Dominio Incluido</div>
+            <div class="feature-item"><i class="fas fa-server"></i> Hosting Privado</div>
+            <div class="feature-item"><i class="fas fa-lock"></i> Certificado SSL</div>
+            <div class="feature-item"><i class="fas fa-robot"></i> IA Gemini Flash</div>
+            <div class="feature-item"><i class="fas fa-database"></i> Base de Datos Firebase</div>
+            <div class="feature-item"><i class="fas fa-tools"></i> Mantenimiento PRO</div>
+            <div class="feature-item"><i class="fas fa-images"></i> Galería Multimedia</div>
+        </div>
+
+        <div class="section-title">Tecnología <span>Under The Hood</span></div>
+
+        <div class="tech-grid">
+            
+            <div class="tech-card">
+                <h3>
+                    <div class="tech-icon"><i class="fab fa-github"></i></div>
+                    Hosting en GitHub
+                </h3>
+                <p class="tech-desc">
+                    <strong>¿Qué es GitHub?</strong> Es la plataforma de desarrollo de software más grande y segura del mundo.
+                </p>
+                <p class="tech-desc">
+                    En QAXI, utilizamos GitHub para alojar el código fuente de tu sitio web. Esto garantiza que tu página vive en un entorno de "versión controlada", lo que significa que nunca perderemos tu información y siempre tendremos copias de seguridad instantáneas. Es el estándar de oro de la industria.
+                </p>
+            </div>
+
+            <div class="tech-card">
+                <h3>
+                    <div class="tech-icon"><i class="fas fa-fire"></i></div>
+                    Google Firebase
+                </h3>
+                <p class="tech-desc">
+                    <strong>¿Qué es Firebase?</strong> Es la infraestructura en la nube de Google diseñada para aplicaciones de alto rendimiento.
+                </p>
+                <p class="tech-desc">
+                    Tu Plan Estándar incluye una base de datos en tiempo real y alojamiento de backend en Firebase. Esto permite que tu sitio cargue a la velocidad de los servidores de Google y maneje miles de visitas sin colapsar.
+                </p>
+            </div>
+
+            <div class="tech-card">
+                <h3>
+                    <div class="tech-icon"><i class="fas fa-brain"></i></div>
+                    IA Gemini Flash
+                </h3>
+                <p class="tech-desc">
+                    <strong>¿Qué es Gemini Flash?</strong> Es el modelo de Inteligencia Artificial más veloz y eficiente creado por Google hasta la fecha.
+                </p>
+                <p class="tech-desc">
+                    Utilizamos esta tecnología para redactar los textos de tu sitio web, optimizar palabras clave y estructurar tu contenido. A diferencia de IAs antiguas, Flash entiende el contexto comercial rápidamente, asegurando que tu web venda, no solo informe.
+                </p>
+            </div>
+
+            <div class="tech-card">
+                <h3>
+                    <div class="tech-icon"><i class="fas fa-shield-alt"></i></div>
+                    Seguridad SSL
+                </h3>
+                <p class="tech-desc">
+                    <strong>¿Qué es el Certificado SSL?</strong> Es el "candadito" que aparece al lado de tu dirección web (HTTPS).
+                </p>
+                <p class="tech-desc">
+                    Gracias a nuestra integración con Firebase, tu sitio incluye un certificado SSL de grado bancario. Esto encripta la conexión entre tus clientes y tu página, protegiendo los datos. Google penaliza los sitios sin esto, pero con QAXI, ya lo tienes cubierto.
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Sección de soporte humano eliminada por petición del cliente -->
+
+    </div>
+
+    <a href="qaxipay.html?p=Plan%20Est%C3%A1ndar&v=59900&t=PLAN" class="floating-cta">
+        Suscribirme al Plan <i class="fas fa-arrow-right"></i>
+    </a>
+
+</body>
+</html>

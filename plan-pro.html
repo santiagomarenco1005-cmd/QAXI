@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan PRO - Ecosistema Digital Completo | QAXI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="icon.png" type="image/png">
+    
+    <style>
+        /* --- ESTILOS TITANIUM DARK (Premium) --- */
+        :root {
+            --titanium-light: #e8e8e8;
+            --titanium-dark: #5c5c5c;
+            --bg: #000000;
+            --card-bg: #0a0a0a;
+            --border: #333;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --gold-accent: #ffd700; /* Oro para detalles PRO */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            padding: 25px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.95);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-container { display: flex; align-items: center; gap: 15px; }
+        .logo-container img { width: 70px; height: auto; transition: 0.3s; } 
+        .logo-text { font-weight: 800; font-size: 1.8rem; color: #fff; letter-spacing: -1px; }
+        
+        .back-link {
+            color: var(--titanium-dark);
+            text-decoration: none;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        .back-link:hover { color: var(--titanium-light); }
+
+        /* Hero Metálico PRO */
+        .plan-hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 70%);
+            border-bottom: 1px solid #222;
+        }
+
+        .plan-badge {
+            background: linear-gradient(135deg, #222, #000);
+            color: var(--gold-accent);
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: inline-block;
+            margin-bottom: 25px;
+            border: 1px solid var(--gold-accent);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.1);
+        }
+
+        h1 { 
+            font-size: 4rem; 
+            margin-bottom: 20px; 
+            line-height: 1; 
+            background: linear-gradient(to right, #fff, #999);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .price-large { font-size: 2.5rem; font-weight: 700; color: #fff; margin: 20px 0; }
+        .price-period { font-size: 1rem; color: #666; font-weight: 400; }
+
+        /* Grid de Detalles */
+        .details-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 50px;
+            font-weight: 300;
+        }
+        .section-title span { font-weight: 800; color: #fff; }
+
+        /* Tarjetas Técnicas */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        @media(max-width: 768px) { .tech-grid { grid-template-columns: 1fr; } }
+
+        .tech-card {
+            background: #080808;
+            border: 1px solid #222;
+            padding: 35px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.4s;
+        }
+
+        .tech-card:hover {
+            border-color: var(--titanium-dark);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.05);
+        }
+
+        /* Social card: span full row on larger screens and allow deeper content */
+        .social-card {
+            grid-column: span 2;
+            min-height: 260px;
+            padding: 36px;
+        }
+
+        .social-card .tech-desc {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .tech-card h3 { 
+            color: #fff; 
+            font-size: 1.5rem; 
+            margin-bottom: 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+        }
+        
+        .tech-icon {
+            font-size: 1.5rem;
+            color: var(--titanium-light);
+            background: #222;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .tech-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; text-align: justify;}
+
+        /* Lista destacada dentro de las tarjetas */
+        .card-list {
+            list-style: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #222;
+        }
+        .card-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .card-list li i { color: var(--gold-accent); font-size: 0.8rem; }
+
+        /* Lista de características (Header) */
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+            background: #111;
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+        .feature-item { display: flex; align-items: center; gap: 15px; color: #ddd; font-weight: 500; }
+        .feature-item i { color: var(--gold-accent); font-size: 1.1rem; }
+
+        /* Botón Flotante */
+        .floating-cta {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #ffffff, #b0b0b0);
+            color: #000;
+            padding: 18px 35px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 5px 20px rgba(255,255,255,0.2);
+            transition: 0.3s;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 2px solid #fff;
+        }
+        .floating-cta:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 5px 30px rgba(255,255,255,0.4); 
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="icon.png" alt="QAXI Logo">
+            <span class="logo-text">QAXI</span>
+        </div>
+        <a href="index.html#pricing" class="back-link"><i class="fas fa-times"></i> Cerrar</a>
+    </header>
+
+    <section class="plan-hero">
+        <div class="plan-badge">Plan PRO</div>
+        <h1>Dominio Digital<br>Total</h1>
+        <!-- Hero description and price removed by client request -->
+    </section>
+
+    <div class="details-container">
+        
+        <div class="feature-list">
+            <div class="feature-item"><i class="fas fa-gem"></i> Web Premium PRO</div>
+            <div class="feature-item"><i class="fab fa-instagram"></i> Gestión Instagram</div>
+            <div class="feature-item"><i class="fas fa-laptop-code"></i> Suite QAXI Cloud</div>
+            <div class="feature-item"><i class="fas fa-brain"></i> IA Gemini 3 PRO</div>
+            <div class="feature-item"><i class="fas fa-server"></i> Hosting GitHub</div>
+            <div class="feature-item"><i class="fas fa-database"></i> Firebase & SSL</div>
+        </div>
+
+        <div class="section-title">Ecosistema & <span>Herramientas</span></div>
+
+        <div class="tech-grid">
+            
+            <div class="tech-card social-card" style="border-color: #444;">
+                <h3>
+                    <div class="tech-icon" style="color: #E1306C;"><i class="fab fa-instagram"></i></div>
+                    Social Media Manager
+                </h3>
+                <p class="tech-desc">
+                    <strong>Administración de Instagram</strong>
+                </p>
+                <p class="tech-desc">
+                    QAXI administra únicamente tu cuenta de Instagram y publica hasta 10 piezas gráficas al mes entre posts y reels. Entregamos:
+                </p>
+                <ul class="card-list">
+                    <li><i class="fas fa-check-circle"></i> Planificación de contenido mensual (calendario)</li>
+                    <li><i class="fas fa-check-circle"></i> Producción y publicación de hasta 10 piezas (posts o reels)</li>
+                    <li><i class="fas fa-check-circle"></i> Textos, captions y hashtags optimizados</li>
+                    <li><i class="fas fa-check-circle"></i> Programación y moderación básica de comentarios</li>
+                </ul>
+                <p class="tech-desc">
+                    Las piezas no son acumulables: si no se publican en el mes, no se guardan para meses siguientes. No incluye inversión en pauta (ads) ni creación audiovisual compleja por fuera de las piezas mencionadas.
+                </p>
+            </div>
+
+            <div class="tech-card">
+                <h3>
+                    <div class="tech-icon"><i class="fas fa-th-large"></i></div>
+                    Suite QAXI Cloud PRO
+                </h3>
+                <p class="tech-desc">
+                    <strong>Tu oficina virtual privada.</strong>
+                </p>
+                <p class="tech-desc">
+                    Olvídate de pagar licencias de Office. Con tu Plan PRO obtienes acceso exclusivo a nuestra plataforma web de productividad:
+                </p>
+                <ul class="card-list">
+                    <li><i class="fas fa-file-alt"></i> <strong>DOCS:</strong> Editor de documentos profesional.</li>
+                    <li><i class="fas fa-table"></i> <strong>SHEETS:</strong> Hojas de cálculo integradas.</li>
+                    <li><i class="fas fa-brain"></i> <strong>AI CHAT:</strong> Acceso ilimitado a Gemini 3 PRO.</li>
+                    <li><i class="fas fa-id-card"></i> <strong>ID CARD:</strong> Generador de carnets corporativos.</li>
+                </ul>
+            </div>
+
+            <div class="tech-card">
+                <h3>
+                    <div class="tech-icon"><i class="fas fa-brain"></i></div>
+                    IA Gemini 3 PRO
+                </h3>
+                <p class="tech-desc">
+                    <strong>Inteligencia Superior.</strong><br>
+                    Utilizamos el modelo de razonamiento más avanzado de Google. No solo redacta textos; analiza tendencias, optimiza para ventas y está integrado en tu chat de QAXI Cloud.
+                </p>
+            </div>
+
+            <div class="tech-card">
+                <h3>
+                    <div class="tech-icon"><i class="fab fa-github"></i></div>
+                    Infraestructura GitHub
+                </h3>
+                <p class="tech-desc">
+                    <strong>Alojamiento Blindado.</strong><br>
+                    Tu sitio vive en GitHub Pages con bases de datos en Google Firebase. Escalabilidad automática y seguridad de nivel militar para que tu negocio nunca se detenga.
+                </p>
+            </div>
+
+            <div class="tech-card">
+                <h3>
+                    <div class="tech-icon"><i class="fas fa-lock"></i></div>
+                    Certificado SSL
+                </h3>
+                <p class="tech-desc">
+                    <strong>Confianza Total.</strong><br>
+                    Cifrado HTTPS completo gestionado por Google. Protege los datos de tus clientes y mejora tu posición en los resultados de búsqueda.
+                </p>
+            </div>
+
+            <div class="tech-card">
+                <h3>
+                    <div class="tech-icon"><i class="fab fa-whatsapp"></i></div>
+                    Soporte Prioritario
+                </h3>
+                <p class="tech-desc">
+                    <strong>Atención VIP.</strong><br>
+                    Acceso directo a soporte técnico y creativo. Tus cambios web y estrategias de Instagram tienen prioridad absoluta sobre los planes estándar.
+                </p>
+            </div>
+
+        </div>
+
+        <div style="text-align: center; margin-top: 80px; padding: 40px; border-top: 1px solid #222;">
+            <h2 style="color: #fff; margin-bottom: 20px;">¿Listo para el siguiente nivel?</h2>
+            <p style="color: #888; max-width: 700px; margin: auto;">
+                El Plan PRO combina marketing, desarrollo web y software de productividad<br> en una sola suscripción mensual.
+            </p>
+        </div>
+
+    </div>
+
+    <a href="qaxipay.html?p=Plan%20PRO&v=120000&t=PLAN" class="floating-cta">
+        Obtener Plan PRO <i class="fas fa-arrow-right"></i>
+    </a>
+
+</body>
+</html>
