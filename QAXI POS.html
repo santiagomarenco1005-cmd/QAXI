@@ -11,11 +11,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Html5 QR Code for camera-based barcode scanning -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.7/minified/html5-qrcode.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        :root{ --bg:#0f172a; --muted:#94a3b8; --accent:#3b82f6; --glass-bg: rgba(30,41,59,0.6); }
+        .glass { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00)); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.04); }
+        .card { background: var(--glass-bg); border-radius: 12px; padding: 12px; }
         .sidebar-link:hover { background-color: #2563eb; color: white; transform: translateX(5px); }
         .sidebar-link { transition: all 0.3s ease; }
         
@@ -26,8 +30,10 @@
         .hidden-force { display: none !important; }
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .logo-img { background: transparent !important; mix-blend-mode: multiply; }
+        .logo-img { background: transparent !important; mix-blend-mode: normal; filter: none; }
     </style>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
 </head>
 <body class="h-screen overflow-hidden flex flex-col">
 
@@ -95,6 +101,9 @@
                     <a href="#" onclick="window.app.showSection('history')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white" id="nav-history">
                         <i class="fa-solid fa-clock-rotate-left w-5"></i> Historial
                     </a>
+                    <a href="#" onclick="window.app.showSection('expenses')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white" id="nav-expenses">
+                        <i class="fa-solid fa-wallet w-5"></i> Gastos
+                    </a>
                     <a href="#" onclick="window.app.showTutorial()" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white" id="nav-tutorial">
                         <i class="fa-solid fa-circle-question w-5"></i> Tutorial
                     </a>
@@ -132,6 +141,9 @@
                     <h2 id="page-title" class="text-3xl font-bold text-white">Dashboard</h2>
                     <p class="text-slate-400 text-sm" id="page-subtitle">Vista general de tu negocio.</p>
                 </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="window.app.zReport()" class="text-sm bg-slate-800/40 text-white px-3 py-2 rounded">Cierre de Caja</button>
+                </div>
             </header>
 
             <section id="dashboard" class="fade-in block space-y-6">
@@ -158,7 +170,12 @@
                     <div class="h-64 w-full relative">
                         <canvas id="salesChart"></canvas>
                     </div>
+                    <div class="mt-4 h-40 w-full relative">
+                        <p class="text-slate-400 text-sm mb-2">Comparativa: Hoy vs Ayer</p>
+                        <canvas id="compareChart" class="w-full h-32"></canvas>
+                    </div>
                 </div>
+                <!-- Analista de Ventas eliminado por solicitud del usuario -->
             </section>
 
             <section id="pos" class="fade-in hidden h-[calc(100vh-140px)]">
@@ -167,7 +184,27 @@
                         <div class="bg-slate-900 p-2 rounded-lg mb-4 flex gap-2">
                             <div class="relative flex-1">
                                 <i class="fa-solid fa-search absolute left-3 top-3.5 text-slate-500"></i>
-                                <input type="text" id="search-pos" placeholder="Buscar producto..." class="w-full bg-slate-800 border-none text-white rounded px-10 py-3 focus:ring-2 focus:ring-blue-500" onkeyup="window.app.renderPOS()">
+                                    <input type="text" id="search-pos" placeholder="Buscar producto..." class="w-full bg-slate-800 border-none text-white rounded px-10 py-3 focus:ring-2 focus:ring-blue-500" onkeyup="window.app.renderPOS()">
+                                    <!-- Controles AI removidos -->
+                            </div>
+                            <div class="hidden sm:flex items-center gap-2">
+                                <select id="category-filter" onchange="window.app.renderPOS()" class="bg-slate-800 text-slate-300 px-3 py-2 rounded">
+                                    <option value="">Todas</option>
+                                </select>
+                                <button id="open-scanner" onclick="window.app.toggleScanner()" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded">Escanear</button>
+                            </div>
+                        </div>
+                        <div id="scanner-container" class="hidden mb-4">
+                            <div id="qr-reader" style="width:100%; min-height:160px; background:#071022; border-radius:8px; display:flex;align-items:center;justify-content:center;color:var(--muted)">Cámara inactiva</div>
+                            <div class="mt-2 grid grid-cols-1 gap-2">
+                                <div class="flex gap-2">
+                                    <input id="manual-barcode" placeholder="Ingresar código manualmente" class="flex-1 bg-slate-800 text-white rounded px-3 py-2">
+                                    <button onclick="(function(){ const v=document.getElementById('manual-barcode').value; if(v) handleBarcodeScanned(v); })()" class="px-3 py-2 bg-emerald-600 rounded text-white">Agregar</button>
+                                </div>
+                                <div class="text-xs text-slate-400">Si la cámara no funciona, ingresa manualmente el código o abre esta página desde un servidor (ej: <code>python3 -m http.server</code>) o en HTTPS para permitir acceso a la cámara.</div>
+                                <div class="flex justify-end">
+                                    <button onclick="window.app.toggleScanner()" class="px-3 py-1 bg-red-600 rounded text-white">Cerrar</button>
+                                </div>
                             </div>
                         </div>
                         <div id="pos-grid" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto pr-2 pb-20">
@@ -185,6 +222,14 @@
                             <div class="flex justify-between text-white text-xl font-bold mb-4">
                                 <span>Total</span>
                                 <span id="cart-total">$0</span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-xs text-slate-400">Método de pago</label>
+                                <select id="payment-method" class="w-full mt-1 bg-slate-800 text-white rounded px-3 py-2">
+                                    <option value="cash">Efectivo</option>
+                                    <option value="transfer">Transferencia</option>
+                                    <option value="card">Tarjeta</option>
+                                </select>
                             </div>
                             <button onclick="window.app.processSale()" class="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold py-3 rounded-lg transition shadow-lg">
                                 COBRAR
@@ -246,6 +291,19 @@
                 </div>
             </section>
 
+            <section id="expenses" class="fade-in hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl text-white font-bold">Gastos / Egresos</h3>
+                    <button onclick="window.app.addExpense()" class="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded">Nuevo Gasto</button>
+                </div>
+
+                <div class="glass p-4 rounded-xl mb-4">
+                    <div id="expenses-list" class="space-y-3 text-slate-300">
+                        <div class="text-slate-500">No hay gastos registrados</div>
+                    </div>
+                </div>
+            </section>
+
         </main>
     </div>
 
@@ -275,7 +333,10 @@
         let products = [];
         let sales = [];
         let cart = [];
+        let expenses = [];
         let myChart = null;
+        let compareChart = null;
+        let scannerInstance = null;
         let lowStockThreshold = 5;
 
         // Quick success sound (Web Audio API)
@@ -316,7 +377,7 @@
                 if(navLink) navLink.classList.add('bg-slate-800/50', 'text-white');
 
                 // Titles
-                const titles = { 'dashboard': 'Dashboard', 'pos': 'Punto de Venta', 'inventory': 'Inventario', 'history': 'Historial' };
+                const titles = { 'dashboard': 'Dashboard', 'pos': 'Punto de Venta', 'inventory': 'Inventario', 'history': 'Historial', 'expenses': 'Gastos' };
                 document.getElementById('page-title').innerText = titles[id] || 'QAXI POS';
                 
                 if(id === 'pos') renderPOS();
@@ -353,19 +414,30 @@
                 if(cart.length === 0) return;
                 
                 Swal.fire({ title: 'Procesando...', allowOutsideClick: false, didOpen: () => Swal.showLoading(), background: '#1e293b', color: '#fff' });
-
-                // Update Local State
+                // Update Local State and compute totals with discounts
                 cart.forEach(cartItem => {
                     const product = products.find(p => p.id === cartItem.id);
                     if(product) product.stock -= cartItem.qty;
                 });
 
-                const total = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+                const total = cart.reduce((acc, i) => {
+                    const line = i.price * i.qty;
+                    let discountAmount = 0;
+                    if (i.discount) {
+                        if (i.discount.type === 'percent') discountAmount = line * (Number(i.discount.value) / 100);
+                        else discountAmount = Number(i.discount.value) || 0;
+                    }
+                    return acc + Math.max(0, line - discountAmount);
+                }, 0);
+
+                const paymentMethod = document.getElementById('payment-method') ? document.getElementById('payment-method').value : 'cash';
+
                 const newSale = {
                     id: Date.now(),
                     date: new Date().toISOString(),
                     total: total,
-                    items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.price }))
+                    paymentMethod: paymentMethod,
+                    items: cart.map(i => ({ id: i.id, name: i.name, qty: i.qty, price: i.price, discount: i.discount || null }))
                 };
 
                 sales.push(newSale);
@@ -378,10 +450,14 @@
                         sales: arrayUnion(newSale)
                     });
 
+                    // Print ticket
+                    try { createTicketWindow(newSale); } catch(e){ console.warn('print failed', e); }
+
                     cart = [];
                     renderCart();
                     renderPOS();
                     renderInventory();
+                    renderHistory();
                     updateDashboard();
                     playSuccessSound();
 
@@ -402,6 +478,8 @@
                                 '<input id="swal-price" type="number" class="swal2-input" placeholder="Precio (ej. 5000)" style="background:#334155; color:white; border:none;">' +
                                 '<input id="swal-cost" type="number" class="swal2-input" placeholder="Costo (ej. 3000)" style="background:#334155; color:white; border:none;">' +
                                 '<input id="swal-stock" type="number" class="swal2-input" placeholder="Stock Inicial" style="background:#334155; color:white; border:none;">' +
+                                '<input id="swal-category" class="swal2-input" placeholder="Categoría (ej. Bebidas)" style="background:#334155; color:white; border:none;">' +
+                                '<input id="swal-barcode" class="swal2-input" placeholder="Código de barras (opcional)" style="background:#334155; color:white; border:none;">' +
                                 '<div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-top:8px;">' +
                                   '<label style="font-size:13px;color:#cbd5e1;">' +
                                     '<input id="swal-addlogo" type="checkbox" style="margin-right:8px;" onchange="document.getElementById(\'swal-logo\').style.display = this.checked ? \"block\" : \"none\"">' +
@@ -442,9 +520,9 @@
                                     }
 
                                     if (readers.length) {
-                                        Promise.all(readers).then(() => resolve([name, price, cost, stock, result.image, result.logo]));
+                                        Promise.all(readers).then(() => resolve([name, price, cost, stock, document.getElementById('swal-category').value, document.getElementById('swal-barcode').value, result.image, result.logo]));
                                     } else {
-                                        resolve([name, price, cost, stock, null, null]);
+                                        resolve([name, price, cost, stock, document.getElementById('swal-category').value, document.getElementById('swal-barcode').value, null, null]);
                                     }
                                 });
                             }
@@ -459,11 +537,14 @@
                         stock: Number(formValues[3]) || 0,
                         icon: 'fa-box',
                         color: 'bg-blue-600',
-                        image: formValues[4] || null,
-                        logo: formValues[5] || null
+                        category: formValues[4] || '',
+                        barcode: formValues[5] || null,
+                        image: formValues[6] || null,
+                        logo: formValues[7] || null
                     };
 
                     products.push(newProd);
+                    populateCategoryFilter();
                     
                     // Sync Firebase
                     try {
@@ -477,6 +558,20 @@
                         Swal.fire('Error', 'No se pudo guardar', 'error');
                     }
                 }
+            },
+
+            exportInventoryCSV: function() {
+                const rows = ['Nombre,Precio,Costo,Stock,Valor'];
+                products.forEach(p => {
+                    const val = (p.price || 0) * (p.stock || 0);
+                    rows.push(`"${p.name}",${p.price || 0},${p.cost || 0},${p.stock || 0},${val}`);
+                });
+                const csv = rows.join('\n');
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `inventory_${Date.now()}.csv`; a.click();
+                URL.revokeObjectURL(url);
             },
 
             editStock: async (id) => {
@@ -515,22 +610,42 @@
             },
             
             renderPOS: renderPOS // Expose helper
+            ,
+            // Add multiple of same product to cart
+            addMultipleToCart: (id, qty) => {
+                const product = products.find(p => p.id === id);
+                if (!product) return;
+                if (product.stock <= 0) return;
+                const existing = cart.find(c => c.id === id);
+                const addQty = Math.max(0, Math.min(qty, product.stock - (existing ? existing.qty : 0)));
+                if (!existing) cart.push({ ...product, qty: addQty }); else existing.qty += addQty;
+                renderCart();
+            },
+            // Cart-level discount percent (applied to total)
+            cartDiscountPercent: 0
         };
 
         // --- Tutorial for new clients ---
         window.app.showTutorial = async function() {
             const steps = [
-                { title: 'Bienvenido a QAXI POS', text: 'Este breve tutorial te mostrará las funciones principales.' },
-                { title: 'Punto de Venta', text: 'En la sección Punto de Venta puedes buscar productos y añadirlos al carrito.' },
-                { title: 'Carrito y Cobro', text: 'Revisa el carrito a la derecha. Pulsa COBRAR para registrar la venta y actualizar stock.' },
-                { title: 'Inventario', text: 'En Inventario puedes agregar productos (con foto), editar stock y borrarlos.' },
-                { title: 'Cuenta', text: 'Cierra sesión con el botón en la esquina. Las credenciales te las entrega el propietario.' },
-                { title: 'Listo', text: '¡Eso es todo! Si necesitas repetir el tutorial, pulsa Tutorial en el menú.' }
+                { title: 'Bienvenido a QAXI POS', text: 'Este breve tutorial te mostrará las funciones principales.', icon: 'fa-solid fa-hand-holding-dollar' },
+                { title: 'Punto de Venta', text: 'En la sección Punto de Venta puedes buscar productos y añadirlos al carrito. Usa el botón Escanear para abrir la cámara.', icon: 'fa-solid fa-cash-register' },
+                { title: 'Carrito y Cobro', text: 'Revisa el carrito a la derecha. Pulsa COBRAR para registrar la venta, seleccionar método de pago y generar ticket.', icon: 'fa-solid fa-receipt' },
+                { title: 'Inventario', text: 'En Inventario puedes agregar productos (con foto), categoría y código de barras; editar stock y borrarlos.', icon: 'fa-solid fa-boxes-stacked' },
+                { title: 'Gastos', text: 'Registra gastos diarios en Gastos para obtener la ganancia real en el dashboard.', icon: 'fa-solid fa-wallet' },
+                { title: 'Listo', text: '¡Eso es todo! Si necesitas repetir el tutorial, pulsa Tutorial en el menú.', icon: 'fa-solid fa-circle-check' }
             ];
 
             for (const step of steps) {
                 // eslint-disable-next-line no-await-in-loop
-                const res = await Swal.fire({ title: step.title, text: step.text, confirmButtonText: 'Siguiente', background: '#1e293b', color: '#fff' });
+                const res = await Swal.fire({
+                    title: step.title,
+                    html: `<div style="display:flex;flex-direction:row;gap:12px;align-items:center;color:#e2e8f0"><div style=\"width:56px;height:56px;border-radius:12px;background:linear-gradient(180deg, rgba(59,130,246,0.14), rgba(59,130,246,0.06));display:flex;align-items:center;justify-content:center;\"><i class=\"${step.icon} fa-lg\" style=\"color:var(--accent)\"></i></div><div style=\"max-width:360px;text-align:left\">${step.text}</div></div>`,
+                    showCancelButton: true,
+                    confirmButtonText: 'Siguiente',
+                    cancelButtonText: 'Cerrar',
+                    background: '#0f172a', color: '#fff'
+                });
                 if (res.dismiss === Swal.DismissReason.cancel) break;
             }
         };
@@ -588,6 +703,12 @@
                         // SI PASA EL FILTRO, CARGAMOS SUS DATOS
                         products = data.products || [];
                         sales = data.sales || [];
+                        expenses = data.expenses || [];
+
+                        // Populate category filter
+                        setTimeout(() => {
+                            populateCategoryFilter();
+                        }, 100);
                         
                         Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Licencia POS: Activa', background: '#1e293b', color: '#fff', showConfirmButton: false, timer: 2000 });
 
@@ -615,6 +736,7 @@
                     renderInventory();
                     renderPOS();
                     renderHistory();
+                    renderExpenses();
                     updateDashboard();
                     if (window.app && typeof window.app.showLowStockAlerts === 'function') window.app.showLowStockAlerts();
                     
@@ -675,8 +797,9 @@
             }
 
             const rows = [];
+            const category = (document.getElementById('category-filter') && document.getElementById('category-filter').value) || '';
             products.forEach(p => {
-                if(p.name.toLowerCase().includes(search)) {
+                if(p.name.toLowerCase().includes(search) && (category === '' || (p.category || '') === category)) {
                     const badgeClass = p.stock < 5 ? 'text-red-400' : 'text-slate-500';
                     const media = p.image ? `<img src="${p.image}" alt="${p.name}" class="h-10 w-10 object-cover rounded-lg mb-3 shadow-lg">` : `<div class="h-10 w-10 ${p.color || 'bg-blue-600'} rounded-lg flex items-center justify-center text-white mb-3 shadow-lg"><i class="fa-solid ${p.icon || 'fa-box'}"></i></div>`;
                         const logoBadge = p.logo ? `<img src="${p.logo}" class="absolute top-2 left-2 w-8 h-8 rounded-full border border-white/10 shadow-sm" alt="logo">` : '';
@@ -687,6 +810,7 @@
                                 ${media}
                                 <h4 class=\"font-bold text-white text-sm truncate\">${p.name}</h4>
                                 <p class=\"text-blue-400 font-semibold text-xs mt-1\">$${p.price.toLocaleString()}</p>
+                                ${p.category?`<div class=\"text-[10px] text-slate-400 mt-1\">${p.category}</div>`:''}
                             </div>
                         `);
                 }
@@ -705,16 +829,26 @@
             let total = 0;
             const rows = [];
             cart.forEach((item, index) => {
-                total += item.price * item.qty;
+                const line = item.price * item.qty;
+                let discountAmount = 0;
+                if (item.discount) {
+                    if (item.discount.type === 'percent') discountAmount = line * (Number(item.discount.value) / 100);
+                    else discountAmount = Number(item.discount.value) || 0;
+                }
+                const finalLine = Math.max(0, line - discountAmount);
+                total += finalLine;
+
                 rows.push(`
                     <div class="flex justify-between items-center bg-slate-800/50 p-2 rounded mb-2 border-l-2 border-blue-500">
                         <div class="overflow-hidden w-2/3">
                             <p class="text-white text-xs font-bold truncate">${item.name}</p>
                             <p class="text-[10px] text-slate-400">${item.qty} x $${item.price.toLocaleString()}</p>
+                            ${item.discount ? `<div class="text-[10px] text-amber-300">Descuento: ${item.discount.type==='percent'?item.discount.value+'%':'$'+Number(item.discount.value).toLocaleString()}</div>` : ''}
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="text-blue-400 font-bold text-xs">$${(item.price * item.qty).toLocaleString()}</span>
-                            <button onclick=\"window.app.removeFromCart(${index})\" class=\"text-slate-500 hover:text-red-400\"><i class=\"fa-solid fa-trash text-xs\"></i></button>
+                            <span class="text-blue-400 font-bold text-xs">$${finalLine.toLocaleString()}</span>
+                            <button onclick="window.app.applyDiscountToCartItem(${index})" class="text-slate-300 hover:text-white text-xs px-2 py-1 bg-slate-800 rounded">Descuento</button>
+                            <button onclick="window.app.removeFromCart(${index})" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash text-xs"></i></button>
                         </div>
                     </div>
                 `);
@@ -769,37 +903,221 @@
             tbody.innerHTML = rows.join('');
         }
 
+        // Analista de Ventas (AI/LLM/voz) eliminado por solicitud del usuario.
+
         function renderHistory() {
             const tbody = document.getElementById('history-table');
             tbody.innerHTML = '';
-            // Show last 10 sales
-            sales.slice().reverse().slice(0, 10).forEach(s => {
-                const date = new Date(s.date).toLocaleDateString() + ' ' + new Date(s.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-800/50 border-b border-slate-800/50">
-                        <td class="px-6 py-4 text-xs text-slate-400">${date}</td>
-                        <td class="px-6 py-4 text-green-400 font-bold text-sm">$${s.total.toLocaleString()}</td>
-                        <td class="px-6 py-4"><span class="text-[10px] bg-blue-900/30 text-blue-300 px-2 py-1 rounded">Completado</span></td>
-                    </tr>
-                `;
+            if (!sales || sales.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="px-6 py-4 text-center text-slate-500">No hay ventas registradas</td></tr>';
+                return;
+            }
+            const rows = [];
+            // Show most recent first
+            sales.slice().reverse().forEach(s => {
+                rows.push(`<tr>
+                    <td class="px-6 py-4 text-sm">${new Date(s.date).toLocaleString()}</td>
+                    <td class="px-6 py-4 text-sm">$${(s.total||0).toLocaleString()}</td>
+                    <td class="px-6 py-4 text-sm">Completado</td>
+                </tr>`);
+            });
+            tbody.innerHTML = rows.join('');
+        };
+
+        // --- Helpers: Categories, Scanner, Discounts, Expenses, Reports ---
+        function populateCategoryFilter(){
+            const sel = document.getElementById('category-filter');
+            if(!sel) return;
+            const cats = new Set();
+            products.forEach(p => { if(p.category) cats.add(p.category); });
+            // Clear existing except 'Todas'
+            sel.innerHTML = '<option value="">Todas</option>' + Array.from(cats).map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        window.app.toggleScanner = function(){
+            const container = document.getElementById('scanner-container');
+            if(!container) return;
+            if(container.classList.contains('hidden')){
+                container.classList.remove('hidden');
+                startScanner();
+            } else {
+                stopScanner();
+                container.classList.add('hidden');
+            }
+        };
+
+        function startScanner(){
+            if(typeof Html5Qrcode === 'undefined') return Swal.fire('Error','Lector no disponible (módulo no cargado)','error');
+            // Quick checks: file:// and mediaDevices
+            if(location.protocol === 'file:' || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cámara no disponible',
+                    html: `La página se está ejecutando desde <b>${location.protocol}</b> o el navegador no permite acceder a la cámara.\n
+                        Abre el archivo desde un servidor local (ejecute en la carpeta del proyecto):<br>
+                        <code>python3 -m http.server 8000</code><br>
+                        y luego abre <b>http://localhost:8000/QAXI%20POS.html</b>.\n
+                        En iOS/algún Safari puede requerir HTTPS o usar Chrome/Edge en escritorio.`,
+                    background: '#1e293b', color: '#fff'
+                });
+                return;
+            }
+            const qrRegionId = 'qr-reader';
+            // If already running, clear first
+            if(scannerInstance){ try{ scannerInstance.clear(); }catch(e){} scannerInstance = null; }
+            Html5Qrcode.getCameras().then(cameras => {
+                const cameraId = (cameras && cameras.length) ? cameras[0].id : undefined;
+                scannerInstance = new Html5Qrcode(qrRegionId);
+                const config = { fps: 10, qrbox: 250 };
+                if(cameraId){
+                    scannerInstance.start(cameraId, config, (decodedText, decodedResult) => {
+                        handleBarcodeScanned(decodedText);
+                    }, (error) => {
+                        // per-frame parse error (ignore)
+                    }).catch(err => {
+                        console.warn('scanner start error', err);
+                        Swal.fire('Error', 'No se pudo iniciar la cámara o permisos denegados', 'error');
+                    });
+                } else {
+                    // fallback: try to start with facingMode config
+                    scannerInstance.start({ facingMode: "environment" }, config, (decodedText) => {
+                        handleBarcodeScanned(decodedText);
+                    }).catch(err => {
+                        console.warn('scanner start error fallback', err);
+                        Swal.fire('Error', 'No se pudo iniciar la cámara o permisos denegados', 'error');
+                    });
+                }
+            }).catch(err => {
+                console.warn('getCameras error', err);
+                Swal.fire('Error','No se encontraron cámaras disponibles','error');
             });
         }
 
-        // --- Utilities for business owners ---
-        window.app.exportInventoryCSV = function() {
-            if (!products || products.length === 0) return Swal.fire('Info', 'No hay productos para exportar', 'info');
-            const rows = ['Nombre,Precio,Costo,Stock,Valor'];
-            products.forEach(p => {
-                const val = (p.price || 0) * (p.stock || 0);
-                rows.push(`"${p.name}",${p.price || 0},${p.cost || 0},${p.stock || 0},${val}`);
+        function stopScanner(){
+            if(scannerInstance){
+                try{ scannerInstance.stop().then(() => { scannerInstance.clear(); scannerInstance = null; }); }catch(e){ scannerInstance = null; }
+            }
+        }
+
+        function handleBarcodeScanned(code){
+            // Html5Qrcode passes decodedText string; normalize defensively
+            const barcode = (typeof code === 'string') ? code : (code && code.decodedText) ? code.decodedText : (code?.result?.text || '');
+            if(!barcode) return;
+            // try to find product by barcode
+            const prod = products.find(p => p.barcode && String(p.barcode) === String(barcode));
+            if(prod){
+                window.app.addToCart(prod.id);
+                Swal.fire({ toast:true, position:'bottom-end', icon:'success', title:`Añadido: ${prod.name}`, background:'#1e293b', color:'#fff', showConfirmButton:false, timer:1200 });
+                // Stop scanner automatically for mobile convenience
+                stopScanner();
+                document.getElementById('scanner-container')?.classList.add('hidden');
+            } else {
+                Swal.fire({ toast:true, position:'bottom-end', icon:'warning', title:`Código no encontrado: ${barcode}`, background:'#1e293b', color:'#fff', showConfirmButton:false, timer:1600 });
+            }
+        }
+
+        window.app.applyDiscountToCartItem = async function(index){
+            const item = cart[index];
+            if(!item) return;
+            const { value: form } = await Swal.fire({
+                title: `Descuento: ${item.name}`,
+                html: '<input id="d-value" class="swal2-input" placeholder="Valor (ej: 500 o 10%)" style="background:#334155;color:white;border:none">',
+                preConfirm: () => {
+                    return document.getElementById('d-value').value;
+                },
+                background: '#1e293b', color: '#fff'
             });
-            const csv = rows.join('\n');
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = `inventory_${Date.now()}.csv`; a.click();
-            URL.revokeObjectURL(url);
+            if(!form) return;
+            // detect percent by trailing %
+            const val = form.toString().trim();
+            if(val.endsWith('%')){
+                const num = parseFloat(val.replace('%','')) || 0;
+                item.discount = { type: 'percent', value: num };
+            } else {
+                const num = parseFloat(val) || 0;
+                item.discount = { type: 'amount', value: num };
+            }
+            renderCart();
         };
+
+        window.app.addExpense = async function(){
+            const { value: form } = await Swal.fire({
+                title: 'Nuevo Gasto',
+                html: '<input id="g-desc" class="swal2-input" placeholder="Descripción" style="background:#334155;color:white;border:none">' +
+                      '<input id="g-amt" type="number" class="swal2-input" placeholder="Monto" style="background:#334155;color:white;border:none">',
+                preConfirm: () => [document.getElementById('g-desc').value, document.getElementById('g-amt').value],
+                background: '#1e293b', color: '#fff'
+            });
+            if(!form) return;
+            const [desc, amt] = form;
+            const expense = { id: Date.now(), date: new Date().toISOString(), description: desc || 'Gasto', amount: Number(amt) || 0 };
+            expenses.push(expense);
+            try{
+                await updateDoc(doc(db, "QAXI_POS_DATA", currentUser.uid), { expenses: expenses });
+                renderExpenses();
+                updateDashboard();
+                Swal.fire({ toast:true, position:'top-end', icon:'success', title:'Gasto registrado', showConfirmButton:false, timer:1200, background:'#1e293b', color:'#fff' });
+            }catch(e){ console.error(e); Swal.fire('Error','No se pudo guardar','error'); }
+        };
+
+        function renderExpenses(){
+            const el = document.getElementById('expenses-list');
+            if(!el) return;
+            if(!expenses || expenses.length === 0){ el.innerHTML = '<div class="text-slate-500">No hay gastos registrados</div>'; return; }
+            const rows = expenses.slice().reverse().map(ex => `<div class="flex justify-between items-center bg-slate-800/40 p-2 rounded">
+                <div>
+                    <div class="text-white text-sm font-bold">${ex.description}</div>
+                    <div class="text-[11px] text-slate-400">${new Date(ex.date).toLocaleString()}</div>
+                </div>
+                <div class="text-red-400 font-bold">-$${(ex.amount||0).toLocaleString()}</div>
+            </div>`);
+            el.innerHTML = rows.join('');
+        }
+
+        window.app.zReport = function(){
+            const sinceLogin = sales || [];
+            const totals = { cash:0, card:0, transfer:0 };
+            let total = 0;
+            sinceLogin.forEach(s => {
+                total += s.total || 0;
+                if(s.paymentMethod) totals[s.paymentMethod] = (totals[s.paymentMethod]||0) + (s.total||0);
+            });
+            const expTotal = (expenses || []).reduce((a,b) => a + (b.amount||0), 0);
+            const html = `Ventas Totales: $${total.toLocaleString()}<br>
+                Efectivo: $${(totals.cash||0).toLocaleString()}<br>
+                Tarjeta: $${(totals.card||0).toLocaleString()}<br>
+                Transferencia: $${(totals.transfer||0).toLocaleString()}<br>
+                <hr>Gastos: $${expTotal.toLocaleString()}<br>
+                <b>Total Neto: $${(total - expTotal).toLocaleString()}</b>`;
+            Swal.fire({ title: 'Cierre de Caja', html: html, showCancelButton:true, confirmButtonText:'Imprimir Z', background:'#1e293b', color:'#fff' }).then(res => {
+                if(res.isConfirmed){
+                    // simple print of the report
+                    const w = window.open('', '_blank');
+                    w.document.write(`<pre style="font-family:sans-serif">Z-Report\n\n${html.replace(/<br>/g,'\n').replace(/<[^>]+>/g,'')}</pre>`);
+                    w.print();
+                }
+            });
+        };
+
+        function createTicketWindow(sale){
+            const w = window.open('', '_blank', 'width=300,height=600');
+            const itemsHtml = sale.items.map(i => `${i.name} x${i.qty} $${i.price.toLocaleString()}${i.discount?(' - '+(i.discount.type==='percent'?i.discount.value+'%':'$'+i.discount.value)) : ''}`).join('<br>');
+            const html = `
+                <div style="font-family:monospace; padding:10px; width:220px">
+                    <h3 style="text-align:center">QAXI POS</h3>
+                    <div>Fecha: ${new Date(sale.date).toLocaleString()}</div>
+                    <div>Pago: ${sale.paymentMethod || 'N/A'}</div>
+                    <hr>
+                    <div>${itemsHtml}</div>
+                    <hr>
+                    <div style="text-align:right; font-weight:bold">Total: $${sale.total.toLocaleString()}</div>
+                    <div style="text-align:center; margin-top:10px; font-size:12px">Gracias por su compra</div>
+                </div>
+            `;
+            w.document.write(html);
+            w.document.close();
+            setTimeout(()=>{ w.print(); }, 500);
+        }
 
         window.app.showLowStockAlerts = function() {
             const low = (products || []).filter(p => (p.stock || 0) <= (lowStockThreshold || 5));
@@ -819,7 +1137,18 @@
             // Ganancia potencial estimada (precio - costo) * stock
             const potentialProfit = products.reduce((sum, p) => sum + (((p.price || 0) - (p.cost || 0)) * (p.stock || 0)), 0);
             const profitEl = document.getElementById('dash-profit');
-            if (profitEl) profitEl.innerText = '$' + potentialProfit.toLocaleString();
+            // Calculate real profit: ventas - costo de bienes vendidos - gastos
+            const revenue = sales.reduce((s, v) => s + (v.total || 0), 0);
+            const costSold = (sales || []).reduce((acc, sale) => {
+                const saleCost = (sale.items || []).reduce((si, it) => {
+                    const prod = products.find(p => p.id === it.id || p.name === it.name);
+                    return si + ((prod ? (prod.cost||0) : 0) * (it.qty || 0));
+                }, 0);
+                return acc + saleCost;
+            }, 0);
+            const expensesTotal = (expenses || []).reduce((a,b) => a + (b.amount||0), 0);
+            const realProfit = Math.max(0, revenue - costSold - expensesTotal);
+            if (profitEl) profitEl.innerText = '$' + realProfit.toLocaleString();
 
             // Simple Chart
             const ctx = document.getElementById('salesChart').getContext('2d');
@@ -862,8 +1191,29 @@
                     }
                 }
             });
+
+            // Comparative Chart: Hoy vs Ayer
+            try{
+                const now = new Date();
+                const startToday = new Date(now); startToday.setHours(0,0,0,0);
+                const startYesterday = new Date(startToday); startYesterday.setDate(startYesterday.getDate()-1);
+                const endYesterday = new Date(startToday);
+                const totalToday = (sales || []).reduce((s, sale) => { const d = new Date(sale.date); return s + ((d >= startToday) ? (sale.total||0) : 0); }, 0);
+                const totalYesterday = (sales || []).reduce((s, sale) => { const d = new Date(sale.date); return s + ((d >= startYesterday && d < endYesterday) ? (sale.total||0) : 0); }, 0);
+                const ctx2 = document.getElementById('compareChart').getContext('2d');
+                if(compareChart) compareChart.destroy();
+                compareChart = new Chart(ctx2, { type: 'bar', data: { labels: ['Ayer','Hoy'], datasets: [{ label: 'Ventas', data: [totalYesterday, totalToday], backgroundColor: ['#94a3b8','#3b82f6'] }] }, options: { maintainAspectRatio:false, plugins:{legend:{display:false}} } });
+            }catch(e){ console.warn('compare chart', e); }
         }
 
+    </script>
+    <script>
+        // Register service worker for PWA
+        if('serviceWorker' in navigator){
+            navigator.serviceWorker.register('service-worker.js').then(reg => {
+                console.log('ServiceWorker registered', reg);
+            }).catch(err => console.warn('SW register failed', err));
+        }
     </script>
 </body>
 </html>
