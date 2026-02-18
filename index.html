@@ -1396,20 +1396,19 @@
                         <h3>QAXI POS</h3>
                         <p style="color:#ccc; margin-bottom:12px;">Sistema de punto de venta moderno para tiendas y restaurantes.</p>
                         <ul class="premium-list">
-                            <li><i class="fas fa-cash-register"></i> Terminal de punto de venta</li>
-                            <li><i class="fas fa-boxes"></i> Gestión de inventario</li>
-                            <li><i class="fas fa-chart-line"></i> Reportes de ventas y estadísticas</li>
-                            <li><i class="fas fa-credit-card"></i> Integración con pagos (tarjetas, Nequi)</li>
-                            <li><i class="fas fa-users"></i> Gestión de usuarios y permisos</li>
-                            <li><i class="fas fa-sync-alt"></i> Actualizaciones y soporte</li>
+                            <li><i class="fas fa-cash-register"></i> Gestión de ventas y facturación</li>
+                            <li><i class="fas fa-boxes"></i> Control de inventario en tiempo real</li>
+                            <li><i class="fas fa-chart-pie"></i> Reportes y analíticas de negocio</li>
+                            <li><i class="fas fa-receipt"></i> Recibos personalizados con IVA</li>
                         </ul>
                     </div>
                     <div class="premium-pricing">
-                        <div style="font-size:0.9rem; color:#888; margin-bottom:8px;">SOFTWARE</div>
-                        <div style="font-size:1.1rem; font-weight:700; color:#fff; margin-bottom:10px;">QAXI POS</div>
+                        <div style="font-size:0.9rem; color:#888; margin-bottom:8px;">SOFTWARE POS</div>
+                        <div style="font-size:2.2rem; font-weight:800; color:#fff;">39.900 <span style="font-size:0.9rem; color:#888;">COP</span></div>
+                        <div style="font-size:0.85rem; color:#666; margin-bottom:12px;">/ mes</div>
                         <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
-                            <a href="QAXI%20POS.html" class="cta-btn" style="width:100%">Ver QAXI POS</a>
-                            <span class="cta-btn" style="width:100%; background:transparent; border:1px dashed rgba(255,255,255,0.08); color:#ccc; display:inline-flex; align-items:center; justify-content:center;">PROXIMAMENTE</span>
+                            <button onclick="initPayment('QAXI POS', 39900, 'SOFTWARE')" class="cta-btn annual-btn" style="width:100%; font-size:0.95rem;"><i class="fas fa-shopping-cart"></i> Suscribirme a QAXI POS</button>
+                            <a href="QAXI%20POS.html" class="cta-btn" style="width:100%; background:transparent; border:1px solid rgba(255,255,255,0.15); color:#fff;">Ver Demo</a>
                         </div>
                     </div>
                 </div>
@@ -1417,7 +1416,35 @@
         </div>
     </section>
 
-    <!-- QAXI Traffic and QAXI Social sections removed per request -->
+    <!-- QAXI TEST - Prueba Webs -->
+    <section id="qaxi-test" class="reveal">
+        <h2 class="section-title">QAXI <span>TEST</span></h2>
+        <p style="text-align:center; color:#888; margin-bottom:40px; max-width:600px; margin-left:auto; margin-right:auto;">Prueba Webs hechas por QAXI - Ejemplos de sitios web que hemos creado</p>
+        <div class="pricing-container">
+            <div class="pricing-deck">
+                <div class="premium-card pricing-card" style="cursor:pointer;" onclick="openTestPreview()">
+                    <div class="premium-info">
+                        <h3>AERO - Flight Redefined</h3>
+                        <p style="color:#ccc; margin-bottom:12px;">Landing page moderna para empresa de tecnología aeroespacial.</p>
+                        <ul class="premium-list">
+                            <li><i class="fas fa-rocket"></i> Diseño minimalista y elegante</li>
+                            <li><i class="fas fa-palette"></i> Efectos glassmorphism</li>
+                            <li><i class="fas fa-magic"></i> Animaciones al scroll</li>
+                            <li><i class="fas fa-mobile-alt"></i> Totalmente responsive</li>
+                            <li><i class="fas fa-bolt"></i> Modal de pago integrado</li>
+                        </ul>
+                    </div>
+                    <div class="premium-pricing">
+                        <div style="font-size:0.9rem; color:#888; margin-bottom:8px;">DEMO</div>
+                        <div style="font-size:1.1rem; font-weight:700; color:#fff; margin-bottom:10px;">QAXI TEST 1</div>
+                        <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+                            <button class="cta-btn" style="width:100%" onclick="event.stopPropagation(); openTestPreview()"><i class="fas fa-eye"></i> Ver Preview</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- QAXI Traffic and QAXI Social sections removed per request -->
         <div id="legal-text" style="display: none; max-width: 600px; margin: 20px auto; text-align: left; color: #555; font-size: 0.75rem; line-height: 1.6; border-top: 1px solid #222; padding-top: 20px;">
@@ -1529,6 +1556,14 @@
     <a href="https://wa.me/573213526875" class="wa-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
+
+    <!-- QAXI TEST Preview Modal -->
+    <div id="testPreviewModal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width:95%; width:95%; height:90vh; padding:0; overflow:hidden;">
+            <button class="learn-close" style="position:absolute; top:12px; right:16px; background:rgba(0,0,0,0.8); border:none; color:#fff; font-size:1.6rem; z-index:10; width:40px; height:40px; border-radius:50%;" onclick="closeTestPreview()">×</button>
+            <iframe id="testPreviewFrame" src="" style="width:100%; height:100%; border:none;"></iframe>
+        </div>
+    </div>
 
     <!-- Learn more modal -->
     <div id="learnModal" class="modal learn-modal" style="display:none;">
@@ -1776,6 +1811,20 @@
         window.closeTutorialModal = () => tutorialModal.style.display = "none";
         window.closeDashboardModal = () => dashboardModal.style.display = "none";
         
+        // --- QAXI TEST PREVIEW FUNCTIONS ---
+        window.openTestPreview = () => {
+            const modal = document.getElementById('testPreviewModal');
+            const iframe = document.getElementById('testPreviewFrame');
+            iframe.src = 'QAXI TEST 1.html';
+            modal.style.display = 'flex';
+        };
+        window.closeTestPreview = () => {
+            const modal = document.getElementById('testPreviewModal');
+            const iframe = document.getElementById('testPreviewFrame');
+            modal.style.display = 'none';
+            iframe.src = '';
+        };
+        
         window.toggleLegal = () => {
             const txt = document.getElementById('legal-text');
             const ico = document.getElementById('legal-icon');
@@ -1919,6 +1968,7 @@
             if (event.target == dashboardModal) window.closeDashboardModal();
             if (event.target == tutorialModal) window.closeTutorialModal();
             if (event.target == learnModal) window.closeLearnModal();
+            if (event.target == document.getElementById('testPreviewModal')) window.closeTestPreview();
         }
     </script>
     <script>
