@@ -166,10 +166,18 @@
             margin-top: 12px;
             text-align: center;
             letter-spacing: 0.6px;
-            color: #e6e6e6; /* solid light color to ensure visibility */
-            text-shadow: 0 2px 12px rgba(0,0,0,0.6);
             position: relative;
             z-index: 5;
+            
+            /* New gradient text */
+            background: linear-gradient(45deg, #FFD700, #FDB931, #FFFFFF, #FFD700);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+            /* New animation for background gradient and shadow */
+            animation: gradientShimmer 8s ease infinite, shadowPulse 4s ease-in-out infinite alternate;
         }
 
         /* Apply transparent text-fill only on engines that support background-clip:text */
@@ -180,6 +188,21 @@
         @keyframes charIn { to { opacity:1; transform:none; } }
 
         @keyframes shine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+        @keyframes gradientShimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes shadowPulse {
+            from {
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            }
+            to {
+                text-shadow: 0 4px 25px rgba(0, 0, 0, 0.8);
+            }
+        }
 
         .nav-container {
             display: flex;
@@ -1972,17 +1995,34 @@
         }
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function(){
-            const desc = document.getElementById('heroDesc');
-            if(!desc) return;
-            const text = desc.textContent || '';
-            desc.textContent = '';
-            Array.from(text).forEach((ch, i) => {
-                const span = document.createElement('span');
-                span.className = 'hero-char';
-                span.textContent = ch === ' ' ? '\u00A0' : ch;
-                span.style.animationDelay = (i * 0.04) + 's';
-                desc.appendChild(span);
+        document.addEventListener('DOMContentLoaded', function() {
+            const heroDesc = document.getElementById('heroDesc');
+            if (!heroDesc) return;
+
+            const texts = [
+                "Desarrollo Web con IA",
+                "Software PRO",
+                "Point Of Sale",
+                "Nube de Productividad"
+            ];
+            let currentIndex = 0;
+
+            // Set initial text and prepare for transitions
+            heroDesc.textContent = texts[currentIndex];
+            heroDesc.style.transition = 'opacity 0.5s ease-in-out';
+
+            setInterval(() => {
+                heroDesc.style.opacity = '0'; // Start fade out
+            }, 3000); // Start fade-out every 3 seconds
+
+            heroDesc.addEventListener('transitionend', () => {
+                if (heroDesc.style.opacity == '0') {
+                    // Change text when faded out
+                    currentIndex = (currentIndex + 1) % texts.length;
+                    heroDesc.textContent = texts[currentIndex];
+                    // Fade back in
+                    heroDesc.style.opacity = '1';
+                }
             });
         });
     </script>
