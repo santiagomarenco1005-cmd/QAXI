@@ -1576,36 +1576,6 @@
             return false;
         };
 
-        // Small helper UI: if GROQ_KEY is not set, show a floating button to set it (for hosted sites)
-        (function () {
-            try {
-                const showKeyUI = function () {
-                    if (document.getElementById('qaxiSetKeyBtn')) return;
-                    const btn = document.createElement('button');
-                    btn.id = 'qaxiSetKeyBtn';
-                    btn.innerText = 'Configurar AI';
-                    btn.title = 'Configurar la clave de QAXI AI (solo tú la verás en este navegador)';
-                    btn.style.position = 'fixed';
-                    btn.style.right = '18px';
-                    btn.style.bottom = '18px';
-                    btn.style.zIndex = 99999;
-                    btn.style.padding = '10px 12px';
-                    btn.style.borderRadius = '12px';
-                    btn.style.background = '#D4AF37';
-                    btn.style.color = 'black';
-                    btn.style.border = 'none';
-                    btn.style.cursor = 'pointer';
-                    btn.style.boxShadow = '0 6px 18px rgba(0,0,0,0.4)';
-                    btn.addEventListener('click', () => {
-                        const key = prompt('Introduce tu API key para QAXI AI (se guardará en este navegador):');
-                        if (key && key.trim()) { window.setGroqKey(key.trim()); alert('Clave guardada. Refresca o vuelve a usar la IA.'); }
-                    });
-                    document.body.appendChild(btn);
-                };
-                // show only if no key present
-                try { if (!localStorage.getItem('qaxi_groq_key')) { setTimeout(showKeyUI, 800); } } catch (e) { setTimeout(showKeyUI, 800); }
-            } catch (e) { console.warn('qaxi set key UI init failed', e); }
-        })();
         // Live sync variables
         let liveCloudSync = false;
         let liveUnsubscribe = null;
