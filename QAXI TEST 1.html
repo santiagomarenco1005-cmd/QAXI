@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AERO | Flight Redefined</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        body { 
+            font-family: 'Satoshi', sans-serif; 
+            background-color: #0a0a0a; 
+            color: #f4f4f5;
+            overflow-x: hidden;
+        }
+        
+        ::-webkit-scrollbar { width: 4px; background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+        /* ANIMACIONES FLUIDAS (REVEAL ON SCROLL) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); /* Curva de animación "pro" */
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+
+        /* ESTILOS EXISTENTES */
+        .hero-bg {
+            background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1473968512647-3e447244af8f?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Efecto Parallax sutil */
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .text-outline {
+            -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+            color: transparent;
+            transition: 0.5s;
+        }
+        .group:hover .text-outline {
+            color: white;
+            -webkit-text-stroke: 0px;
+        }
+
+        /* ESTILOS DEL MODAL DE PAGO */
+        #paymentModal {
+            backdrop-filter: blur(15px);
+            background-color: rgba(0,0,0,0.7);
+        }
+        .input-field {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            transition: all 0.3s;
+        }
+        .input-field:focus {
+            border-color: #3b82f6; /* Azul al enfocar */
+            outline: none;
+            background: rgba(255,255,255,0.08);
+        }
+    </style>
+</head>
+<body class="bg-[#0a0a0a]">
+
+    <nav class="fixed w-full z-40 px-6 py-6 flex justify-between items-center text-white mix-blend-difference transition-all duration-500" id="navbar">
+        <div class="text-2xl font-black tracking-widest">AERO.</div>
+        <div class="hidden md:flex gap-10 text-xs font-bold uppercase tracking-widest">
+            <a href="#" class="hover:text-blue-400 transition">Model X</a>
+            <a href="#" class="hover:text-blue-400 transition">Model Y</a>
+            <a href="#" class="hover:text-blue-400 transition">Business</a>
+        </div>
+        <button onclick="openModal()" class="border border-white/30 px-6 py-2 rounded-full text-xs font-bold uppercase hover:bg-white hover:text-black transition duration-300 active:scale-95">
+            Reservar
+        </button>
+    </nav>
+
+    <header class="h-screen hero-bg flex flex-col justify-end pb-20 px-6 md:px-20 relative overflow-hidden">
+        <div class="relative z-10 max-w-5xl reveal">
+            <p class="text-blue-400 font-bold tracking-[0.2em] text-sm mb-4 animate-pulse">SERIE LIMITADA 2026</p>
+            <h1 class="text-7xl md:text-9xl font-black leading-none mb-6 tracking-tight">
+                BEYOND <br>
+                GRAVITY
+            </h1>
+            <div class="flex flex-col md:flex-row gap-8 items-start md:items-center reveal delay-1">
+                <p class="max-w-md text-gray-300 text-lg font-light leading-relaxed">
+                    Experimenta la libertad absoluta con el primer dron personal silencioso. 
+                    Diseñado en fibra de carbono forjada, impulsado por IA.
+                </p>
+                <div class="h-[1px] w-20 bg-white/30 hidden md:block"></div>
+                <a href="#discover" class="flex items-center gap-2 text-sm font-bold hover:gap-4 transition-all text-blue-400">
+                    DESCUBRIR <i class="ph-bold ph-arrow-down"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section id="discover" class="bg-[#0a0a0a] py-32 px-6 md:px-20 border-b border-white/5 relative z-20">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-20 reveal">
+            <h2 class="text-4xl md:text-6xl font-bold">Ingeniería <br><span class="text-gray-600">Invisible.</span></h2>
+            <p class="text-gray-500 text-right mt-4 md:mt-0">Diseñado para desaparecer <br>en el cielo.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="reveal delay-1 glass-panel p-10 h-96 flex flex-col justify-between group hover:border-blue-500/30 transition duration-500 cursor-pointer">
+                <i class="ph-thin ph-wind text-5xl text-blue-400 group-hover:scale-110 transition"></i>
+                <div>
+                    <h3 class="text-5xl font-thin mb-2 group-hover:translate-x-2 transition text-outline">0db</h3>
+                    <p class="text-sm text-gray-400 uppercase tracking-wider">Emisión de Ruido</p>
+                </div>
+            </div>
+
+            <div class="reveal delay-2 glass-panel p-10 h-96 flex flex-col justify-between group hover:border-blue-500/30 transition duration-500 md:translate-y-12 cursor-pointer">
+                <i class="ph-thin ph-lightning text-5xl text-blue-400 group-hover:scale-110 transition"></i>
+                <div>
+                    <h3 class="text-5xl font-thin mb-2 group-hover:translate-x-2 transition text-outline">800km</h3>
+                    <p class="text-sm text-gray-400 uppercase tracking-wider">Autonomía de Vuelo</p>
+                </div>
+            </div>
+
+            <div class="reveal delay-3 glass-panel p-10 h-96 flex flex-col justify-between group hover:border-blue-500/30 transition duration-500 cursor-pointer">
+                <i class="ph-thin ph-cpu text-5xl text-blue-400 group-hover:scale-110 transition"></i>
+                <div>
+                    <h3 class="text-5xl font-thin mb-2 group-hover:translate-x-2 transition text-outline">A.I.</h3>
+                    <p class="text-sm text-gray-400 uppercase tracking-wider">Piloto Automático Neural</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="h-[90vh] relative flex items-center justify-center overflow-hidden z-10">
+        <div class="absolute inset-0 bg-fixed bg-cover bg-center opacity-50 grayscale transition duration-[2s] hover:grayscale-0 scale-105" style="background-image: url('https://images.unsplash.com/photo-1506947411487-a56738267384?q=80&w=2070&auto=format&fit=crop');"></div>
+        <div class="relative z-10 text-center reveal">
+            <h2 class="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-transparent opacity-80 leading-tight">
+                THE FUTURE <br> IS ABOVE
+            </h2>
+        </div>
+    </section>
+
+    <section class="py-40 px-6 bg-[#0a0a0a] text-center relative z-20">
+        <div class="reveal">
+            <p class="text-blue-500 font-bold mb-6 tracking-[0.3em] text-xs uppercase">Acceso Anticipado</p>
+            <h2 class="text-5xl md:text-8xl font-black mb-10 text-white tracking-tight">Asegura tu AERO.</h2>
+            <button onclick="openModal()" class="inline-block bg-white text-black px-12 py-6 rounded-full text-xl font-bold hover:scale-105 hover:bg-blue-500 hover:text-white hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-all duration-300 active:scale-95">
+                Pre-ordenar ($299 USD)
+            </button>
+            <p class="mt-8 text-gray-500 text-sm">Depósito reembolsable. Entrega estimada: Q3 2026</p>
+        </div>
+    </section>
+
+    <footer class="border-t border-white/5 pt-20 pb-10 bg-[#050505] relative z-20 reveal">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+            <div class="col-span-1 md:col-span-2">
+                <h4 class="text-3xl font-black mb-6 tracking-wider">AERO.</h4>
+                <p class="text-gray-500 max-w-sm text-lg font-light">
+                    Redefiniendo el transporte personal a través de la propulsión iónica y el diseño minimalista.
+                </p>
+            </div>
+            <div>
+                <h5 class="text-white font-bold mb-4 uppercase tracking-wider text-sm">Explorar</h5>
+                <ul class="space-y-3 text-gray-500 text-sm font-medium">
+                    <li><a href="#" class="hover:text-blue-400 transition">Tecnología</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition">Seguridad</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition">Prensa</a></li>
+                </ul>
+            </div>
+             <div>
+                <h5 class="text-white font-bold mb-4 uppercase tracking-wider text-sm">Legal</h5>
+                <ul class="space-y-3 text-gray-500 text-sm font-medium">
+                    <li><a href="#" class="hover:text-blue-400 transition">Privacidad</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition">Términos</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5">
+            <p class="text-gray-600 text-xs font-medium">© 2026 AERO Inc. Todos los derechos reservados.</p>
+            
+                    <a href="https://qaxi.co" target="_blank" class="mt-6 md:mt-0 flex items-center gap-4 px-5 py-3 rounded-2xl hover:bg-white/5 border border-transparent hover:border-blue-500/30 transition-all group">
+                <div class="flex flex-col text-right">
+                    <span class="text-[10px] text-gray-500 uppercase tracking-widest font-bold group-hover:text-blue-400 transition">Potenciada por</span>
+                    <span class="text-sm font-black text-white tracking-tight group-hover:tracking-wide transition-all">QAXI</span>
+                </div>
+                <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-blue-400 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/40 transition">
+                    <i class="ph-bold ph-lightning text-xl"></i>
+                </div>
+            </a>
+        </div>
+    </footer>
+
+    <div id="paymentModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-8 relative transform scale-95 transition-transform duration-300" id="modalContent">
+            
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white transition">
+                <i class="ph-bold ph-x text-xl"></i>
+            </button>
+
+            <div id="paymentFormContent">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400">
+                        <i class="ph-fill ph-credit-card text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">Finalizar Reserva</h3>
+                        <p class="text-sm text-gray-400">Depósito seguro y encriptado.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/5 p-4 rounded-2xl mb-6 flex justify-between items-center border border-white/10">
+                    <div>
+                        <p class="font-bold">AERO Model X - Depósito</p>
+                        <p class="text-xs text-gray-400">Entrega Q3 2026</p>
+                    </div>
+                    <p class="text-xl font-black text-white">$299 USD</p>
+                </div>
+
+                <form onsubmit="simulatePayment(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-500 mb-2 pl-1">Número de Tarjeta</label>
+                        <div class="relative">
+                            <i class="ph-fill ph-cardholder text-gray-500 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                            <input type="text" placeholder="0000 0000 0000 0000" class="input-field w-full pl-12 pr-4 py-4 rounded-xl font-medium focus:ring-0" required>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="flex-1">
+                            <label class="block text-xs font-bold uppercase text-gray-500 mb-2 pl-1">Expiración</label>
+                            <input type="text" placeholder="MM/AA" class="input-field w-full px-4 py-4 rounded-xl font-medium text-center" required>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-xs font-bold uppercase text-gray-500 mb-2 pl-1">CVC</label>
+                            <input type="password" placeholder="•••" class="input-field w-full px-4 py-4 rounded-xl font-medium text-center" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="payButton" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-5 rounded-xl mt-4 transition-all flex justify-center items-center gap-2 active:scale-95">
+                        <span id="btnText">Pagar $299 Ahora</span>
+                        <svg id="btnSpinner" class="animate-spin h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
+                    
+                </form>
+            </div>
+
+            <div id="paymentSuccess" class="hidden py-10 text-center">
+                <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center text-green-500 mx-auto mb-6 animate-bounce">
+                    <i class="ph-bold ph-check text-4xl"></i>
+                </div>
+                <h3 class="text-3xl font-black text-white mb-2">¡Reserva Exitosa!</h3>
+                <p class="text-gray-400">Bienvenido al futuro del vuelo. Revisa tu correo.</p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        // --- 1. SCRIPT DE ANIMACIÓN "REVEAL" AL HACER SCROLL ---
+        // Detecta cuando los elementos entran en pantalla y les añade la clase 'active'
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const observerOptions = {
+            root: null,
+            threshold: 0.15, // El elemento debe estar al 15% visible para activarse
+            rootMargin: "0px 0px -50px 0px" // Un pequeño margen inferior para suavizar la entrada
+        };
+
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // Opcional: dejar de observar una vez animado para mejor rendimiento
+                    // observer.unobserve(entry.target); 
+                } else {
+                    // Opcional: quitar la clase si sale de pantalla para que se anime de nuevo al volver
+                    // entry.target.classList.remove('active');
+                }
+            });
+        }, observerOptions);
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // --- 2. SCRIPTS DEL MODAL DE PAGO SIMULADO ---
+        const modal = document.getElementById('paymentModal');
+        const modalContent = document.getElementById('modalContent');
+        const formContent = document.getElementById('paymentFormContent');
+        const successContent = document.getElementById('paymentSuccess');
+        const payBtn = document.getElementById('payButton');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+
+        // Función para abrir el modal con animación
+        function openModal() {
+            modal.classList.remove('hidden');
+            // Pequeño timeout para permitir que el navegador renderice antes de añadir las clases de opacidad
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+            }, 10);
+            // Resetear el estado del formulario por si se abre de nuevo
+            formContent.classList.remove('hidden');
+            successContent.classList.add('hidden');
+            payBtn.disabled = false;
+            btnText.textContent = 'Pagar $299 Ahora';
+            btnSpinner.classList.add('hidden');
+        }
+
+        // Función para cerrar el modal
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300); // Esperar a que termine la transición de 300ms
+        }
+
+        // Cerrar modal al hacer clic fuera del contenido
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+
+        // Función para simular el proceso de pago
+        function simulatePayment(e) {
+            e.preventDefault(); // Evitar recarga del formulario
+
+            // 1. Estado de carga
+            payBtn.disabled = true;
+            btnText.textContent = 'Procesando...';
+            btnSpinner.classList.remove('hidden');
+
+            // 2. Simular espera de 2.5 segundos
+            setTimeout(() => {
+                // 3. Ocultar formulario y mostrar éxito con una transición suave
+                formContent.style.opacity = '0';
+                setTimeout(() => {
+                    formContent.classList.add('hidden');
+                    successContent.classList.remove('hidden');
+                    // Forzar reflow para que la animación de entrada funcione
+                    void successContent.offsetWidth; 
+                    formContent.style.opacity = '1';
+                    
+                    // 4. Cerrar el modal automáticamente después de ver el éxito
+                    setTimeout(() => {
+                        closeModal();
+                    }, 2500);
+
+                }, 300); // Esperar a que el formulario se desvanezca
+
+            }, 2500);
+        }
+    </script>
+
+</body>
+</html>
