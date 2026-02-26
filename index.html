@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>QAXI</title>
-    <meta name="description" content="QAXI ofrece diseño y mantenimiento de páginas web profesionales por una suscripción mensual accesible en Colombia. Incluye dominio, hosting, IA y soporte.">
-    <meta name="keywords" content="paginas web colombia, diseño web suscripcion, mantenimiento web, qaxi, crear pagina web, hosting incluido, web barata, seo">
+    <meta name="description"
+        content="QAXI ofrece diseño y mantenimiento de páginas web profesionales por una suscripción mensual accesible en Colombia. Incluye dominio, hosting, IA y soporte.">
+    <meta name="keywords"
+        content="paginas web colombia, diseño web suscripcion, mantenimiento web, qaxi, crear pagina web, hosting incluido, web barata, seo">
     <meta name="author" content="QAXI - Santiago Marenco">
-    
+
     <meta property="og:title" content="QAXI">
-    <meta property="og:description" content="Olvídate de pagar millones. Ten tu sitio web profesional con todo incluido desde $60.000 COP/mes.">
+    <meta property="og:description"
+        content="Olvídate de pagar millones. Ten tu sitio web profesional con todo incluido desde $60.000 COP/mes.">
     <meta property="og:image" content="icon.png">
     <meta property="og:url" content="https://qaxi.co">
     <meta property="og:type" content="website">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <link rel="icon" href="icon.png" type="image/png">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,7 +36,7 @@
             --text-primary: #ffffff;
             --text-secondary: #a1a1a1;
             --accent: #ffffff;
-            --gold: #FFD700; 
+            --gold: #FFD700;
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
             --glass-blur: blur(20px);
@@ -66,7 +70,7 @@
             z-index: -1;
             pointer-events: none;
         }
-        
+
         body::before {
             content: '';
             position: fixed;
@@ -74,15 +78,22 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 50%);
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 50%);
             z-index: -2;
             pointer-events: none;
             animation: breathe 10s infinite alternate;
         }
 
         @keyframes breathe {
-            from { opacity: 0.5; transform: scale(1); }
-            to { opacity: 0.8; transform: scale(1.1); }
+            from {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            to {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
         }
 
         header {
@@ -97,7 +108,7 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .logo {
@@ -109,7 +120,7 @@
             font-size: 1.2rem;
             gap: 10px;
         }
-        
+
         .logo img {
             height: 45px;
             object-fit: contain;
@@ -122,8 +133,8 @@
             display: flex;
             justify-content: center;
             padding: 14px 0 6px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0));
-            border-bottom: 1px solid rgba(255,255,255,0.02);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(0, 0, 0, 0));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
         }
 
         .site-banner img {
@@ -132,7 +143,7 @@
             height: auto;
             object-fit: contain;
             border-radius: 10px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
         }
 
         /* Hero banner (replaces hero text) */
@@ -143,7 +154,8 @@
             justify-content: center;
             align-items: center;
             gap: 12px;
-            padding: 12px 0 36px; /* more bottom space so description is visible */
+            padding: 12px 0 36px;
+            /* more bottom space so description is visible */
             position: relative;
             z-index: 1;
         }
@@ -154,8 +166,8 @@
             height: auto;
             object-fit: contain;
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
         }
 
 
@@ -168,7 +180,7 @@
             letter-spacing: 0.6px;
             position: relative;
             z-index: 5;
-            
+
             /* New gradient text */
             background: linear-gradient(45deg, #FFD700, #FDB931, #FFFFFF, #FFD700);
             background-size: 400% 400%;
@@ -183,22 +195,49 @@
         /* Apply transparent text-fill only on engines that support background-clip:text */
         /* Remove background-clip dependent visual to keep text visible across browsers */
 
-        .hero-char { display:inline-block; opacity:0; transform:translateY(8px); animation:charIn 420ms ease forwards; }
+        .hero-char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(8px);
+            animation: charIn 420ms ease forwards;
+        }
 
-        @keyframes charIn { to { opacity:1; transform:none; } }
+        @keyframes charIn {
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
 
-        @keyframes shine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+        @keyframes shine {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 200% 50%;
+            }
+        }
 
         @keyframes gradientShimmer {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         @keyframes shadowPulse {
             from {
                 text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
             }
+
             to {
                 text-shadow: 0 4px 25px rgba(0, 0, 0, 0.8);
             }
@@ -263,12 +302,12 @@
             color: #000 !important;
             border: none !important;
             font-weight: 800 !important;
-            box-shadow: 0 8px 30px rgba(255,215,0,0.18);
+            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.18);
         }
 
         .annual-btn:hover {
             transform: scale(1.03);
-            box-shadow: 0 12px 40px rgba(255,215,0,0.28);
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.28);
         }
 
         .menu-toggle {
@@ -293,12 +332,12 @@
             position: absolute;
             top: 64px;
             right: 5%;
-            background: rgba(10,10,10,0.96);
+            background: rgba(10, 10, 10, 0.96);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             padding: 14px 18px;
             border-radius: 12px;
-            box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
             flex-direction: column;
             gap: 12px;
             z-index: 1050;
@@ -307,12 +346,19 @@
 
         .nav-container.active {
             transform-origin: top right;
-            animation: dropIn 220ms cubic-bezier(.2,.9,.2,1);
+            animation: dropIn 220ms cubic-bezier(.2, .9, .2, 1);
         }
 
         @keyframes dropIn {
-            from { transform: translateY(-8px) scale(.98); opacity: 0; }
-            to   { transform: translateY(0) scale(1); opacity: 1; }
+            from {
+                transform: translateY(-8px) scale(.98);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
         }
 
         .nav-container.active nav ul {
@@ -339,7 +385,9 @@
         }
 
         /* Keep desktop layout intact when not active */
-        .nav-container { transition: none; }
+        .nav-container {
+            transition: none;
+        }
 
         .hero {
             padding: 160px 20px 80px;
@@ -375,8 +423,15 @@
         }
 
         @keyframes popIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .hero p {
@@ -390,8 +445,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .hero-btns {
@@ -415,19 +475,20 @@
             font-weight: 800;
             color: #fff;
         }
-        
+
         .section-title span {
             color: var(--gold);
         }
 
         /* --- STYLES FOR TRAFFIC & SOCIAL SECTIONS --- */
-        .traffic-section, .social-section {
-            border-top: 1px solid rgba(255,255,255,0.05);
+        .traffic-section,
+        .social-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .premium-card {
-            background: radial-gradient(circle at top right, rgba(20,20,20,0.8), rgba(0,0,0,0.8));
-            border: 1px solid rgba(255,255,255,0.1);
+            background: radial-gradient(circle at top right, rgba(20, 20, 20, 0.8), rgba(0, 0, 0, 0.8));
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 30px;
             padding: 50px;
             display: flex;
@@ -438,16 +499,19 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .premium-card:hover {
-            border-color: rgba(255,255,255,0.3);
-            box-shadow: 0 0 50px rgba(255,255,255,0.05);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.05);
         }
 
         .premium-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: url('https://www.transparenttextures.com/patterns/cubes.png');
             opacity: 0.05;
             pointer-events: none;
@@ -463,7 +527,7 @@
             list-style: none;
             margin-top: 20px;
         }
-        
+
         .premium-list li {
             margin-bottom: 12px;
             color: #aaa;
@@ -471,18 +535,18 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         .premium-list li i {
             color: var(--gold);
         }
 
         .premium-pricing {
             flex: 1;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             padding: 30px;
             border-radius: 20px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             z-index: 2;
         }
@@ -510,8 +574,8 @@
         }
 
         .pricing-card {
-            background: radial-gradient(circle at top right, rgba(20,20,20,0.8), rgba(0,0,0,0.8));
-            border: 1px solid rgba(255,255,255,0.18);
+            background: radial-gradient(circle at top right, rgba(20, 20, 20, 0.8), rgba(0, 0, 0, 0.8));
+            border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: 30px;
             padding: 40px;
             display: flex;
@@ -524,10 +588,10 @@
             min-width: auto;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(255,255,255,0.03);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.03);
         }
 
-        .pricing-card + .pricing-card {
+        .pricing-card+.pricing-card {
             /* visual separation handled by gap; keep subtle */
         }
 
@@ -538,7 +602,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
             transform: rotate(45deg);
             pointer-events: none;
             transition: 0.5s;
@@ -551,13 +615,13 @@
 
         .pricing-card:hover {
             transform: translateY(-10px);
-            border-color: rgba(255,255,255,0.25);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
         .pricing-card.highlight {
             border-color: var(--gold) !important;
-            box-shadow: 0 0 40px rgba(255,215,0,0.18);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.18);
         }
 
         .pricing-period {
@@ -588,7 +652,7 @@
             margin-bottom: 5px;
             color: #fff;
         }
-        
+
         .price span {
             font-size: 1rem;
             color: #888;
@@ -609,11 +673,11 @@
             gap: 10px;
             align-items: center;
         }
-        
+
         .features-list li i {
             color: var(--gold);
         }
-        
+
         .highlight-feature {
             color: #fff !important;
             font-weight: 600;
@@ -623,16 +687,16 @@
         .founder-section {
             margin-top: 100px;
             padding: 100px 5%;
-            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(10,10,10,1) 100%);
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(10, 10, 10, 1) 100%);
             text-align: center;
         }
-        
+
         .founder-content {
             max-width: 800px;
             margin: 0 auto;
             position: relative;
         }
-        
+
         .founder-content p {
             font-size: 1.1rem;
             line-height: 1.8;
@@ -646,14 +710,14 @@
             text-align: center;
             background: #0a0a0a;
         }
-        
+
         .footer-contact-icons {
             margin-bottom: 25px;
             display: flex;
             justify-content: center;
             gap: 30px;
         }
-        
+
         .footer-contact-icons a {
             color: #666;
             font-size: 1.5rem;
@@ -664,16 +728,16 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             text-decoration: none;
         }
-        
+
         .footer-contact-icons a:hover {
             color: #fff;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             transform: translateY(-5px);
         }
-        
+
         footer p {
             color: #444;
             font-size: 0.9rem;
@@ -683,21 +747,21 @@
             position: absolute;
             font-size: 20vw;
             font-weight: 900;
-            color: rgba(255,255,255,0.02);
+            color: rgba(255, 255, 255, 0.02);
             z-index: -1;
             pointer-events: none;
         }
 
         /* MODALES */
         .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 3000; 
+            display: none;
+            position: fixed;
+            z-index: 3000;
             left: 0;
             top: 0;
-            width: 100%; 
-            height: 100%; 
-            background-color: rgba(0,0,0,0.9); 
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(10px);
             align-items: center;
             justify-content: center;
@@ -708,13 +772,13 @@
             background: #0a0a0a;
             margin: auto;
             padding: 40px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             width: 90%;
             max-width: 450px;
             border-radius: 20px;
             position: relative;
             text-align: center;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
         }
 
         /* Learn more modal (larger, animated) */
@@ -732,28 +796,55 @@
             flex: 1.4;
         }
 
-        .learn-modal .learn-side h2 { font-size: 2rem; margin-bottom: 8px; }
-        .learn-modal .learn-side p { color: #cfcfcf; margin-bottom: 18px; }
+        .learn-modal .learn-side h2 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
 
-        .learn-modal .learn-features { list-style: none; padding: 0; margin: 0; }
-        .learn-modal .learn-features li { margin-bottom: 12px; color: #ddd; display:flex; gap:10px; align-items:center; }
+        .learn-modal .learn-side p {
+            color: #cfcfcf;
+            margin-bottom: 18px;
+        }
+
+        .learn-modal .learn-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .learn-modal .learn-features li {
+            margin-bottom: 12px;
+            color: #ddd;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
 
         .learn-modal .learn-cta {
             width: 360px;
             min-width: 260px;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 14px;
             padding: 22px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .learn-modal .learn-price { font-size: 3rem; font-weight:800; margin-bottom:6px; }
-        .learn-modal .learn-period { font-weight:700; color:#e6e6e6; margin-bottom:14px; }
+        .learn-modal .learn-price {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .learn-modal .learn-period {
+            font-weight: 700;
+            color: #e6e6e6;
+            margin-bottom: 14px;
+        }
 
         .learn-btn {
             background: transparent;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             color: #fff;
             padding: 10px 16px;
             border-radius: 14px;
@@ -761,19 +852,28 @@
             font-weight: 700;
         }
 
-        .learn-btn:hover { background: rgba(255,255,255,0.03); transform: translateY(-2px); }
+        .learn-btn:hover {
+            background: rgba(255, 255, 255, 0.03);
+            transform: translateY(-2px);
+        }
 
-        .learn-modal.show .modal-content { animation: popIn 260ms cubic-bezier(.2,.9,.2,1); }
+        .learn-modal.show .modal-content {
+            animation: popIn 260ms cubic-bezier(.2, .9, .2, 1);
+        }
 
         /* ESTILOS MEJORADOS PARA EL DASHBOARD */
         .dashboard-card {
-            background: #050505; /* Fondo solido elegante */
-            border: 1px solid rgba(255,255,255,0.08); /* Borde sutil */
-            border-radius: 30px; /* Bordes mas redondeados */
+            background: #050505;
+            /* Fondo solido elegante */
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            /* Borde sutil */
+            border-radius: 30px;
+            /* Bordes mas redondeados */
             padding: 0;
             overflow: hidden;
             width: 100%;
-            max-width: 420px; /* Un poco mas angosto para elegancia */
+            max-width: 420px;
+            /* Un poco mas angosto para elegancia */
             position: relative;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
         }
@@ -785,7 +885,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -797,7 +897,7 @@
         }
 
         .close-modal-btn:hover {
-            background: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.15);
             color: #fff;
             transform: rotate(90deg);
         }
@@ -809,7 +909,7 @@
             align-items: center;
             text-align: center;
             /* Eliminamos borde inferior duro para mas limpieza */
-            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0) 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0) 100%);
         }
 
         .dash-avatar-container {
@@ -835,7 +935,7 @@
             overflow: hidden;
             transition: transform 0.3s ease;
         }
-        
+
         .dash-avatar img {
             width: 100%;
             height: 100%;
@@ -899,10 +999,10 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
-            background: rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
             padding: 18px 20px;
             border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.03);
+            border: 1px solid rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
         }
 
@@ -913,7 +1013,7 @@
             font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .web-access-area {
@@ -935,24 +1035,26 @@
             transition: all 0.3s ease;
             font-size: 0.95rem;
             margin-top: 15px;
-            box-shadow: 0 4px 20px rgba(255,255,255,0.05);
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
         }
 
         .web-btn-big:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255,255,255,0.15);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.15);
             background: #f0f0f0;
         }
 
         .dash-footer {
             padding: 25px 35px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            text-align: center; /* Centrado para elegancia */
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            /* Centrado para elegancia */
             background: #080808;
         }
 
         .logout-link {
-            color: #666; /* Mas sutil por defecto */
+            color: #666;
+            /* Mas sutil por defecto */
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 500;
@@ -970,7 +1072,7 @@
 
         .close {
             /* ESTILO ANTIGUO ELIMINADO en favor de .close-modal-btn */
-            display: none; 
+            display: none;
         }
 
         .auth-input {
@@ -985,17 +1087,25 @@
             outline: none;
             transition: 0.3s;
         }
-        
+
         .auth-input:focus {
             border-color: var(--gold);
         }
 
         /* RESPONSIVE */
         @media (max-width: 900px) {
-            header { padding: 15px 20px; }
-            .logo img { height: 45px; }
-            .menu-toggle { display: block; }
-            
+            header {
+                padding: 15px 20px;
+            }
+
+            .logo img {
+                height: 45px;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
             .nav-container {
                 position: fixed;
                 top: 0;
@@ -1009,14 +1119,14 @@
                 align-items: center;
                 transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
                 padding: 40px;
-                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+                box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
                 z-index: 1050;
             }
-            
+
             .nav-container.active {
                 right: 0;
             }
-            
+
             nav ul {
                 flex-direction: column;
                 gap: 30px;
@@ -1024,21 +1134,36 @@
                 width: 100%;
                 text-align: center;
             }
-            
+
             nav a {
                 font-size: 1.3rem;
                 display: block;
             }
-            
+
             .premium-card {
                 flex-direction: column !important;
                 padding: 30px;
             }
-            
-            .hero h1 { font-size: 2.5rem; } 
-            .hero p { font-size: 1rem; padding: 0 10px; }
-            .hero-btns { flex-direction: column; width: 100%; gap: 15px; }
-            .cta-btn { width: 100%; text-align: center; }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+                padding: 0 10px;
+            }
+
+            .hero-btns {
+                flex-direction: column;
+                width: 100%;
+                gap: 15px;
+            }
+
+            .cta-btn {
+                width: 100%;
+                text-align: center;
+            }
 
             /* Make pricing cards stack vertically on small screens */
             .pricing-container {
@@ -1048,7 +1173,12 @@
                 gap: 20px;
                 align-items: center;
             }
-            .pricing-deck { flex-direction: column; width: 100%; }
+
+            .pricing-deck {
+                flex-direction: column;
+                width: 100%;
+            }
+
             .pricing-card {
                 flex: 1 1 100% !important;
                 min-width: 0 !important;
@@ -1056,13 +1186,45 @@
                 width: 100% !important;
                 padding: 28px 20px;
             }
-            .pricing-card + .pricing-card { border-left: none; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 24px; }
-            
-            .wa-float { bottom: 20px; right: 20px; width: 55px; height: 55px; font-size: 28px; }
+
+            .pricing-card+.pricing-card {
+                border-left: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.04);
+                padding-top: 24px;
+            }
+
+            .wa-float {
+                bottom: 20px;
+                right: 20px;
+                width: 55px;
+                height: 55px;
+                font-size: 28px;
+            }
         }
 
-        .wa-float { position: fixed; bottom: 30px; right: 30px; background: #25D366; color: #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4); z-index: 2000; transition: 0.3s; text-decoration: none; }
-        .wa-float:hover { transform: scale(1.1); box-shadow: 0 0 20px #25D366; }
+        .wa-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            color: #fff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+            z-index: 2000;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .wa-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #25D366;
+        }
 
         /* --- NUESTRA TECNOLOGIA --- */
 
@@ -1083,19 +1245,32 @@
         }
 
         .mission-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
             padding: 22px;
             border-radius: 14px;
             text-align: left;
         }
 
-        .mission-card h3 { color: var(--gold); font-size: 1.1rem; margin-bottom: 8px; font-weight: 800; }
-        .mission-card p { color: #ddd; line-height: 1.6; font-size: 0.98rem; }
+        .mission-card h3 {
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+
+        .mission-card p {
+            color: #ddd;
+            line-height: 1.6;
+            font-size: 0.98rem;
+        }
 
         @media (max-width: 800px) {
-            .mission-grid { grid-template-columns: 1fr; }
+            .mission-grid {
+                grid-template-columns: 1fr;
+            }
         }
+
         .tech-section {
             padding: 36px 5%;
             max-width: 1200px;
@@ -1123,8 +1298,8 @@
         }
 
         .tech-item {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
             padding: 18px 16px;
             border-radius: 12px;
             width: 160px;
@@ -1136,8 +1311,8 @@
 
         .tech-item:hover {
             transform: translateY(-8px);
-            box-shadow: 0 18px 40px rgba(0,0,0,0.6);
-            border-color: rgba(255,255,255,0.08);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.08);
         }
 
         .tech-logo {
@@ -1155,8 +1330,13 @@
         }
 
         @media (max-width: 600px) {
-            .tech-item { width: 46%; }
-            .tech-logo { height: 46px; }
+            .tech-item {
+                width: 46%;
+            }
+
+            .tech-logo {
+                height: 46px;
+            }
         }
 
         /* --- POR QUE ELEGIR QAXI (COMPARATIVO) --- */
@@ -1186,8 +1366,8 @@
         }
 
         .compare-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
             padding: 22px;
             border-radius: 14px;
             text-align: left;
@@ -1197,12 +1377,38 @@
             gap: 12px;
         }
 
-        .compare-card.agency { background: rgba(255,255,255,0.01); }
+        .compare-card.agency {
+            background: rgba(255, 255, 255, 0.01);
+        }
 
-        .compare-card h3 { font-size: 1.1rem; color: var(--gold); margin-bottom: 6px; font-weight: 800; }
-        .compare-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-        .compare-list li { color: #ddd; display: flex; align-items: center; gap: 12px; font-size: 0.98rem; }
-        .compare-list li i { min-width: 20px; font-size: 1.05rem; }
+        .compare-card h3 {
+            font-size: 1.1rem;
+            color: var(--gold);
+            margin-bottom: 6px;
+            font-weight: 800;
+        }
+
+        .compare-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .compare-list li {
+            color: #ddd;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.98rem;
+        }
+
+        .compare-list li i {
+            min-width: 20px;
+            font-size: 1.05rem;
+        }
 
         .compare-badge {
             margin-top: auto;
@@ -1210,7 +1416,7 @@
             padding: 10px 14px;
             border-radius: 12px;
             font-weight: 800;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             color: #fff;
             text-align: center;
         }
@@ -1223,10 +1429,13 @@
         }
 
         @media (max-width: 900px) {
-            .compare-grid { grid-template-columns: 1fr; }
+            .compare-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <canvas id="particles-canvas"></canvas>
@@ -1245,13 +1454,16 @@
                     <li><a href="#pricing" class="nav-link">Precios</a></li>
                     <li><a href="QAXI%20POS.html" class="nav-link">QAXI POS</a></li>
                     <li><a href="#founder" class="nav-link">Manifiesto</a></li>
-                    <li><a href="giftcards.html" class="nav-link" style="color: var(--gold);"><i class="fas fa-gift"></i> Regalos</a></li>
-                    <li><a href="cloud.html" class="nav-link" style="color: var(--gold); font-weight: 700;">QAXI Cloud <span style="font-size:0.7rem; color:var(--gold);">Beta</span></a></li>
+                    <li><a href="giftcards.html" class="nav-link" style="color: var(--gold);"><i
+                                class="fas fa-gift"></i> Regalos</a></li>
+                    <li><a href="cloud.html" class="nav-link" style="color: var(--gold); font-weight: 700;">QAXI Cloud
+                            <span style="font-size:0.7rem; color:var(--gold);">Beta</span></a></li>
                 </ul>
             </nav>
             <div class="auth-wrapper">
                 <a id="authBtn" class="cta-btn nav-link" onclick="openAuthModal()">Acceso Clientes</a>
-                <a id="accountBtn" class="cta-btn nav-link" style="display: none;" onclick="openDashboardModal()">Mi Panel QAXI</a>
+                <a id="accountBtn" class="cta-btn nav-link" style="display: none;" onclick="openDashboardModal()">Mi
+                    Panel QAXI</a>
             </div>
         </div>
     </header>
@@ -1271,11 +1483,15 @@
         <div class="mission-grid">
             <div class="mission-card">
                 <h3>Nuestra Misión</h3>
-                <p>Democratizar el acceso a la tecnología web de élite. Transformamos la manera en que los negocios se construyen en internet ofreciendo diseño, mantenimiento e inteligencia artificial en un modelo Inteligente que prioriza la rentabilidad y escalabilidad de nuestros clientes.</p>
+                <p>Democratizar el acceso a la tecnología web de élite. Transformamos la manera en que los negocios se
+                    construyen en internet ofreciendo diseño, mantenimiento e inteligencia artificial en un modelo
+                    Inteligente que prioriza la rentabilidad y escalabilidad de nuestros clientes.</p>
             </div>
             <div class="mission-card">
                 <h3>Nuestra Visión</h3>
-                <p>Establecer un nuevo paradigma en la industria del desarrollo web, donde la obsolescencia no existe. Visualizamos un futuro en el que cada proyecto, sin importar su escala, cuente con la potencia tecnológica necesaria para competir, liderar y trascender en la economía digital global.</p>
+                <p>Establecer un nuevo paradigma en la industria del desarrollo web, donde la obsolescencia no existe.
+                    Visualizamos un futuro en el que cada proyecto, sin importar su escala, cuente con la potencia
+                    tecnológica necesaria para competir, liderar y trascender en la economía digital global.</p>
             </div>
         </div>
     </section>
@@ -1312,7 +1528,8 @@
     <!-- POR QUE ELEGIR QAXI -->
     <section id="why" class="compare-section">
         <h2 class="section-title">Por qué Elegir QAXI</h2>
-        <p class="compare-desc">Comparamos lo que incluye nuestro Plan Estándar frente a lo que normalmente entrega una agencia web tradicional.</p>
+        <p class="compare-desc">Comparamos lo que incluye nuestro Plan Estándar frente a lo que normalmente entrega una
+            agencia web tradicional.</p>
 
         <div class="compare-grid">
             <div class="compare-card">
@@ -1332,12 +1549,17 @@
             <div class="compare-card agency">
                 <h3>Agencia Tradicional</h3>
                 <ul class="compare-list">
-                    <li><i class="fas fa-times-circle" style="color:#ff6b6b"></i>Dominio y hosting suelen cobrar aparte</li>
-                    <li><i class="fas fa-times-circle" style="color:#ff6b6b"></i>Pago único por el proyecto (sin continuidad)</li>
-                    <li><i class="fas fa-times-circle" style="color:#ff6b6b"></i>Mantenimiento y cambios con costo adicional</li>
+                    <li><i class="fas fa-times-circle" style="color:#ff6b6b"></i>Dominio y hosting suelen cobrar aparte
+                    </li>
+                    <li><i class="fas fa-times-circle" style="color:#ff6b6b"></i>Pago único por el proyecto (sin
+                        continuidad)</li>
+                    <li><i class="fas fa-times-circle" style="color:#ff6b6b"></i>Mantenimiento y cambios con costo
+                        adicional</li>
                     <li><i class="fas fa-times-circle" style="color:#ff6b6b"></i>Soporte limitado o por horario</li>
-                    <li><i class="fas fa-times-circle" style="color:#ff6b6b"></i>Mejoras y optimizaciones cobran extras</li>
-                    <li><i class="fas fa-times-circle" style="color:#ff6b6b"></i>Costos adicionales por cada actualización</li>
+                    <li><i class="fas fa-times-circle" style="color:#ff6b6b"></i>Mejoras y optimizaciones cobran extras
+                    </li>
+                    <li><i class="fas fa-times-circle" style="color:#ff6b6b"></i>Costos adicionales por cada
+                        actualización</li>
                 </ul>
             </div>
         </div>
@@ -1347,65 +1569,84 @@
         <h2 class="section-title" style="text-align: center; border: none;">Planes y Precios</h2>
         <div class="pricing-container">
             <div class="pricing-deck">
-            <div class="premium-card pricing-card highlight" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
-                <div class="premium-info">
-                    <div style="position: absolute; top: 12px; right: 12px; background: var(--gold); color: #000; font-weight: 800; font-size: 0.7rem; padding: 5px 12px; border-bottom-left-radius: 8px;">MEJOR OPCIÓN</div>
-                    <h3 style="color:var(--gold);">Plan PRO</h3>
-                    <p style="color:#ccc; margin-top:8px;">Todo incluido + Gestión de Instagram y Apps.</p>
-                    <ul class="premium-list">
-                        <li><i class="fas fa-check-circle"></i> 1 Página Web</li>
-                        <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
-                        <li><i class="fas fa-check-circle"></i> Hosting privado</li>
-                        <!-- Certificado SSL removed per request -->
-                        <li><i class="fas fa-check-circle"></i> IA PRO</li>
-                        <li><i class="fas fa-check-circle"></i> Mantenimiento</li>
-                        <li><i class="fas fa-check-circle"></i> Soporte Vía Email o WhatsApp</li>
-                        <li><i class="fab fa-instagram" style="color:var(--gold);"></i> Creación y administración (Instagram)</li>
-                        <li><i class="fas fa-camera" style="color:var(--gold);"></i> 10 Post/Stories mensuales</li>
-                        <li><i class="fas fa-cloud" style="color:var(--gold);"></i> QAXI Cloud PRO</li>
-                        <li><i class="fas fa-image" style="color:var(--gold);"></i> Galería multimedia</li>
-                    </ul>
-                </div>
-                <div class="premium-pricing">
-                    <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:6px;">PLAN MENSUAL</div>
-                    <div style="font-size:3rem; font-weight:800;">149.900 <span style="font-size:1rem;">COP</span></div>
-                    <div class="pricing-period">/ Mensual</div>
-                    <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">2 meses gratis Por pagar la suscripcion anual.</div>
-                    <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
-                        <button onclick="initPayment('Plan PRO', 149900, 'PLAN')" class="cta-btn" style="width:100%; background:var(--gold); color:#000;">Suscribirme PRO</button>
-                        <button onclick="initPayment('Plan PRO Anual', 1499000, 'PLAN_ANNUAL')" class="cta-btn annual-btn" style="width:100%;">PAGAR ANUAL — 1.499.000 COP</button>
-                        <a href="plan-pro.html" class="cta-btn" style="width:100%; background:transparent; border:1px solid rgba(255,255,255,0.06); color:#fff;">Aprender Mas</a>
+                <div class="premium-card pricing-card highlight" data-tilt data-tilt-max="10" data-tilt-speed="400"
+                    data-tilt-glare data-tilt-max-glare="0.3">
+                    <div class="premium-info">
+                        <div
+                            style="position: absolute; top: 12px; right: 12px; background: var(--gold); color: #000; font-weight: 800; font-size: 0.7rem; padding: 5px 12px; border-bottom-left-radius: 8px;">
+                            MEJOR OPCIÓN</div>
+                        <h3 style="color:var(--gold);">Plan PRO</h3>
+                        <p style="color:#ccc; margin-top:8px;">Todo incluido + Gestión de Instagram y Apps.</p>
+                        <ul class="premium-list">
+                            <li><i class="fas fa-check-circle"></i> 1 Página Web</li>
+                            <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
+                            <li><i class="fas fa-check-circle"></i> Hosting privado</li>
+                            <!-- Certificado SSL removed per request -->
+                            <li><i class="fas fa-check-circle"></i> IA PRO</li>
+                            <li><i class="fas fa-check-circle"></i> Mantenimiento</li>
+                            <li><i class="fas fa-check-circle"></i> Soporte Vía Email o WhatsApp</li>
+                            <li><i class="fab fa-instagram" style="color:var(--gold);"></i> Creación y administración
+                                (Instagram)</li>
+                            <li><i class="fas fa-camera" style="color:var(--gold);"></i> 10 Post/Stories mensuales</li>
+                            <li><i class="fas fa-cloud" style="color:var(--gold);"></i> QAXI Cloud PRO</li>
+                            <li><i class="fas fa-image" style="color:var(--gold);"></i> Galería multimedia</li>
+                        </ul>
+                    </div>
+                    <div class="premium-pricing">
+                        <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:6px;">PLAN
+                            MENSUAL</div>
+                        <div style="font-size:3rem; font-weight:800;">149.900 <span style="font-size:1rem;">COP</span>
+                        </div>
+                        <div class="pricing-period">/ Mensual</div>
+                        <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">2 meses gratis Por pagar la
+                            suscripcion anual.</div>
+                        <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+                            <button onclick="initPayment('Plan PRO', 149900, 'PLAN')" class="cta-btn"
+                                style="width:100%; background:var(--gold); color:#000;">Suscribirme PRO</button>
+                            <button onclick="initPayment('Plan PRO Anual', 1499000, 'PLAN_ANNUAL')"
+                                class="cta-btn annual-btn" style="width:100%;">PAGAR ANUAL — 1.499.000 COP</button>
+                            <a href="plan-pro.html" class="cta-btn"
+                                style="width:100%; background:transparent; border:1px solid rgba(255,255,255,0.06); color:#fff;">Aprender
+                                Mas</a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="premium-card pricing-card" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.3">
-                <div class="premium-info">
-                    <h3>Plan Estándar</h3>
-                    <p style="color:#ccc; margin-top:8px;">Presencia digital profesional con TODO incluido.</p>
-                    <ul class="premium-list">
-                        <li><i class="fas fa-check-circle"></i> 1 página web</li>
-                        <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
-                        <li><i class="fas fa-check-circle"></i> Hosting privado</li>
-                        <!-- Certificado SSL removed per request -->
-                        <li><i class="fas fa-check-circle"></i> IA básica</li>
-                        <li><i class="fas fa-check-circle"></i> Mantenimiento</li>
-                        <li><i class="fas fa-check-circle"></i> Soporte Vía Email o WhatsApp</li>
-                        <li><i class="fas fa-photo-video"></i> Galería multimedia</li>
-                    </ul>
-                </div>
-                <div class="premium-pricing">
-                    <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:6px;">PLAN MENSUAL</div>
-                    <div style="font-size:3rem; font-weight:800;">59.900 <span style="font-size:1rem;">COP</span></div>
-                    <div class="pricing-period">/ Mensual</div>
-                    <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">2 meses gratis Por pagar la suscripcion anual.</div>
-                    <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
-                        <button onclick="initPayment('Plan Estándar', 59900, 'PLAN')" class="cta-btn" style="width:100%">Suscribirme</button>
-                        <button onclick="initPayment('Plan Estándar Anual', 599000, 'PLAN_ANNUAL')" class="cta-btn annual-btn" style="width:100%">PAGAR ANUAL — 599.000 COP</button>
-                        <a href="plan-estandar.html" class="cta-btn" style="width:100%; background:transparent; border:1px solid rgba(255,255,255,0.06); color:#fff;">Aprender Mas</a>
+                <div class="premium-card pricing-card" data-tilt data-tilt-max="10" data-tilt-speed="400"
+                    data-tilt-glare data-tilt-max-glare="0.3">
+                    <div class="premium-info">
+                        <h3>Plan Estándar</h3>
+                        <p style="color:#ccc; margin-top:8px;">Presencia digital profesional con TODO incluido.</p>
+                        <ul class="premium-list">
+                            <li><i class="fas fa-check-circle"></i> 1 página web</li>
+                            <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
+                            <li><i class="fas fa-check-circle"></i> Hosting privado</li>
+                            <!-- Certificado SSL removed per request -->
+                            <li><i class="fas fa-check-circle"></i> IA básica</li>
+                            <li><i class="fas fa-check-circle"></i> Mantenimiento</li>
+                            <li><i class="fas fa-check-circle"></i> Soporte Vía Email o WhatsApp</li>
+                            <li><i class="fas fa-photo-video"></i> Galería multimedia</li>
+                        </ul>
+                    </div>
+                    <div class="premium-pricing">
+                        <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:6px;">PLAN
+                            MENSUAL</div>
+                        <div style="font-size:3rem; font-weight:800;">59.900 <span style="font-size:1rem;">COP</span>
+                        </div>
+                        <div class="pricing-period">/ Mensual</div>
+                        <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">2 meses gratis Por pagar la
+                            suscripcion anual.</div>
+                        <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+                            <button onclick="initPayment('Plan Estándar', 59900, 'PLAN')" class="cta-btn"
+                                style="width:100%">Suscribirme</button>
+                            <button onclick="initPayment('Plan Estándar Anual', 599000, 'PLAN_ANNUAL')"
+                                class="cta-btn annual-btn" style="width:100%">PAGAR ANUAL — 599.000 COP</button>
+                            <a href="plan-estandar.html" class="cta-btn"
+                                style="width:100%; background:transparent; border:1px solid rgba(255,255,255,0.06); color:#fff;">Aprender
+                                Mas</a>
+                        </div>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
     </section>
@@ -1417,7 +1658,8 @@
                 <div class="premium-card pricing-card" data-tilt>
                     <div class="premium-info">
                         <h3>QAXI POS</h3>
-                        <p style="color:#ccc; margin-bottom:12px;">Sistema de punto de venta moderno para tiendas y restaurantes.</p>
+                        <p style="color:#ccc; margin-bottom:12px;">Sistema de punto de venta moderno para tiendas y
+                            restaurantes.</p>
                         <ul class="premium-list">
                             <li><i class="fas fa-cash-register"></i> Gestión de ventas y facturación</li>
                             <li><i class="fas fa-boxes"></i> Control de inventario en tiempo real</li>
@@ -1427,11 +1669,13 @@
                     </div>
                     <div class="premium-pricing">
                         <div style="font-size:0.9rem; color:#888; margin-bottom:8px;">SOFTWARE POS</div>
-                        <div style="font-size:2.2rem; font-weight:800; color:#fff;">39.900 <span style="font-size:0.9rem; color:#888;">COP</span></div>
+                        <div style="font-size:2.2rem; font-weight:800; color:#fff;">39.900 <span
+                                style="font-size:0.9rem; color:#888;">COP</span></div>
                         <div style="font-size:0.85rem; color:#666; margin-bottom:12px;">/ mes</div>
                         <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
-                            <button onclick="initPayment('QAXI POS', 39900, 'SOFTWARE')" class="cta-btn annual-btn" style="width:100%; font-size:0.95rem;"><i class="fas fa-shopping-cart"></i> Suscribirme a QAXI POS</button>
-                            <a href="QAXI%20POS.html" class="cta-btn" style="width:100%; background:transparent; border:1px solid rgba(255,255,255,0.15); color:#fff;">Ver Demo</a>
+                            <button onclick="initPayment('QAXI POS', 39900, 'SOFTWARE')" class="cta-btn annual-btn"
+                                style="width:100%; font-size:0.95rem;"><i class="fas fa-shopping-cart"></i> Suscribirme
+                                a QAXI POS</button>
                         </div>
                     </div>
                 </div>
@@ -1442,13 +1686,16 @@
     <!-- QAXI TEST - Prueba Webs -->
     <section id="qaxi-test" class="reveal">
         <h2 class="section-title">QAXI <span>TEST</span></h2>
-        <p style="text-align:center; color:#888; margin-bottom:40px; max-width:600px; margin-left:auto; margin-right:auto;">Prueba Webs hechas por QAXI - Ejemplos de sitios web que hemos creado</p>
+        <p
+            style="text-align:center; color:#888; margin-bottom:40px; max-width:600px; margin-left:auto; margin-right:auto;">
+            Prueba Webs hechas por QAXI - Ejemplos de sitios web que hemos creado</p>
         <div class="pricing-container">
             <div class="pricing-deck">
                 <div class="premium-card pricing-card" style="cursor:pointer;" onclick="openTestPreview()">
                     <div class="premium-info">
                         <h3>AERO - Flight Redefined</h3>
-                        <p style="color:#ccc; margin-bottom:12px;">Landing page moderna para empresa de tecnología aeroespacial.</p>
+                        <p style="color:#ccc; margin-bottom:12px;">Landing page moderna para empresa de tecnología
+                            aeroespacial.</p>
                         <ul class="premium-list">
                             <li><i class="fas fa-rocket"></i> Diseño minimalista y elegante</li>
                             <li><i class="fas fa-palette"></i> Efectos glassmorphism</li>
@@ -1459,9 +1706,12 @@
                     </div>
                     <div class="premium-pricing">
                         <div style="font-size:0.9rem; color:#888; margin-bottom:8px;">DEMO</div>
-                        <div style="font-size:1.1rem; font-weight:700; color:#fff; margin-bottom:10px;">QAXI TEST 1</div>
+                        <div style="font-size:1.1rem; font-weight:700; color:#fff; margin-bottom:10px;">QAXI TEST 1
+                        </div>
                         <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
-                            <button class="cta-btn" style="width:100%" onclick="event.stopPropagation(); openTestPreview()"><i class="fas fa-eye"></i> Ver Preview</button>
+                            <button class="cta-btn" style="width:100%"
+                                onclick="event.stopPropagation(); openTestPreview()"><i class="fas fa-eye"></i> Ver
+                                Preview</button>
                         </div>
                     </div>
                 </div>
@@ -1470,12 +1720,17 @@
     </section>
 
     <!-- QAXI Traffic and QAXI Social sections removed per request -->
-        <div id="legal-text" style="display: none; max-width: 600px; margin: 20px auto; text-align: left; color: #555; font-size: 0.75rem; line-height: 1.6; border-top: 1px solid #222; padding-top: 20px;">
-            <p><strong>1. Suscripción:</strong> El servicio se presta bajo modalidad de suscripción mensual recurrente. El no pago suspende el servicio.</p>
-            <p><strong>2. Dominio y Hosting:</strong> Incluidos mientras la suscripción esté activa. La propiedad del dominio puede ser transferida al cliente tras 12 meses continuos de servicio.</p>
-            <p><strong>3. Contenidos:</strong> El cliente es responsable de los textos e imágenes proporcionados. QAXI no se hace responsable por derechos de autor violados por material entregado por el cliente.</p>
-            <p><strong>4. Cancelación:</strong> Puede cancelar en cualquier momento sin penalidad, perdiendo acceso a los servicios premium y hosting al finalizar el ciclo pago.</p>
-        </div>
+    <div id="legal-text"
+        style="display: none; max-width: 600px; margin: 20px auto; text-align: left; color: #555; font-size: 0.75rem; line-height: 1.6; border-top: 1px solid #222; padding-top: 20px;">
+        <p><strong>1. Suscripción:</strong> El servicio se presta bajo modalidad de suscripción mensual recurrente. El
+            no pago suspende el servicio.</p>
+        <p><strong>2. Dominio y Hosting:</strong> Incluidos mientras la suscripción esté activa. La propiedad del
+            dominio puede ser transferida al cliente tras 12 meses continuos de servicio.</p>
+        <p><strong>3. Contenidos:</strong> El cliente es responsable de los textos e imágenes proporcionados. QAXI no se
+            hace responsable por derechos de autor violados por material entregado por el cliente.</p>
+        <p><strong>4. Cancelación:</strong> Puede cancelar en cualquier momento sin penalidad, perdiendo acceso a los
+            servicios premium y hosting al finalizar el ciclo pago.</p>
+    </div>
     </footer>
 
     <div id="authModal" class="modal">
@@ -1484,7 +1739,8 @@
             <h3 id="authTitle" style="margin-bottom: 20px;">Acceso Clientes</h3>
             <form id="authForm">
                 <input type="email" id="email" class="auth-input" placeholder="Correo electrónico" required>
-                <input type="password" id="password" class="auth-input" placeholder="Contraseña (mín 6 caracteres)" required>
+                <input type="password" id="password" class="auth-input" placeholder="Contraseña (mín 6 caracteres)"
+                    required>
                 <button type="submit" class="cta-btn" style="width: 100%; border:none;">Ingresar</button>
             </form>
             <p id="authError" style="color: #ff4444; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
@@ -1497,16 +1753,18 @@
             <div class="close-modal-btn" onclick="closeDashboardModal()">
                 <i class="fas fa-times"></i>
             </div>
-            
+
             <div class="dash-header">
                 <!-- Contenedor Avatar Interactivo -->
-                <div class="dash-avatar-container" onclick="document.getElementById('avatarInput').click()" title="Cambiar foto">
+                <div class="dash-avatar-container" onclick="document.getElementById('avatarInput').click()"
+                    title="Cambiar foto">
                     <div class="dash-avatar">
                         <span id="textAvatar">Q</span>
                         <img id="imgAvatar" src="" alt="Perfil" style="display: none;">
                     </div>
                     <div class="avatar-edit-badge"><i class="fas fa-camera"></i></div>
-                    <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(this)">
+                    <input type="file" id="avatarInput" accept="image/*" style="display: none;"
+                        onchange="handleAvatarUpload(this)">
                 </div>
 
                 <div class="dash-user-info">
@@ -1526,11 +1784,14 @@
                         <a href="#" id="webLinkBtn" target="_blank" class="web-btn-big">
                             VISITAR MI SITIO WEB <i class="fas fa-arrow-right" style="font-size: 0.8em;"></i>
                         </a>
-                        <div style="font-size: 0.75rem; color:#444; margin-top:12px;">Estado: <strong>Activo y visible</strong></div>
+                        <div style="font-size: 0.75rem; color:#444; margin-top:12px;">Estado: <strong>Activo y
+                                visible</strong></div>
                     </div>
                 </div>
-                 <div id="no-web-msg" style="color: #666; font-size: 0.85rem; text-align: center; padding: 25px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 16px; background: rgba(255,255,255,0.01);">
-                    <i class="fas fa-hammer" style="margin-bottom: 10px; font-size: 1.2rem; display: block; opacity: 0.5;"></i>
+                <div id="no-web-msg"
+                    style="color: #666; font-size: 0.85rem; text-align: center; padding: 25px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 16px; background: rgba(255,255,255,0.01);">
+                    <i class="fas fa-hammer"
+                        style="margin-bottom: 10px; font-size: 1.2rem; display: block; opacity: 0.5;"></i>
                     Tu servicio se está configurando.
                 </div>
             </div>
@@ -1549,28 +1810,32 @@
                 <div class="step-num">1</div>
                 <div>
                     <strong>Elige tu plan</strong>
-                    <p style="font-size: 0.85rem; color: #888;">Selecciona el paquete que mejor se adapte a tu negocio. Todos incluyen web, dominio y hosting.</p>
+                    <p style="font-size: 0.85rem; color: #888;">Selecciona el paquete que mejor se adapte a tu negocio.
+                        Todos incluyen web, dominio y hosting.</p>
                 </div>
             </div>
             <div class="step-item">
                 <div class="step-num">2</div>
                 <div>
                     <strong>Realiza el pago</strong>
-                    <p style="font-size: 0.85rem; color: #888;">Paga de forma segura con Nequi. El sistema verificará tu pago automáticamente (o manualmente si es necesario).</p>
+                    <p style="font-size: 0.85rem; color: #888;">Paga de forma segura con Nequi. El sistema verificará tu
+                        pago automáticamente (o manualmente si es necesario).</p>
                 </div>
             </div>
             <div class="step-item">
                 <div class="step-num">3</div>
                 <div>
                     <strong>Activación Inmediata</strong>
-                    <p style="font-size: 0.85rem; color: #888;">Recibirás acceso a tu panel de cliente donde podrás ver el estado de tu servicio.</p>
+                    <p style="font-size: 0.85rem; color: #888;">Recibirás acceso a tu panel de cliente donde podrás ver
+                        el estado de tu servicio.</p>
                 </div>
             </div>
             <div class="step-item">
                 <div class="step-num">4</div>
                 <div>
                     <strong>Desarrollo</strong>
-                    <p style="font-size: 0.85rem; color: #888;">Nuestro equipo (y la IA) construirán tu sitio. En menos de 48 horas tendrás una primera versión.</p>
+                    <p style="font-size: 0.85rem; color: #888;">Nuestro equipo (y la IA) construirán tu sitio. En menos
+                        de 48 horas tendrás una primera versión.</p>
                 </div>
             </div>
         </div>
@@ -1583,7 +1848,9 @@
     <!-- QAXI TEST Preview Modal -->
     <div id="testPreviewModal" class="modal" style="display:none;">
         <div class="modal-content" style="max-width:95%; width:95%; height:90vh; padding:0; overflow:hidden;">
-            <button class="learn-close" style="position:absolute; top:12px; right:16px; background:rgba(0,0,0,0.8); border:none; color:#fff; font-size:1.6rem; z-index:10; width:40px; height:40px; border-radius:50%;" onclick="closeTestPreview()">×</button>
+            <button class="learn-close"
+                style="position:absolute; top:12px; right:16px; background:rgba(0,0,0,0.8); border:none; color:#fff; font-size:1.6rem; z-index:10; width:40px; height:40px; border-radius:50%;"
+                onclick="closeTestPreview()">×</button>
             <iframe id="testPreviewFrame" src="" style="width:100%; height:100%; border:none;"></iframe>
         </div>
     </div>
@@ -1599,9 +1866,12 @@
             <div class="learn-cta">
                 <div id="learnPrice" class="learn-price">0</div>
                 <div class="learn-period">/ Mes</div>
-                <div style="margin-top:14px;"><button id="learnCTA" class="cta-btn" style="width:100%;">Suscribirme</button></div>
+                <div style="margin-top:14px;"><button id="learnCTA" class="cta-btn"
+                        style="width:100%;">Suscribirme</button></div>
             </div>
-            <button class="learn-close" style="position:absolute; top:12px; right:16px; background:transparent; border:none; color:#fff; font-size:1.6rem;" onclick="closeLearnModal()">×</button>
+            <button class="learn-close"
+                style="position:absolute; top:12px; right:16px; background:transparent; border:none; color:#fff; font-size:1.6rem;"
+                onclick="closeLearnModal()">×</button>
         </div>
     </div>
 
@@ -1627,10 +1897,10 @@
         // Variables de estado
         let currentUser = null;
         let isLoginMode = true; // Forced
-        
+
         let currentProduct = "";
         let basePrice = 0;
-        let productType = ""; 
+        let productType = "";
         let finalPrice = 0;
         let activeCode = "";
         let isGiftCard = false; // Control de Gift Card
@@ -1656,7 +1926,7 @@
         // --- FUNCIONES APERTURA ---
         window.openAuthModal = () => { authModal.style.display = "flex"; closeMobileMenu(); };
         window.closeAuthModal = () => { authModal.style.display = "none"; authError.style.display = 'none'; };
-        
+
         // --- FUNCIÓN PAGO INTELIGENTE ---
         window.initPayment = (name, price, type) => {
             // Redirección directa
@@ -1716,7 +1986,7 @@
                 originalPriceDisplay.style.display = 'block';
             }
             if (typeof priceDisplay !== 'undefined') priceDisplay.innerText = "$0 COP";
-            
+
             if (typeof discountTag !== 'undefined') {
                 discountTag.style.display = 'inline-block';
                 discountTag.innerText = "TARJETA DE REGALO ACEPTADA";
@@ -1725,7 +1995,7 @@
             }
 
             if (typeof qrFrame !== 'undefined') qrFrame.style.display = "none"; // Ocultar QR
-            
+
             if (typeof codeStatus !== 'undefined') {
                 codeStatus.innerHTML = `
                     <div style='color:#FFD700; font-weight:700; margin-bottom:5px; font-size:1rem;'>
@@ -1736,7 +2006,7 @@
                     </div>
                 `;
             }
-            
+
             if (typeof noteInstruction !== 'undefined') noteInstruction.innerHTML = `ACTIVAR: <span style='color:#FFD700'>${code}</span>`;
             updatePaymentLinks();
         }
@@ -1757,7 +2027,7 @@
                 originalPriceDisplay.style.display = 'block';
             }
             if (typeof priceDisplay !== 'undefined') priceDisplay.innerText = formatCurrency(finalPrice);
-            
+
             if (typeof discountTag !== 'undefined') {
                 discountTag.style.display = 'inline-block';
                 discountTag.innerText = `AHORRAS: ${formatCurrency(discountAmount)}`;
@@ -1788,26 +2058,26 @@
                 msg = `Hola QAXI, quiero canjear mi tarjeta de regalo.\n\nServicio: ${currentProduct}\nCódigo de Serie: ${activeCode}\n\nQuedo atento a la activación.`;
             } else {
                 msg = `Hola, pago: ${currentProduct}.\nValor: ${formatCurrency(finalPrice)}\n`;
-                if(activeCode) msg += `Código Partner: ${activeCode} (Descuento Aplicado)\n`;
+                if (activeCode) msg += `Código Partner: ${activeCode} (Descuento Aplicado)\n`;
                 msg += `Adjunto comprobante Nequi.`;
             }
 
             if (document.getElementById('emailLink')) {
                 document.getElementById('emailLink').href = `mailto:santiagomarenco1005@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(msg)}`;
             }
-            
+
             const chatBtn = document.getElementById('chatLink');
             if (chatBtn) {
                 document.getElementById('chatLink').onclick = (e) => {
-                     e.preventDefault();
-                     if(isGiftCard) {
+                    e.preventDefault();
+                    if (isGiftCard) {
                         window.open(`https://wa.me/573213526875?text=${encodeURIComponent(msg)}`, '_blank');
-                     } else {
+                    } else {
                         navigator.clipboard.writeText(msg).then(() => window.open('chat.html', '_blank'));
-                     }
+                    }
                 };
-                
-                if(isGiftCard) {
+
+                if (isGiftCard) {
                     chatBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Activar por WhatsApp';
                     chatBtn.classList.remove('btn-fill');
                     chatBtn.style.background = '#25D366';
@@ -1827,13 +2097,13 @@
         }
 
         window.closeNequiModal = () => { if (typeof nequiModal !== 'undefined') nequiModal.style.display = "none"; };
-        
+
         window.openTutorialModal = () => {
             closeNequiModal(); closeDashboardModal(); tutorialModal.style.display = "flex";
         };
         window.closeTutorialModal = () => tutorialModal.style.display = "none";
         window.closeDashboardModal = () => dashboardModal.style.display = "none";
-        
+
         // --- QAXI TEST PREVIEW FUNCTIONS ---
         window.openTestPreview = () => {
             const modal = document.getElementById('testPreviewModal');
@@ -1847,7 +2117,7 @@
             modal.style.display = 'none';
             iframe.src = '';
         };
-        
+
         window.toggleLegal = () => {
             const txt = document.getElementById('legal-text');
             const ico = document.getElementById('legal-icon');
@@ -1859,7 +2129,7 @@
         function toggleMobileMenu() {
             navContainer.classList.toggle('active');
             const icon = menuToggle.querySelector('i');
-             if (icon) {
+            if (icon) {
                 icon.classList.toggle('fa-bars');
                 icon.classList.toggle('fa-times');
             }
@@ -1867,7 +2137,7 @@
         function closeMobileMenu() {
             navContainer.classList.remove('active');
             const icon = menuToggle.querySelector('i');
-             if (icon) {
+            if (icon) {
                 icon.classList.add('fa-bars');
                 icon.classList.remove('fa-times');
             }
@@ -1879,15 +2149,15 @@
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) {
-                    authBtn.style.display = 'none';
-                    accountBtn.style.display = 'inline-block';
-                    if (userGreeting) userGreeting.style.display = 'none';
-                    window.closeAuthModal();
-                } else {
-                    authBtn.style.display = 'inline-block';
-                    accountBtn.style.display = 'none';
-                    if (userGreeting) userGreeting.style.display = 'none';
-                }
+                authBtn.style.display = 'none';
+                accountBtn.style.display = 'inline-block';
+                if (userGreeting) userGreeting.style.display = 'none';
+                window.closeAuthModal();
+            } else {
+                authBtn.style.display = 'inline-block';
+                accountBtn.style.display = 'none';
+                if (userGreeting) userGreeting.style.display = 'none';
+            }
         });
 
         authForm.addEventListener('submit', async (e) => {
@@ -1907,12 +2177,12 @@
 
         document.getElementById('btnLogout').addEventListener('click', () => signOut(auth).then(() => location.reload()));
 
-        window.openDashboardModal = async function() {
+        window.openDashboardModal = async function () {
             dashboardModal.style.display = 'flex';
-            closeMobileMenu(); 
+            closeMobileMenu();
             if (currentUser) {
                 document.getElementById('dashEmail').innerText = currentUser.email;
-                
+
                 // Cargar Avatar guardado
                 const savedAvatar = localStorage.getItem(`avatar_${currentUser.email}`);
                 updateAvatarUI(savedAvatar);
@@ -1926,7 +2196,7 @@
                         statusEl.innerText = data.status || "ACTIVO";
                         statusEl.style.background = data.color || "#fff";
                         statusEl.style.color = (data.color === "#ffffff") ? "#000" : "#fff";
-                        if(data.webLink) {
+                        if (data.webLink) {
                             document.getElementById('web-section').style.display = 'block';
                             document.getElementById('no-web-msg').style.display = 'none';
                             document.getElementById('webLinkBtn').href = data.webLink;
@@ -1935,7 +2205,7 @@
                             document.getElementById('no-web-msg').style.display = 'block';
                         }
                     } else { document.getElementById('dashStatus').innerText = "PENDIENTE"; }
-                } catch(err) { console.log("Error leyendo Firestore:", err); }
+                } catch (err) { console.log("Error leyendo Firestore:", err); }
             }
         };
 
@@ -1943,7 +2213,7 @@
         window.handleAvatarUpload = (input) => {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const imgUrl = e.target.result;
                     // Actualizar UI
                     updateAvatarUI(imgUrl);
@@ -1979,14 +2249,14 @@
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         let particlesArray = [];
         class Particle {
-            constructor() { this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.dX=(Math.random()*0.4)-0.2; this.dY=(Math.random()*0.4)-0.2; }
-            update() { if(this.x>canvas.width||this.x<0) this.dX=-this.dX; if(this.y>canvas.height||this.y<0) this.dY=-this.dY; this.x+=this.dX; this.y+=this.dY; ctx.beginPath(); ctx.arc(this.x, this.y, 1.5, 0, Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.fill(); }
+            constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.dX = (Math.random() * 0.4) - 0.2; this.dY = (Math.random() * 0.4) - 0.2; }
+            update() { if (this.x > canvas.width || this.x < 0) this.dX = -this.dX; if (this.y > canvas.height || this.y < 0) this.dY = -this.dY; this.x += this.dX; this.y += this.dY; ctx.beginPath(); ctx.arc(this.x, this.y, 1.5, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.fill(); }
         }
-        function init(){ particlesArray=[]; for(let i=0;i<100;i++){ particlesArray.push(new Particle()); } }
-        function animate(){ requestAnimationFrame(animate); ctx.clearRect(0,0,canvas.width,canvas.height); particlesArray.forEach(p => p.update()); }
+        function init() { particlesArray = []; for (let i = 0; i < 100; i++) { particlesArray.push(new Particle()); } }
+        function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, canvas.width, canvas.height); particlesArray.forEach(p => p.update()); }
         init(); animate();
-        
-        window.onclick = function(event) {
+
+        window.onclick = function (event) {
             if (event.target == authModal) window.closeAuthModal();
             if (event.target == dashboardModal) window.closeDashboardModal();
             if (event.target == tutorialModal) window.closeTutorialModal();
@@ -1995,7 +2265,7 @@
         }
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const heroDesc = document.getElementById('heroDesc');
             if (!heroDesc) return;
 
@@ -2027,4 +2297,5 @@
         });
     </script>
 </body>
+
 </html>
