@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
-    
+
 
     <style>
         :root {
@@ -20,14 +21,20 @@
             --panel: rgba(20, 20, 20, 0.7);
             --border: #333333;
             --text: #e0e0e0;
-            --gold: #D4AF37; 
+            --gold: #D4AF37;
             --gold-glow: rgba(212, 175, 55, 0.2);
             --font-main: 'Segoe UI', Roboto, sans-serif;
-            --font-brand: 'Cinzel', serif; 
+            --font-brand: 'Cinzel', serif;
         }
-        * { box-sizing: border-box; outline: none; }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
+        }
+
         body {
-            margin: 0; padding: 0;
+            margin: 0;
+            padding: 0;
             background-color: var(--bg);
             background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%);
             color: var(--text);
@@ -50,8 +57,9 @@
             justify-content: space-between;
             padding: 0 25px;
             z-index: 100;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
         }
+
         .brand {
             font-family: var(--font-brand);
             font-size: 1.6rem;
@@ -60,28 +68,43 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            text-shadow: 0 0 10px rgba(255,255,255,0.1);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
-        .brand span { color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); }
-        .user-area { display: flex; align-items: center; gap: 15px; }
-        
+
+        .brand span {
+            color: var(--gold);
+            text-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
         .status-badge {
             font-size: 0.75rem;
             padding: 6px 14px;
             border-radius: 20px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border);
             color: #aaa;
             cursor: pointer;
             transition: all 0.3s ease;
             letter-spacing: 0.5px;
         }
-        .status-badge:hover { background: rgba(255,255,255,0.1); color: white; }
-        .status-badge.pro { 
-            border-color: var(--gold); 
-            color: var(--gold); 
-            background: rgba(212,175,55,0.05);
+
+        .status-badge:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
         }
+
+        .status-badge.pro {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
         .status-badge.pro:hover {
             background: var(--gold);
             color: black;
@@ -106,15 +129,19 @@
             flex-direction: column;
             align-items: center;
             padding-top: 30px;
-            box-shadow: 5px 0 20px rgba(0,0,0,0.3);
+            box-shadow: 5px 0 20px rgba(0, 0, 0, 0.3);
             z-index: 90;
         }
+
         .app-icon {
-            width: 50px; height: 50px;
+            width: 50px;
+            height: 50px;
             margin-bottom: 25px;
             border-radius: 14px;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             color: #777;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -123,28 +150,44 @@
             border: 1px solid transparent;
             position: relative;
         }
-        .app-icon:hover { 
-            background: rgba(255,255,255,0.08); 
-            color: white; 
+
+        .app-icon:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
             transform: translateY(-2px);
-            border-color: rgba(255,255,255,0.1);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-        .app-icon i { margin-bottom: 3px; }
-        .app-icon span { font-size: 0.5rem; letter-spacing: 1px; font-weight: 600; }
-        
+
+        .app-icon i {
+            margin-bottom: 3px;
+        }
+
+        .app-icon span {
+            font-size: 0.5rem;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
         .pro-tag {
-            position: absolute; top: -5px; right: -5px;
-            background: var(--gold); color: black;
-            font-size: 0.5rem; padding: 2px 4px; border-radius: 4px;
-            font-weight: 800; box-shadow: 0 0 5px var(--gold-glow);
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--gold);
+            color: black;
+            font-size: 0.5rem;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: 800;
+            box-shadow: 0 0 5px var(--gold-glow);
         }
 
         /* Content Area */
         .content-area {
             flex: 1;
             position: relative;
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Hero / Dashboard */
@@ -159,6 +202,7 @@
             position: relative;
             height: 100%;
         }
+
         .hero h1 {
             font-family: var(--font-brand);
             font-size: 3.5rem;
@@ -167,107 +211,256 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             z-index: 2;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
-        .hero p { 
-            color: #888; font-size: 1.1rem; max-width: 450px; margin-bottom: 30px; z-index: 2; line-height: 1.6;
+
+        .hero p {
+            color: #888;
+            font-size: 1.1rem;
+            max-width: 450px;
+            margin-bottom: 30px;
+            z-index: 2;
+            line-height: 1.6;
         }
 
         /* Modal Overlay (LOGIN) */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
             z-index: 2000;
-            display: none; justify-content: center; align-items: center;
+            display: none;
+            justify-content: center;
+            align-items: center;
         }
+
         .modal {
-            background: #111; border: 1px solid var(--border);
-            padding: 40px; border-radius: 12px; width: 350px;
-            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            background: #111;
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 12px;
+            width: 350px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
-        .modal h2 { margin-top:0; color:white; font-family:var(--font-brand); margin-bottom: 10px; }
-        .modal input { 
-            width:100%; background:#050505; border:1px solid #333; 
-            padding:12px; color:white; border-radius:6px; margin: 20px 0;
+
+        .modal h2 {
+            margin-top: 0;
+            color: white;
+            font-family: var(--font-brand);
+            margin-bottom: 10px;
         }
-        .modal input:focus { border-color:var(--gold); }
+
+        .modal input {
+            width: 100%;
+            background: #050505;
+            border: 1px solid #333;
+            padding: 12px;
+            color: white;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .modal input:focus {
+            border-color: var(--gold);
+        }
 
         /* --- Workspace (App Window) --- */
         #ws {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: #080808;
             display: none;
             flex-direction: column;
             z-index: 50;
             animation: zoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .ws-header {
             height: 55px;
             background: #111;
             border-bottom: 1px solid #252525;
-            display: flex; align-items: center;
+            display: flex;
+            align-items: center;
             padding: 0 20px;
             justify-content: space-between;
         }
-        .ws-title { font-family: var(--font-brand); color: white; letter-spacing: 1px; font-size: 1.2rem; }
-        .ws-tools { display: flex; gap: 8px; align-items: center; }
+
+        .ws-title {
+            font-family: var(--font-brand);
+            color: white;
+            letter-spacing: 1px;
+            font-size: 1.2rem;
+        }
+
+        .ws-tools {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
         .nav-btn {
-            background: #1a1a1a; 
+            background: #1a1a1a;
             border: 1px solid #333;
-            color: #ccc; 
-            padding: 6px 14px; 
+            color: #ccc;
+            padding: 6px 14px;
             cursor: pointer;
-            font-size: 0.75rem; 
+            font-size: 0.75rem;
             letter-spacing: 1px;
             border-radius: 4px;
             transition: 0.2s;
         }
-        .nav-btn:hover { border-color: var(--gold); color: white; background: #222; }
-        .ws-stage { flex: 1; overflow: hidden; position: relative; background: #0c0c0c; }
+
+        .nav-btn:hover {
+            border-color: var(--gold);
+            color: white;
+            background: #222;
+        }
+
+        .ws-stage {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            background: #0c0c0c;
+        }
 
         /* === APPS STYLES === */
-        
+
         /* DOCS */
         .doc-toolbar {
-            min-height: 44px; background: #161616; border-bottom: 1px solid #252525;
-            display: flex; align-items: center; padding: 8px 15px; gap: 8px; flex-wrap: wrap;
+            min-height: 44px;
+            background: #161616;
+            border-bottom: 1px solid #252525;
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
+
         .tb-btn {
-            background: transparent; border: 1px solid transparent; color: #aaa; cursor: pointer;
-            min-width: 32px; min-height: 32px; border-radius: 4px; display: inline-flex; justify-content: center; align-items: center; padding:6px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: #aaa;
+            cursor: pointer;
+            min-width: 32px;
+            min-height: 32px;
+            border-radius: 4px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 6px;
             transition: 0.2s;
         }
-        .tb-btn:hover { background: #252525; color: white; border-color: #333; }
-        /* Reusable button styles to keep label text inside the button */
-        .btn-primary { display:inline-flex; align-items:center; gap:8px; white-space:nowrap; padding:8px 12px; border-radius:10px; border:2px solid var(--gold); color:var(--gold); background: rgba(212,175,55,0.04); font-weight:700; font-size:0.95rem; width:auto; height:auto; min-height:36px; }
-        .btn-icon-text i { margin-right:6px; font-size:1.05rem; }
-        .btn-compact { padding:6px 10px; font-size:0.9rem; border-radius:8px; }
-        .doc-toolbar .toolbar-group { display:flex; gap:8px; align-items:center; }
-        .tb-select, .tb-input {
-            background: #0a0a0a; color: #ddd; border: 1px solid #333;
-            padding: 6px 10px; font-size: 0.8rem; border-radius: 4px; cursor: pointer;
+
+        .tb-btn:hover {
+            background: #252525;
+            color: white;
+            border-color: #333;
         }
-            .tb-select:focus, .tb-input:focus { border-color: var(--gold); }
-            .toolbar-group { display:flex; gap:8px; align-items:center; }
-            .doc-toolbar .toolbar-group select.tb-select { min-width: 120px; }
-        .sep { width: 1px; height: 24px; background: #333; margin: 0 6px; }
+
+        /* Reusable button styles to keep label text inside the button */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            background: rgba(212, 175, 55, 0.04);
+            font-weight: 700;
+            font-size: 0.95rem;
+            width: auto;
+            height: auto;
+            min-height: 36px;
+        }
+
+        .btn-icon-text i {
+            margin-right: 6px;
+            font-size: 1.05rem;
+        }
+
+        .btn-compact {
+            padding: 6px 10px;
+            font-size: 0.9rem;
+            border-radius: 8px;
+        }
+
+        .doc-toolbar .toolbar-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .tb-select,
+        .tb-input {
+            background: #0a0a0a;
+            color: #ddd;
+            border: 1px solid #333;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .tb-select:focus,
+        .tb-input:focus {
+            border-color: var(--gold);
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .doc-toolbar .toolbar-group select.tb-select {
+            min-width: 120px;
+        }
+
+        .sep {
+            width: 1px;
+            height: 24px;
+            background: #333;
+            margin: 0 6px;
+        }
+
         #paper {
-            width: 794px; min-height: 1123px;
-            background: white; color: black;
-            box-shadow: 0 0 30px rgba(0,0,0,0.6);
-            margin: 30px; padding: 50px;
-            outline: none; overflow-y: hidden;
+            width: 794px;
+            min-height: 1123px;
+            background: white;
+            color: black;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+            margin: 30px;
+            padding: 50px;
+            outline: none;
+            overflow-y: hidden;
             font-family: 'Segoe UI', sans-serif;
             font-size: 16px;
             line-height: 1.6;
         }
+
         .doc-status {
-            height: 30px; background: #111; border-top: 1px solid #252525;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 15px; font-size: 0.75rem; color: #666;
+            height: 30px;
+            background: #111;
+            border-top: 1px solid #252525;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            font-size: 0.75rem;
+            color: #666;
         }
-        
+
         /* Autosave indicator */
         .autosave-indicator {
             display: flex;
@@ -277,9 +470,15 @@
             color: #666;
             transition: 0.3s;
         }
-        .autosave-indicator.saving { color: var(--gold); }
-        .autosave-indicator.saved { color: #4a4; }
-        
+
+        .autosave-indicator.saving {
+            color: var(--gold);
+        }
+
+        .autosave-indicator.saved {
+            color: #4a4;
+        }
+
         /* Magic Writing Button */
         .magic-btn {
             background: linear-gradient(135deg, #D4AF37 0%, #aa8a2e 100%);
@@ -295,85 +494,194 @@
             gap: 5px;
             transition: 0.3s;
         }
-        .magic-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--gold-glow); }
-        
+
+        .magic-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+
         /* Font Select with Preview */
         .font-select-wrapper {
             position: relative;
         }
+
         #fontSelect {
             min-width: 150px;
         }
+
         #fontSelect option {
             padding: 8px;
             font-size: 14px;
         }
 
         /* SHEETS */
-        .grid-container { width: 100%; height: calc(100% - 30px); overflow: auto; background: #151515; }
-        .grid { border-collapse: separate; border-spacing: 0; min-width: 100%; table-layout: fixed; }
-        .grid th, .grid td {
-            border-right: 1px solid #333; border-bottom: 1px solid #333; 
-            padding: 0; min-width: 80px; height: 26px;
-            text-align: center; font-size: 0.85rem; color: #ccc; position: relative;
+        .grid-container {
+            width: 100%;
+            height: calc(100% - 30px);
+            overflow: auto;
+            background: #151515;
         }
-        .grid th { background: #1f1f1f; color: #888; font-weight: 600; position: sticky; top: 0; left: 0; z-index: 2; }
+
+        .grid {
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 100%;
+            table-layout: fixed;
+        }
+
+        .grid th,
+        .grid td {
+            border-right: 1px solid #333;
+            border-bottom: 1px solid #333;
+            padding: 0;
+            min-width: 80px;
+            height: 26px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #ccc;
+            position: relative;
+        }
+
+        .grid th {
+            background: #1f1f1f;
+            color: #888;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+
         .grid td input {
-            width: 100%; height: 100%; border: none; background: transparent;
-            color: #eee; text-align: right; padding: 0 6px; font-family: 'Segoe UI', sans-serif;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            color: #eee;
+            text-align: right;
+            padding: 0 6px;
+            font-family: 'Segoe UI', sans-serif;
         }
-        .grid td input:focus { background: #000; outline: 2px solid var(--gold); z-index: 5; }
+
+        .grid td input:focus {
+            background: #000;
+            outline: 2px solid var(--gold);
+            z-index: 5;
+        }
 
         /* AI CHAT */
         .ai-box {
-            width: 100%; height: 100%; display: flex; flex-direction: column;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
             background: #0c0c0c;
         }
+
         .chat-window {
-            flex: 1; overflow-y: auto; padding: 30px;
-            display: flex; flex-direction: column; gap: 20px; align-items: center;
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
         }
+
         .msg {
-            width: 100%; max-width: 900px; padding: 14px 18px; border-radius: 12px;
-            font-size: 0.98rem; line-height: 1.6; box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+            width: 100%;
+            max-width: 900px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.98rem;
+            line-height: 1.6;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
         }
+
         /* AI responses: centered and minimalist */
-        .msg.ai { align-self: center; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.03); color: #ddd; text-align: center; }
+        .msg.ai {
+            align-self: center;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            color: #ddd;
+            text-align: center;
+        }
+
         /* User messages remain right-aligned */
-        .msg.user { align-self: flex-end; background: #252525; color: white; border-right: 3px solid #555; }
-        .msg strong { display: none; }
-        
+        .msg.user {
+            align-self: flex-end;
+            background: #252525;
+            color: white;
+            border-right: 3px solid #555;
+        }
+
+        .msg strong {
+            display: none;
+        }
+
         /* Estilos para contenido de IA */
-        .msg.ai h1, .msg.ai h2, .msg.ai h3 { color: #fff; margin: 16px 0 10px 0; }
-        .msg.ai h1 { font-size: 1.3rem; border-bottom: 1px solid #333; padding-bottom: 8px; }
-        .msg.ai h2 { font-size: 1.15rem; color: var(--gold); }
-        .msg.ai h3 { font-size: 1.05rem; }
-        .msg.ai p { margin: 10px 0; }
-        .msg.ai ul, .msg.ai ol { margin: 12px 0; padding-left: 24px; }
-        .msg.ai li { margin: 6px 0; }
-        .msg.ai code { 
-            background: #0d0d0d; 
-            padding: 2px 6px; 
-            border-radius: 4px; 
+        .msg.ai h1,
+        .msg.ai h2,
+        .msg.ai h3 {
+            color: #fff;
+            margin: 16px 0 10px 0;
+        }
+
+        .msg.ai h1 {
+            font-size: 1.3rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .msg.ai h2 {
+            font-size: 1.15rem;
+            color: var(--gold);
+        }
+
+        .msg.ai h3 {
+            font-size: 1.05rem;
+        }
+
+        .msg.ai p {
+            margin: 10px 0;
+        }
+
+        .msg.ai ul,
+        .msg.ai ol {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .msg.ai li {
+            margin: 6px 0;
+        }
+
+        .msg.ai code {
+            background: #0d0d0d;
+            padding: 2px 6px;
+            border-radius: 4px;
             font-family: 'Consolas', 'Monaco', monospace;
             font-size: 0.9em;
             color: #e06c75;
         }
-        .msg.ai pre { 
-            background: #0a0a0a; 
-            padding: 15px; 
-            border-radius: 8px; 
+
+        .msg.ai pre {
+            background: #0a0a0a;
+            padding: 15px;
+            border-radius: 8px;
             overflow-x: auto;
             border: 1px solid #333;
             margin: 12px 0;
         }
-        .msg.ai pre code { 
-            background: none; 
-            padding: 0; 
+
+        .msg.ai pre code {
+            background: none;
+            padding: 0;
             color: #abb2bf;
             display: block;
             line-height: 1.5;
         }
+
         .msg.ai blockquote {
             border-left: 3px solid var(--gold);
             margin: 12px 0;
@@ -381,32 +689,111 @@
             background: rgba(212, 175, 55, 0.05);
             font-style: italic;
         }
-        .msg.ai table { 
-            border-collapse: collapse; 
-            margin: 12px 0; 
+
+        .msg.ai table {
+            border-collapse: collapse;
+            margin: 12px 0;
             width: 100%;
         }
-        .msg.ai th, .msg.ai td { 
-            border: 1px solid #333; 
-            padding: 8px 12px; 
+
+        .msg.ai th,
+        .msg.ai td {
+            border: 1px solid #333;
+            padding: 8px 12px;
             text-align: left;
         }
-        .msg.ai th { background: #252525; color: var(--gold); }
-        .msg.ai a { color: var(--gold); text-decoration: none; }
-        .msg.ai a:hover { text-decoration: underline; }
-        .msg.ai hr { border: none; border-top: 1px solid #333; margin: 15px 0; }
+
+        .msg.ai th {
+            background: #252525;
+            color: var(--gold);
+        }
+
+        .msg.ai a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .msg.ai a:hover {
+            text-decoration: underline;
+        }
+
+        .msg.ai hr {
+            border: none;
+            border-top: 1px solid #333;
+            margin: 15px 0;
+        }
+
         /* Input bar styled like modern chat UIs */
-        .ai-input-wrap { display:flex; justify-content:center; padding:12px; border-top:1px solid rgba(255,255,255,0.02); }
-        .ai-input-pill { width:100%; max-width:900px; display:flex; gap:8px; align-items:center; background: rgba(255,255,255,0.02); padding:8px; border-radius:999px; border:1px solid rgba(255,255,255,0.03); }
-        .ai-input-pill input[type="text"] { flex:1; background:transparent; border:none; color: #e0e0e0; padding:10px 12px; font-size:1rem; }
-        .ai-input-pill input[type="text"]:focus { outline:none; }
-        .ai-attach-btn { background:transparent; border:none; color:#aaa; padding:6px; cursor:pointer; }
-        .ai-send-btn { background:var(--gold); color:black; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
-        .ai-response { text-align:center; }
-        .ai-sender { font-size:0.85rem; color:var(--gold); margin-bottom:6px; text-align:center; font-weight:700; }
-        .ai-response-short { color:#ddd; }
-        .ai-response-full { color:#ddd; text-align:left; }
-        
+        .ai-input-wrap {
+            display: flex;
+            justify-content: center;
+            padding: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .ai-input-pill {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .ai-input-pill input[type="text"] {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #e0e0e0;
+            padding: 10px 12px;
+            font-size: 1rem;
+        }
+
+        .ai-input-pill input[type="text"]:focus {
+            outline: none;
+        }
+
+        .ai-attach-btn {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            padding: 6px;
+            cursor: pointer;
+        }
+
+        .ai-send-btn {
+            background: var(--gold);
+            color: black;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .ai-response {
+            text-align: center;
+        }
+
+        .ai-sender {
+            font-size: 0.85rem;
+            color: var(--gold);
+            margin-bottom: 6px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .ai-response-short {
+            color: #ddd;
+        }
+
+        .ai-response-full {
+            color: #ddd;
+            text-align: left;
+        }
+
         /* CARNET CREATOR */
         .carnet-container {
             display: flex;
@@ -416,6 +803,7 @@
             gap: 40px;
             overflow: auto;
         }
+
         .carnet-form {
             flex: 1;
             max-width: 400px;
@@ -423,12 +811,15 @@
             flex-direction: column;
             gap: 15px;
         }
+
         .carnet-form label {
             font-size: 0.8rem;
             color: #888;
             margin-bottom: -10px;
         }
-        .carnet-form input, .carnet-form select {
+
+        .carnet-form input,
+        .carnet-form select {
             padding: 12px;
             background: #111;
             border: 1px solid #333;
@@ -436,9 +827,12 @@
             border-radius: 6px;
             font-size: 0.9rem;
         }
-        .carnet-form input:focus, .carnet-form select:focus {
+
+        .carnet-form input:focus,
+        .carnet-form select:focus {
             border-color: var(--gold);
         }
+
         .carnet-preview-area {
             flex: 1;
             display: flex;
@@ -446,6 +840,7 @@
             align-items: center;
             justify-content: center;
         }
+
         .carnet-card {
             width: 350px;
             height: 220px;
@@ -453,39 +848,46 @@
             padding: 20px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             display: flex;
             gap: 15px;
         }
+
         .carnet-card.style-corporate {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             color: white;
         }
+
         .carnet-card.style-modern {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
+
         .carnet-card.style-elegant {
             background: linear-gradient(135deg, #232526 0%, #414345 100%);
             color: white;
             border: 2px solid var(--gold);
         }
+
         .carnet-card.style-vibrant {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
         }
+
         .carnet-card.style-nature {
             background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
         }
+
         .carnet-card.style-sunset {
             background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
             color: #333;
         }
+
         .carnet-photo {
             width: 90px;
             height: 110px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             overflow: hidden;
             display: flex;
@@ -493,21 +895,25 @@
             justify-content: center;
             flex-shrink: 0;
         }
+
         .carnet-photo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         .carnet-photo i {
             font-size: 2.5rem;
             opacity: 0.5;
         }
+
         .carnet-info {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
+
         .carnet-company {
             font-size: 0.7rem;
             text-transform: uppercase;
@@ -515,21 +921,25 @@
             opacity: 0.8;
             margin-bottom: 5px;
         }
+
         .carnet-name {
             font-size: 1.3rem;
             font-weight: bold;
             margin-bottom: 3px;
         }
+
         .carnet-role {
             font-size: 0.85rem;
             opacity: 0.9;
             margin-bottom: 10px;
         }
+
         .carnet-id {
             font-size: 0.75rem;
             font-family: monospace;
             opacity: 0.7;
         }
+
         .carnet-qr {
             position: absolute;
             bottom: 15px;
@@ -540,10 +950,12 @@
             border-radius: 5px;
             padding: 3px;
         }
+
         .carnet-qr img {
             width: 100%;
             height: 100%;
         }
+
         .carnet-logo {
             position: absolute;
             top: 15px;
@@ -551,11 +963,13 @@
             font-size: 1.5rem;
             opacity: 0.3;
         }
+
         .color-row {
             display: flex;
             gap: 10px;
             align-items: center;
         }
+
         .color-row input[type="color"] {
             width: 40px;
             height: 40px;
@@ -563,6 +977,7 @@
             border: none;
             cursor: pointer;
         }
+
         .photo-upload-btn {
             background: var(--gold);
             color: black;
@@ -573,14 +988,17 @@
             font-weight: 600;
             font-size: 0.85rem;
         }
+
         .photo-upload-btn:hover {
             transform: scale(1.02);
         }
+
         .share-options {
             display: flex;
             gap: 10px;
             margin-top: 20px;
         }
+
         .share-btn {
             padding: 10px 20px;
             border-radius: 6px;
@@ -595,22 +1013,25 @@
             gap: 8px;
             transition: 0.2s;
         }
+
         .share-btn:hover {
             border-color: var(--gold);
             color: white;
         }
+
         .share-btn.primary {
             background: var(--gold);
             color: black;
             border-color: var(--gold);
         }
+
         .carnet-card.style-custom {
             background: #333;
             background-size: cover;
             background-position: center;
             color: white;
         }
-        
+
         /* FIRMA PDF */
         .firma-container {
             display: flex;
@@ -619,6 +1040,7 @@
             gap: 20px;
             padding: 20px;
         }
+
         .firma-sidebar {
             width: 280px;
             background: #111;
@@ -629,6 +1051,7 @@
             flex-direction: column;
             gap: 15px;
         }
+
         .firma-preview {
             flex: 1;
             background: #1a1a1a;
@@ -641,6 +1064,7 @@
             overflow: auto;
             position: relative;
         }
+
         .firma-canvas-container {
             background: #0a0a0a;
             border: 1px solid #444;
@@ -648,16 +1072,19 @@
             padding: 10px;
             margin-bottom: 15px;
         }
+
         #firmaCanvas {
             background: transparent;
             border-radius: 5px;
             cursor: crosshair;
         }
+
         .firma-tools {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
         }
+
         .firma-tool-btn {
             padding: 8px 12px;
             background: #222;
@@ -668,24 +1095,29 @@
             font-size: 0.8rem;
             transition: 0.2s;
         }
+
         .firma-tool-btn:hover {
             border-color: var(--gold);
             color: white;
         }
+
         .firma-tool-btn.active {
             background: var(--gold);
             color: black;
             border-color: var(--gold);
         }
+
         .pdf-preview-container {
             max-width: 100%;
             max-height: 100%;
             overflow: auto;
             padding: 20px;
         }
+
         .pdf-preview-container canvas {
-            box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
         }
+
         .firma-overlay {
             position: absolute;
             cursor: move;
@@ -693,73 +1125,184 @@
             padding: 5px;
             background: transparent;
         }
+
         .firma-overlay img {
             max-width: 150px;
             max-height: 80px;
             pointer-events: none;
         }
+
         .ai-input-area {
-            height: 80px; background: #111; border-top: 1px solid #252525;
-            display: flex; align-items: center; padding: 0 30px; gap: 15px;
+            height: 80px;
+            background: #111;
+            border-top: 1px solid #252525;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            gap: 15px;
         }
+
         #aiInput {
-            flex: 1; background: #050505; border: 1px solid #333;
-            color: white; padding: 12px 15px; border-radius: 6px; font-size: 0.95rem;
+            flex: 1;
+            background: #050505;
+            border: 1px solid #333;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 0.95rem;
             transition: 0.3s;
         }
-        #aiInput:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212,175,55,0.1); }
-        .ai-input-area button {
-            background: var(--gold); color: black; border: none; width: 40px; height: 40px;
-            border-radius: 6px; cursor: pointer; transition: 0.2s;
+
+        #aiInput:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
         }
-        .ai-input-area button:hover { transform: scale(1.05); }
+
+        .ai-input-area button {
+            background: var(--gold);
+            color: black;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .ai-input-area button:hover {
+            transform: scale(1.05);
+        }
 
         /* PDF & QR */
-        .pdf-zone, .qr-wrapper { height: 100%; display:flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top:40px; }
+        .pdf-zone,
+        .qr-wrapper {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 40px;
+        }
+
         .qr-card {
-            background: #181818; padding: 40px; border: 1px solid #333; border-radius: 12px;
-            display: flex; flex-direction: column; align-items: center;
-            width: 380px; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            background: #181818;
+            padding: 40px;
+            border: 1px solid #333;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 380px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
         }
+
         .pdf-list {
-            margin-top: 20px; width: 80%; max-width: 600px;
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px;
+            margin-top: 20px;
+            width: 80%;
+            max-width: 600px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
         }
+
         .pdf-item {
-            background: #1a1a1a; padding: 10px; border-radius: 6px; border: 1px solid #333;
-            font-size: 0.75rem; text-align: center; position: relative; overflow: hidden;
-            display: flex; flex-direction: column; align-items: Center; aspect-ratio: 1;
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            font-size: 0.75rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: Center;
+            aspect-ratio: 1;
         }
-        .pdf-item i { font-size: 2rem; color: #555; margin-bottom: 5px; }
-        .pdf-item .del { 
-            position: absolute; top:0; right: 0; background: red; color:white; 
-            width: 20px; height: 20px; cursor: pointer; font-size:0.7rem; display:flex; align-items:center; justify-content:center;
+
+        .pdf-item i {
+            font-size: 2rem;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .pdf-item .del {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: red;
+            color: white;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* PRESENTATIONS TOOL */
-        .slides-layout { display: flex; width: 100%; height: 100%; }
-        .slides-sidebar {
-            width: 160px; background: #111; border-right: 1px solid #252525;
-            display: flex; flex-direction: column; padding: 10px; gap: 10px; overflow-y: auto;
+        .slides-layout {
+            display: flex;
+            width: 100%;
+            height: 100%;
         }
+
+        .slides-sidebar {
+            width: 160px;
+            background: #111;
+            border-right: 1px solid #252525;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            gap: 10px;
+            overflow-y: auto;
+        }
+
         .slide-thumb {
-            width: 100%; aspect-ratio: 16/9; background: white; cursor: pointer;
-            border: 2px solid transparent; transition: 0.2s; position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: white;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.2s;
+            position: relative;
             overflow: hidden;
         }
-        .slide-thumb.active { border-color: var(--gold); }
+
+        .slide-thumb.active {
+            border-color: var(--gold);
+        }
+
         .slide-thumb span {
-            position: absolute; bottom: 2px; right: 4px; color: black; font-size: 10px; font-weight: bold;
+            position: absolute;
+            bottom: 2px;
+            right: 4px;
+            color: black;
+            font-size: 10px;
+            font-weight: bold;
         }
+
         .slides-main {
-            flex: 1; background: #1a1a1a; display: flex; justify-content: center; align-items: center;
-            position: relative; overflow: hidden;
+            flex: 1;
+            background: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
         }
+
         .slide-canvas {
-            width: 800px; height: 450px; background: white; box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            position: relative; overflow: hidden; color: black;
+            width: 800px;
+            height: 450px;
+            background: white;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            color: black;
         }
-        
+
         /* Draggable elements in slides */
         .slide-element {
             position: absolute;
@@ -770,53 +1313,91 @@
             border: 2px solid transparent;
             transition: border-color 0.2s;
         }
-        .slide-element:hover { border-color: rgba(212, 175, 55, 0.5); }
-        .slide-element.selected { border-color: var(--gold); }
-        .slide-element.editing { cursor: text; }
-        .slide-element img { 
-            width: 100%; height: 100%; object-fit: contain; 
+
+        .slide-element:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+
+        .slide-element.selected {
+            border-color: var(--gold);
+        }
+
+        .slide-element.editing {
+            cursor: text;
+        }
+
+        .slide-element img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
             pointer-events: none;
         }
-        
+
         /* Resize handle */
         .resize-handle {
             position: absolute;
-            width: 12px; height: 12px;
+            width: 12px;
+            height: 12px;
             background: var(--gold);
             border-radius: 2px;
-            bottom: -6px; right: -6px;
+            bottom: -6px;
+            right: -6px;
             cursor: nwse-resize;
         }
 
         /* Animaciones */
-        @keyframes fadeIn { from {opacity:0; transform:translateY(15px);} to {opacity:1; transform:translateY(0);} }
-        @keyframes zoomIn { from {opacity:0; transform:scale(0.98);} to {opacity:1; transform:scale(1);} }
-        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
         /* Pro Badge Glow */
-        body.is-pro .status-badge.pro { box-shadow: 0 0 15px rgba(212,175,55,0.4); }
+        body.is-pro .status-badge.pro {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
     </style>
 </head>
+
 <body>
 
     <!-- Firebase Config -->
     <script>
         const firebaseConfig = {
-              apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
-              authDomain: "qaxi-93d6d.firebaseapp.com",
-              projectId: "qaxi-93d6d",
-              storageBucket: "qaxi-93d6d.firebasestorage.app",
-              messagingSenderId: "137240859996",
-              appId: "1:137240859996:web:73e14d28c77233be965d99",
-              measurementId: "G-C74Z1DWV54"
+            apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
+            authDomain: "qaxi-93d6d.firebaseapp.com",
+            projectId: "qaxi-93d6d",
+            storageBucket: "qaxi-93d6d.firebasestorage.app",
+            messagingSenderId: "137240859996",
+            appId: "1:137240859996:web:73e14d28c77233be965d99",
+            measurementId: "G-C74Z1DWV54"
         };
 
-        window.toggleAiExpand = function(btn) {
+        window.toggleAiExpand = function (btn) {
             try {
                 const msg = btn.closest('.msg');
-                if(!msg) return;
+                if (!msg) return;
                 const full = msg.querySelector('.ai-response-full');
                 const short = msg.querySelector('.ai-response-short');
-                if(!full || !short) return;
+                if (!full || !short) return;
                 if (full.style.display === 'none') {
                     full.style.display = 'block';
                     short.style.display = 'none';
@@ -826,15 +1407,15 @@
                     short.style.display = 'block';
                     btn.innerText = 'Ver más';
                 }
-            } catch(e){ console.warn('toggleAiExpand', e); }
+            } catch (e) { console.warn('toggleAiExpand', e); }
         };
 
         // === QAXI STORE ===
         // Store app removed by user request. (loadStore / purchaseProduct intentionally omitted)
-        try { firebase.initializeApp(firebaseConfig); var db = firebase.firestore(); } catch(e){ console.log("Offline or Config Error"); }
+        try { firebase.initializeApp(firebaseConfig); var db = firebase.firestore(); } catch (e) { console.log("Offline or Config Error"); }
 
         // Allowed origins for postMessage from remote clients
-        const QAXI_ALLOWED_ORIGINS = (function(){
+        const QAXI_ALLOWED_ORIGINS = (function () {
             try {
                 return [
                     location.origin,
@@ -843,7 +1424,7 @@
                     'https://qaxi-93d6d.web.app',
                     'https://qaxi-93d6d.firebaseapp.com'
                 ];
-            } catch(e) { return ['https://qaxi-93d6d.web.app','https://qaxi-93d6d.firebaseapp.com']; }
+            } catch (e) { return ['https://qaxi-93d6d.web.app', 'https://qaxi-93d6d.firebaseapp.com']; }
         })();
         // Auto-enable live cloud sync when Firestore is available.
         // We attempt to enable sync after a short delay so DOM/UI elements can be created.
@@ -864,19 +1445,19 @@
         } catch (e) { console.warn('auto-enable init check failed', e); }
 
         // Quick Firestore test write to surface permission errors early
-        (function testFirestoreWrite(){
+        (function testFirestoreWrite() {
             try {
                 if (!window.db) return;
                 const tdoc = db.collection('qaxi_debug').doc('test_write');
                 tdoc.set({ ts: Date.now(), ok: true }).then(() => {
                     console.log('Firestore test write succeeded');
                     // cleanup
-                    setTimeout(() => { try { tdoc.delete().catch(()=>{}); } catch(e){} }, 2000);
+                    setTimeout(() => { try { tdoc.delete().catch(() => { }); } catch (e) { } }, 2000);
                 }).catch(err => {
                     console.error('Firestore test write failed:', err);
-                    alert('Error de Firestore: no se puede escribir. Revisa las reglas de Firestore o la configuración del proyecto. (' + (err.message||err) + ')');
+                    alert('Error de Firestore: no se puede escribir. Revisa las reglas de Firestore o la configuración del proyecto. (' + (err.message || err) + ')');
                 });
-            } catch(e) { console.warn('testFirestoreWrite error', e); }
+            } catch (e) { console.warn('testFirestoreWrite error', e); }
         })();
 
         // Note: file:// warning removed per user request.
@@ -888,23 +1469,23 @@
         try {
             if (typeof db !== 'undefined' && db) {
                 if (typeof enableLiveCloudSync === 'function') {
-                    try { enableLiveCloudSync(); } catch(e){ console.log('enableLiveCloudSync() failed', e); }
+                    try { enableLiveCloudSync(); } catch (e) { console.log('enableLiveCloudSync() failed', e); }
                 } else {
                     // enableLiveCloudSync is defined later; schedule a deferred attempt after load
-                    window.addEventListener('load', () => { try { if (typeof enableLiveCloudSync === 'function') enableLiveCloudSync(); } catch(e){} });
+                    window.addEventListener('load', () => { try { if (typeof enableLiveCloudSync === 'function') enableLiveCloudSync(); } catch (e) { } });
                 }
             }
-        } catch(e){}
+        } catch (e) { }
 
         // GROQ API key: read from localStorage (no hard-coded key)
         let GROQ_KEY = localStorage.getItem('qaxi_groq_key') || '';
 
-        window.setGroqKey = function(key){ GROQ_KEY = key || ''; try{ if(key) localStorage.setItem('qaxi_groq_key', key); else localStorage.removeItem('qaxi_groq_key'); }catch(e){} };
-        window.clearGroqKey = function(){ GROQ_KEY = ''; try{ localStorage.removeItem('qaxi_groq_key'); }catch(e){} };
+        window.setGroqKey = function (key) { GROQ_KEY = key || ''; try { if (key) localStorage.setItem('qaxi_groq_key', key); else localStorage.removeItem('qaxi_groq_key'); } catch (e) { } };
+        window.clearGroqKey = function () { GROQ_KEY = ''; try { localStorage.removeItem('qaxi_groq_key'); } catch (e) { } };
 
         // Helper to call Groq/OpenAI endpoint using dynamic key
-        window.callGroqProxy = async function({ forwardTo, payload }) {
-            if(!GROQ_KEY) throw new Error('MISSING_API_KEY');
+        window.callGroqProxy = async function ({ forwardTo, payload }) {
+            if (!GROQ_KEY) throw new Error('MISSING_API_KEY');
             return fetch(forwardTo, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_KEY}` },
@@ -913,7 +1494,7 @@
         };
 
         let IS_PREMIUM = false;
-        
+
         // Storage Keys
         const STORAGE_KEYS = {
             DOCS: 'qaxi_docs_content',
@@ -923,24 +1504,24 @@
             LIVE: 'qaxi_live_meetings',
             LIVE_SETTINGS: 'qaxi_live_settings'
         };
-        
+
         // Docs & Sheets Vars
         let sheetRows = 20, sheetCols = 10;
         let sheetsWorkbook = null; // will hold array of sheets
         let activeSheetIdx = 0;
-        let activeCell = {row:1, col:1};
+        let activeCell = { row: 1, col: 1 };
         let pdfImages = [];
         let autoSaveTimer = null;
         let hasUnsavedChanges = false;
 
         // Slides Vars
-        let slides = [{id:1, elements: [], bg: '#ffffff'}];
+        let slides = [{ id: 1, elements: [], bg: '#ffffff' }];
         let currentSlideIdx = 0;
         let selectedElement = null;
         let isDragging = false;
         let isResizing = false;
         let dragOffset = { x: 0, y: 0 };
-        
+
         // AI Chat History
         let aiChatHistory = [];
         const MAX_HISTORY = 20; // Mantener últimos 20 mensajes para contexto
@@ -948,10 +1529,10 @@
         // Helper: fetch official QAXI site with fallback and caching
         async function fetchOfficialContentOnce() {
             const officialSite = 'https://santiagomarenco1005-cmd.github.io/QAXI';
-            function cleanHtml(s) { try { return s.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0,4000); } catch(e){ return ''; } }
+            function cleanHtml(s) { try { return s.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 4000); } catch (e) { return ''; } }
 
             // Return cached copy if available
-            try { const cached = localStorage.getItem('qaxi_official_text'); if (cached) return { text: cached, fetched: true, fromCache: true }; } catch(e){}
+            try { const cached = localStorage.getItem('qaxi_official_text'); if (cached) return { text: cached, fetched: true, fromCache: true }; } catch (e) { }
 
             // Direct fetch
             try {
@@ -960,7 +1541,7 @@
                     const t = await r.text();
                     const cleaned = cleanHtml(t);
                     if (cleaned) {
-                        try { localStorage.setItem('qaxi_official_text', cleaned); } catch(e){}
+                        try { localStorage.setItem('qaxi_official_text', cleaned); } catch (e) { }
                         return { text: cleaned, fetched: true, fromCache: false };
                     }
                 }
@@ -974,7 +1555,7 @@
                     const t2 = await r2.text();
                     const cleaned2 = cleanHtml(t2);
                     if (cleaned2) {
-                        try { localStorage.setItem('qaxi_official_text', cleaned2); } catch(e){}
+                        try { localStorage.setItem('qaxi_official_text', cleaned2); } catch (e) { }
                         return { text: cleaned2, fetched: true, fromCache: false };
                     }
                 }
@@ -984,21 +1565,21 @@
         }
 
         // Expose a manual retry for the UI
-        window.qaxiRetryFetchOfficial = async function() {
+        window.qaxiRetryFetchOfficial = async function () {
             try {
                 const res = await fetchOfficialContentOnce();
                 if (res.fetched) {
                     console.info('QAXI: official site fetched via manual retry');
                     return true;
                 }
-            } catch(e){ console.warn('qaxiRetryFetchOfficial failed', e); }
+            } catch (e) { console.warn('qaxiRetryFetchOfficial failed', e); }
             return false;
         };
 
         // Small helper UI: if GROQ_KEY is not set, show a floating button to set it (for hosted sites)
-        (function(){
+        (function () {
             try {
-                const showKeyUI = function(){
+                const showKeyUI = function () {
                     if (document.getElementById('qaxiSetKeyBtn')) return;
                     const btn = document.createElement('button');
                     btn.id = 'qaxiSetKeyBtn';
@@ -1022,8 +1603,8 @@
                     document.body.appendChild(btn);
                 };
                 // show only if no key present
-                try { if (!localStorage.getItem('qaxi_groq_key')) { setTimeout(showKeyUI, 800); } } catch(e) { setTimeout(showKeyUI, 800); }
-            } catch(e) { console.warn('qaxi set key UI init failed', e); }
+                try { if (!localStorage.getItem('qaxi_groq_key')) { setTimeout(showKeyUI, 800); } } catch (e) { setTimeout(showKeyUI, 800); }
+            } catch (e) { console.warn('qaxi set key UI init failed', e); }
         })();
         // Live sync variables
         let liveCloudSync = false;
@@ -1032,7 +1613,7 @@
         let selectedMeetingId = null;
         // messages cache: { [meetingId]: [ { id, sender, text, created } ] }
         let liveMessagesCache = {};
-        
+
         // Warn before leaving if unsaved changes
         window.addEventListener('beforeunload', (e) => {
             // Auto-save before leaving
@@ -1046,8 +1627,10 @@
             <h2>ACCESO QAXI</h2>
             <p style="color:#888; margin-bottom:10px;">Ingresa tu correo Titanium</p>
             <input type="email" id="uEmail" placeholder="usuario@email.com">
-            <button class="nav-btn" onclick="checkDB()" style="width:100%; border-color:var(--gold); color:var(--gold); padding:10px;">VALIDAR</button>
-            <button class="nav-btn" onclick="closeLogin()" style="width:100%; border:none; margin-top:10px;">CANCELAR</button>
+            <button class="nav-btn" onclick="checkDB()"
+                style="width:100%; border-color:var(--gold); color:var(--gold); padding:10px;">VALIDAR</button>
+            <button class="nav-btn" onclick="closeLogin()"
+                style="width:100%; border:none; margin-top:10px;">CANCELAR</button>
             <p id="loginMsg" style="color:var(--gold); margin-top:15px; font-size:0.8rem; height:1rem;"></p>
         </div>
     </div>
@@ -1064,24 +1647,29 @@
     <div class="main-container">
         <!-- Sidebar -->
         <div class="sidebar">
-            <div class="app-icon" onclick="startApp('docs')" title="Documentos"><i class="fa-solid fa-file-word"></i><span>DOCS</span></div>
-            <div class="app-icon" onclick="startApp('sheets')" title="Hojas de Cálculo"><i class="fa-solid fa-table"></i><span>SHEET</span></div>
-            <div class="app-icon" onclick="startApp('pdf')" title="PDF Converter"><i class="fa-solid fa-file-pdf"></i><span>PDF</span></div>
+            <div class="app-icon" onclick="startApp('docs')" title="Documentos"><i
+                    class="fa-solid fa-file-word"></i><span>DOCS</span></div>
+            <div class="app-icon" onclick="startApp('sheets')" title="Hojas de Cálculo"><i
+                    class="fa-solid fa-table"></i><span>SHEET</span></div>
+            <div class="app-icon" onclick="startApp('pdf')" title="PDF Converter"><i
+                    class="fa-solid fa-file-pdf"></i><span>PDF</span></div>
             <div class="app-icon" onclick="startApp('slides')" title="Presentaciones QAXI">
                 <i class="fa-solid fa-chalkboard-user"></i><span>SLIDES</span>
                 <div class="pro-tag">PRO</div>
             </div>
-            <div class="app-icon" onclick="startApp('ai')" title="QAXI AI"><i class="fa-solid fa-brain"></i><span>AI</span></div>
             <!-- Store removed per user request -->
             <!-- QAXI Search removed -->
             <div class="app-icon" onclick="startApp('carnet')" title="Creador de Carnets">
                 <i class="fa-solid fa-id-card"></i><span>CARNET</span>
                 <div class="pro-tag">PRO</div>
             </div>
-            <div class="app-icon" onclick="startApp('live')" title="QAXI Live" style="display:none"><i class="fa-solid fa-video"></i><span>LIVE</span></div>
-            
-            <div class="app-icon" onclick="startApp('qr')" title="Generador QR"><i class="fa-solid fa-qrcode"></i><span>QR</span></div>
-            <div class="app-icon" onclick="startApp('firma')" title="Firmar PDF"><i class="fa-solid fa-signature"></i><span>FIRMA</span></div>
+            <div class="app-icon" onclick="startApp('live')" title="QAXI Live"><i
+                    class="fa-solid fa-video"></i><span>LIVE</span></div>
+
+            <div class="app-icon" onclick="startApp('qr')" title="Generador QR"><i
+                    class="fa-solid fa-qrcode"></i><span>QR</span></div>
+            <div class="app-icon" onclick="startApp('firma')" title="Firmar PDF"><i
+                    class="fa-solid fa-signature"></i><span>FIRMA</span></div>
             <div style="flex:1"></div>
             <div class="app-icon" onclick="goHome()" title="Salir"><i class="fa-solid fa-power-off"></i></div>
         </div>
@@ -1090,7 +1678,8 @@
         <div class="content-area">
             <div class="hero" id="heroPanel">
                 <h1 id="heroTitle">Bienvenido a QAXI Cloud!</h1>
-                <p id="heroSub">Potencia tu flujo de trabajo seleccionando una herramienta Titanium en el menú lateral.<br>El futuro de tu productividad empieza aquí.</p>
+                <p id="heroSub">Potencia tu flujo de trabajo seleccionando una herramienta Titanium en el menú
+                    lateral.<br>El futuro de tu productividad empieza aquí.</p>
             </div>
 
             <!-- Workspace Overlay -->
@@ -1106,11 +1695,11 @@
     </div>
 
     <script>
-        window.goHome = function() { 
+        window.goHome = function () {
             autoSaveAll();
-            window.location.href = "Index.html"; 
+            window.location.href = "Index.html";
         };
-        window.goPlans = function() {
+        window.goPlans = function () {
             if (IS_PREMIUM) return;
             const p = encodeURIComponent("QAXI Cloud PRO - Titanium");
             window.location.href = `qaxipay.html?p=${p}&v=15000&t=MICROAPP`;
@@ -1120,42 +1709,42 @@
         function autoSaveAll() {
             const paper = document.getElementById('paper');
             if (paper) {
-                try { localStorage.setItem(STORAGE_KEYS.DOCS, paper.innerHTML); } catch(e){}
+                try { localStorage.setItem(STORAGE_KEYS.DOCS, paper.innerHTML); } catch (e) { }
             }
             // Save slides
             if (slides && slides.length > 0) {
-                try { localStorage.setItem(STORAGE_KEYS.SLIDES, JSON.stringify(slides)); } catch(e){}
+                try { localStorage.setItem(STORAGE_KEYS.SLIDES, JSON.stringify(slides)); } catch (e) { }
             }
             // Save sheets (serialize grid values + headers)
             const grid = document.getElementById('mainGrid');
             if (grid) {
-                    try {
-                        const data = { rows: sheetRows, cols: sheetCols, values: [], headers: wb.headers || Array.from({length: sheetCols}, (_,i)=>String.fromCharCode(65+i)) };
-                        const trs = grid.querySelectorAll('tbody tr');
-                        trs.forEach(tr => {
-                            const rowVals = [];
-                            tr.querySelectorAll('td input').forEach(inp => rowVals.push(inp.value));
-                            data.values.push(rowVals);
-                        });
-                        const headerEls = grid.querySelectorAll('thead th.col-header');
-                        headerEls.forEach(th => data.headers.push((th.innerText || '').trim()));
-                        try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify(data)); } catch(e){}
-                        if (window.sheetsWorkbook && Array.isArray(window.sheetsWorkbook)) {
-                            window.sheetsWorkbook[activeSheetIdx] = window.sheetsWorkbook[activeSheetIdx] || {};
-                            window.sheetsWorkbook[activeSheetIdx].rows = sheetRows;
-                            window.sheetsWorkbook[activeSheetIdx].cols = sheetCols;
-                            window.sheetsWorkbook[activeSheetIdx].values = data.values;
-                            window.sheetsWorkbook[activeSheetIdx].headers = data.headers;
-                            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
-                        }
-                } catch(e) { console.warn('Error saving sheets', e); }
+                try {
+                    const data = { rows: sheetRows, cols: sheetCols, values: [], headers: wb.headers || Array.from({ length: sheetCols }, (_, i) => String.fromCharCode(65 + i)) };
+                    const trs = grid.querySelectorAll('tbody tr');
+                    trs.forEach(tr => {
+                        const rowVals = [];
+                        tr.querySelectorAll('td input').forEach(inp => rowVals.push(inp.value));
+                        data.values.push(rowVals);
+                    });
+                    const headerEls = grid.querySelectorAll('thead th.col-header');
+                    headerEls.forEach(th => data.headers.push((th.innerText || '').trim()));
+                    try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify(data)); } catch (e) { }
+                    if (window.sheetsWorkbook && Array.isArray(window.sheetsWorkbook)) {
+                        window.sheetsWorkbook[activeSheetIdx] = window.sheetsWorkbook[activeSheetIdx] || {};
+                        window.sheetsWorkbook[activeSheetIdx].rows = sheetRows;
+                        window.sheetsWorkbook[activeSheetIdx].cols = sheetCols;
+                        window.sheetsWorkbook[activeSheetIdx].values = data.values;
+                        window.sheetsWorkbook[activeSheetIdx].headers = data.headers;
+                        try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch (e) { }
+                    }
+                } catch (e) { console.warn('Error saving sheets', e); }
             }
         }
-        
+
         function showSaveIndicator(status) {
             const indicator = document.getElementById('autosaveIndicator');
             if (!indicator) return;
-            
+
             indicator.className = 'autosave-indicator ' + status;
             if (status === 'saving') {
                 indicator.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
@@ -1167,7 +1756,7 @@
                 }, 2000);
             }
         }
-        
+
         function triggerAutoSave() {
             if (autoSaveTimer) clearTimeout(autoSaveTimer);
             showSaveIndicator('saving');
@@ -1178,20 +1767,20 @@
         }
 
         // --- SISTEMA DE LOGIN ---
-        window.openLogin = function() {
+        window.openLogin = function () {
             document.getElementById('loginModal').style.display = 'flex';
         };
 
-        window.closeLogin = function() {
+        window.closeLogin = function () {
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('loginMsg').innerText = "";
         };
 
-        window.checkDB = async function() {
+        window.checkDB = async function () {
             const email = document.getElementById('uEmail').value.trim().toLowerCase();
             const msg = document.getElementById('loginMsg');
-            
-            if(!email) { msg.innerText = "Ingresa tu correo."; return; }
+
+            if (!email) { msg.innerText = "Ingresa tu correo."; return; }
             msg.innerText = "Verificando...";
 
             try {
@@ -1216,7 +1805,7 @@
                 const q = db.collection("QAXI_Cloud").where("email", "==", email);
                 const querySnapshot = await q.get();
 
-                if(!querySnapshot.empty) {
+                if (!querySnapshot.empty) {
                     setProMode(email);
                     closeLogin();
                     document.getElementById('accessBtn').style.display = 'none';
@@ -1224,7 +1813,7 @@
                     msg.style.color = "#ff4444";
                     msg.innerText = "No tienes Licencia Titanium activa.";
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
                 msg.style.color = "#ff4444";
                 msg.innerText = "Error de conexión/config. Comprueba Firebase.";
@@ -1244,7 +1833,7 @@
             document.body.classList.remove('is-pro');
         }
 
-        window.startApp = function(id) {
+        window.startApp = function (id) {
             if ((id === 'slides' || id === 'carnet') && !IS_PREMIUM) {
                 return goPlans();
             }
@@ -1253,45 +1842,51 @@
             const stage = document.getElementById('wsContent');
             const tools = document.getElementById('appTools');
             const title = document.getElementById('appName');
-            
-            stage.innerHTML = ''; tools.innerHTML = ''; title.innerText = id.toUpperCase();
-            pdfImages = []; 
 
-            if(id === 'docs') loadDocs(stage, tools);
-            if(id === 'sheets') loadSheets(stage, tools);
-            if(id === 'pdf') loadPDF(stage, tools);
-            if(id === 'qr') loadQR(stage, tools);
-            if(id === 'ai') loadAI(stage, tools);
-            if(id === 'search') loadSearch(stage, tools);
-            if(id === 'live') { console.warn('QAXI Live está oculto'); return; }
-            if(id === 'slides') loadSlides(stage, tools);
-            if(id === 'carnet') loadCarnet(stage, tools);
-            if(id === 'firma') loadFirma(stage, tools);
+            stage.innerHTML = ''; tools.innerHTML = ''; title.innerText = id.toUpperCase();
+            pdfImages = [];
+
+            if (id === 'docs') loadDocs(stage, tools);
+            if (id === 'sheets') loadSheets(stage, tools);
+            if (id === 'pdf') loadPDF(stage, tools);
+            if (id === 'qr') loadQR(stage, tools);
+            if (id === 'search') loadSearch(stage, tools);
+            if (id === 'live') loadLive(stage, tools);
+            if (id === 'slides') loadSlides(stage, tools);
+            if (id === 'carnet') loadCarnet(stage, tools);
+            if (id === 'firma') loadFirma(stage, tools);
         };
 
-        window.exitApp = function() { 
+        window.exitApp = function () {
             autoSaveAll();
-            document.getElementById('ws').style.display = 'none'; 
+            document.getElementById('ws').style.display = 'none';
         };
 
         // ========================================
         // === DOCS (CON AUTOGUARDADO Y FUENTES MEJORADAS) ===
         // ========================================
-        
+
         let savedSelection = null;
-        
+
         // Lista de fuentes disponibles
         const FONTS = [
-            { name: 'Normal', value: "'Segoe UI', Arial, sans-serif" }
+            { name: 'Normal', value: "system-ui, -apple-system, sans-serif" },
+            { name: 'Arial', value: "Arial, sans-serif" },
+            { name: 'Georgia', value: "Georgia, serif" },
+            { name: 'Times New Roman', value: "'Times New Roman', serif" },
+            { name: 'Verdana', value: "Verdana, sans-serif" },
+            { name: 'Courier New', value: "'Courier New', monospace" },
+            { name: 'Roboto', value: "'Roboto', sans-serif" },
+            { name: 'Inter', value: "'Inter', sans-serif" }
         ];
-        
+
         function saveSelection() {
             const sel = window.getSelection();
             if (sel.rangeCount > 0) {
                 savedSelection = sel.getRangeAt(0).cloneRange();
             }
         }
-        
+
         function restoreSelection() {
             if (savedSelection) {
                 const sel = window.getSelection();
@@ -1301,7 +1896,7 @@
         }
 
         // Insert plain text reliably at current selection/caret
-        window.insertTextAtSelection = function(text) {
+        window.insertTextAtSelection = function (text) {
             try {
                 restoreSelection();
                 const sel = window.getSelection();
@@ -1328,62 +1923,74 @@
             } catch (e) { console.warn('insertTextAtSelection failed', e); }
         };
 
-        // (Removed duplicate old loadLive implementation to avoid parse conflicts.)
-        /*
-            Removed an accidental raw HTML block that was inserted into the script.
-            The toolbar/markup is defined elsewhere correctly. Keeping file parsable.
-        */
-        
-        window.clearDoc = function() {
+        // === QAXI LIVE (embedded app) ===
+        window.loadLive = function (stage, tools) {
+            document.getElementById('appName').innerText = 'QAXI LIVE';
+            tools.innerHTML = `
+                <button class="tb-btn" onclick="window.open('https://santiagomarenco1005-cmd.github.io/qaxi-live-video/','_blank')" title="Ir a web oficial">
+                    <i class="fa-solid fa-globe"></i> Ir a web oficial
+                </button>
+            `;
+            stage.innerHTML = `
+                <iframe id="liveFrame" 
+                    src="../qaxi-live-video/index.html" 
+                    style="width:100%; height:100%; border:none; background:#000; border-radius:0;"
+                    allow="camera; microphone; display-capture; autoplay; clipboard-write; encrypted-media; picture-in-picture; screen-wake-lock"
+                    allowfullscreen>
+                </iframe>
+            `;
+        };
+
+        window.clearDoc = function () {
             if (confirm('¿Crear un nuevo documento? Se perderá el contenido actual.')) {
                 const defaultHtml = '<h1>Nuevo Documento</h1><p>Comienza a escribir...</p>';
                 const p = document.getElementById('paper');
                 if (p) p.innerHTML = defaultHtml;
-                try { localStorage.setItem(STORAGE_KEYS.DOCS, defaultHtml); } catch(e){}
-                try { triggerAutoSave(); } catch(e){}
+                try { localStorage.setItem(STORAGE_KEYS.DOCS, defaultHtml); } catch (e) { }
+                try { triggerAutoSave(); } catch (e) { }
             }
         }
 
-        window.applyFormat = function(cmd, val = null) {
+        window.applyFormat = function (cmd, val = null) {
             document.execCommand(cmd, false, val);
             document.getElementById('paper').focus();
             triggerAutoSave();
         }
-        
-        window.applyFontToSelection = function(fontFamily) {
+
+        window.applyFontToSelection = function (fontFamily) {
             restoreSelection();
-            
+
             // Usar execCommand con styleWithCSS para mejor compatibilidad de escritura
             document.execCommand('styleWithCSS', false, true);
             document.execCommand('fontName', false, fontFamily);
-            
+
             // Foco de vuelta al papel
             document.getElementById('paper').focus();
             triggerAutoSave();
         }
-        
-        window.applySizeToSelection = function(size) {
+
+        window.applySizeToSelection = function (size) {
             restoreSelection();
             const selection = window.getSelection();
-            
+
             if (selection.rangeCount > 0 && !selection.isCollapsed) {
                 const range = selection.getRangeAt(0);
-                
+
                 // Create wrapper span with size
                 const span = document.createElement('span');
                 span.style.fontSize = size + 'px';
-                
+
                 // Extract and wrap content
                 const fragment = range.extractContents();
                 span.appendChild(fragment);
                 range.insertNode(span);
-                
+
                 // Re-select the new content
                 range.selectNodeContents(span);
                 selection.removeAllRanges();
                 selection.addRange(range);
             }
-            
+
             triggerAutoSave();
         }
 
@@ -1391,7 +1998,7 @@
         window._qaxi_recognition = null;
         window._qaxi_recognizing = false;
 
-        window.toggleSpeech = function() {
+        window.toggleSpeech = function () {
             if (window._qaxi_recognizing) return stopSpeech();
             startSpeech();
         }
@@ -1428,15 +2035,15 @@
                             interim += event.results[i][0].transcript;
                         }
                     }
-                        // Insert final transcript at caret (use reliable Range method)
-                        const paper = document.getElementById('paper');
-                        if (!paper) return;
-                        restoreSelection();
-                        if (finalTranscript) {
-                            window.insertTextAtSelection(finalTranscript + ' ');
-                            finalTranscript = '';
-                            triggerAutoSave();
-                        }
+                    // Insert final transcript at caret (use reliable Range method)
+                    const paper = document.getElementById('paper');
+                    if (!paper) return;
+                    restoreSelection();
+                    if (finalTranscript) {
+                        window.insertTextAtSelection(finalTranscript + ' ');
+                        finalTranscript = '';
+                        triggerAutoSave();
+                    }
                 };
                 window._qaxi_recognition.onerror = (e) => { console.error('Speech error', e); };
                 window._qaxi_recognition.onend = () => { window._qaxi_recognizing = false; updateSpeechBtn(false); };
@@ -1455,8 +2062,8 @@
         function updateSpeechBtn(active) {
             const b = document.getElementById('speechBtn');
             if (!b) return;
-            if (active) { b.style.background = 'var(--gold)'; b.style.color='black'; b.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> DETENER'; }
-            else { b.style.background = ''; b.style.color=''; b.innerHTML = '<i class="fa-solid fa-microphone"></i> VOZ'; }
+            if (active) { b.style.background = 'var(--gold)'; b.style.color = 'black'; b.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> DETENER'; }
+            else { b.style.background = ''; b.style.color = ''; b.innerHTML = '<i class="fa-solid fa-microphone"></i> VOZ'; }
         }
 
         window.updateDocStats = () => {
@@ -1466,9 +2073,9 @@
             const words = text ? text.split(/\s+/).filter(w => w.length > 0).length : 0;
             document.getElementById('docStats').innerText = `${words} palabras`;
         };
-        
+
         // Build a Pages-like Docs UI when the app is opened
-        window.loadDocs = function(stage, tools) {
+        window.loadDocs = function (stage, tools) {
             try {
                 // Minimal Docs toolbar: focused, minimal controls, clear/create new
                 tools.innerHTML = `
@@ -1526,7 +2133,7 @@
                 const paper = document.getElementById('paper');
                 if (paper) {
                     paper.addEventListener('input', () => {
-                        try { localStorage.setItem(STORAGE_KEYS.DOCS, paper.innerHTML); } catch(e){}
+                        try { localStorage.setItem(STORAGE_KEYS.DOCS, paper.innerHTML); } catch (e) { }
                         triggerAutoSave();
                         updateDocStats();
                     });
@@ -1544,40 +2151,40 @@
         };
 
         // Helper functions for Word-like toolbar
-        window.applyParagraphStyle = function(val) {
+        window.applyParagraphStyle = function (val) {
             try {
                 if (val === 'normal') document.execCommand('formatBlock', false, 'p');
                 else if (val === 'h1') document.execCommand('formatBlock', false, 'h1');
                 else if (val === 'h2') document.execCommand('formatBlock', false, 'h2');
                 else if (val === 'h3') document.execCommand('formatBlock', false, 'h3');
                 triggerAutoSave();
-            } catch(e){console.warn('applyParagraphStyle',e)}
+            } catch (e) { console.warn('applyParagraphStyle', e) }
         };
 
-        window.alignText = function(mode) {
+        window.alignText = function (mode) {
             try {
                 if (mode === 'left') document.execCommand('justifyLeft');
                 if (mode === 'center') document.execCommand('justifyCenter');
                 if (mode === 'right') document.execCommand('justifyRight');
                 if (mode === 'justify') document.execCommand('justifyFull');
                 triggerAutoSave();
-            } catch(e){console.warn('alignText',e)}
+            } catch (e) { console.warn('alignText', e) }
         };
 
-        window.setTextColor = function(color) { try{ document.execCommand('foreColor', false, color); triggerAutoSave(); }catch(e){console.warn(e)} };
-        window.setHighlight = function(color) { try{ document.execCommand('backColor', false, color); triggerAutoSave(); }catch(e){console.warn(e)} };
+        window.setTextColor = function (color) { try { document.execCommand('foreColor', false, color); triggerAutoSave(); } catch (e) { console.warn(e) } };
+        window.setHighlight = function (color) { try { document.execCommand('backColor', false, color); triggerAutoSave(); } catch (e) { console.warn(e) } };
 
-        window.doIndent = function(){ try{ document.execCommand('indent'); triggerAutoSave(); }catch(e){console.warn(e)} };
-        window.doOutdent = function(){ try{ document.execCommand('outdent'); triggerAutoSave(); }catch(e){console.warn(e)} };
+        window.doIndent = function () { try { document.execCommand('indent'); triggerAutoSave(); } catch (e) { console.warn(e) } };
+        window.doOutdent = function () { try { document.execCommand('outdent'); triggerAutoSave(); } catch (e) { console.warn(e) } };
 
-        window.doUndo = function(){ try{ document.execCommand('undo'); }catch(e){console.warn(e)} };
-        window.doRedo = function(){ try{ document.execCommand('redo'); }catch(e){console.warn(e)} };
+        window.doUndo = function () { try { document.execCommand('undo'); } catch (e) { console.warn(e) } };
+        window.doRedo = function () { try { document.execCommand('redo'); } catch (e) { console.warn(e) } };
 
-        window.setLineSpacing = function(val){ try{ const p = document.getElementById('paper'); if(p) p.style.lineHeight = val; triggerAutoSave(); }catch(e){console.warn(e)} };
+        window.setLineSpacing = function (val) { try { const p = document.getElementById('paper'); if (p) p.style.lineHeight = val; triggerAutoSave(); } catch (e) { console.warn(e) } };
 
         // Pages-like helpers: templates, margins, columns, header/footer, page size
-        window.applyTemplate = function(name) {
-            const paper = document.getElementById('paper'); if(!paper) return;
+        window.applyTemplate = function (name) {
+            const paper = document.getElementById('paper'); if (!paper) return;
             try {
                 if (name === 'blank') {
                     paper.innerHTML = '<h1>Nuevo Documento</h1><p>Comienza a escribir...</p><div class="page-footer" contenteditable="true" style="display:none;padding-top:8px;color:#666;font-size:0.85rem">Pie de página</div>';
@@ -1588,43 +2195,43 @@
                 }
                 triggerAutoSave();
                 updateDocStats();
-            } catch(e){ console.warn('applyTemplate', e); }
+            } catch (e) { console.warn('applyTemplate', e); }
         };
 
-        window.setMargins = function(val) {
-            const paper = document.getElementById('paper'); if(!paper) return;
+        window.setMargins = function (val) {
+            const paper = document.getElementById('paper'); if (!paper) return;
             try {
                 if (val === 'narrow') { paper.style.padding = '18px 24px'; }
                 else if (val === 'wide') { paper.style.padding = '80px 80px'; }
                 else { paper.style.padding = '50px'; }
                 triggerAutoSave();
-            } catch(e){console.warn('setMargins', e)}
+            } catch (e) { console.warn('setMargins', e) }
         };
 
-        window.setColumns = function(n) {
-            const paper = document.getElementById('paper'); if(!paper) return;
+        window.setColumns = function (n) {
+            const paper = document.getElementById('paper'); if (!paper) return;
             try {
-                const count = parseInt(n,10) || 1;
+                const count = parseInt(n, 10) || 1;
                 paper.style.columnCount = count;
                 paper.style.columnGap = (count > 1) ? '36px' : '';
                 triggerAutoSave();
-            } catch(e){console.warn('setColumns', e)}
+            } catch (e) { console.warn('setColumns', e) }
         };
 
         // header option removed — footer stays editable via templates only
 
-        window.setPageSize = function(sz) {
-            const paper = document.getElementById('paper'); if(!paper) return;
+        window.setPageSize = function (sz) {
+            const paper = document.getElementById('paper'); if (!paper) return;
             try {
                 if (sz === 'letter') { paper.style.width = '816px'; paper.style.minHeight = '1056px'; }
                 else { paper.style.width = '794px'; paper.style.minHeight = '1123px'; }
                 triggerAutoSave();
-            } catch(e){console.warn('setPageSize', e)}
+            } catch (e) { console.warn('setPageSize', e) }
         };
 
         // === HERRAMIENTAS ADICIONALES DE DOCS ===
-        
-        window.insertLink = function() {
+
+        window.insertLink = function () {
             const url = prompt('Ingresa la URL del enlace:', 'https://');
             if (url && url !== 'https://') {
                 const text = prompt('Texto del enlace (dejar vacío para usar la URL):', '');
@@ -1633,8 +2240,8 @@
                 triggerAutoSave();
             }
         };
-        
-        window.insertImage = function() {
+
+        window.insertImage = function () {
             const url = prompt('Ingresa la URL de la imagen:', 'https://');
             if (url && url !== 'https://') {
                 const width = prompt('Ancho de la imagen en píxeles (ej: 300):', '400');
@@ -1642,21 +2249,21 @@
                 triggerAutoSave();
             }
         };
-        
-        window.insertTable = function() {
+
+        window.insertTable = function () {
             const rows = prompt('Número de filas:', '3');
             const cols = prompt('Número de columnas:', '3');
-            
+
             if (rows && cols) {
                 let tableHTML = '<table style="border-collapse: collapse; width: 100%; margin: 15px 0;">';
-                
+
                 // Header row
                 tableHTML += '<tr>';
                 for (let c = 0; c < parseInt(cols); c++) {
-                    tableHTML += `<th style="border: 1px solid #ccc; padding: 10px; background: #f5f5f5; font-weight: bold;">Encabezado ${c+1}</th>`;
+                    tableHTML += `<th style="border: 1px solid #ccc; padding: 10px; background: #f5f5f5; font-weight: bold;">Encabezado ${c + 1}</th>`;
                 }
                 tableHTML += '</tr>';
-                
+
                 // Data rows
                 for (let r = 1; r < parseInt(rows); r++) {
                     tableHTML += '<tr>';
@@ -1666,56 +2273,56 @@
                     tableHTML += '</tr>';
                 }
                 tableHTML += '</table>';
-                
+
                 document.execCommand('insertHTML', false, tableHTML);
                 triggerAutoSave();
             }
         };
-        
-        window.insertHR = function() {
+
+        window.insertHR = function () {
             document.execCommand('insertHTML', false, '<hr style="border: none; border-top: 2px solid #ccc; margin: 20px 0;">');
             triggerAutoSave();
         };
-        
+
         window.exportDocPdf = () => {
             const el = document.getElementById('paper');
-            html2canvas(el, {scale:2}).then(cvs => {
-                const pdf = new jspdf.jsPDF('p','mm','a4');
+            html2canvas(el, { scale: 2 }).then(cvs => {
+                const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
                 const w = pdf.internal.pageSize.getWidth();
-                pdf.addImage(cvs.toDataURL('image/png'), 'PNG', 0, 0, w, (cvs.height*w)/cvs.width);
+                pdf.addImage(cvs.toDataURL('image/png'), 'PNG', 0, 0, w, (cvs.height * w) / cvs.width);
                 pdf.save('QAXI_Doc.pdf');
             });
         };
-        
+
         // === ESCRITURA MÁGICA (BETA) ===
-        window.magicWriting = async function() {
+        window.magicWriting = async function () {
             const selection = window.getSelection();
             const selectedText = selection.toString().trim();
-            
+
             if (!selectedText) {
                 alert('Selecciona una palabra o frase para expandir con IA.');
                 return;
             }
-            
+
             const range = selection.getRangeAt(0);
             const loadingSpan = document.createElement('span');
             loadingSpan.id = 'magic-loading';
             loadingSpan.style.cssText = 'background: linear-gradient(90deg, #D4AF37, #fff, #D4AF37); background-size: 200%; animation: shimmer 1s infinite; -webkit-background-clip: text; -webkit-text-fill-color: transparent;';
             loadingSpan.textContent = selectedText + '...';
-            
+
             if (!document.getElementById('shimmer-style')) {
                 const style = document.createElement('style');
                 style.id = 'shimmer-style';
                 style.textContent = '@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }';
                 document.head.appendChild(style);
             }
-            
+
             range.deleteContents();
             range.insertNode(loadingSpan);
-            
+
             try {
                 const systemPrompt = "Eres un escritor experto. El usuario te dará una palabra o frase temática. Tu trabajo es expandirla en un párrafo corto (2-3 oraciones máximo) elegante y bien redactado sobre ese tema. NO uses comillas. NO expliques qué estás haciendo. Solo devuelve el texto expandido directamente.";
-                
+
                 const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${GROQ_KEY}` },
@@ -1729,18 +2336,18 @@
                         max_tokens: 200
                     })
                 });
-                
+
                 if (!response.ok) throw new Error("Error API");
                 const data = await response.json();
                 const expandedText = data.choices[0].message.content.trim();
-                
+
                 loadingSpan.style.cssText = '';
                 loadingSpan.style.color = '#000';
                 loadingSpan.textContent = expandedText;
                 loadingSpan.removeAttribute('id');
-                
+
                 triggerAutoSave();
-                
+
             } catch (e) {
                 console.error(e);
                 loadingSpan.textContent = selectedText;
@@ -1790,12 +2397,12 @@
         }
         window.removePdf = (idx) => { pdfImages.splice(idx, 1); renderPdfList(); };
         window.imgsToPdf = () => {
-            if(!pdfImages.length) return alert("Agrega imágenes.");
+            if (!pdfImages.length) return alert("Agrega imágenes.");
             const pdf = new jspdf.jsPDF();
             const w = pdf.internal.pageSize.getWidth();
             const h = pdf.internal.pageSize.getHeight();
             pdfImages.forEach((img, i) => {
-                if(i > 0) pdf.addPage();
+                if (i > 0) pdf.addPage();
                 pdf.addImage(img.data, 'JPEG', 0, 0, w, h);
             });
             pdf.save("QAXI_Images.pdf");
@@ -1804,7 +2411,7 @@
         // ========================================
         // === PRESENTATIONS QAXI (CON AUTOGUARDADO) ===
         // ========================================
-        
+
         function loadSlides(c, t) {
             t.innerHTML = `
                 <button class="nav-btn" onclick="clearSlides()" style="border-color:var(--gold); color:var(--gold)">CREAR NUEVO SLIDES</button>
@@ -1831,66 +2438,66 @@
                     </div>
                 </div>
             `;
-            
+
             // Try to load saved slides
             const savedSlides = localStorage.getItem(STORAGE_KEYS.SLIDES);
             if (savedSlides) {
                 try {
                     slides = JSON.parse(savedSlides);
-                } catch(e) {
-                    slides = [{ 
-                        id: 1, 
+                } catch (e) {
+                    slides = [{
+                        id: 1,
                         elements: [
                             { id: 1, type: 'title', content: 'Título de la Presentación', x: 50, y: 50, width: 700, height: 60, fontSize: 36, fontFamily: 'Cinzel' },
                             { id: 2, type: 'text', content: 'Haz clic para editar...', x: 50, y: 150, width: 600, height: 40, fontSize: 18, fontFamily: 'Segoe UI' }
-                        ], 
-                        bg: '#ffffff' 
+                        ],
+                        bg: '#ffffff'
                     }];
                 }
             } else {
-                slides = [{ 
-                    id: 1, 
+                slides = [{
+                    id: 1,
                     elements: [
                         { id: 1, type: 'title', content: 'Título de la Presentación', x: 50, y: 50, width: 700, height: 60, fontSize: 36, fontFamily: 'Cinzel' },
                         { id: 2, type: 'text', content: 'Haz clic para editar...', x: 50, y: 150, width: 600, height: 40, fontSize: 18, fontFamily: 'Segoe UI' }
-                    ], 
-                    bg: '#ffffff' 
+                    ],
+                    bg: '#ffffff'
                 }];
             }
-            
+
             currentSlideIdx = 0;
             selectedElement = null;
-            
+
             renderCurrentSlide();
             renderThumbs();
-            
+
             document.getElementById('activeSlideCanvas').addEventListener('click', (e) => {
                 if (e.target.id === 'activeSlideCanvas') {
                     deselectAll();
                 }
             });
         }
-        
+
         function saveSlides() {
             localStorage.setItem(STORAGE_KEYS.SLIDES, JSON.stringify(slides));
             // Also trigger the visual autosave indicator / centralized autosave
-            try { triggerAutoSave(); } catch(e){}
+            try { triggerAutoSave(); } catch (e) { }
         }
-        
+
         function renderCurrentSlide() {
             const canvas = document.getElementById('activeSlideCanvas');
             if (!canvas) return;
-            
+
             const slide = slides[currentSlideIdx];
             canvas.style.backgroundColor = slide.bg;
             canvas.innerHTML = '';
-            
+
             slide.elements.forEach(el => {
                 const elem = createSlideElement(el);
                 canvas.appendChild(elem);
             });
         }
-        
+
         function createSlideElement(elData) {
             const wrapper = document.createElement('div');
             wrapper.className = 'slide-element';
@@ -1899,7 +2506,7 @@
             wrapper.style.top = elData.y + 'px';
             wrapper.style.width = elData.width + 'px';
             wrapper.style.minHeight = elData.height + 'px';
-            
+
             if (elData.type === 'image') {
                 const img = document.createElement('img');
                 img.src = elData.src;
@@ -1914,34 +2521,34 @@
                 textEl.style.width = '100%';
                 textEl.style.minHeight = '100%';
                 textEl.style.outline = 'none';
-                
+
                 if (elData.type === 'title') {
                     textEl.style.fontWeight = 'bold';
                 }
-                
+
                 textEl.addEventListener('input', () => {
                     const slide = slides[currentSlideIdx];
                     const elem = slide.elements.find(e => e.id == elData.id);
                     if (elem) elem.content = textEl.innerHTML;
                     saveSlides();
                 });
-                
+
                 textEl.addEventListener('focus', () => {
                     wrapper.classList.add('editing');
                 });
-                
+
                 textEl.addEventListener('blur', () => {
                     wrapper.classList.remove('editing');
                 });
-                
+
                 wrapper.appendChild(textEl);
             }
-            
+
             const resizeHandle = document.createElement('div');
             resizeHandle.className = 'resize-handle';
             resizeHandle.style.display = 'none';
             wrapper.appendChild(resizeHandle);
-            
+
             wrapper.addEventListener('mousedown', (e) => {
                 if (e.target === resizeHandle) {
                     startResize(e, wrapper, elData);
@@ -1952,17 +2559,17 @@
                     startDrag(e, wrapper, elData);
                 }
             });
-            
+
             return wrapper;
         }
-        
+
         function selectElement(wrapper, elData) {
             deselectAll();
             wrapper.classList.add('selected');
             wrapper.querySelector('.resize-handle').style.display = 'block';
             selectedElement = { wrapper, data: elData };
         }
-        
+
         function deselectAll() {
             document.querySelectorAll('.slide-element.selected').forEach(el => {
                 el.classList.remove('selected');
@@ -1971,80 +2578,80 @@
             });
             selectedElement = null;
         }
-        
+
         function startDrag(e, wrapper, elData) {
             if (wrapper.classList.contains('editing')) return;
-            
+
             isDragging = true;
             const rect = wrapper.getBoundingClientRect();
             dragOffset.x = e.clientX - rect.left;
             dragOffset.y = e.clientY - rect.top;
-            
+
             const onMouseMove = (e) => {
                 if (!isDragging) return;
-                
+
                 const canvas = document.getElementById('activeSlideCanvas');
                 const canvasRect = canvas.getBoundingClientRect();
-                
+
                 let newX = e.clientX - canvasRect.left - dragOffset.x;
                 let newY = e.clientY - canvasRect.top - dragOffset.y;
-                
+
                 newX = Math.max(0, Math.min(newX, canvas.offsetWidth - wrapper.offsetWidth));
                 newY = Math.max(0, Math.min(newY, canvas.offsetHeight - wrapper.offsetHeight));
-                
+
                 wrapper.style.left = newX + 'px';
                 wrapper.style.top = newY + 'px';
-                
+
                 elData.x = newX;
                 elData.y = newY;
             };
-            
+
             const onMouseUp = () => {
                 isDragging = false;
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
                 saveSlides();
             };
-            
+
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
         }
-        
+
         function startResize(e, wrapper, elData) {
             e.preventDefault();
             e.stopPropagation();
             isResizing = true;
-            
+
             const startX = e.clientX;
             const startY = e.clientY;
             const startWidth = wrapper.offsetWidth;
             const startHeight = wrapper.offsetHeight;
-            
+
             const onMouseMove = (e) => {
                 if (!isResizing) return;
-                
+
                 const newWidth = Math.max(50, startWidth + (e.clientX - startX));
                 const newHeight = Math.max(20, startHeight + (e.clientY - startY));
-                
+
                 wrapper.style.width = newWidth + 'px';
                 wrapper.style.minHeight = newHeight + 'px';
-                
+
                 elData.width = newWidth;
                 elData.height = newHeight;
             };
-            
+
             const onMouseUp = () => {
                 isResizing = false;
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
                 saveSlides();
             };
-            
+
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
         }
 
-        window.renderThumbs = function() {
+        window.renderThumbs = function () {
             const cont = document.getElementById('slideThumbs');
             if (!cont) return;
             cont.innerHTML = '';
@@ -2053,38 +2660,38 @@
                 div.className = `slide-thumb ${i === currentSlideIdx ? 'active' : ''}`;
                 div.style.backgroundColor = s.bg;
                 div.onclick = () => switchSlide(i);
-                div.innerHTML = `<span>${i+1}</span>`;
+                div.innerHTML = `<span>${i + 1}</span>`;
                 cont.appendChild(div);
             });
         }
 
-        window.switchSlide = function(idx) {
+        window.switchSlide = function (idx) {
             currentSlideIdx = idx;
             selectedElement = null;
             renderCurrentSlide();
             renderThumbs();
         }
 
-        window.addSlide = function() {
-            slides.push({ 
-                id: Date.now(), 
+        window.addSlide = function () {
+            slides.push({
+                id: Date.now(),
                 elements: [
                     { id: Date.now(), type: 'title', content: 'Nueva Diapositiva', x: 50, y: 50, width: 700, height: 60, fontSize: 36, fontFamily: 'Cinzel' }
-                ], 
-                bg: '#ffffff' 
+                ],
+                bg: '#ffffff'
             });
             switchSlide(slides.length - 1);
             saveSlides();
         }
 
-        window.changeSlideBg = function(color) {
+        window.changeSlideBg = function (color) {
             slides[currentSlideIdx].bg = color;
             document.getElementById('activeSlideCanvas').style.backgroundColor = color;
             renderThumbs();
             saveSlides();
         }
 
-        window.addSlideText = function() {
+        window.addSlideText = function () {
             const newEl = {
                 id: Date.now(),
                 type: 'text',
@@ -2100,8 +2707,8 @@
             renderCurrentSlide();
             saveSlides();
         }
-        
-        window.addSlideTitle = function() {
+
+        window.addSlideTitle = function () {
             const newEl = {
                 id: Date.now(),
                 type: 'title',
@@ -2117,10 +2724,10 @@
             renderCurrentSlide();
             saveSlides();
         }
-        
-        window.addSlideImage = function(input) {
+
+        window.addSlideImage = function (input) {
             if (!input.files || !input.files[0]) return;
-            
+
             const reader = new FileReader();
             reader.onload = (e) => {
                 const newEl = {
@@ -2139,25 +2746,25 @@
             reader.readAsDataURL(input.files[0]);
             input.value = '';
         }
-        
-        window.clearSlides = function() {
-            try { autoSaveAll(); } catch(e){}
+
+        window.clearSlides = function () {
+            try { autoSaveAll(); } catch (e) { }
             if (!confirm('¿Crear una nueva presentación? Se perderán las diapositivas actuales.')) return;
-            slides = [{ id: 1, elements: [ { id: 1, type: 'title', content: 'Título de la Presentación', x: 50, y: 50, width: 700, height: 60, fontSize: 36, fontFamily: 'Cinzel' } ], bg: '#ffffff' }];
+            slides = [{ id: 1, elements: [{ id: 1, type: 'title', content: 'Título de la Presentación', x: 50, y: 50, width: 700, height: 60, fontSize: 36, fontFamily: 'Cinzel' }], bg: '#ffffff' }];
             currentSlideIdx = 0;
             selectedElement = null;
             renderCurrentSlide();
             renderThumbs();
             saveSlides();
-            try { triggerAutoSave(); } catch(e){}
+            try { triggerAutoSave(); } catch (e) { }
         }
 
-        window.deleteSelectedElement = function() {
+        window.deleteSelectedElement = function () {
             if (!selectedElement) {
                 alert('Selecciona un elemento para eliminar.');
                 return;
             }
-            
+
             const slide = slides[currentSlideIdx];
             slide.elements = slide.elements.filter(el => el.id != selectedElement.data.id);
             selectedElement = null;
@@ -2165,7 +2772,7 @@
             saveSlides();
         }
 
-        window.deleteSlide = function() {
+        window.deleteSlide = function () {
             if (!confirm('¿Confirmas eliminar la diapositiva actual? Esta acción no se puede deshacer.')) return;
             slides.splice(currentSlideIdx, 1);
             if (slides.length === 0) {
@@ -2177,13 +2784,13 @@
             saveSlides();
         }
 
-        window.exportSlides = async function() {
+        window.exportSlides = async function () {
             const pdf = new jspdf.jsPDF('l', 'mm', 'a4');
             const w = pdf.internal.pageSize.getWidth();
             const h = pdf.internal.pageSize.getHeight();
             const canvas = document.getElementById('activeSlideCanvas');
             const originalIdx = currentSlideIdx;
-            
+
             deselectAll();
 
             for (let i = 0; i < slides.length; i++) {
@@ -2194,7 +2801,7 @@
                     pdf.addImage(cvs.toDataURL('image/jpeg', 0.9), 'JPEG', 0, 0, w, h);
                 });
             }
-            
+
             switchSlide(originalIdx);
             pdf.save('QAXI_Presentation.pdf');
         }
@@ -2202,23 +2809,26 @@
         // === SHEETS ===
         function loadSheets(c, t) {
             t.innerHTML = `<div style="display:flex; align-items:center; gap:8px;">
-                                                <div id="sheetTabs" style="display:flex; gap:6px;"></div>
-                                                <button class="nav-btn" onclick="newWorkbook()" style="border-color:var(--gold); color:var(--gold)">NUEVO LIBRO</button>
-                                                <button class="nav-btn" onclick="addSheet()">+ NUEVA HOJA</button>
-                                                <button class="nav-btn" onclick="deleteCurrentSheet()" style="background:transparent;border-color:#6b1616;color:#ff9b9b;">BORRAR HOJA</button>
-                                                <button class="nav-btn" onclick="addR()">AGREGAR FILA</button>
-                                                <button class="nav-btn" onclick="delR()" style="background:transparent;border-color:#6b1616;color:#ff9b9b;">BORRAR FILA</button>
-                                                <button class="nav-btn" onclick="addC()">AGREGAR COLUMNA</button>
-                                                <button class="nav-btn" onclick="delC()" style="background:transparent;border-color:#6b1616;color:#ff9b9b;">BORRAR COLUMNA</button>
-                                <button class="nav-btn" onclick="exportCSV()">CSV</button>
-                                <button class="nav-btn export-sheets-btn btn-primary btn-icon-text btn-compact" onclick="exportSheetsPdf()"><i class="fa-solid fa-file-pdf"></i><span>EXPORTAR A PDF</span></button>
+                                <div id="sheetTabs" style="display:flex; gap:6px;"></div>
+                                <div class="sep"></div>
+                                <button class="tb-btn btn-compact" onclick="newWorkbook()" title="Nuevo Libro" style="color:var(--gold)"><i class="fa-solid fa-file-excel"></i> Libro</button>
+                                <button class="tb-btn btn-compact" onclick="addSheet()" title="Nueva Hoja"><i class="fa-solid fa-folder-plus"></i></button>
+                                <button class="tb-btn btn-compact" onclick="deleteCurrentSheet()" style="color:#ff9b9b;" title="Borrar Hoja"><i class="fa-solid fa-folder-minus"></i></button>
+                                <div class="sep"></div>
+                                <button class="tb-btn btn-compact" onclick="addR()" title="Nueva Fila"><i class="fa-solid fa-table-cells-row-lock"></i> +Fila</button>
+                                <button class="tb-btn btn-compact" onclick="delR()" style="color:#ff9b9b;" title="Borrar Fila"><i class="fa-solid fa-minus"></i>Fila</button>
+                                <button class="tb-btn btn-compact" onclick="addC()" title="Nueva Columna"><i class="fa-solid fa-table-columns"></i> +Col</button>
+                                <button class="tb-btn btn-compact" onclick="delC()" style="color:#ff9b9b;" title="Borrar Columna"><i class="fa-solid fa-minus"></i>Col</button>
+                                <div class="sep"></div>
+                                <button class="tb-btn btn-compact" onclick="exportCSV()" title="CSV"><i class="fa-solid fa-file-csv"></i> CSV</button>
+                                <button class="tb-btn export-sheets-btn btn-primary btn-icon-text btn-compact" title="Exportar a PDF" onclick="exportSheetsPdf()"><i class="fa-solid fa-file-pdf"></i><span>Exportar a PDF</span></button>
                             </div>`;
 
             // initialize workbook if not present
             if (!window.sheetsWorkbook) {
                 const wb = localStorage.getItem(STORAGE_KEYS.SHEETS_BOOK);
                 if (wb) {
-                    try { window.sheetsWorkbook = JSON.parse(wb); } catch(e) { window.sheetsWorkbook = null; }
+                    try { window.sheetsWorkbook = JSON.parse(wb); } catch (e) { window.sheetsWorkbook = null; }
                 }
             }
             if (!window.sheetsWorkbook) {
@@ -2226,7 +2836,7 @@
                 const saved = localStorage.getItem(STORAGE_KEYS.SHEETS);
                 let values = [];
                 if (saved) {
-                    try { const obj = JSON.parse(saved); values = obj.values || []; } catch(e){}
+                    try { const obj = JSON.parse(saved); values = obj.values || []; } catch (e) { }
                 }
                 window.sheetsWorkbook = [{ name: 'Hoja 1', rows: sheetRows, cols: sheetCols, values }];
                 activeSheetIdx = 0;
@@ -2240,7 +2850,7 @@
             const active = window.sheetsWorkbook[activeSheetIdx];
             sheetRows = active.rows || sheetRows;
             sheetCols = active.cols || sheetCols;
-            const defaultHeaders = Array.from({length: sheetCols}, (_,i) => String.fromCharCode(65+i));
+            const defaultHeaders = Array.from({ length: sheetCols }, (_, i) => String.fromCharCode(65 + i));
             if (!active.headers) active.headers = defaultHeaders.slice();
             c.innerHTML = buildGrid(sheetRows, sheetCols, active.headers);
 
@@ -2267,7 +2877,7 @@
                         });
                     }
                 }
-            } catch(e) { console.warn('Error loading sheets', e); }
+            } catch (e) { console.warn('Error loading sheets', e); }
 
             // Attach autosave hooks to inputs and header editing
             const grid = document.getElementById('mainGrid');
@@ -2276,15 +2886,15 @@
                 grid.querySelectorAll('thead th.col-header').forEach(th => {
                     th.addEventListener('input', () => {
                         try {
-                            const col = parseInt(th.dataset.col,10);
-                            const label = th.innerText.trim() || String.fromCharCode(65+col);
+                            const col = parseInt(th.dataset.col, 10);
+                            const label = th.innerText.trim() || String.fromCharCode(65 + col);
                             const wb = window.sheetsWorkbook[activeSheetIdx] = window.sheetsWorkbook[activeSheetIdx] || {};
                             wb.headers = wb.headers || defaultHeaders.slice();
                             wb.headers[col] = label;
-                            try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values || [], headers: wb.headers })); } catch(e){}
-                            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
-                            try { triggerAutoSave(); } catch(e){}
-                        } catch(e){}
+                            try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values || [], headers: wb.headers })); } catch (e) { }
+                            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch (e) { }
+                            try { triggerAutoSave(); } catch (e) { }
+                        } catch (e) { }
                     });
                 });
                 grid.querySelectorAll('td input').forEach(inp => {
@@ -2315,7 +2925,7 @@
             window.sheetsWorkbook.forEach((s, i) => {
                 const btn = document.createElement('button');
                 btn.className = 'nav-btn';
-                btn.innerText = s.name || `Hoja ${i+1}`;
+                btn.innerText = s.name || `Hoja ${i + 1}`;
                 btn.style.border = i === activeSheetIdx ? '2px solid var(--gold)' : '';
                 btn.onclick = () => { switchSheet(i); };
                 cont.appendChild(btn);
@@ -2323,18 +2933,18 @@
         }
 
         function addSheet() {
-            try { autoSaveAll(); } catch(e){}
-            const name = `Hoja ${window.sheetsWorkbook.length+1}`;
+            try { autoSaveAll(); } catch (e) { }
+            const name = `Hoja ${window.sheetsWorkbook.length + 1}`;
             window.sheetsWorkbook.push({ name, rows: 20, cols: 10, values: [] });
             activeSheetIdx = window.sheetsWorkbook.length - 1;
             localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
-            try { triggerAutoSave(); } catch(e){}
+            try { triggerAutoSave(); } catch (e) { }
         }
 
         function switchSheet(idx) {
             // before switching, save current grid values
-            try { autoSaveAll(); } catch(e){}
+            try { autoSaveAll(); } catch (e) { }
             activeSheetIdx = idx;
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
         }
@@ -2344,46 +2954,46 @@
                 alert('No puedes borrar la única hoja.');
                 return;
             }
-            try { autoSaveAll(); } catch(e){}
-            const name = window.sheetsWorkbook[activeSheetIdx].name || `Hoja ${activeSheetIdx+1}`;
+            try { autoSaveAll(); } catch (e) { }
+            const name = window.sheetsWorkbook[activeSheetIdx].name || `Hoja ${activeSheetIdx + 1}`;
             if (!confirm(`¿Confirmas borrar la hoja "${name}"? Esta acción no se puede deshacer.`)) return;
             window.sheetsWorkbook.splice(activeSheetIdx, 1);
             if (activeSheetIdx >= window.sheetsWorkbook.length) activeSheetIdx = window.sheetsWorkbook.length - 1;
             localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook));
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
-            try { triggerAutoSave(); } catch(e){}
+            try { triggerAutoSave(); } catch (e) { }
         }
 
         function newWorkbook() {
-            try { autoSaveAll(); } catch(e){}
+            try { autoSaveAll(); } catch (e) { }
             if (!confirm('¿Crear un nuevo libro de cálculo? Se reemplazarán las hojas actuales.')) return;
             // Recreate a fresh, empty workbook and clear previous sheet snapshots
             window.sheetsWorkbook = [{ name: 'Hoja 1', rows: 20, cols: 10, values: [] }];
             activeSheetIdx = 0;
             sheetRows = 20; sheetCols = 10;
-            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
-            try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: 20, cols: 10, values: [] })); } catch(e){}
+            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch (e) { }
+            try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: 20, cols: 10, values: [] })); } catch (e) { }
             // Rerender sheets UI
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
-            try { triggerAutoSave(); } catch(e){}
+            try { triggerAutoSave(); } catch (e) { }
         }
         function buildGrid(rows, cols, headers) {
-            const hdrs = Array.isArray(headers) ? headers : Array.from({length: cols}, (_,i) => String.fromCharCode(65+i));
+            const hdrs = Array.isArray(headers) ? headers : Array.from({ length: cols }, (_, i) => String.fromCharCode(65 + i));
             let h = `<div class="grid-container"><table class="grid" id="mainGrid"><thead><tr id="hRow"><th></th>`;
-            for(let i=0; i<cols; i++) h += `<th contenteditable="true" data-col="${i}" class="col-header" style="min-width:48px; padding:8px; text-align:center;">${hdrs[i] || String.fromCharCode(65+i)}</th>`;
+            for (let i = 0; i < cols; i++) h += `<th contenteditable="true" data-col="${i}" class="col-header" style="min-width:48px; padding:8px; text-align:center;">${hdrs[i] || String.fromCharCode(65 + i)}</th>`;
             h += `</tr></thead><tbody>`;
-            for(let r=1; r<=rows; r++) {
+            for (let r = 1; r <= rows; r++) {
                 h += `<tr><th style="background:#1f1f1f;">${r}</th>`;
-                for(let col=0; col<cols; col++) h += `<td><input onchange="doCalc(this)"></td>`;
+                for (let col = 0; col < cols; col++) h += `<td><input onchange="doCalc(this)"></td>`;
                 h += `</tr>`;
             }
             return h + `</tbody></table></div>`;
         }
         window.doCalc = (el) => {
-            if(el.value.startsWith('=')) { try { el.value = math.evaluate(el.value.substring(1)); el.style.color='var(--gold)'; } catch(e){}}
+            if (el.value.startsWith('=')) { try { el.value = math.evaluate(el.value.substring(1)); el.style.color = 'var(--gold)'; } catch (e) { } }
         };
         window.addR = () => {
-            try { autoSaveAll(); } catch(e){}
+            try { autoSaveAll(); } catch (e) { }
             // update active workbook and persist
             sheetRows++;
             if (window.sheetsWorkbook && window.sheetsWorkbook[activeSheetIdx]) {
@@ -2398,9 +3008,9 @@
                     while (wb.values.length < sheetRows) wb.values.push(Array(sheetCols).fill(''));
                 }
                 // persist both single-sheet and workbook storage so loadSheets reads consistent state
-                try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values, headers: wb.headers || Array.from({length: sheetCols}, (_,i)=>String.fromCharCode(65+i)) })); } catch(e){}
+                try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values, headers: wb.headers || Array.from({ length: sheetCols }, (_, i) => String.fromCharCode(65 + i)) })); } catch (e) { }
             }
-            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
+            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch (e) { }
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
             // focus newly added row's first cell if present
             setTimeout(() => {
@@ -2408,14 +3018,14 @@
                     const grid = document.getElementById('mainGrid');
                     if (!grid) return;
                     const rows = grid.querySelectorAll('tbody tr');
-                    const last = rows[rows.length-1];
+                    const last = rows[rows.length - 1];
                     if (last) { const inp = last.querySelector('td input'); if (inp) inp.focus(); }
-                } catch(e){}
+                } catch (e) { }
             }, 80);
-            try { triggerAutoSave(); } catch(e){}
+            try { triggerAutoSave(); } catch (e) { }
         };
         window.addC = () => {
-            try { autoSaveAll(); } catch(e){}
+            try { autoSaveAll(); } catch (e) { }
             sheetCols++;
             if (window.sheetsWorkbook && window.sheetsWorkbook[activeSheetIdx]) {
                 const wb = window.sheetsWorkbook[activeSheetIdx];
@@ -2431,9 +3041,9 @@
                         else wb.values[r].push('');
                     }
                 }
-                try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values, headers: wb.headers || Array.from({length: sheetCols}, (_,i)=>String.fromCharCode(65+i)) })); } catch(e){}
+                try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values, headers: wb.headers || Array.from({ length: sheetCols }, (_, i) => String.fromCharCode(65 + i)) })); } catch (e) { }
             }
-            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
+            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch (e) { }
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
             // focus first cell of newly added column
             setTimeout(() => {
@@ -2443,14 +3053,14 @@
                     const firstRow = grid.querySelector('tbody tr');
                     if (firstRow) {
                         const inputs = firstRow.querySelectorAll('td input');
-                        const last = inputs[inputs.length-1]; if (last) last.focus();
+                        const last = inputs[inputs.length - 1]; if (last) last.focus();
                     }
-                } catch(e){}
+                } catch (e) { }
             }, 80);
-            try { triggerAutoSave(); } catch(e){}
+            try { triggerAutoSave(); } catch (e) { }
         };
         window.delR = () => {
-            try { autoSaveAll(); } catch(e){}
+            try { autoSaveAll(); } catch (e) { }
             if (sheetRows <= 1) { alert('No se puede borrar la última fila'); return; }
             sheetRows--;
             if (window.sheetsWorkbook && window.sheetsWorkbook[activeSheetIdx]) {
@@ -2458,14 +3068,14 @@
                 wb.rows = sheetRows;
                 wb.values = wb.values || [];
                 if (wb.values.length > sheetRows) wb.values.length = sheetRows;
-                try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values, headers: wb.headers || Array.from({length: sheetCols}, (_,i)=>String.fromCharCode(65+i)) })); } catch(e){}
+                try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values, headers: wb.headers || Array.from({ length: sheetCols }, (_, i) => String.fromCharCode(65 + i)) })); } catch (e) { }
             }
-            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
+            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch (e) { }
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
-            try { triggerAutoSave(); } catch(e){}
+            try { triggerAutoSave(); } catch (e) { }
         };
         window.delC = () => {
-            try { autoSaveAll(); } catch(e){}
+            try { autoSaveAll(); } catch (e) { }
             if (sheetCols <= 1) { alert('No se puede borrar la última columna'); return; }
             sheetCols--;
             if (window.sheetsWorkbook && window.sheetsWorkbook[activeSheetIdx]) {
@@ -2476,15 +3086,15 @@
                 for (let r = 0; r < wb.values.length; r++) {
                     if (Array.isArray(wb.values[r]) && wb.values[r].length > sheetCols) wb.values[r].length = sheetCols;
                 }
-                try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values, headers: wb.headers || Array.from({length: sheetCols}, (_,i)=>String.fromCharCode(65+i)) })); } catch(e){}
+                try { localStorage.setItem(STORAGE_KEYS.SHEETS, JSON.stringify({ rows: sheetRows, cols: sheetCols, values: wb.values, headers: wb.headers || Array.from({ length: sheetCols }, (_, i) => String.fromCharCode(65 + i)) })); } catch (e) { }
             }
-            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch(e){}
+            try { localStorage.setItem(STORAGE_KEYS.SHEETS_BOOK, JSON.stringify(window.sheetsWorkbook)); } catch (e) { }
             loadSheets(document.getElementById('wsContent'), document.getElementById('appTools'));
-            try { triggerAutoSave(); } catch(e){}
+            try { triggerAutoSave(); } catch (e) { }
         };
         window.exportCSV = () => alert("Exportando CSV...");
 
-        window.exportSheetsPdf = async function() {
+        window.exportSheetsPdf = async function () {
             const grid = document.getElementById('mainGrid');
             if (!grid) { alert('No hay hoja para exportar'); return; }
 
@@ -2521,313 +3131,11 @@
         };
 
 
-        // === QAXI AI ===
-        function loadAI(c, t) {
-            // Limpiar historial al cargar la app
-            aiChatHistory = [];
-
-            c.innerHTML = `
-                <div class="ai-box" style="display:flex; flex-direction:column; height:100%;">
-                    <div class="chat-window" id="aiChat" style="flex:1; overflow:auto; padding:12px;"></div>
-                    <div class="ai-input-wrap">
-                        <div class="ai-input-pill">
-                            <input type="text" id="aiInput" placeholder="Pregunta o comando..." onkeydown="if(event.key === 'Enter') askQaxiAI()">
-                            <button class="ai-send-btn" onclick="askQaxiAI()" title="Enviar"><i class="fa-solid fa-paper-plane"></i></button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            
-        }
-        
-        // === FUNCIÓN DE BÚSQUEDA WEB ===
-        async function searchWeb(query) {
-            try {
-                // Usar DuckDuckGo Instant Answer API (gratuita)
-                const searchUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
-                
-                const response = await fetch(searchUrl);
-                const data = await response.json();
-                
-                let results = [];
-                
-                // Abstract (respuesta principal)
-                if (data.Abstract) {
-                    results.push({
-                        title: data.Heading || 'Resultado',
-                        snippet: data.Abstract,
-                        source: data.AbstractSource || 'DuckDuckGo'
-                    });
-                }
-                
-                // Respuesta instantánea
-                if (data.Answer) {
-                    results.push({
-                        title: 'Respuesta Directa',
-                        snippet: data.Answer,
-                        source: 'DuckDuckGo'
-                    });
-                }
-                
-                // Temas relacionados
-                if (data.RelatedTopics && data.RelatedTopics.length > 0) {
-                    data.RelatedTopics.slice(0, 5).forEach(topic => {
-                        if (topic.Text) {
-                            results.push({
-                                title: topic.FirstURL ? topic.FirstURL.split('/').pop().replace(/_/g, ' ') : 'Info',
-                                snippet: topic.Text,
-                                source: 'Wikipedia'
-                            });
-                        }
-                    });
-                }
-                
-                return results;
-            } catch (e) {
-                console.error('Error en búsqueda:', e);
-                return [];
-            }
-        }
-        
-        // Detectar si la pregunta necesita búsqueda web
-        function needsWebSearch(prompt) {
-            const searchKeywords = [
-                'busca', 'buscar', 'búsqueda', 'investiga', 'googlea', 'google',
-                'qué es', 'quien es', 'quién es', 'qué son', 'donde queda', 'dónde queda',
-                'última noticia', 'últimas noticias', 'actualidad', 'reciente',
-                'precio de', 'cotización', 'clima en', 'tiempo en',
-                'cómo está', 'como esta', 'qué pasó', 'que paso',
-                'información sobre', 'info sobre', 'datos de', 'datos sobre',
-                'define', 'definición', 'significado de',
-                'en internet', 'en la web', 'online'
-            ];
-            
-            const lowerPrompt = prompt.toLowerCase();
-            return searchKeywords.some(kw => lowerPrompt.includes(kw));
-        }
-
-        window.askQaxiAI = async function() {
-            try {
-                // Shortcut handlers: quick local responses to avoid calling the external API
-                const userEl = document.getElementById('aiInput');
-                const userText = userEl ? (userEl.value || '').trim() : '';
-                const chat = document.getElementById('aiChat') || document.querySelector('.chat-window');
-
-                // 1) Greeting: when the user only says "Hola" reply locally with a concise prompt
-                if (/^\s*hola[!¡.\?]?\s*$/i.test(userText)) {
-                    const aiResponse = 'Hola — ¿En qué te puedo ayudar hoy?';
-                    try { aiChatHistory.push({ role: 'assistant', content: aiResponse }); } catch(e){}
-                    try { const _l = document.getElementById('ai-loader'); if (_l && typeof _l.remove === 'function') _l.remove(); } catch(e){}
-                    if (chat) {
-                        const rDiv = document.createElement('div'); rDiv.className = 'msg ai';
-                        rDiv.innerHTML = marked.parse(aiResponse);
-                        chat.appendChild(rDiv); chat.scrollTop = chat.scrollHeight;
-                    }
-                    if (userEl) userEl.value = '';
-                    return;
-                }
-
-                // 2) Founder question: provide a concise, improved local bio for Santiago Marenco
-                if (/qu[ií]en.*fundador.*qaxi|qu[ií]en es el fundador de qaxi|fundador de qaxi/i.test(userText)) {
-                    const aiResponse = `Santiago Marenco — arquitecto de soluciones digitales y fundador de QAXI.\n\n- Enfocado en eficiencia e innovación, diseña sistemas en la nube y herramientas potenciadas por IA.\n- Transforma procesos complejos en soluciones accesibles para empresas colombianas.\n- Prioriza productos con valor escalable y utilidad real.\n\n¿Quieres más detalles o su historial profesional completo?`;
-                    try { aiChatHistory.push({ role: 'assistant', content: aiResponse }); } catch(e){}
-                    try { const _l = document.getElementById('ai-loader'); if (_l && typeof _l.remove === 'function') _l.remove(); } catch(e){}
-                    if (chat) {
-                        const rDiv = document.createElement('div'); rDiv.className = 'msg ai';
-                        const shortText = (aiResponse || '').split(/\n\n/)[0] || aiResponse;
-                        const shortHtml = marked.parse(shortText);
-                        const fullHtml = marked.parse(aiResponse);
-                        rDiv.innerHTML = `<div class="ai-response-short">${shortHtml}</div><div class="ai-response-full" style="display:none">${fullHtml}</div><div style="text-align:center; margin-top:8px;"><button class="btn-primary btn-compact" onclick="(function(b){ const p=b.parentNode; p.querySelector('.ai-response-full').style.display='block'; b.style.display='none'; })(this)">Ver más</button></div>`;
-                        chat.appendChild(rDiv); chat.scrollTop = chat.scrollHeight;
-                    }
-                    if (userEl) userEl.value = '';
-                    return;
-                }
-            } catch (e) { console.error('askQaxiAI shortcut error', e); }
-
-            const input = document.getElementById('aiInput');
-            const chat = document.getElementById('aiChat');
-            const prompt = input.value.trim();
-            if(!prompt) return;
-
-            const uDiv = document.createElement('div'); uDiv.className = 'msg user'; uDiv.innerText = prompt;
-            chat.appendChild(uDiv); input.value = ''; chat.scrollTop = chat.scrollHeight;
-
-            const lDiv = document.createElement('div'); lDiv.className = 'msg ai'; lDiv.id = 'ai-loader';
-            lDiv.innerHTML = `<div class="ai-response">Pensando...</div>`; chat.appendChild(lDiv); chat.scrollTop = chat.scrollHeight;
-
-            // Agregar mensaje del usuario al historial
-            aiChatHistory.push({ role: "user", content: prompt });
-            
-            // Limitar historial para no exceder tokens
-            if (aiChatHistory.length > MAX_HISTORY) {
-                aiChatHistory = aiChatHistory.slice(-MAX_HISTORY);
-            }
-
-            try {
-                // Verificar si necesita búsqueda web
-                let webContext = '';
-                if (needsWebSearch(prompt)) {
-                    document.getElementById('ai-loader').innerHTML = `<div class="ai-response">🔍 Buscando en la web...</div>`;
-                    
-                    const searchResults = await searchWeb(prompt);
-                    
-                    if (searchResults.length > 0) {
-                        webContext = '\n\n## INFORMACIÓN DE LA WEB (Búsqueda reciente):\n';
-                        searchResults.forEach((r, i) => {
-                            webContext += `\n**${i+1}. ${r.title}** (${r.source}):\n${r.snippet}\n`;
-                        });
-                        webContext += '\n---\nUsa esta información para responder de forma precisa y actualizada.\n';
-                    }
-                    
-                    document.getElementById('ai-loader').innerHTML = `<div class="ai-response">Analizando resultados...</div>`;
-                }
-                
-                // Obtener fecha actual formateada
-                const now = new Date();
-                const fechaActual = now.toLocaleDateString('es-ES', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                
-                // Attachments disabled: keep empty context
-                let attachContext = '';
-
-                const systemPrompt = `Eres QAXI AI, el asistente integrado en QAXI Cloud.
-Responde siempre de forma breve, elegante y útil. Empieza con un resumen de 1-2 líneas, seguido de hasta 3 viñetas con puntos clave.
-Si la respuesta requiere más detalle, proporciona el resumen y ofrece extenderla (el cliente usa un botón "Ver más").
-Cuando uses búsquedas web o adjuntos, menciónalo brevemente.
-Fecha: ${fechaActual}
-${attachContext}
-${webContext}`;
-
-                // Priorizar sitio oficial y biografía del fundador
-                const officialSite = 'https://santiagomarenco1005-cmd.github.io/QAXI';
-                let officialText = '';
-                let fetchedOfficial = false;
-
-                // Try to reuse a cached copy first (helps offline and avoids CORS issues)
-                try { officialText = localStorage.getItem('qaxi_official_text') || ''; } catch(e) { officialText = ''; }
-
-                // Helper to clean HTML
-                function cleanHtml(s) { try { return s.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0,4000); } catch(e){ return ''; } }
-
-                // Try direct fetch (may fail due to CORS on some hosts)
-                try {
-                    const r = await fetch(officialSite, { mode: 'cors' });
-                    if (r && r.ok) {
-                        const t = await r.text();
-                        officialText = cleanHtml(t) || officialText;
-                        fetchedOfficial = !!officialText;
-                    }
-                } catch (e) { console.warn('direct fetch of official site failed', e); }
-
-                // If direct fetch failed or returned empty, try a CORS proxy (AllOrigins)
-                if (!fetchedOfficial) {
-                    try {
-                        const proxy = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(officialSite);
-                        const r2 = await fetch(proxy);
-                        if (r2 && r2.ok) {
-                            const t2 = await r2.text();
-                            officialText = cleanHtml(t2) || officialText;
-                            fetchedOfficial = !!officialText;
-                        }
-                    } catch (e) { console.warn('proxy fetch of official site failed', e); }
-                }
-
-                // Cache a copy for future runs (best-effort)
-                try { if (officialText) localStorage.setItem('qaxi_official_text', officialText); } catch(e){ }
-
-                const founderBio = `El fundador de QAXI es Santiago Marenco. Santiago Marenco es un arquitecto de soluciones digitales y el motor creativo detrás de QAXI. Su carrera se define por una búsqueda incansable de la eficiencia, donde la innovación no es un evento aislado, sino un proceso continuo de creación y mejora de programas. Como fundador, Santiago se especializa en diseñar sistemas que rompen las barreras de entrada al mundo digital. Su enfoque principal es el desarrollo de programas y plataformas que automatizan la complejidad técnica, permitiendo que la tecnología de punta sea accesible y funcional para el mercado colombiano. Desde la implementación de arquitecturas en la nube hasta el despliegue de herramientas potenciadas por inteligencia artificial, cada uno de sus proyectos busca optimizar la presencia en línea de manera inteligente. Bajo su liderazgo, la innovación en programas es constante. Santiago no solo entrega sitios web; desarrolla ecosistemas integrales que evolucionan al ritmo de la industria tecnológica. Su visión es clara: transformar la manera en que las empresas interactúan con la tecnología, asegurando que cada línea de código y cada nuevo programa lanzado bajo el sello de QAXI aporte un valor real, escalable y, sobre todo, innovador.`;
-
-                // Nota para el sistema: si no pudimos obtener el contenido, indicarlo y dejar el link para referencia
-                const officialSnippet = officialText ? `Información adicional extraída del sitio oficial (recortada): ${officialText}` : `No se pudo obtener automáticamente el contenido del sitio oficial; consulta ${officialSite} para más detalles.`;
-
-                // Construir mensajes con historial (conocimiento del fundador, sitio y contexto; usar solo si es relevante)
-                const messages = [
-                    { role: "system", content: `Eres QAXI AI, el asistente integrado en QAXI Cloud. Responde siempre de forma breve y útil (resumen 1-2 líneas y hasta 3 viñetas cuando corresponda).
-Conocimiento clave (usar SOLO cuando sea relevante):
-- Fundador: Santiago Marenco.
-${founderBio}
-
-- Sitio oficial: ${officialSite}
-${officialSnippet}
-
-Usa esta información únicamente si el usuario pregunta o si es claramente relevante; no la menciones de forma proactiva en respuestas no relacionadas.` },
-                    ...aiChatHistory
-                ];
-
-                if(!GROQ_KEY) {
-                    // Show friendly message in chat if no API key configured (be defensive if loader missing)
-                    const loaderEl = document.getElementById('ai-loader'); if (loaderEl) loaderEl.remove();
-                    const warn = document.createElement('div'); warn.className = 'msg ai';
-                    warn.innerHTML = `<div class="ai-response"><span style="color:#ffcc66;">QAXI AI no está configurado. Ejecuta window.setGroqKey('<tu_api_key>') en la consola.</span></div>`;
-                    chat.appendChild(warn); chat.scrollTop = chat.scrollHeight;
-                    return;
-                }
-
-                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${GROQ_KEY}` },
-                    body: JSON.stringify({
-                        messages: messages,
-                        model: "llama-3.3-70b-versatile",
-                        temperature: 0.7,
-                        max_tokens: 2048,
-                        top_p: 0.9
-                    })
-                });
-
-                if(!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error?.message || "Error de conexión");
-                }
-
-                const data = await response.json();
-                const aiResponse = data.choices[0].message.content;
-                
-                // Agregar respuesta al historial
-                aiChatHistory.push({ role: "assistant", content: aiResponse });
-                
-                try { const _l = document.getElementById('ai-loader'); if (_l && typeof _l.remove === 'function') _l.remove(); } catch(e){}
-
-                const rDiv = document.createElement('div'); rDiv.className = 'msg ai';
-                // Build a short preview and a full view, with toggle
-                let shortText = (aiResponse || '').split(/\n\n/)[0] || aiResponse || '';
-                if (shortText.length > 350) shortText = shortText.slice(0,350) + '...';
-                const shortHtml = marked.parse(shortText);
-                const fullHtml = marked.parse(aiResponse || '');
-                rDiv.innerHTML = `
-                    <div class="ai-sender">QAXI AI</div>
-                    <div class="ai-response-short">${shortHtml}</div>
-                    <div class="ai-response-full" style="display:none">${fullHtml}</div>
-                    <div style="text-align:center; margin-top:8px;">
-                        <button class="nav-btn" onclick="toggleAiExpand(this)">Ver más</button>
-                    </div>
-                `;
-                chat.appendChild(rDiv); chat.scrollTop = chat.scrollHeight;
-
-            } catch(e) { 
-                console.error(e);
-                // Remover el último mensaje del usuario del historial si falló
-                aiChatHistory.pop();
-                const loader = document.getElementById('ai-loader');
-                if (loader) {
-                    loader.innerHTML = `<strong>QAXI AI</strong><p>⚠️ ${e.message || 'Error al conectar. Intenta de nuevo.'}</p>`;
-                }
-            }
-        };
-
         // ========================================
         // === QAXI SEARCH APP ===
         // ========================================
-                // === QAXI LIVE (REUNIONES) ===
-                
+        // === QAXI LIVE (REUNIONES) ===
+
         function loadSearch(c, t) {
             c.innerHTML = `
                 <div class="search-container" style="display:flex; flex-direction:column; width:100%; height:100%; padding:20px; overflow-y:auto; align-items: center;">
@@ -2918,9 +3226,9 @@ Usa esta información únicamente si el usuario pregunta o si es claramente rele
             const input1 = document.getElementById('searchInput');
             const input2 = document.getElementById('searchInput2');
             const query = val || (input1 ? input1.value : input2.value);
-            
+
             if (!query) return;
-            
+
             // Switch UI
             const hero = document.getElementById('searchHero');
             const results = document.getElementById('searchResults');
@@ -2928,23 +3236,23 @@ Usa esta información únicamente si el usuario pregunta o si es claramente rele
             const aiSection = document.getElementById('aiOverview');
             const aiContent = document.getElementById('aiContent');
             const googleLink = document.getElementById('googleLink');
-            
-            if(hero) hero.style.display = 'none';
+
+            if (hero) hero.style.display = 'none';
             results.style.display = 'block';
-            if(input2) input2.value = query;
+            if (input2) input2.value = query;
             googleLink.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-            
+
             // Clear previous
             list.innerHTML = '';
             aiContent.innerHTML = '<div style="display:flex; align-items:center; gap:10px; color:#888;"><i class="fa-solid fa-circle-notch fa-spin"></i> Generando respuesta inteligente...</div>';
             aiSection.style.display = 'block';
-            
+
             // 1. Get Web Data
             const webData = await searchWeb(query);
-            
+
             // 2. Render Results List
             let listHtml = '';
-            if(webData.length > 0) {
+            if (webData.length > 0) {
                 webData.forEach(item => {
                     listHtml += `
                         <div class="result-item" style="margin-bottom:25px; padding-bottom: 15px; border-bottom: 1px solid #222;">
@@ -2961,7 +3269,7 @@ Usa esta información únicamente si el usuario pregunta o si es claramente rele
                 listHtml += `<div style="padding:20px 0; color:#666;">No se encontraron resultados directos en la vista rápida.</div>`;
             }
             list.innerHTML = listHtml;
-            
+
             // 3. Generate AI Summary (using Groq)
             try {
                 const systemPrompt = `Eres QAXI SEARCH, un motor de respuestas inteligente. 
@@ -2986,12 +3294,12 @@ Instrucciones:
                         max_tokens: 800
                     })
                 });
-                
+
                 const data = await response.json();
                 const text = data.choices ? data.choices[0].message.content : "No se pudo generar el resumen.";
                 aiContent.innerHTML = marked.parse(text);
-                
-            } catch(e) {
+
+            } catch (e) {
                 console.error(e);
                 aiContent.innerHTML = "QAXI AI no está disponible en este momento.";
             }
@@ -3010,12 +3318,12 @@ Instrucciones:
                     </div>
                 </div>`;
         }
-        window.generateQR = function() {
+        window.generateQR = function () {
             const txt = document.getElementById('qrText').value;
-            if(txt) document.getElementById('qrOutput').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(txt)}">`;
+            if (txt) document.getElementById('qrOutput').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(txt)}">`;
         }
 
-        
+
 
         // ========================================
         // === QAXI LIVE (REUNIONES EN LA NUBE) ===
@@ -3072,7 +3380,7 @@ Instrucciones:
 
             renderLiveMeetings();
             // If Firestore is available, enable cloud sync automatically
-            try { if (typeof db !== 'undefined' && db) enableLiveCloudSync(); } catch(e){}
+            try { if (typeof db !== 'undefined' && db) enableLiveCloudSync(); } catch (e) { }
         }
 
         function loadMeetingsFromStorage() {
@@ -3094,7 +3402,7 @@ Instrucciones:
                     return it;
                 });
                 // Save back normalized list to avoid repeated invalid dates
-                try { localStorage.setItem(STORAGE_KEYS.LIVE, JSON.stringify(normalized)); } catch(e){}
+                try { localStorage.setItem(STORAGE_KEYS.LIVE, JSON.stringify(normalized)); } catch (e) { }
                 return normalized;
             } catch (e) { return []; }
         }
@@ -3120,11 +3428,11 @@ Instrucciones:
                     return h + ' h';
                 }
                 return d.toLocaleString();
-            } catch(e) { return '—'; }
+            } catch (e) { return '—'; }
         }
 
         function saveMeetingsToStorage(list) {
-            try { localStorage.setItem(STORAGE_KEYS.LIVE, JSON.stringify(list || [])); } catch(e){}
+            try { localStorage.setItem(STORAGE_KEYS.LIVE, JSON.stringify(list || [])); } catch (e) { }
         }
 
         function renderLiveMeetings() {
@@ -3163,23 +3471,23 @@ Instrucciones:
         function createLiveMeeting(openAfter = false) {
             const nameInput = document.getElementById('newMeetingName');
             const name = nameInput ? nameInput.value.trim() : '';
-            const id = 'qaxi-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
+            const id = 'qaxi-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
             const created = Date.now();
             // If cloud sync enabled and db available, write to Firestore
             if (liveCloudSync && typeof db !== 'undefined' && db) {
                 try {
                     db.collection('qaxi_live_meetings').doc(id).set({ id, name, created })
-                    .then(() => {
-                        // success: Firestore onSnapshot will update UI
-                    }).catch(err => {
-                        console.warn('Firestore write failed', err);
-                        // fallback to local
-                        const meetings = loadMeetingsFromStorage();
-                        meetings.push({ id, name, created });
-                        saveMeetingsToStorage(meetings);
-                        renderLiveMeetings();
-                    });
-                } catch(e) {
+                        .then(() => {
+                            // success: Firestore onSnapshot will update UI
+                        }).catch(err => {
+                            console.warn('Firestore write failed', err);
+                            // fallback to local
+                            const meetings = loadMeetingsFromStorage();
+                            meetings.push({ id, name, created });
+                            saveMeetingsToStorage(meetings);
+                            renderLiveMeetings();
+                        });
+                } catch (e) {
                     console.warn('Firestore error', e);
                     const meetings = loadMeetingsFromStorage();
                     meetings.push({ id, name, created });
@@ -3199,35 +3507,35 @@ Instrucciones:
         }
 
         function prefersEmbed() {
-            try { return localStorage.getItem('qaxi_live_preferEmbed') === 'true'; } catch(e) { return false; }
+            try { return localStorage.getItem('qaxi_live_preferEmbed') === 'true'; } catch (e) { return false; }
         }
 
-        function setPreferEmbed(val){ try{ if(val) localStorage.setItem('qaxi_live_preferEmbed','true'); else localStorage.removeItem('qaxi_live_preferEmbed'); }catch(e){} }
+        function setPreferEmbed(val) { try { if (val) localStorage.setItem('qaxi_live_preferEmbed', 'true'); else localStorage.removeItem('qaxi_live_preferEmbed'); } catch (e) { } }
 
         function isSafari() {
             try {
                 const ua = navigator.userAgent || '';
                 return /Safari/.test(ua) && !/Chrome|Chromium|Android/.test(ua);
-            } catch(e) { return false; }
+            } catch (e) { return false; }
         }
 
         function joinMeeting(id, forceTop = false) {
-                    // ensure our UI knows which meeting we're opening
-                    try { selectedMeetingId = id; renderLiveMeetings(); renderLivePreview(); } catch(e){}
+            // ensure our UI knows which meeting we're opening
+            try { selectedMeetingId = id; renderLiveMeetings(); renderLivePreview(); } catch (e) { }
             const iframe = document.getElementById('liveIframe');
-            const url = (function(){ try { const u = new URL('QAXI%20Live.html', location.href); u.searchParams.set('room', id); return u.toString(); } catch(e) { return 'QAXI%20Live.html?room=' + encodeURIComponent(id); } })();
+            const url = (function () { try { const u = new URL('QAXI%20Live.html', location.href); u.searchParams.set('room', id); return u.toString(); } catch (e) { return 'QAXI%20Live.html?room=' + encodeURIComponent(id); } })();
             // Ensure presence and listener are started immediately so the host appears in participant lists
             try {
                 if (typeof startParticipantListener === 'function') startParticipantListener(id);
-            } catch(e) { console.warn('startParticipantListener on join failed', e); }
+            } catch (e) { console.warn('startParticipantListener on join failed', e); }
             try {
-                if (typeof addLocalPresence === 'function') addLocalPresence(id).catch(()=>{});
-            } catch(e) { console.warn('addLocalPresence on join failed', e); }
+                if (typeof addLocalPresence === 'function') addLocalPresence(id).catch(() => { });
+            } catch (e) { console.warn('addLocalPresence on join failed', e); }
 
             // If caller forces a top-level open (user clicked Entrar), open a new tab/window
             if (forceTop) {
-                try { if (typeof db !== 'undefined' && db) addLocalPresence(id); } catch(e){}
-                try { window.open(url, '_blank', 'noopener'); return; } catch(e) { try { window.location.href = url; return; } catch(e2){} }
+                try { if (typeof db !== 'undefined' && db) addLocalPresence(id); } catch (e) { }
+                try { window.open(url, '_blank', 'noopener'); return; } catch (e) { try { window.location.href = url; return; } catch (e2) { } }
             }
 
             // If this is Safari, force same-tab navigation so the remote origin can request camera/mic permissions.
@@ -3236,15 +3544,15 @@ Instrucciones:
                 try {
                     // If we are inside a frame, try to navigate the top frame first (forces top-level).
                     if (window.top && window.top !== window) {
-                        try { window.top.location.href = url; } catch(e) { /* may throw cross-origin */ }
+                        try { window.top.location.href = url; } catch (e) { /* may throw cross-origin */ }
                     } else {
                         // Try direct same-tab navigation first
-                        try { window.location.href = url; } catch(e) { /* ignore */ }
+                        try { window.location.href = url; } catch (e) { /* ignore */ }
                     }
-                } catch(e) { try { window.location.href = url; } catch(e2){} }
+                } catch (e) { try { window.location.href = url; } catch (e2) { } }
 
                 // If after a short delay the location didn't change, show a visible link the user can click.
-                setTimeout(() => { try { if (location.href === prev) showManualOpen(url); } catch(e){} }, 600);
+                setTimeout(() => { try { if (location.href === prev) showManualOpen(url); } catch (e) { } }, 600);
                 return;
             }
 
@@ -3253,9 +3561,9 @@ Instrucciones:
                 try {
                     iframe.src = url;
                     // Focus preview visually
-                    iframe.scrollIntoView({behavior:'smooth', block:'center'});
+                    iframe.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     return;
-                } catch(e) {
+                } catch (e) {
                     console.warn('Embed failed, falling back to new tab', e);
                 }
             }
@@ -3263,7 +3571,7 @@ Instrucciones:
             // Default/fallback: open the meeting in a new tab
             try {
                 window.open(url, '_blank', 'noopener');
-            } catch(e) {
+            } catch (e) {
                 // fallback: navigate current window
                 window.location.href = url;
             }
@@ -3287,7 +3595,7 @@ Instrucciones:
 
         function disableLiveCloudSync() {
             liveCloudSync = false;
-            if (liveUnsubscribe) { try { liveUnsubscribe(); } catch(e){} liveUnsubscribe = null; }
+            if (liveUnsubscribe) { try { liveUnsubscribe(); } catch (e) { } liveUnsubscribe = null; }
             const btn = document.getElementById('cloudSyncBtn'); if (btn) { btn.style.borderColor = ''; btn.style.color = '#ccc'; btn.innerText = 'Sincronizar (Nube)'; }
             // fall back to local storage list
             renderLiveMeetings();
@@ -3304,13 +3612,13 @@ Instrucciones:
                     });
                     cloudMeetings = arr;
                     // Mirror to localStorage so offline still works
-                    try { localStorage.setItem(STORAGE_KEYS.LIVE, JSON.stringify(cloudMeetings)); } catch(e){}
+                    try { localStorage.setItem(STORAGE_KEYS.LIVE, JSON.stringify(cloudMeetings)); } catch (e) { }
                     renderLiveMeetings();
                 }, err => {
                     console.error('Live sync error', err);
                     alert('Error sincronizando con Firestore: ' + (err.message || err));
                 });
-            } catch(e) { console.error('startLiveSyncListeners error', e); }
+            } catch (e) { console.error('startLiveSyncListeners error', e); }
         }
 
         // --- Participant presence helpers (aggregate across qaxi_live_meetings and rooms) ---
@@ -3366,10 +3674,10 @@ Instrucciones:
                             _participantMaps.main.clear();
                             snap.forEach(doc => _participantMaps.main.set(doc.id, doc.data()));
                             _updateParticipantUI();
-                        } catch(e) { console.warn('participant main snapshot handler', e); }
+                        } catch (e) { console.warn('participant main snapshot handler', e); }
                     }, e => { console.warn('participant main listener error', e); _updateParticipantUI(); });
                     participantUnsubscribes.push(unsubMain);
-                } catch(e) { console.warn('startParticipantListener main', e); }
+                } catch (e) { console.warn('startParticipantListener main', e); }
 
                 // listen to rooms/{meetingId}/participants (if remote app uses "rooms")
                 try {
@@ -3379,16 +3687,16 @@ Instrucciones:
                             _participantMaps.rooms.clear();
                             snap.forEach(doc => _participantMaps.rooms.set(doc.id, doc.data()));
                             _updateParticipantUI();
-                        } catch(e) { console.warn('participant rooms snapshot handler', e); }
+                        } catch (e) { console.warn('participant rooms snapshot handler', e); }
                     }, e => { console.warn('participant rooms listener error', e); _updateParticipantUI(); });
                     participantUnsubscribes.push(unsubRooms);
-                } catch(e) { console.warn('startParticipantListener rooms', e); }
+                } catch (e) { console.warn('startParticipantListener rooms', e); }
 
                 // register local presence so host shows up in both paths
-                try { addLocalPresence(meetingId).catch(()=>{}); } catch(e){ console.warn('addLocalPresence failed', e); }
+                try { addLocalPresence(meetingId).catch(() => { }); } catch (e) { console.warn('addLocalPresence failed', e); }
                 // start messages listener for this meeting so chat is realtime
-                try { startMessagesListener(meetingId); } catch(e) { console.warn('startMessagesListener failed', e); }
-            } catch(e) { console.warn('startParticipantListener', e); }
+                try { startMessagesListener(meetingId); } catch (e) { console.warn('startMessagesListener failed', e); }
+            } catch (e) { console.warn('startParticipantListener', e); }
         }
 
         function _clearParticipantMaps() {
@@ -3398,27 +3706,27 @@ Instrucciones:
 
         function stopParticipantListener() {
             try {
-                participantUnsubscribes.forEach(u => { try { u(); } catch(e){} });
+                participantUnsubscribes.forEach(u => { try { u(); } catch (e) { } });
                 participantUnsubscribes = [];
-            } catch(e) {}
-            try { removeLocalPresence(); } catch(e){}
+            } catch (e) { }
+            try { removeLocalPresence(); } catch (e) { }
             _clearParticipantMaps();
             _updateParticipantUI();
             // stop messages listener
-            try { if (liveMessagesUnsubscribe) { try { liveMessagesUnsubscribe(); } catch(e){} liveMessagesUnsubscribe = null; } } catch(e){}
+            try { if (liveMessagesUnsubscribe) { try { liveMessagesUnsubscribe(); } catch (e) { } liveMessagesUnsubscribe = null; } } catch (e) { }
         }
 
         function addLocalPresence(meetingId) {
             try {
                 if (!db || !meetingId) return Promise.reject(new Error('No DB or meetingId'));
-                localPresenceDocId = 'p-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8);
+                localPresenceDocId = 'p-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
                 localPresenceMeetingId = meetingId;
                 const doc = { id: localPresenceDocId, ts: Date.now(), camera: false, source: 'cloud' };
                 window.addEventListener('beforeunload', removeLocalPresence);
                 // attempt to write to both paths and surface errors
                 const promises = [];
-                try { promises.push(db.collection('qaxi_live_meetings').doc(meetingId).collection('participants').doc(localPresenceDocId).set(doc)); } catch(e){ console.warn('write main presence failed', e); }
-                try { promises.push(db.collection('rooms').doc(meetingId).collection('participants').doc(localPresenceDocId).set(doc)); } catch(e){ console.warn('write rooms presence failed', e); }
+                try { promises.push(db.collection('qaxi_live_meetings').doc(meetingId).collection('participants').doc(localPresenceDocId).set(doc)); } catch (e) { console.warn('write main presence failed', e); }
+                try { promises.push(db.collection('rooms').doc(meetingId).collection('participants').doc(localPresenceDocId).set(doc)); } catch (e) { console.warn('write rooms presence failed', e); }
                 return Promise.all(promises).then(() => {
                     // start heartbeat to refresh timestamp so presence feels realtime
                     try {
@@ -3427,47 +3735,47 @@ Instrucciones:
                             try {
                                 if (db && localPresenceMeetingId && localPresenceDocId) {
                                     const now = Date.now();
-                                    db.collection('qaxi_live_meetings').doc(localPresenceMeetingId).collection('participants').doc(localPresenceDocId).set({ ts: now }, { merge: true }).catch(()=>{});
-                                    db.collection('rooms').doc(localPresenceMeetingId).collection('participants').doc(localPresenceDocId).set({ ts: now }, { merge: true }).catch(()=>{});
+                                    db.collection('qaxi_live_meetings').doc(localPresenceMeetingId).collection('participants').doc(localPresenceDocId).set({ ts: now }, { merge: true }).catch(() => { });
+                                    db.collection('rooms').doc(localPresenceMeetingId).collection('participants').doc(localPresenceDocId).set({ ts: now }, { merge: true }).catch(() => { });
                                 }
-                            } catch(e){}
+                            } catch (e) { }
                         }, 20000);
-                    } catch(e){}
+                    } catch (e) { }
                     console.log('Local presence written:', localPresenceDocId);
                 }).catch(err => {
                     console.error('addLocalPresence error', err);
                     alert('No se pudo registrar la presencia en Firestore: ' + (err.message || err));
                 });
-            } catch(e) { console.warn('addLocalPresence', e); }
+            } catch (e) { console.warn('addLocalPresence', e); }
         }
 
         // Real-time messages listener for the selected meeting
         function startMessagesListener(meetingId) {
             try {
                 // unsubscribe previous
-                if (liveMessagesUnsubscribe) { try { liveMessagesUnsubscribe(); } catch(e){} liveMessagesUnsubscribe = null; }
+                if (liveMessagesUnsubscribe) { try { liveMessagesUnsubscribe(); } catch (e) { } liveMessagesUnsubscribe = null; }
                 if (!db || !meetingId) return;
-                const q = db.collection('qaxi_live_messages').where('meetingId','==', meetingId).orderBy('created','asc');
+                const q = db.collection('qaxi_live_messages').where('meetingId', '==', meetingId).orderBy('created', 'asc');
                 liveMessagesUnsubscribe = q.onSnapshot(snap => {
                     try {
                         const arr = [];
                         snap.forEach(doc => { const d = doc.data(); arr.push({ id: d.id || doc.id, sender: d.sender || d.senderName || 'Anon', text: d.text || '', created: d.created || Date.now() }); });
                         liveMessagesCache[meetingId] = arr;
                         // if the preview for this meeting is open, re-render messages
-                        try { renderLivePreview(); } catch(e){}
-                    } catch(e) { console.warn('messages snapshot handler', e); }
+                        try { renderLivePreview(); } catch (e) { }
+                    } catch (e) { console.warn('messages snapshot handler', e); }
                 }, e => { console.warn('messages listener error', e); });
-            } catch(e) { console.warn('startMessagesListener', e); }
+            } catch (e) { console.warn('startMessagesListener', e); }
         }
 
         function removeLocalPresence() {
             try {
                 const mid = localPresenceMeetingId || selectedMeetingId;
                 if (!db || !mid || !localPresenceDocId) return;
-                try { db.collection('qaxi_live_meetings').doc(mid).collection('participants').doc(localPresenceDocId).delete().catch(()=>{}); } catch(e){}
-                try { db.collection('rooms').doc(mid).collection('participants').doc(localPresenceDocId).delete().catch(()=>{}); } catch(e){}
-                if (localPresenceHeartbeat) { try { clearInterval(localPresenceHeartbeat); } catch(e){} localPresenceHeartbeat = null; }
-            } catch(e) { /* ignore */ }
+                try { db.collection('qaxi_live_meetings').doc(mid).collection('participants').doc(localPresenceDocId).delete().catch(() => { }); } catch (e) { }
+                try { db.collection('rooms').doc(mid).collection('participants').doc(localPresenceDocId).delete().catch(() => { }); } catch (e) { }
+                if (localPresenceHeartbeat) { try { clearInterval(localPresenceHeartbeat); } catch (e) { } localPresenceHeartbeat = null; }
+            } catch (e) { /* ignore */ }
             localPresenceDocId = null;
             localPresenceMeetingId = null;
         }
@@ -3484,7 +3792,7 @@ Instrucciones:
                         console.warn('Ignored postMessage from unrecognized origin:', e.origin);
                         return;
                     }
-                } catch(err) { console.warn('origin check failed', err); }
+                } catch (err) { console.warn('origin check failed', err); }
                 if (d && d.type === 'qaxi-media-state') {
                     const el = document.getElementById('liveCameraIndicator');
                     if (el) {
@@ -3504,7 +3812,7 @@ Instrucciones:
                             if (db && (selectedMeetingId || localPresenceMeetingId)) {
                                 const mid = localPresenceMeetingId || selectedMeetingId;
                                 if (!localPresenceDocId) {
-                                    return addLocalPresence(mid).catch(()=>{});
+                                    return addLocalPresence(mid).catch(() => { });
                                 }
                             }
                             return Promise.resolve();
@@ -3513,32 +3821,32 @@ Instrucciones:
                             try {
                                 if (db && (selectedMeetingId || localPresenceMeetingId) && localPresenceDocId) {
                                     const mid = localPresenceMeetingId || selectedMeetingId;
-                                    db.collection('qaxi_live_meetings').doc(mid).collection('participants').doc(localPresenceDocId).set({ camera: !!d.camera }, { merge: true }).catch(()=>{});
-                                    db.collection('rooms').doc(mid).collection('participants').doc(localPresenceDocId).set({ camera: !!d.camera }, { merge: true }).catch(()=>{});
+                                    db.collection('qaxi_live_meetings').doc(mid).collection('participants').doc(localPresenceDocId).set({ camera: !!d.camera }, { merge: true }).catch(() => { });
+                                    db.collection('rooms').doc(mid).collection('participants').doc(localPresenceDocId).set({ camera: !!d.camera }, { merge: true }).catch(() => { });
                                 }
-                            } catch(e){}
-                        }).catch(() => {});
-                    } catch(e) { console.warn('sync camera to presence failed', e); }
+                            } catch (e) { }
+                        }).catch(() => { });
+                    } catch (e) { console.warn('sync camera to presence failed', e); }
                 }
-            } catch(e) { /* ignore */ }
+            } catch (e) { /* ignore */ }
         });
 
         function copyLink(id) {
-            const url = (function(){ try { const u = new URL('QAXI%20Live.html', location.href); u.searchParams.set('room', id); return u.toString(); } catch(e) { return 'QAXI%20Live.html?room=' + encodeURIComponent(id); } })();
-            try { navigator.clipboard.writeText(url); alert('Enlace copiado al portapapeles'); } catch(e) { prompt('Copia el enlace manualmente', url); }
+            const url = (function () { try { const u = new URL('QAXI%20Live.html', location.href); u.searchParams.set('room', id); return u.toString(); } catch (e) { return 'QAXI%20Live.html?room=' + encodeURIComponent(id); } })();
+            try { navigator.clipboard.writeText(url); alert('Enlace copiado al portapapeles'); } catch (e) { prompt('Copia el enlace manualmente', url); }
         }
 
         function deleteMeeting(id) {
             if (liveCloudSync && typeof db !== 'undefined' && db) {
                 try {
                     db.collection('qaxi_live_meetings').doc(id).delete().catch(e => console.warn('Firestore delete failed', e));
-                } catch(e) { console.warn('Firestore delete error', e); }
+                } catch (e) { console.warn('Firestore delete error', e); }
             }
             let list = loadMeetingsFromStorage();
             list = list.filter(m => m.id !== id);
             saveMeetingsToStorage(list);
             // clear messages for this meeting
-            try { localStorage.removeItem(STORAGE_KEYS.LIVE + '_MSG_' + id); delete liveMessagesCache[id]; } catch(e){}
+            try { localStorage.removeItem(STORAGE_KEYS.LIVE + '_MSG_' + id); delete liveMessagesCache[id]; } catch (e) { }
             // if the deleted meeting was selected, clear selection
             if (selectedMeetingId === id) { selectedMeetingId = null; }
             renderLiveMeetings();
@@ -3561,7 +3869,7 @@ Instrucciones:
 
         function openLiveInNewTab() {
             const iframe = document.getElementById('liveIframe');
-            const defaultUrl = (function(){ try { return new URL('QAXI%20Live.html', location.href).toString(); } catch(e) { return 'QAXI%20Live.html'; } })();
+            const defaultUrl = (function () { try { return new URL('QAXI%20Live.html', location.href).toString(); } catch (e) { return 'QAXI%20Live.html'; } })();
             const url = iframe ? (iframe.src || defaultUrl) : defaultUrl;
             window.open(url, '_blank');
         }
@@ -3578,8 +3886,8 @@ Instrucciones:
                                <a id="qaxi-manual-open-btn" href="${url}" style="background:var(--gold);color:#000;padding:10px 14px;border-radius:8px;font-weight:700;text-decoration:none;">Abrir QAXI Live</a>
                                <button id="qaxi-manual-close" style="margin-left:8px;background:transparent;border:1px solid #444;color:#ccc;padding:8px 10px;border-radius:8px;">Cerrar</button>`;
                 document.body.appendChild(b);
-                document.getElementById('qaxi-manual-close').addEventListener('click', () => { try{ b.remove(); }catch(e){} });
-            } catch(e) { console.warn('showManualOpen error', e); }
+                document.getElementById('qaxi-manual-close').addEventListener('click', () => { try { b.remove(); } catch (e) { } });
+            } catch (e) { console.warn('showManualOpen error', e); }
         }
 
         // Show a small notice for browsers that block getUserMedia in cross-origin iframes (Safari)
@@ -3613,7 +3921,7 @@ Instrucciones:
             if (!wrapper) return;
             const meeting = (getActiveMeetingsList() || []).find(m => m.id === selectedMeetingId) || null;
             // current iframe src (keep current or default)
-            const currentSrc = (document.getElementById('liveIframe') || {}).src || (function(){ try { return new URL('QAXI%20Live.html', location.href).toString(); } catch(e) { return 'QAXI%20Live.html'; } })();
+            const currentSrc = (document.getElementById('liveIframe') || {}).src || (function () { try { return new URL('QAXI%20Live.html', location.href).toString(); } catch (e) { return 'QAXI%20Live.html'; } })();
             // load messages for meeting
             const msgs = selectedMeetingId ? loadMessagesFromStorage(selectedMeetingId) : [];
             liveMessagesCache[selectedMeetingId] = msgs;
@@ -3646,7 +3954,7 @@ Instrucciones:
                     listEl.appendChild(d);
                 });
                 listEl.scrollTop = listEl.scrollHeight;
-                try { startParticipantListener(selectedMeetingId); } catch(e){ /* ignore */ }
+                try { startParticipantListener(selectedMeetingId); } catch (e) { /* ignore */ }
             }, 50);
         }
 
@@ -3655,11 +3963,11 @@ Instrucciones:
             try {
                 const raw = localStorage.getItem(STORAGE_KEYS.LIVE + '_MSG_' + meetingId) || '[]';
                 return JSON.parse(raw);
-            } catch(e) { return []; }
+            } catch (e) { return []; }
         }
 
         function saveMessagesToStorage(meetingId, messages) {
-            try { localStorage.setItem(STORAGE_KEYS.LIVE + '_MSG_' + meetingId, JSON.stringify(messages || [])); } catch(e){}
+            try { localStorage.setItem(STORAGE_KEYS.LIVE + '_MSG_' + meetingId, JSON.stringify(messages || [])); } catch (e) { }
         }
 
         async function sendLiveMessage() {
@@ -3680,22 +3988,22 @@ Instrucciones:
             if (liveCloudSync && typeof db !== 'undefined' && db) {
                 try {
                     await db.collection('qaxi_live_messages').add(Object.assign({ meetingId }, msg));
-                } catch(e) { console.warn('Firestore msg write failed', e); }
+                } catch (e) { console.warn('Firestore msg write failed', e); }
             }
         }
-        
+
         // ========================================
         // === CARNET CREATOR ===
         // ========================================
-        
+
         let carnetPhoto = null;
         let carnetBgImage = null;
-        
+
         function loadCarnet(c, t) {
             t.innerHTML = `
                 <button class="nav-btn" onclick="clearCarnet()">NUEVO</button>
             `;
-            
+
             c.innerHTML = `
                 <div class="carnet-container">
                     <div class="carnet-form">
@@ -3777,28 +4085,28 @@ Instrucciones:
                     </div>
                 </div>
             `;
-            
+
             carnetPhoto = null;
             carnetBgImage = null;
         }
-        
-        window.updateCarnetPreview = function() {
+
+        window.updateCarnetPreview = function () {
             const company = document.getElementById('carnetCompany').value || 'EMPRESA';
             const name = document.getElementById('carnetName').value || 'Nombre Completo';
             const role = document.getElementById('carnetRole').value || 'Cargo';
             const id = document.getElementById('carnetId').value || '---';
             const email = document.getElementById('carnetEmail').value || 'contacto@empresa.com';
             const style = document.getElementById('carnetStyle').value;
-            
+
             document.getElementById('previewCompany').innerText = company.toUpperCase();
             document.getElementById('previewName').innerText = name;
             document.getElementById('previewRole').innerText = role;
             document.getElementById('previewId').innerText = `ID: ${id}`;
-            
+
             // Actualizar QR con vCard
             const vCardData = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nORG:${company}\nTITLE:${role}\nEMAIL:${email}\nEND:VCARD`;
             document.getElementById('previewQR').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(vCardData)}" alt="QR">`;
-            
+
             // Mostrar/ocultar sección de fondo personalizado
             const customSection = document.getElementById('customBgSection');
             if (style === 'custom') {
@@ -3806,11 +4114,11 @@ Instrucciones:
             } else {
                 customSection.style.display = 'none';
             }
-            
+
             // Actualizar estilo
             const card = document.getElementById('carnetPreview');
             card.className = `carnet-card style-${style}`;
-            
+
             // Si es custom y hay imagen de fondo
             if (style === 'custom' && carnetBgImage) {
                 card.style.backgroundImage = `url(${carnetBgImage})`;
@@ -3818,8 +4126,8 @@ Instrucciones:
                 card.style.backgroundImage = '';
             }
         }
-        
-        window.loadCarnetBg = function(input) {
+
+        window.loadCarnetBg = function (input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
@@ -3829,8 +4137,8 @@ Instrucciones:
                 reader.readAsDataURL(input.files[0]);
             }
         }
-        
-        window.loadCarnetPhoto = function(input) {
+
+        window.loadCarnetPhoto = function (input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
@@ -3840,8 +4148,8 @@ Instrucciones:
                 reader.readAsDataURL(input.files[0]);
             }
         }
-        
-        window.clearCarnet = function() {
+
+        window.clearCarnet = function () {
             document.getElementById('carnetCompany').value = '';
             document.getElementById('carnetName').value = '';
             document.getElementById('carnetRole').value = '';
@@ -3854,8 +4162,8 @@ Instrucciones:
             document.getElementById('customBgSection').style.display = 'none';
             updateCarnetPreview();
         }
-        
-        window.downloadCarnet = async function() {
+
+        window.downloadCarnet = async function () {
             const card = document.getElementById('carnetPreview');
             const canvas = await html2canvas(card, { scale: 3, useCORS: true });
             const link = document.createElement('a');
@@ -3863,43 +4171,43 @@ Instrucciones:
             link.href = canvas.toDataURL('image/png');
             link.click();
         }
-        
-        window.downloadCarnetPDF = async function() {
+
+        window.downloadCarnetPDF = async function () {
             const card = document.getElementById('carnetPreview');
             const canvas = await html2canvas(card, { scale: 3, useCORS: true });
             const pdf = new jspdf.jsPDF('l', 'mm', [90, 55]);
             pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 90, 55);
             pdf.save(`carnet_${document.getElementById('carnetName').value || 'empleado'}.pdf`);
         }
-        
-        window.shareCarnetWhatsApp = async function() {
+
+        window.shareCarnetWhatsApp = async function () {
             const name = document.getElementById('carnetName').value || 'Empleado';
             const company = document.getElementById('carnetCompany').value || 'Empresa';
             const message = `¡Hola! Te comparto el carnet de ${name} de ${company}. Creado con QAXI Cloud.`;
-            
+
             // Primero descargar, luego abrir WhatsApp
             alert('Primero se descargará el carnet. Luego podrás adjuntarlo en WhatsApp.');
             await downloadCarnet();
             window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
         }
-        
-        window.shareCarnetEmail = function() {
+
+        window.shareCarnetEmail = function () {
             const name = document.getElementById('carnetName').value || 'Empleado';
             const company = document.getElementById('carnetCompany').value || 'Empresa';
             const email = document.getElementById('carnetEmail').value || '';
             const subject = `Carnet de Identificación - ${name}`;
             const body = `Hola ${name},\n\nTe enviamos tu carnet de identificación de ${company}.\n\nPor favor, descarga el carnet adjunto o genéralo desde QAXI Cloud.\n\nSaludos,\n${company}`;
-            
+
             window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
-            
+
             // También descargar
             downloadCarnet();
         }
-        
+
         // ========================================
         // === FIRMA PDF ===
         // ========================================
-        
+
         let firmaCanvas = null;
         let firmaCtx = null;
         let isDrawing = false;
@@ -3908,14 +4216,14 @@ Instrucciones:
         let firmaImage = null;
         let pdfForSign = null;
         let firmaOverlays = [];
-        
+
         function loadFirma(c, t) {
             t.innerHTML = `
                 <button class="nav-btn" onclick="clearFirmaCanvas()">LIMPIAR FIRMA</button>
                 <button class="nav-btn" onclick="saveFirmaAsImage()">GUARDAR FIRMA</button>
                 <button class="nav-btn" onclick="exportSignedPDF()" style="border-color:var(--gold); color:var(--gold)">EXPORTAR PDF FIRMADO</button>
             `;
-            
+
             c.innerHTML = `
                 <div class="firma-container">
                     <div class="firma-sidebar">
@@ -3961,7 +4269,7 @@ Instrucciones:
                     </div>
                 </div>
             `;
-            
+
             // Inicializar canvas de firma (fondo blanco para mejor visibilidad/imprenta)
             firmaCanvas = document.getElementById('firmaCanvas');
             firmaCtx = firmaCanvas.getContext('2d');
@@ -3969,18 +4277,18 @@ Instrucciones:
             try {
                 firmaCtx.fillStyle = '#ffffff';
                 firmaCtx.fillRect(0, 0, firmaCanvas.width, firmaCanvas.height);
-            } catch(e) { firmaCtx.clearRect(0, 0, firmaCanvas.width, firmaCanvas.height); }
+            } catch (e) { firmaCtx.clearRect(0, 0, firmaCanvas.width, firmaCanvas.height); }
             firmaCtx.strokeStyle = firmaColor;
             firmaCtx.lineWidth = firmaWidth;
             firmaCtx.lineCap = 'round';
             firmaCtx.lineJoin = 'round';
-            
+
             // Eventos de dibujo
             firmaCanvas.addEventListener('mousedown', startDrawing);
             firmaCanvas.addEventListener('mousemove', draw);
             firmaCanvas.addEventListener('mouseup', stopDrawing);
             firmaCanvas.addEventListener('mouseout', stopDrawing);
-            
+
             // Touch events
             firmaCanvas.addEventListener('touchstart', (e) => {
                 e.preventDefault();
@@ -3995,51 +4303,51 @@ Instrucciones:
                 draw({ offsetX: touch.clientX - rect.left, offsetY: touch.clientY - rect.top });
             });
             firmaCanvas.addEventListener('touchend', stopDrawing);
-            
+
             firmaOverlays = [];
             pdfForSign = null;
         }
-        
+
         function startDrawing(e) {
             isDrawing = true;
             firmaCtx.beginPath();
             firmaCtx.moveTo(e.offsetX, e.offsetY);
         }
-        
+
         function draw(e) {
             if (!isDrawing) return;
             firmaCtx.lineTo(e.offsetX, e.offsetY);
             firmaCtx.stroke();
         }
-        
+
         function stopDrawing() {
             isDrawing = false;
         }
-        
-        window.setFirmaColor = function(color) {
+
+        window.setFirmaColor = function (color) {
             firmaColor = color;
             firmaCtx.strokeStyle = color;
         }
-        
-        window.setFirmaWidth = function(width) {
+
+        window.setFirmaWidth = function (width) {
             firmaWidth = parseInt(width);
             firmaCtx.lineWidth = firmaWidth;
         }
-        
-        window.clearFirmaCanvas = function() {
+
+        window.clearFirmaCanvas = function () {
             // Fill white background again
-            try { firmaCtx.fillStyle = '#ffffff'; firmaCtx.fillRect(0, 0, firmaCanvas.width, firmaCanvas.height); } catch(e) { try { firmaCtx.clearRect(0,0,firmaCanvas.width,firmaCanvas.height); } catch(e){} }
+            try { firmaCtx.fillStyle = '#ffffff'; firmaCtx.fillRect(0, 0, firmaCanvas.width, firmaCanvas.height); } catch (e) { try { firmaCtx.clearRect(0, 0, firmaCanvas.width, firmaCanvas.height); } catch (e) { } }
             firmaImage = null;
         }
-        
-        window.saveFirmaAsImage = function() {
+
+        window.saveFirmaAsImage = function () {
             const link = document.createElement('a');
             link.download = 'mi_firma.png';
             link.href = firmaCanvas.toDataURL('image/png');
             link.click();
         }
-        
-        window.loadFirmaImage = function(input) {
+
+        window.loadFirmaImage = function (input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
@@ -4059,13 +4367,13 @@ Instrucciones:
                 reader.readAsDataURL(input.files[0]);
             }
         }
-        
-        window.loadPDFtoSign = async function(input) {
+
+        window.loadPDFtoSign = async function (input) {
             if (!input.files || !input.files[0]) return;
-            
+
             const file = input.files[0];
             document.getElementById('pdfSignStatus').innerText = 'Cargando PDF...';
-            
+
             // Cargar PDF.js si no está cargado
             if (!window.pdfjsLib) {
                 const script = document.createElement('script');
@@ -4074,18 +4382,18 @@ Instrucciones:
                 await new Promise(resolve => script.onload = resolve);
                 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
             }
-            
+
             const reader = new FileReader();
             reader.onload = async (e) => {
                 try {
                     const typedArray = new Uint8Array(e.target.result);
                     pdfForSign = await pdfjsLib.getDocument(typedArray).promise;
-                    
+
                     document.getElementById('pdfSignStatus').innerText = `PDF cargado: ${pdfForSign.numPages} página(s)`;
-                    
+
                     // Renderizar primera página
                     await renderPDFPage(1);
-                    
+
                 } catch (err) {
                     console.error(err);
                     document.getElementById('pdfSignStatus').innerText = 'Error al cargar PDF';
@@ -4093,22 +4401,22 @@ Instrucciones:
             };
             reader.readAsArrayBuffer(file);
         }
-        
+
         async function renderPDFPage(pageNum) {
             if (!pdfForSign) return;
-            
+
             const page = await pdfForSign.getPage(pageNum);
             const scale = 1.5;
             const viewport = page.getViewport({ scale });
-            
+
             const canvas = document.createElement('canvas');
             canvas.id = 'pdfCanvas';
             canvas.width = viewport.width;
             canvas.height = viewport.height;
-            
+
             const ctx = canvas.getContext('2d');
             await page.render({ canvasContext: ctx, viewport }).promise;
-            
+
             const previewArea = document.getElementById('firmaPreviewArea');
             previewArea.innerHTML = `
                 <div class="pdf-preview-container" style="position: relative;">
@@ -4120,9 +4428,9 @@ Instrucciones:
                     </div>
                 </div>
             `;
-            
+
             document.getElementById('pdfCanvasWrapper').appendChild(canvas);
-            
+
             // Clic para posicionar firma
             canvas.addEventListener('click', (e) => {
                 const rect = canvas.getBoundingClientRect();
@@ -4131,69 +4439,69 @@ Instrucciones:
                 placeSignature(x, y);
             });
         }
-        
+
         function placeSignature(x, y) {
             const wrapper = document.getElementById('pdfCanvasWrapper');
             const firmaData = firmaCanvas.toDataURL('image/png');
-            
+
             const overlay = document.createElement('div');
             overlay.className = 'firma-overlay';
             overlay.style.left = (x - 75) + 'px';
             overlay.style.top = (y - 40) + 'px';
             overlay.innerHTML = `<img src="${firmaData}" alt="Firma">`;
-            
+
             // Hacer draggable
             let isDraggingOverlay = false;
             let offsetX, offsetY;
-            
+
             overlay.addEventListener('mousedown', (e) => {
                 isDraggingOverlay = true;
                 offsetX = e.clientX - overlay.offsetLeft;
                 offsetY = e.clientY - overlay.offsetTop;
                 e.stopPropagation();
             });
-            
+
             document.addEventListener('mousemove', (e) => {
                 if (!isDraggingOverlay) return;
                 overlay.style.left = (e.clientX - offsetX) + 'px';
                 overlay.style.top = (e.clientY - offsetY) + 'px';
             });
-            
+
             document.addEventListener('mouseup', () => {
                 isDraggingOverlay = false;
             });
-            
+
             wrapper.appendChild(overlay);
             firmaOverlays.push(overlay);
         }
-        
-        window.addFirmaToPosition = function() {
+
+        window.addFirmaToPosition = function () {
             alert('Haz clic en el PDF donde deseas colocar tu firma. Puedes arrastrarla para ajustar la posición.');
         }
-        
-        window.removeFirmaOverlays = function() {
+
+        window.removeFirmaOverlays = function () {
             firmaOverlays.forEach(o => o.remove());
             firmaOverlays = [];
         }
-        
-        window.exportSignedPDF = async function() {
+
+        window.exportSignedPDF = async function () {
             const pdfCanvas = document.getElementById('pdfCanvas');
             if (!pdfCanvas) {
                 alert('Primero carga un PDF');
                 return;
             }
-            
+
             // Crear canvas combinado
             const wrapper = document.getElementById('pdfCanvasWrapper');
             const finalCanvas = await html2canvas(wrapper, { scale: 2, useCORS: true });
-            
+
             // Crear PDF
             const pdf = new jspdf.jsPDF({
                 orientation: pdfCanvas.width > pdfCanvas.height ? 'l' : 'p',
                 unit: 'px',
                 format: [pdfCanvas.width, pdfCanvas.height]
             });
-            
+
             pdf.addImage(finalCanvas.toDataURL('image/png'), 'PNG', 0, 0, pdfCanvas.width, pdfCanvas.height);
             pdf.save('documento_firmado.pdf');
         }
@@ -4258,7 +4566,8 @@ Instrucciones:
                     if (appContent) appContent.style.display = 'none';
                 }
             });
-        } catch(e) { console.warn('Auth compat no disponible', e); }
+        } catch (e) { console.warn('Auth compat no disponible', e); }
     </script>
 </body>
+
 </html>
