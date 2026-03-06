@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QAXI AI Calendar | WebNN</title>
+    <title>QAXI Calendar</title>
 
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Cinzel:wght@700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -13,9 +13,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
-    <!-- Python Engine -->
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
 
     <style>
         :root {
@@ -115,6 +112,7 @@
             display: flex;
             flex-direction: column;
             padding: 20px;
+            overflow-y: auto;
         }
 
         /* Content Area */
@@ -123,16 +121,52 @@
             display: flex;
             flex-direction: column;
             background: #000;
+            overflow-y: auto;
         }
 
         /* Agent Chat */
         .agent-dock {
-            height: 300px;
+            height: 350px;
             background: var(--surface);
             border-top: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             padding: 20px;
+            position: sticky;
+            bottom: 0;
+        }
+
+        @media (max-width: 900px) {
+            header {
+                padding: 0 20px;
+            }
+            .brand {
+                font-size: 1.2rem;
+            }
+            .ai-status {
+                display: none;
+            }
+            .main-layout {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                overflow-y: visible;
+            }
+            .content {
+                width: 100%;
+                overflow-y: visible;
+            }
+            .events-view {
+                padding: 20px;
+            }
+            .agent-dock {
+                height: 400px;
+                position: relative;
+            }
         }
 
         .chat-messages {
@@ -262,39 +296,6 @@
             margin-bottom: 10px;
         }
 
-        /* Polyglot Panel */
-        .polyglot-panel {
-            width: 300px;
-            background: var(--surface);
-            border-left: 1px solid var(--border);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .code-title {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.8rem;
-            color: var(--accent);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .console-output {
-            flex: 1;
-            background: #000;
-            border: 1px solid #222;
-            border-radius: 8px;
-            padding: 10px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.75rem;
-            color: #4caf50;
-            overflow-y: auto;
-            white-space: pre-wrap;
-        }
-
         /* Loader */
         #loader-overlay {
             position: fixed;
@@ -343,11 +344,32 @@
             gap: 20px;
             align-items: center;
             transition: 0.3s;
+            position: relative;
         }
 
         .event-card:hover {
             border-color: var(--accent);
             background: rgba(255, 215, 0, 0.05);
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            opacity: 0;
+            transition: 0.2s;
+        }
+
+        .event-card:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            color: #ff4444;
         }
 
         .event-time {
@@ -436,39 +458,17 @@
             <div class="agent-dock">
                 <div class="chat-messages" id="chat-messages">
                     <div class="msg agent">
-                        Hola, soy tu Agente QAXI. Utilizo WebNN para procesar tus datos localmente en tu GPU/NPU. ¿En qué puedo ayudarte hoy?
+                        Hola, soy tu Asistente QAXI. Estoy aquí para ayudarte a organizar tu calendario y notas con IA profesional. ¿Qué planes tienes para hoy?
                     </div>
                 </div>
                 <div class="chat-input-area">
-                    <button class="icon-btn" id="voice-btn"><i class="fas fa-microphone"></i></button>
-                    <input type="text" id="user-input" placeholder="Agenda una reunión a las 10am...">
-                    <button class="icon-btn" id="send-btn"><i class="fas fa-paper-plane"></i></button>
+                    <button class="icon-btn" id="voice-btn" title="Comando de voz"><i class="fas fa-microphone"></i></button>
+                    <input type="text" id="user-input" placeholder="Escribe un comando o usa la voz...">
+                    <button class="icon-btn" id="send-btn" title="Enviar"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
         </div>
 
-        <div class="polyglot-panel">
-            <div class="code-title"><i class="fab fa-python"></i> PYTHON AUTOMATION</div>
-            <div class="console-output" id="python-console">>>> Loading Python Engine...</div>
-            <div style="display: flex; gap: 5px; margin-top: 5px;">
-                <input type="text" id="py-input" placeholder="print('Hello from QAXI')" style="flex: 1; background: #111; border: 1px solid #333; color: #fff; font-size: 0.7rem; padding: 5px;">
-                <button id="run-py-btn" style="background: var(--accent); border: none; font-size: 0.7rem; padding: 0 10px; cursor: pointer;">Run</button>
-            </div>
-
-            <div class="code-title" style="margin-top: 20px;"><i class="fab fa-java"></i> JAVA RUNTIME (SIM)</div>
-            <div class="console-output" id="java-console" style="color: #64b5f6;">[JVM] initialized...</div>
-            <div style="display: flex; gap: 5px; margin-top: 5px;">
-                <input type="text" id="java-input" placeholder="System.out.println('Hello')" style="flex: 1; background: #111; border: 1px solid #333; color: #fff; font-size: 0.7rem; padding: 5px;">
-                <button id="run-java-btn" style="background: #64b5f6; border: none; font-size: 0.7rem; padding: 0 10px; cursor: pointer;">Run</button>
-            </div>
-
-            <div class="code-title" style="margin-top: 20px;"><i class="fab fa-js"></i> JAVASCRIPT CORE</div>
-            <div class="console-output" id="js-console" style="color: #ffd54f;">JS V8 Engine active.</div>
-            <div style="display: flex; gap: 5px; margin-top: 5px;">
-                <input type="text" id="js-input" placeholder="console.log('QAXI Rocks')" style="flex: 1; background: #111; border: 1px solid #333; color: #fff; font-size: 0.7rem; padding: 5px;">
-                <button id="run-js-btn" style="background: #ffd54f; border: none; font-size: 0.7rem; padding: 0 10px; cursor: pointer;">Run</button>
-            </div>
-        </div>
     </div>
 
     <script type="module">
@@ -493,7 +493,6 @@
         // Global State
         let currentDate = new Date();
         let selectedDate = new Date();
-        let pyodide = null;
         let aiModel = null;
         let events = [];
         let notes = [];
@@ -501,8 +500,6 @@
         // UI Selectors
         const statusIndicator = document.getElementById('status-indicator');
         const statusText = document.getElementById('status-text');
-        const jsConsole = document.getElementById('js-console');
-        const pythonConsole = document.getElementById('python-console');
         const chatMessages = document.getElementById('chat-messages');
         const userInput = document.getElementById('user-input');
         const progressBar = document.getElementById('progress-bar');
@@ -524,10 +521,37 @@
             window.speechSynthesis.speak(utterance);
         };
 
+        const deleteEvent = async (id) => {
+            if (!confirm('¿Eliminar este evento?')) return;
+            if (auth.currentUser) {
+                await db.collection('users').doc(auth.currentUser.uid).collection('calendar_events').doc(id).delete();
+            } else {
+                events = events.filter(e => e.id !== id);
+                renderEvents();
+            }
+        };
+
+        const deleteNote = async (id) => {
+            if (!confirm('¿Eliminar esta nota?')) return;
+            if (auth.currentUser) {
+                await db.collection('users').doc(auth.currentUser.uid).collection('calendar_notes').doc(id).delete();
+            } else {
+                notes = notes.filter(n => n.id !== id);
+                renderNotes();
+            }
+        };
+
+        const formatDate = (date) => {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        };
+
         const renderEvents = () => {
             const container = document.getElementById('events-container');
             container.innerHTML = '';
-            const dateStr = selectedDate.toISOString().split('T')[0];
+            const dateStr = formatDate(selectedDate);
             const filtered = events.filter(e => e.date === dateStr);
             if (filtered.length === 0) {
                 container.innerHTML = '<p style="color: var(--text-secondary);">No hay eventos para este día.</p>';
@@ -536,7 +560,14 @@
             filtered.sort((a,b) => a.time.localeCompare(b.time)).forEach(ev => {
                 const div = document.createElement('div');
                 div.className = 'event-card';
-                div.innerHTML = `<div class="event-time">${ev.time}</div><div class="event-info"><h3>${ev.title}</h3><p>${ev.description}</p></div>`;
+                div.innerHTML = `
+                    <div class="event-time">${ev.time}</div>
+                    <div class="event-info">
+                        <h3>${ev.title}</h3>
+                        <p>${ev.description}</p>
+                    </div>
+                    <button class="delete-btn" onclick="window.deleteEvent('${ev.id}')"><i class="fas fa-trash"></i></button>
+                `;
                 container.appendChild(div);
             });
         };
@@ -544,15 +575,36 @@
         const renderNotes = () => {
             const container = document.getElementById('notes-list');
             container.innerHTML = '';
-            notes.sort((a,b) => b.timestamp - a.timestamp).forEach(note => {
+            const dateStr = formatDate(selectedDate);
+            const filteredNotes = notes.filter(n => {
+                if (n.date) return n.date === dateStr;
+                // Fallback for old notes without date
+                return true;
+            });
+
+            if (filteredNotes.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.8rem;">Sin notas para hoy.</p>';
+                return;
+            }
+
+            filteredNotes.sort((a,b) => b.timestamp - a.timestamp).forEach(note => {
                 const div = document.createElement('div');
                 div.className = 'event-card';
                 div.style.padding = '12px'; div.style.marginBottom = '0'; div.style.cursor = 'pointer';
-                div.innerHTML = `<div class="event-info"><h3>${note.title}</h3><p>${note.content.substring(0, 40)}${note.content.length > 40 ? '...' : ''}</p></div>`;
+                div.innerHTML = `
+                    <div class="event-info">
+                        <h3>${note.title}</h3>
+                        <p>${note.content.substring(0, 40)}${note.content.length > 40 ? '...' : ''}</p>
+                    </div>
+                    <button class="delete-btn" onclick="event.stopPropagation(); window.deleteNote('${note.id}')"><i class="fas fa-trash"></i></button>
+                `;
                 div.onclick = () => alert(`TITULO: ${note.title}\n\n${note.content}`);
                 container.appendChild(div);
             });
         };
+
+        window.deleteEvent = deleteEvent;
+        window.deleteNote = deleteNote;
 
         const renderCalendar = () => {
             const year = currentDate.getFullYear();
@@ -595,18 +647,33 @@
 
         const processCommand = async (text) => {
             if (!aiModel) return "El motor de IA aún se está cargando...";
+
+            const dateStr = selectedDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Contextual help
+            if (text.toLowerCase().includes('que tengo') || text.toLowerCase().includes('mi agenda')) {
+                const dayEvents = events.filter(e => e.date === formatDate(selectedDate));
+                if (dayEvents.length === 0) return `Para el ${dateStr} no tienes eventos programados.`;
+                return `Para el ${dateStr} tienes: ${dayEvents.map(e => e.title + ' a las ' + e.time).join(', ')}.`;
+            }
+
+            // Professional greeting handling
+            const lowerText = text.toLowerCase();
+            if (lowerText.includes('hola') || lowerText.includes('buenos días') || lowerText.includes('buenas tardes')) {
+                return "¡Hola! Soy tu Asistente QAXI. ¿Cómo puedo ayudarte con tu agenda hoy?";
+            }
+
             const candidate_labels = ['schedule event', 'create note', 'search', 'automation', 'greeting', 'status check'];
             try {
                 const output = await aiModel(text, candidate_labels);
                 const intent = output.labels[0];
                 const confidence = output.scores[0];
-                jsConsole.innerText += `\n[WebNN] Intent: ${intent} (${Math.round(confidence*100)}%)`;
+                console.log(`[WebNN] Intent: ${intent} (${Math.round(confidence*100)}%)`);
 
                 if (intent === 'schedule event' && confidence > 0.4) {
                     const timeMatch = text.match(/(\d{1,2}:\d{2})|(\d{1,2}\s*(?:pm|am|p\.m\.|a\.m\.))/i);
                     let time = timeMatch ? timeMatch[0] : "12:00";
 
-                    // Normalize am/pm
                     if (time.toLowerCase().includes('pm') && !time.includes(':')) {
                         let hour = parseInt(time);
                         if (hour < 12) time = (hour + 12) + ":00";
@@ -615,36 +682,52 @@
                     const titleMatch = text.match(/(?:reunión|cita|evento|clase|quedar|anota|agenda)\s+(?:con\s+)?(?:para\s+)?([^a-z0-9\s][^.]+|[a-z0-9\s]{3,})/i);
                     let title = titleMatch ? titleMatch[1].trim() : "Nuevo Evento AI";
 
-                    // Advanced extraction: check for "mañana"
                     let dateObj = new Date(selectedDate);
                     if (text.toLowerCase().includes('mañana')) {
                         dateObj.setDate(dateObj.getDate() + 1);
                     }
 
-                    const dateStr = dateObj.toISOString().split('T')[0];
-                    const event = { title, description: "Agendado por QAXI AI Agent (Local)", time, date: dateStr };
+                    const dateStr = formatDate(dateObj);
+
+                    // Recurring event detection (Basic)
+                    const isRecurring = text.toLowerCase().includes('cada') || text.toLowerCase().includes('todos los');
+                    let recurrence = isRecurring ? 'Weekly' : 'None';
+
+                    const event = {
+                        title,
+                        description: `Agendado por QAXI AI (Local). ${isRecurring ? 'Evento recurrente.' : ''}`,
+                        time,
+                        date: dateStr,
+                        recurrence
+                    };
 
                     if (auth.currentUser) {
                         await db.collection('users').doc(auth.currentUser.uid).collection('calendar_events').add(event);
                     } else {
-                        events.push({ id: Date.now(), ...event });
+                        events.push({ id: Date.now().toString(), ...event });
                         renderEvents();
                     }
-                    return `Entendido. He agendado "${title}" para las ${time}${text.toLowerCase().includes('mañana') ? ' de mañana' : ''}. Sincronizado localmente con WebNN.`;
+                    return `Entendido. He agendado "${title}" para las ${time}${text.toLowerCase().includes('mañana') ? ' de mañana' : ''}. ${isRecurring ? 'Lo he marcado como recurrente.' : ''}`;
                 }
 
                 if (intent === 'create note' && confidence > 0.4) {
-                    const titleMatch = text.match(/(?:nota|escribe|recuerda)\s+(?:que\s+)?([^a-z0-9\s][^.]+|[a-z0-9\s]{3,})/i);
-                    const title = titleMatch ? titleMatch[1].trim().substring(0, 20) + "..." : "Nota de AI";
+                    const topics = ['trabajo', 'personal', 'ideas', 'compras', 'finanzas', 'salud'];
+                    const topicOutput = await aiModel(text, topics);
+                    const mainTopic = topicOutput.labels[0].toUpperCase();
 
-                    const note = { title, content: text, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+                    const titleMatch = text.match(/(?:nota|escribe|recuerda)\s+(?:que\s+)?([^a-z0-9\s][^.]+|[a-z0-9\s]{3,})/i);
+                    let title = titleMatch ? titleMatch[1].trim().substring(0, 30) : "Nota de AI";
+                    title = `[${mainTopic}] ${title}`;
+
+                    const dateStr = formatDate(selectedDate);
+                    const note = { title, content: text, date: dateStr, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
                     if (auth.currentUser) {
                         await db.collection('users').doc(auth.currentUser.uid).collection('calendar_notes').add(note);
                     } else {
-                        notes.push({ id: Date.now(), ...note, timestamp: new Date() });
+                        notes.push({ id: Date.now().toString(), ...note, timestamp: new Date() });
                         renderNotes();
                     }
-                    return `He guardado tu nota: "${title}". El Agente AI ha procesado el contenido.`;
+                    return `He procesado y guardado tu nota bajo la categoría ${mainTopic}: "${title}".`;
                 }
 
                 if (intent === 'automation') return "Detecto un comando de automatización. ¿Deseas que genere un script de Python o JS para manejar tu calendario?";
@@ -663,6 +746,12 @@
             if(!text) return;
             addMessage(text, 'user');
             userInput.value = '';
+
+            // Limit message history display
+            while (chatMessages.children.length > 20) {
+                chatMessages.removeChild(chatMessages.firstChild);
+            }
+
             const indicator = document.createElement('span');
             indicator.className = 'typing-indicator';
             indicator.innerText = 'procesando...';
@@ -671,8 +760,7 @@
             indicator.remove();
             addMessage(response, 'agent');
             speak(response);
-            jsConsole.innerText += `\n[Agent] Action triggered: ${text.substring(0,20)}...`;
-            jsConsole.scrollTop = jsConsole.scrollHeight;
+            console.log(`[Agent] Action triggered: ${text.substring(0,20)}...`);
         };
 
         // Event Listeners
@@ -685,9 +773,9 @@
             const title = prompt("Título:");
             const time = prompt("Hora (HH:mm):", "12:00");
             if (title && time) {
-                const event = { title, description: "", time, date: selectedDate.toISOString().split('T')[0] };
+                const event = { title, description: "", time, date: formatDate(selectedDate) };
                 if (auth.currentUser) await db.collection('users').doc(auth.currentUser.uid).collection('calendar_events').add(event);
-                else { events.push({ id: Date.now(), ...event }); renderEvents(); }
+                else { events.push({ id: Date.now().toString(), ...event }); renderEvents(); }
             }
         };
 
@@ -695,57 +783,21 @@
             const title = prompt("Título:");
             const content = prompt("Contenido:");
             if (title && content) {
-                const note = { title, content, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+                const dateStr = formatDate(selectedDate);
+                const note = { title, content, date: dateStr, timestamp: firebase.firestore.FieldValue.serverTimestamp() };
                 if (auth.currentUser) await db.collection('users').doc(auth.currentUser.uid).collection('calendar_notes').add(note);
-                else { notes.push({ id: Date.now(), ...note, timestamp: new Date() }); renderNotes(); }
+                else { notes.push({ id: Date.now().toString(), ...note, timestamp: new Date() }); renderNotes(); }
             }
-        };
-
-        document.getElementById('run-py-btn').onclick = async () => {
-            const code = document.getElementById('py-input').value;
-            if(!pyodide || !code) return;
-            try {
-                pythonConsole.innerText += `\n>>> ${code}`;
-                pyodide.runPython(`import sys, io\nsys.stdout = io.StringIO()`);
-                let result = await pyodide.runPythonAsync(code);
-                let stdout = pyodide.runPython("sys.stdout.getvalue()");
-                if(stdout) pythonConsole.innerText += `\n${stdout}`;
-                if(result !== undefined) pythonConsole.innerText += `\n${result}`;
-            } catch (err) { pythonConsole.innerText += `\nError: ${err.message}`; }
-            pythonConsole.scrollTop = pythonConsole.scrollHeight;
-        };
-
-        document.getElementById('run-js-btn').onclick = () => {
-            const code = document.getElementById('js-input').value;
-            try { jsConsole.innerText += `\n> ${code}`; let result = eval(code); if(result !== undefined) jsConsole.innerText += `\n${result}`; }
-            catch (err) { jsConsole.innerText += `\nError: ${err.message}`; }
-            jsConsole.scrollTop = jsConsole.scrollHeight;
-        };
-
-        document.getElementById('run-java-btn').onclick = () => {
-            const code = document.getElementById('java-input').value;
-            const javaConsole = document.getElementById('java-console');
-            javaConsole.innerText += `\n[Compile] ${code}`;
-            setTimeout(() => {
-                if(code.includes('println')) {
-                    const m = code.match(/println\(['"](.*)['"]\)/);
-                    javaConsole.innerText += `\n${m?m[1]:''}`;
-                } else javaConsole.innerText += `\nExecution successful (simulated).`;
-                javaConsole.scrollTop = javaConsole.scrollHeight;
-            }, 400);
         };
 
         // Init
         auth.onAuthStateChanged(user => {
-            if (user) { loadData(); jsConsole.innerText += `\n[Auth] User logged in: ${user.email}`; }
-            else jsConsole.innerText += `\n[Auth] No active session.`;
+            if (user) { loadData(); console.log(`[Auth] User logged in: ${user.email}`); }
+            else console.log(`[Auth] No active session.`);
         });
 
         const init = async () => {
             try {
-                pyodide = await loadPyodide();
-                pythonConsole.innerText = '>>> Python 3.11 Ready.';
-
                 env.allowLocalModels = false;
                 // Force WebGPU/WebNN if available
                 env.backends.onnx.wasm.proxy = true;
@@ -758,7 +810,7 @@
 
                 statusIndicator.classList.remove('loading');
                 statusText.innerText = 'WEBNN LOCAL AI AGENT ACTIVE';
-                jsConsole.innerText += '\n[WebNN] AI Model loaded via WebGPU/WebNN.';
+                console.log('[WebNN] AI Model loaded via WebGPU/WebNN.');
 
                 loaderOverlay.style.opacity = '0';
                 setTimeout(() => loaderOverlay.style.display = 'none', 500);
