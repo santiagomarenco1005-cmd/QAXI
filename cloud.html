@@ -1374,6 +1374,64 @@
         body.is-pro .status-badge.pro {
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 767px) {
+            .sidebar {
+                width: 50px;
+                padding-top: 15px;
+            }
+
+            .app-icon {
+                width: 36px;
+                height: 36px;
+                margin-bottom: 12px;
+                font-size: 1rem;
+                border-radius: 10px;
+            }
+
+            .app-icon span {
+                display: none;
+            }
+
+            .app-icon .pro-tag {
+                display: none;
+            }
+
+            header {
+                padding: 4px 10px !important;
+                gap: 6px !important;
+            }
+
+            #appName {
+                font-size: 13px !important;
+            }
+
+            #toolbar {
+                flex-wrap: wrap;
+                gap: 4px !important;
+                overflow-x: auto;
+            }
+
+            .tb-btn {
+                font-size: 11px !important;
+                padding: 4px 6px !important;
+            }
+
+            .btn-compact {
+                font-size: 10px !important;
+                padding: 3px 5px !important;
+            }
+
+            .nav-btn {
+                font-size: 11px !important;
+                padding: 4px 8px !important;
+            }
+
+            #workspace {
+                border-radius: 0 !important;
+            }
+        }
     </style>
 </head>
 
@@ -1825,6 +1883,7 @@
             if (id === 'slides') loadSlides(stage, tools);
             if (id === 'carnet') loadCarnet(stage, tools);
             if (id === 'firma') loadFirma(stage, tools);
+            if (id === 'tasks') loadTasks(stage, tools);
         };
 
         window.exitApp = function () {
@@ -4474,6 +4533,124 @@ Instrucciones:
 
             pdf.addImage(finalCanvas.toDataURL('image/png'), 'PNG', 0, 0, pdfCanvas.width, pdfCanvas.height);
             pdf.save('documento_firmado.pdf');
+        }
+
+        // ========================================
+        // === TASKS (KANBAN) ===
+        // ========================================
+        let kanbanData = [
+            { id: 'todo', title: 'POR HACER', cards: [{id: 1, text: 'Bienvenido a QAXI Tasks'}] },
+            { id: 'doing', title: 'EN PROGRESO', cards: [] },
+            { id: 'done', title: 'COMPLETADO', cards: [] }
+        ];
+
+        function loadTasks(c, t) {
+            t.innerHTML = `
+                <button class="nav-btn" onclick="addKanbanColumn()">+ COLUMNA</button>
+                <button class="nav-btn" onclick="resetKanban()" style="border-color:#6b1616;color:#ff9b9b;">REINICIAR</button>
+            `;
+            
+            const saved = localStorage.getItem('qaxi_kanban');
+            if(saved) { try { kanbanData = JSON.parse(saved); } catch(e){} }
+
+            renderKanban(c);
+        }
+
+        function renderKanban(container) {
+            container.innerHTML = `<div class="kanban-board" id="kanbanBoard"></div>`;
+            const board = document.getElementById('kanbanBoard');
+            
+            kanbanData.forEach((col, colIdx) => {
+                const colDiv = document.createElement('div');
+                colDiv.className = 'kanban-col';
+                colDiv.innerHTML = `
+                    <div class="kanban-header">
+                        <span contenteditable="true" onblur="updateColTitle(${colIdx}, this.innerText)" style="outline:none;">${col.title}</span>
+                        <i class="fa-solid fa-ellipsis-vertical" style="opacity:0.5; font-size:0.9rem;"></i>
+                    </div>
+                    <div class="kanban-cards" id="col-${col.id}" ondrop="dropCard(event, '${col.id}')" ondragover="allowDrop(event)">
+                        ${col.cards.map(card => `
+                            <div class="kanban-card" draggable="true" ondragstart="dragCard(event, ${card.id}, '${col.id}')" id="card-${card.id}">
+                                ${card.text}
+                                <i class="fa-solid fa-trash del-card" onclick="deleteCard('${col.id}', ${card.id})"></i>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="add-card-btn" onclick="addCard('${col.id}')"><i class="fa-solid fa-plus"></i> Añadir tarjeta</button>
+                `;
+                board.appendChild(colDiv);
+            });
+        }
+
+        window.allowDrop = (ev) => ev.preventDefault();
+        window.dragCard = (ev, id, colId) => {
+            ev.dataTransfer.setData("text/plain", JSON.stringify({id, colId}));
+        };
+        window.dropCard = (ev, targetColId) => {
+            ev.preventDefault();
+            try {
+                const data = JSON.parse(ev.dataTransfer.getData("text/plain"));
+                if(data.colId === targetColId) return;
+                
+                const sourceCol = kanbanData.find(c => c.id === data.colId);
+                const destCol = kanbanData.find(c => c.id === targetColId);
+                const cardIdx = sourceCol.cards.findIndex(c => c.id === data.id);
+                
+                if(cardIdx > -1) {
+                    const card = sourceCol.cards[cardIdx];
+                    sourceCol.cards.splice(cardIdx, 1);
+                    destCol.cards.push(card);
+                    saveKanban();
+                    renderKanban(document.getElementById('wsContent'));
+                }
+            } catch(e) {}
+        };
+
+        window.addCard = (colId) => {
+            const text = prompt("Nueva tarea:");
+            if(text) {
+                const col = kanbanData.find(c => c.id === colId);
+                col.cards.push({id: Date.now(), text});
+                saveKanban();
+                renderKanban(document.getElementById('wsContent'));
+            }
+        };
+
+        window.deleteCard = (colId, cardId) => {
+            const col = kanbanData.find(c => c.id === colId);
+            col.cards = col.cards.filter(c => c.id !== cardId);
+            saveKanban();
+            renderKanban(document.getElementById('wsContent'));
+        };
+
+        window.updateColTitle = (idx, newTitle) => {
+            kanbanData[idx].title = newTitle;
+            saveKanban();
+        };
+
+        window.addKanbanColumn = () => {
+            const title = prompt("Nombre de la columna:");
+            if(title) {
+                kanbanData.push({id: 'col-'+Date.now(), title, cards: []});
+                saveKanban();
+                renderKanban(document.getElementById('wsContent'));
+            }
+        };
+
+        window.resetKanban = () => {
+            if(confirm("¿Reiniciar tablero?")) {
+                kanbanData = [
+                    { id: 'todo', title: 'POR HACER', cards: [] },
+                    { id: 'doing', title: 'EN PROGRESO', cards: [] },
+                    { id: 'done', title: 'COMPLETADO', cards: [] }
+                ];
+                saveKanban();
+                renderKanban(document.getElementById('wsContent'));
+            }
+        };
+
+        function saveKanban() {
+            localStorage.setItem('qaxi_kanban', JSON.stringify(kanbanData));
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

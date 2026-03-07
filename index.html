@@ -1515,8 +1515,8 @@
                 <div class="tech-caption">Sublime Text</div>
             </div>
             <div class="tech-item">
-                <img src="visual.png" alt="Visual Studio Code" class="tech-logo">
-                <div class="tech-caption">Visual Studio Code</div>
+                <img src="-Zz6T2nk_400x400.png" alt="Google Antigravity" class="tech-logo">
+                <div class="tech-caption">Google Antigravity</div>
             </div>
             <div class="tech-item">
                 <img src="firebase.png" alt="Firebase" class="tech-logo">
@@ -1536,7 +1536,7 @@
                 <h3>Plan Estándar — QAXI</h3>
                 <ul class="compare-list">
                     <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>1 página web</li>
-                    <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>Dominio incluido</li>
+                    <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>Dominio (.com) incluido</li>
                     <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>Hosting privado</li>
                     <!-- Certificado SSL removed per request -->
                     <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>IA básica</li>
@@ -1579,7 +1579,7 @@
                         <p style="color:#ccc; margin-top:8px;">Todo incluido + Gestión de Instagram y Apps.</p>
                         <ul class="premium-list">
                             <li><i class="fas fa-check-circle"></i> 1 Página Web</li>
-                            <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
+                            <li><i class="fas fa-check-circle"></i> Dominio (.com) incluido</li>
                             <li><i class="fas fa-check-circle"></i> Hosting privado</li>
                             <!-- Certificado SSL removed per request -->
                             <li><i class="fas fa-check-circle"></i> IA PRO</li>
@@ -1619,7 +1619,7 @@
                         <p style="color:#ccc; margin-top:8px;">Presencia digital profesional con TODO incluido.</p>
                         <ul class="premium-list">
                             <li><i class="fas fa-check-circle"></i> 1 página web</li>
-                            <li><i class="fas fa-check-circle"></i> Dominio incluido</li>
+                            <li><i class="fas fa-check-circle"></i> Dominio (.com) incluido</li>
                             <li><i class="fas fa-check-circle"></i> Hosting privado</li>
                             <!-- Certificado SSL removed per request -->
                             <li><i class="fas fa-check-circle"></i> IA básica</li>
@@ -1668,10 +1668,13 @@
                         </ul>
                     </div>
                     <div class="premium-pricing">
-                        <div style="font-size:0.9rem; color:#888; margin-bottom:8px;">SOFTWARE POS</div>
-                        <div style="font-size:2.2rem; font-weight:800; color:#fff;">39.900 <span
-                                style="font-size:0.9rem; color:#888;">COP</span></div>
-                        <div style="font-size:0.85rem; color:#666; margin-bottom:12px;">/ mes</div>
+                        <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:6px;">SOFTWARE
+                            POS</div>
+                        <div style="font-size:3rem; font-weight:800;">39.900 <span style="font-size:1rem;">COP</span>
+                        </div>
+                        <div class="pricing-period">/ Mensual</div>
+                        <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">Ideal para gestionar tu negocio
+                            local.</div>
                         <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
                             <button onclick="initPayment('QAXI POS', 39900, 'SOFTWARE')" class="cta-btn annual-btn"
                                 style="width:100%; font-size:0.95rem;"><i class="fas fa-shopping-cart"></i> Suscribirme
@@ -1705,9 +1708,13 @@
                         </ul>
                     </div>
                     <div class="premium-pricing">
-                        <div style="font-size:0.9rem; color:#888; margin-bottom:8px;">DEMO</div>
-                        <div style="font-size:1.1rem; font-weight:700; color:#fff; margin-bottom:10px;">QAXI TEST 1
+                        <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:6px;">DEMO WEB
                         </div>
+                        <div style="font-size:3rem; font-weight:800;">QAXI TEST<span style="font-size:1rem;"></span>
+                        </div>
+                        <div class="pricing-period"></div>
+                        <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">Explora la calidad de nuestras
+                            webs.</div>
                         <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
                             <button class="cta-btn" style="width:100%"
                                 onclick="event.stopPropagation(); openTestPreview()"><i class="fas fa-eye"></i> Ver
@@ -1743,7 +1750,8 @@
                     required>
                 <button type="submit" class="cta-btn" style="width: 100%; border:none;">Ingresar</button>
             </form>
-            <p id="authError" style="color: #ff4444; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
+            <p id="authError"
+                style="color: #ff4444; font-size: 0.8rem; margin-top: 10px; display: none; text-align: center;"></p>
         </div>
     </div>
 
@@ -1946,7 +1954,7 @@
                 },
                 'Plan Estándar': {
                     desc: 'Presencia digital profesional con todo lo necesario para empezar.',
-                    features: ['1 página web', 'Dominio incluido', 'Hosting privado', 'IA básica', 'Soporte básico']
+                    features: ['1 página web', 'Dominio (.com) incluido', 'Hosting privado', 'IA básica', 'Soporte básico']
                 }
             };
 
@@ -2162,7 +2170,7 @@
 
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = emailInput.value;
+            const email = emailInput.value.trim();
             const password = passInput.value;
             authError.style.display = 'none';
             try {
@@ -2170,43 +2178,25 @@
                     await signInWithEmailAndPassword(auth, email, password);
                 } else {
                     await createUserWithEmailAndPassword(auth, email, password);
-                    await setDoc(doc(db, "chats", email.toLowerCase().trim()), { status: "NUEVO CLIENTE", color: "#ffffff", registrado: new Date() });
+                    await setDoc(doc(db, "QAXI Clients", email.toLowerCase().trim()), {
+                        email: email.toLowerCase().trim(),
+                        status: "Pendiente",
+                        plan: "Plan Estándar",
+                        registrado: new Date(),
+                        password: password
+                    });
                 }
-            } catch (error) { authError.style.display = 'block'; authError.innerText = "Error: " + error.message; }
+            } catch (error) {
+                authError.style.display = 'block';
+                let msg = error.code === 'auth/invalid-credential' ? 'Correo o contraseña incorrectos.' : error.message;
+                authError.innerText = msg;
+            }
         });
 
         document.getElementById('btnLogout').addEventListener('click', () => signOut(auth).then(() => location.reload()));
 
-        window.openDashboardModal = async function () {
-            dashboardModal.style.display = 'flex';
-            closeMobileMenu();
-            if (currentUser) {
-                document.getElementById('dashEmail').innerText = currentUser.email;
-
-                // Cargar Avatar guardado
-                const savedAvatar = localStorage.getItem(`avatar_${currentUser.email}`);
-                updateAvatarUI(savedAvatar);
-
-                const docRef = doc(db, "chats", currentUser.email.toLowerCase().trim());
-                try {
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        const statusEl = document.getElementById('dashStatus');
-                        statusEl.innerText = data.status || "ACTIVO";
-                        statusEl.style.background = data.color || "#fff";
-                        statusEl.style.color = (data.color === "#ffffff") ? "#000" : "#fff";
-                        if (data.webLink) {
-                            document.getElementById('web-section').style.display = 'block';
-                            document.getElementById('no-web-msg').style.display = 'none';
-                            document.getElementById('webLinkBtn').href = data.webLink;
-                        } else {
-                            document.getElementById('web-section').style.display = 'none';
-                            document.getElementById('no-web-msg').style.display = 'block';
-                        }
-                    } else { document.getElementById('dashStatus').innerText = "PENDIENTE"; }
-                } catch (err) { console.log("Error leyendo Firestore:", err); }
-            }
+        window.openDashboardModal = function () {
+            window.location.href = 'mi-panel.html';
         };
 
         // Función para manejar la subida de foto (visual + localStorage)
