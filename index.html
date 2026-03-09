@@ -683,6 +683,64 @@
             font-weight: 600;
         }
 
+        /* --- IA COMPARISON TABLE --- */
+        .ai-compare-section {
+            padding-top: 20px;
+        }
+
+        .ai-compare-intro {
+            text-align: center;
+            color: #bdbdbd;
+            margin: -34px auto 28px;
+            max-width: 860px;
+            font-size: 0.98rem;
+        }
+
+        .ai-table-wrap {
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .ai-compare-table {
+            width: 100%;
+            min-width: 1100px;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+        }
+
+        .ai-compare-table th,
+        .ai-compare-table td {
+            padding: 14px 16px;
+            text-align: left;
+            vertical-align: top;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            line-height: 1.5;
+        }
+
+        .ai-compare-table thead th {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .ai-compare-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .ai-compare-table td:first-child,
+        .ai-compare-table th:first-child {
+            font-weight: 700;
+            color: var(--gold);
+            min-width: 160px;
+        }
+
         /* --- FOUNDER / MANIFIESTO --- */
         .founder-section {
             margin-top: 100px;
@@ -1193,6 +1251,16 @@
                 padding-top: 24px;
             }
 
+            .ai-compare-table {
+                min-width: 980px;
+                font-size: 0.88rem;
+            }
+
+            .ai-compare-table th,
+            .ai-compare-table td {
+                padding: 12px 12px;
+            }
+
             .wa-float {
                 bottom: 20px;
                 right: 20px;
@@ -1433,6 +1501,18 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* --- REVEAL ANIMATION --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 
@@ -1458,6 +1538,7 @@
                                 class="fas fa-gift"></i> Regalos</a></li>
                     <li><a href="cloud.html" class="nav-link" style="color: var(--gold); font-weight: 700;">QAXI Cloud
                             <span style="font-size:0.7rem; color:var(--gold);">Beta</span></a></li>
+                    <li><a href="pdfix.html" class="nav-link" style="color: #FF3366; font-weight: 700;">PDFix</a></li>
                 </ul>
             </nav>
             <div class="auth-wrapper">
@@ -1499,7 +1580,7 @@
     <!-- NUESTRA TECNOLOGIA -->
     <section id="tech" class="tech-section">
         <h2 class="section-title">Nuestra Tecnología</h2>
-        <p class="tech-desc">Usamos las Tecnologias mas potentes del mercado</p>
+        <p class="tech-desc">Usamos las Tecnologías más potentes del mercado</p>
 
         <div class="tech-grid">
             <div class="tech-item">
@@ -1525,24 +1606,25 @@
         </div>
     </section>
 
+
     <!-- POR QUE ELEGIR QAXI -->
     <section id="why" class="compare-section">
         <h2 class="section-title">Por qué Elegir QAXI</h2>
-        <p class="compare-desc">Comparamos lo que incluye nuestro Plan Estándar frente a lo que normalmente entrega una
+        <p class="compare-desc">Comparamos lo que incluye nuestro Plan Plus frente a lo que normalmente entrega una
             agencia web tradicional.</p>
 
         <div class="compare-grid">
             <div class="compare-card">
-                <h3>Plan Estándar — QAXI</h3>
+                <h3>Plan Plus — QAXI</h3>
                 <ul class="compare-list">
                     <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>1 página web</li>
                     <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>Dominio (.com) incluido</li>
                     <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>Hosting privado</li>
                     <!-- Certificado SSL removed per request -->
-                    <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>IA básica</li>
+                    <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>IA experta en código: Gemini 3.1
+                        Flash by Google</li>
                     <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>Mantenimiento</li>
-                    <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>Soporte Vía Email o WhatsApp</li>
-                    <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>Galería multimedia</li>
+                    <li><i class="fas fa-check-circle" style="color:var(--gold)"></i>Soporte vía Email o WhatsApp</li>
                 </ul>
             </div>
 
@@ -1569,6 +1651,44 @@
         <h2 class="section-title" style="text-align: center; border: none;">Planes y Precios</h2>
         <div class="pricing-container">
             <div class="pricing-deck">
+                <div class="premium-card pricing-card" data-tilt data-tilt-max="10" data-tilt-speed="400"
+                    data-tilt-glare data-tilt-max-glare="0.5">
+                    <div class="premium-info">
+                        <h3 style="font-weight: 900;">Plan ULTRA</h3>
+                        <p style="color:#eee; margin-top:8px; font-weight: 500;">La cúspide del rendimiento digital y
+                            razonamiento ilimitado.</p>
+                        <ul class="premium-list">
+                            <li><i class="fas fa-check-circle"></i> 1 Página Web</li>
+                            <li><i class="fas fa-check-circle"></i> Dominio (.com o .co)
+                                incluido</li>
+                            <li><i class="fas fa-check-circle"></i> Hosting privado</li>
+                            <li><i class="fas fa-brain"></i> IA experta en código: GPT-5.3-Codex
+                                con Razonamiento Extremo by OpenAI</li>
+                            <li><i class="fas fa-check-circle"></i> Mantenimiento</li>
+                            <li><i class="fas fa-check-circle"></i> Soporte vía Email o WhatsApp
+                            </li>
+                            <li><i class="fas fa-rocket"></i> QAXI Cloud PRO</li>
+                        </ul>
+                    </div>
+                    <div class="premium-pricing">
+                        <div
+                            style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:6px; letter-spacing: 2px; font-weight: 800;">
+                            PLAN MENSUAL</div>
+                        <div style="font-size:3.5rem; font-weight:900; color: #fff;">299.900 <span
+                                style="font-size:1rem;">COP</span></div>
+                        <div class="pricing-period">/ mensual</div>
+                        <div style="font-size:0.85rem; color:#fff; margin-top:12px; opacity: 0.8;">Máximo rendimiento
+                            para empresas de alto impacto.</div>
+                        <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+                            <button onclick="initPayment('Plan ULTRA', 299900, 'PLAN')" class="cta-btn"
+                                style="width:100%">Suscribirme ULTRA</button>
+                            <button onclick="initPayment('Plan ULTRA Anual', 2999000, 'PLAN_ANNUAL')"
+                                class="cta-btn annual-btn" style="width:100%;">PAGAR ANUAL — 2.999.000
+                                COP</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="premium-card pricing-card highlight" data-tilt data-tilt-max="10" data-tilt-speed="400"
                     data-tilt-glare data-tilt-max-glare="0.3">
                     <div class="premium-info">
@@ -1576,20 +1696,16 @@
                             style="position: absolute; top: 12px; right: 12px; background: var(--gold); color: #000; font-weight: 800; font-size: 0.7rem; padding: 5px 12px; border-bottom-left-radius: 8px;">
                             MEJOR OPCIÓN</div>
                         <h3 style="color:var(--gold);">Plan PRO</h3>
-                        <p style="color:#ccc; margin-top:8px;">Todo incluido + Gestión de Instagram y Apps.</p>
+                        <p style="color:#ccc; margin-top:8px;">Todo incluido + Apps y nube profesional.</p>
                         <ul class="premium-list">
                             <li><i class="fas fa-check-circle"></i> 1 Página Web</li>
                             <li><i class="fas fa-check-circle"></i> Dominio (.com) incluido</li>
                             <li><i class="fas fa-check-circle"></i> Hosting privado</li>
                             <!-- Certificado SSL removed per request -->
-                            <li><i class="fas fa-check-circle"></i> IA PRO</li>
+                            <li><i class="fas fa-check-circle"></i> IA experta en código: Gemini 3.1 PRO by Google</li>
                             <li><i class="fas fa-check-circle"></i> Mantenimiento</li>
-                            <li><i class="fas fa-check-circle"></i> Soporte Vía Email o WhatsApp</li>
-                            <li><i class="fab fa-instagram" style="color:var(--gold);"></i> Creación y administración
-                                (Instagram)</li>
-                            <li><i class="fas fa-camera" style="color:var(--gold);"></i> 10 Post/Stories mensuales</li>
+                            <li><i class="fas fa-check-circle"></i> Soporte vía Email o WhatsApp</li>
                             <li><i class="fas fa-cloud" style="color:var(--gold);"></i> QAXI Cloud PRO</li>
-                            <li><i class="fas fa-image" style="color:var(--gold);"></i> Galería multimedia</li>
                         </ul>
                     </div>
                     <div class="premium-pricing">
@@ -1597,9 +1713,9 @@
                             MENSUAL</div>
                         <div style="font-size:3rem; font-weight:800;">149.900 <span style="font-size:1rem;">COP</span>
                         </div>
-                        <div class="pricing-period">/ Mensual</div>
-                        <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">2 meses gratis Por pagar la
-                            suscripcion anual.</div>
+                        <div class="pricing-period">/ mensual</div>
+                        <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">2 meses gratis por pagar la
+                            suscripción anual.</div>
                         <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
                             <button onclick="initPayment('Plan PRO', 149900, 'PLAN')" class="cta-btn"
                                 style="width:100%; background:var(--gold); color:#000;">Suscribirme PRO</button>
@@ -1607,7 +1723,7 @@
                                 class="cta-btn annual-btn" style="width:100%;">PAGAR ANUAL — 1.499.000 COP</button>
                             <a href="plan-pro.html" class="cta-btn"
                                 style="width:100%; background:transparent; border:1px solid rgba(255,255,255,0.06); color:#fff;">Aprender
-                                Mas</a>
+                                más</a>
                         </div>
                     </div>
                 </div>
@@ -1615,17 +1731,17 @@
                 <div class="premium-card pricing-card" data-tilt data-tilt-max="10" data-tilt-speed="400"
                     data-tilt-glare data-tilt-max-glare="0.3">
                     <div class="premium-info">
-                        <h3>Plan Estándar</h3>
+                        <h3>Plan Plus</h3>
                         <p style="color:#ccc; margin-top:8px;">Presencia digital profesional con TODO incluido.</p>
                         <ul class="premium-list">
                             <li><i class="fas fa-check-circle"></i> 1 página web</li>
                             <li><i class="fas fa-check-circle"></i> Dominio (.com) incluido</li>
                             <li><i class="fas fa-check-circle"></i> Hosting privado</li>
                             <!-- Certificado SSL removed per request -->
-                            <li><i class="fas fa-check-circle"></i> IA básica</li>
+                            <li><i class="fas fa-check-circle"></i> IA experta en código: Gemini 3.1 Flash by Google
+                            </li>
                             <li><i class="fas fa-check-circle"></i> Mantenimiento</li>
-                            <li><i class="fas fa-check-circle"></i> Soporte Vía Email o WhatsApp</li>
-                            <li><i class="fas fa-photo-video"></i> Galería multimedia</li>
+                            <li><i class="fas fa-check-circle"></i> Soporte vía Email o WhatsApp</li>
                         </ul>
                     </div>
                     <div class="premium-pricing">
@@ -1633,21 +1749,111 @@
                             MENSUAL</div>
                         <div style="font-size:3rem; font-weight:800;">59.900 <span style="font-size:1rem;">COP</span>
                         </div>
-                        <div class="pricing-period">/ Mensual</div>
-                        <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">2 meses gratis Por pagar la
-                            suscripcion anual.</div>
+                        <div class="pricing-period">/ mensual</div>
+                        <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">2 meses gratis por pagar la
+                            suscripción anual.</div>
                         <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
-                            <button onclick="initPayment('Plan Estándar', 59900, 'PLAN')" class="cta-btn"
+                            <button onclick="initPayment('Plan Plus', 59900, 'PLAN')" class="cta-btn"
                                 style="width:100%">Suscribirme</button>
-                            <button onclick="initPayment('Plan Estándar Anual', 599000, 'PLAN_ANNUAL')"
+                            <button onclick="initPayment('Plan Plus Anual', 599000, 'PLAN_ANNUAL')"
                                 class="cta-btn annual-btn" style="width:100%">PAGAR ANUAL — 599.000 COP</button>
-                            <a href="plan-estandar.html" class="cta-btn"
+                            <a href="plan-plus.html" class="cta-btn"
                                 style="width:100%; background:transparent; border:1px solid rgba(255,255,255,0.06); color:#fff;">Aprender
-                                Mas</a>
+                                más</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="premium-card pricing-card" data-tilt data-tilt-max="10" data-tilt-speed="400"
+                    data-tilt-glare data-tilt-max-glare="0.3">
+                    <div class="premium-info">
+                        <h3>Plan Lite</h3>
+                        <p style="color:#ccc; margin-top:8px;">Lo esencial para empezar tu presencia digital.</p>
+                        <ul class="premium-list">
+                            <li><i class="fas fa-check-circle"></i> 1 página web</li>
+                            <li><i class="fas fa-check-circle"></i> Hosting privado</li>
+                            <li><i class="fas fa-check-circle"></i> Soporte vía Email o WhatsApp</li>
+                            <li><i class="fas fa-robot"></i> IA experta en código: Qwen3-Coder 480B Cloud by Alibaba
+                                Cloud</li>
+                        </ul>
+                    </div>
+                    <div class="premium-pricing">
+                        <div style="font-size:0.8rem; text-transform:uppercase; color:#888; margin-bottom:6px;">PLAN
+                            MENSUAL</div>
+                        <div style="font-size:3rem; font-weight:800;">29.900 <span style="font-size:1rem;">COP</span>
+                        </div>
+                        <div class="pricing-period">/ mensual</div>
+                        <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">El plan más accesible de QAXI.
+                        </div>
+                        <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+                            <button onclick="initPayment('Plan Lite', 29900, 'PLAN')" class="cta-btn"
+                                style="width:100%">Suscribirme Lite</button>
+                            <button onclick="initPayment('Plan Lite Anual', 299000, 'PLAN_ANNUAL')"
+                                class="cta-btn annual-btn" style="width:100%">PAGAR ANUAL — 299.000 COP</button>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section id="ai-comparison" class="reveal ai-compare-section">
+        <h2 class="section-title">Comparativa de IAs</h2>
+        <p class="ai-compare-intro">Comparación técnica por criterio entre los motores de IA usados en los planes de
+            QAXI.</p>
+        <div class="ai-table-wrap">
+            <table class="ai-compare-table">
+                <thead>
+                    <tr>
+                        <th>Criterio</th>
+                        <th>Qwen3-Coder 480B Cloud</th>
+                        <th>Gemini 3.1 Flash</th>
+                        <th>Gemini 3.1 PRO</th>
+                        <th>GPT-5.3-Codex (Garlic)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Razonamiento</td>
+                        <td>Especializado: Enfocado en la lógica de ejecución y flujos de trabajo de agentes
+                            autónomos.</td>
+                        <td>Reactivo: Excelente para lógica inmediata y siguiendo instrucciones precisas sin demora.
+                        </td>
+                        <td>Sintético: Razonamiento profundo multi-paso con capacidad de "pensamiento medio"
+                            ajustable.</td>
+                        <td>Extremo: Procesos de "cadena de pensamiento" prolongados para resolver problemas lógicos
+                            inéditos.</td>
+                    </tr>
+                    <tr>
+                        <td>Potencia</td>
+                        <td>Alta capacidad para gestionar repositorios enteros y herramientas externas.</td>
+                        <td>Rendimiento optimizado para tareas de alta frecuencia.</td>
+                        <td>El motor más robusto para tareas generales y multimodales.</td>
+                        <td>Líder en resolución de puzzles lógicos y arquitectura de software crítica.</td>
+                    </tr>
+                    <tr>
+                        <td>Elegancia</td>
+                        <td>Funcional y técnica; ideal para entornos de desarrollo profesional.</td>
+                        <td>Directa y minimalista; evita la verborrea innecesaria.</td>
+                        <td>Sofisticada; matices casi humanos en la comunicación y diseño.</td>
+                        <td>Estructural; código limpio, modular y documentado con rigor científico.</td>
+                    </tr>
+                    <tr>
+                        <td>Inteligencia</td>
+                        <td>Inteligencia de "ingeniero": pragmática y orientada a la resolución de errores.</td>
+                        <td>Inteligencia "ágil": rápida para clasificar, traducir y asistir.</td>
+                        <td>Inteligencia "enciclopédica": capaz de conectar datos de video, audio y texto.</td>
+                        <td>Inteligencia "analítica": el nivel más alto de abstracción y lógica pura.</td>
+                    </tr>
+                    <tr>
+                        <td>Arquitectura</td>
+                        <td>Mixture-of-Experts (MoE) de 480B parámetros (35B activos).</td>
+                        <td>Multimodal Nativo de baja latencia.</td>
+                        <td>Multimodal Nativo de escala completa con tres niveles de pensamiento.</td>
+                        <td>Arquitectura de Razonamiento Integrada (basada en el stack GPT-5).</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </section>
 
@@ -1672,13 +1878,82 @@
                             POS</div>
                         <div style="font-size:3rem; font-weight:800;">39.900 <span style="font-size:1rem;">COP</span>
                         </div>
-                        <div class="pricing-period">/ Mensual</div>
+                        <div class="pricing-period">/ mensual</div>
                         <div style="font-size:0.85rem; color:#ddd; margin-top:12px;">Ideal para gestionar tu negocio
                             local.</div>
                         <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
                             <button onclick="initPayment('QAXI POS', 39900, 'SOFTWARE')" class="cta-btn annual-btn"
                                 style="width:100%; font-size:0.95rem;"><i class="fas fa-shopping-cart"></i> Suscribirme
                                 a QAXI POS</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="premium-card pricing-card" data-tilt
+                    style="border: 1px solid rgba(255, 51, 102, 0.4); background: radial-gradient(circle at 70% 20%, #2a0008, #050505); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255, 51, 102, 0.05); margin-top: 30px; border-radius: 40px; padding: 60px;">
+                    <div class="premium-info">
+                        <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 30px;">
+                            <div
+                                style="width: 80px; height: 80px; border-radius: 22px; overflow: hidden; box-shadow: 0 15px 35px rgba(255, 51, 102, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);">
+                                <img src="pdfix.png" alt="PDFix Logo"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div>
+                                <h3
+                                    style="color: #fff; margin: 0; font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; line-height: 1;">
+                                    PDF<span style="color: #FF3366;">ix</span></h3>
+                                <p
+                                    style="color: rgba(255, 51, 102, 0.8); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-top: 5px;">
+                                    Privacy-First Engine</p>
+                            </div>
+                        </div>
+                        <p
+                            style="color:rgba(255,255,255,0.7); margin-bottom:24px; font-size: 1.1rem; line-height: 1.6; max-width: 90%;">
+                            Suite web para trabajar PDFs con un flujo claro y profesional. El procesamiento se realiza
+                            en tu navegador para reducir exposición de archivos y mantener control sobre la información.
+                        </p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div
+                                style="color: #fff; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; opacity: 0.9;">
+                                <i class="fas fa-layer-group" style="color: #FF3366; font-size: 0.8rem;"></i>
+                                Unir, dividir y reorganizar páginas
+                            </div>
+                            <div
+                                style="color: #fff; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; opacity: 0.9;">
+                                <i class="fas fa-compress-arrows-alt" style="color: #FF3366; font-size: 0.8rem;"></i>
+                                Compresión para reducir tamaño de archivo
+                            </div>
+                            <div
+                                style="color: #fff; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; opacity: 0.9;">
+                                <i class="fas fa-pen-nib" style="color: #FF3366; font-size: 0.8rem;"></i> Edición,
+                                marcado y firma digital de documentos
+                            </div>
+                            <div
+                                style="color: #fff; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; opacity: 0.9;">
+                                <i class="fas fa-lock" style="color: #FF3366; font-size: 0.8rem;"></i> Protección con
+                                contraseña y permisos (según herramienta)
+                            </div>
+                            <div
+                                style="color: #fff; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; opacity: 0.9;">
+                                <i class="fas fa-exchange-alt" style="color: #FF3366; font-size: 0.8rem;"></i>
+                                Conversiones PDF y exportación de formatos compatibles
+                            </div>
+                            <div
+                                style="color: #fff; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; opacity: 0.9;">
+                                <i class="fas fa-shield-alt" style="color: #FF3366; font-size: 0.8rem;"></i> Flujo
+                                privado en navegador, sin instalar software pesado
+                            </div>
+                        </div>
+                    </div>
+                    <div class="premium-pricing"
+                        style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 30px; padding: 40px;">
+                        <div
+                            style="font-size:3.5rem; font-weight:900; color: #fff; line-height: 1; margin-bottom: 20px; letter-spacing: -2px;">
+                            PDF<span style="color: #FF3366;">ix</span></div>
+                        <div style="width: 40px; height: 2px; background: #FF3366; margin-bottom: 20px;"></div>
+                        <div style="display:flex; flex-direction:column; gap:14px;">
+                            <a href="pdfix.html" class="cta-btn"
+                                style="width:100%; background: #FF3366; color:#fff; text-align: center; padding: 18px; font-weight: 800; border-radius: 16px; box-shadow: 0 10px 30px rgba(255, 51, 102, 0.3); font-size: 1.1rem; transition: all 0.3s ease;">ENTRAR</a>
                         </div>
                     </div>
                 </div>
@@ -1949,8 +2224,8 @@
 
             const details = {
                 'Plan PRO': {
-                    desc: 'Presencia digital avanzada con gestión de redes, contenido y nube PRO.',
-                    features: ['Creación y administración (Instagram)', '10 Post/Stories mensuales', 'QAXI Cloud PRO', 'Mantenimiento', 'Soporte Vía Email o WhatsApp']
+                    desc: 'Presencia digital avanzada con apps y nube profesional.',
+                    features: ['QAXI Cloud PRO', 'Mantenimiento', 'Soporte Vía Email o WhatsApp']
                 },
                 'Plan Estándar': {
                     desc: 'Presencia digital profesional con todo lo necesario para empezar.',
@@ -2284,6 +2559,25 @@
                     heroDesc.style.opacity = '1';
                 }
             });
+        });
+
+        // --- REVEAL ON SCROLL ---
+        const revealCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // Optional: stop observing once revealed
+                    // observer.unobserve(entry.target);
+                }
+            });
+        };
+
+        const revealObserver = new IntersectionObserver(revealCallback, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            revealObserver.observe(el);
         });
     </script>
 </body>

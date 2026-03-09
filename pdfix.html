@@ -21,9 +21,8 @@
   <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"
     integrity="sha384-weMABwrltA6jWR8DDe9Jp5blk+tZQh7ugpCsF3JwSA53WZM9/14PjS5LAJNHNjAI"
     crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.3/dist/tesseract.min.js"
-    integrity="sha384-PLsnF3AeZtWBxD7GdeSo28q0iYlgh0mqvDxTVwdOb5ouGKhOHJAAIRGaTHORQEAr"
-    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js" crossorigin="anonymous"></script>
 
   <!-- QPDF WASM Engine (Core para Cifrado Real) -->
   <script src="https://cdn.jsdelivr.net/npm/@neslinesli93/qpdf-wasm@0.3.0/dist/qpdf.min.js"
@@ -300,6 +299,7 @@
       font-family: 'Space Mono', monospace
     }
 
+
     .menu-btn {
       display: none;
       padding: 8px;
@@ -390,6 +390,57 @@
       margin-bottom: 64px
     }
 
+    .reality-panel {
+      margin-bottom: 36px;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--border2);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+    }
+
+    .reality-panel h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .reality-panel p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text3);
+      margin-bottom: 14px;
+      max-width: 920px;
+    }
+
+    .reality-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .reality-card {
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.02);
+      padding: 14px;
+    }
+
+    .reality-card .title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fca5a5;
+      margin-bottom: 8px;
+    }
+
+    .reality-card .body {
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--text2);
+    }
+
     .category-header {
       margin-bottom: 32px
     }
@@ -470,6 +521,46 @@
       color: var(--text4)
     }
 
+    .tool-card .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0 2px;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border2);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .status-chip.stable {
+      color: #86efac;
+      background: rgba(34, 197, 94, 0.12);
+      border-color: rgba(34, 197, 94, 0.28);
+    }
+
+    .status-chip.partial {
+      color: #fcd34d;
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.28);
+    }
+
+    .status-chip.limited {
+      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.12);
+      border-color: rgba(239, 68, 68, 0.28);
+    }
+
     .tool-card .cta {
       margin-top: 16px;
       display: flex;
@@ -546,6 +637,21 @@
       font-weight: 500;
     }
 
+    .tool-header .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .tool-header .status-note {
+      font-size: 12px;
+      color: var(--text3);
+      line-height: 1.5;
+      max-width: 720px;
+    }
+
     @keyframes fadeDown {
       from {
         opacity: 0;
@@ -581,6 +687,10 @@
       width: 64px;
       height: 64px;
       border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .dropzone-icon svg {
@@ -1300,155 +1410,6 @@
       font-family: 'Space Mono', monospace;
       color: var(--red)
     }
-
-    /* OCR */
-    .lang-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px
-    }
-
-    .lang-pill {
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 500;
-      border: 1px solid var(--border2);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text2);
-      cursor: pointer;
-      font-family: inherit;
-      transition: all .2s
-    }
-
-    .lang-pill.active {
-      background: var(--red);
-      border-color: var(--red);
-      color: #fff
-    }
-
-    .ocr-result {
-      border-radius: 16px;
-      padding: 24px;
-      background: var(--surface2);
-      border: 1px solid var(--border)
-    }
-
-    .ocr-result-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px
-    }
-
-    .ocr-result-header span {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--red)
-    }
-
-    .ocr-result-header button {
-      font-size: 12px;
-      padding: 4px 12px;
-      border-radius: 8px;
-      background: var(--red-bg);
-      color: var(--red);
-      border: none;
-      cursor: pointer;
-      font-family: inherit
-    }
-
-    .ocr-result p {
-      font-size: 14px;
-      line-height: 1.7;
-      color: rgba(255, 255, 255, 0.8);
-      white-space: pre-wrap
-    }
-
-    /* Scan */
-    .scan-viewport {
-      border-radius: 16px;
-      overflow: hidden;
-      position: relative;
-      background: #000;
-      min-height: 400px;
-      display: flex;
-      align-items: center;
-      justify-content: center
-    }
-
-    .scan-center {
-      text-align: center
-    }
-
-    .scan-center .scan-icon {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 16px;
-      background: rgba(220, 38, 38, 0.15)
-    }
-
-    .scan-center .scan-icon svg {
-      width: 24px;
-      height: 24px;
-      color: var(--red)
-    }
-
-    .scan-center p {
-      font-size: 14px;
-      color: var(--text2)
-    }
-
-    .scan-frame {
-      position: absolute;
-      inset: 32px;
-      border: 2px solid rgba(220, 38, 38, 0.4);
-      border-radius: 12px
-    }
-
-    .scan-corner {
-      position: absolute;
-      width: 32px;
-      height: 32px;
-      border-color: var(--red)
-    }
-
-    .scan-corner.tl {
-      top: -1px;
-      left: -1px;
-      border-top: 2px solid;
-      border-left: 2px solid;
-      border-radius: 12px 0 0 0
-    }
-
-    .scan-corner.tr {
-      top: -1px;
-      right: -1px;
-      border-top: 2px solid;
-      border-right: 2px solid;
-      border-radius: 0 12px 0 0
-    }
-
-    .scan-corner.bl {
-      bottom: -1px;
-      left: -1px;
-      border-bottom: 2px solid;
-      border-left: 2px solid;
-      border-radius: 0 0 0 12px
-    }
-
-    .scan-corner.br {
-      bottom: -1px;
-      right: -1px;
-      border-bottom: 2px solid;
-      border-right: 2px solid;
-      border-radius: 0 0 12px 0
-    }
-
     /* Privacy */
     .privacy-box {
       border-radius: 16px;
@@ -1997,8 +1958,6 @@
       Sign: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17c1.5-3 3-5 5-5s2.5 3 4 3 3-2 5-5"/><path d="M20 21H4"/></svg>`,
       Lock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`,
       Watermark: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>`,
-      OCR: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h3M20 7V4h-3M4 17v3h3M20 17v3h-3"/><path d="M7 10h2M11 10h2M15 10h2M7 14h10"/></svg>`,
-      Scan: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/><path d="M9 7h6M9 11h6"/></svg>`,
       Privacy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
       Upload: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>`,
       File: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>`,
@@ -2012,35 +1971,92 @@
     const CATEGORIES = [
       {
         title: "Herramientas de Conversión", subtitle: "Transforma tus documentos rápidamente", tools: [
-          { id: "toexcel", name: "PDF a Excel", desc: "Convierte tablas PDF a hojas de cálculo", icon: "Upload", color: "#10b981", isNew: true },
-          { id: "toppt", name: "PDF a PowerPoint", desc: "Convierte PDFs a presentaciones", icon: "File", color: "#f59e0b", isNew: true },
-          { id: "createpdf", name: "Exportar a PDF", desc: "Convierte imágenes o documentos a PDF", icon: "Upload", color: "#6366f1", isNew: true },
+          { id: "toimages", name: "PDF a Imágenes", desc: "Exporta cada página como PNG o JPG", icon: "File", color: "#06b6d4", isNew: true },
+          { id: "toexcel", name: "PDF a Excel", desc: "Extrae texto tabular a CSV (beta)", icon: "Upload", color: "#10b981", isNew: true },
+          { id: "toword", name: "PDF a Word", desc: "Exporta texto/tablas detectadas a .docx (beta)", icon: "File", color: "#22c55e", isNew: true },
+          { id: "toppt", name: "PDF a PowerPoint", desc: "Genera PPTX con fondo por página y texto superpuesto", icon: "File", color: "#f59e0b", isNew: true },
+          { id: "createpdf", name: "Exportar a PDF", desc: "Crea PDF desde imágenes y TXT", icon: "Upload", color: "#6366f1", isNew: true },
           { id: "merge", name: "Unir y Dividir", desc: "Combina archivos o extrae páginas", icon: "Merge", color: "#EF4444" },
-          { id: "compress", name: "Comprimir PDF", desc: "Reduce el peso manteniendo calidad", icon: "Download", color: "#3b82f6" },
+          { id: "compress", name: "Comprimir PDF", desc: "Compresión por rasterizado (con pérdida)", icon: "Download", color: "#3b82f6" },
         ]
       },
       {
-        title: "Edición y Seguridad", subtitle: "Control total tipo Photoshop para tus archivos", tools: [
-          { id: "advanced", name: "Editor Avanzado PDF", desc: "Añade dibujos o trazos a mano alzada", icon: "Edit", color: "#8b5cf6", isNew: true },
+        title: "Edición y Seguridad", subtitle: "Control total para tus archivos", tools: [
+          { id: "advanced", name: "Editor Visual PDF", desc: "Anotaciones, dibujo y texto superpuesto", icon: "Edit", color: "#8b5cf6", isNew: true },
+          { id: "crop", name: "Recortar páginas", desc: "Define márgenes de recorte por página", icon: "Edit", color: "#f97316", isNew: true },
+          { id: "rotatepdf", name: "Rotar PDF", desc: "Rota solo las páginas seleccionadas", icon: "Rotate", color: "#eab308", isNew: true },
           { id: "organize", name: "Organizar Páginas", desc: "Reordena, gira o elimina hojas", icon: "Pages", color: "#DC2626" },
-          { id: "sign", name: "Firma Electrónica", desc: "Dibuja o añade texto de tu firma", icon: "Sign", color: "#DC2626" },
+          { id: "pagenumbers", name: "Agregar numeración", desc: "Inserta número de página en todo el PDF", icon: "File", color: "#ef4444", isNew: true },
+          { id: "metadata", name: "Metadatos PDF", desc: "Ver y editar autor, título y palabras clave", icon: "File", color: "#14b8a6", isNew: true },
+          { id: "sign", name: "Firma visible", desc: "Añade firma visual (no certificada)", icon: "Sign", color: "#DC2626" },
           { id: "protect", name: "Proteger / Desbloquear", desc: "Contraseñas y restricciones", icon: "Lock", color: "#991B1B" },
           { id: "watermark", name: "Marca de Agua", desc: "Protege tu propiedad intelectual", icon: "Watermark", color: "#B91C1C" },
         ]
       },
       {
-        title: "Factor Profesional", subtitle: "Herramientas de alto rendimiento basadas en IA", tools: [
+        title: "Factor Profesional", subtitle: "Herramientas de alto rendimiento", tools: [
           { id: "compare", name: "Comparar PDFs", desc: "Halla diferencias visuales entre versiones", icon: "File", color: "#ec4899", isNew: true },
           { id: "repair", name: "Reparar PDF", desc: "Recupera datos de PDFs corruptos", icon: "Rotate", color: "#14b8a6" },
-          { id: "scan", name: "Escaneo Inteligente", desc: "Foto → PDF editable usando algoritmos", icon: "Scan", color: "#991B1B" },
-          { id: "ocr", name: "Extraer Texto (OCR)", desc: "Reconocimiento óptico de caracteres", icon: "OCR", color: "#f43f5e" },
-          { id: "privacy", name: "Modo Incógnito", desc: "Borrado automático en 15 minutos", icon: "Privacy", color: "#7F1D1D" },
+          { id: "privacy", name: "Modo Incógnito", desc: "Borrado automático configurable", icon: "Privacy", color: "#7F1D1D" },
         ]
-      },
+      }
     ];
 
+    const TOOL_STATUS = {
+      toimages: { level: 'stable', label: 'Estable', note: 'Renderiza cada pagina del PDF como PNG o JPG usando PDF.js en el navegador.' },
+      toexcel: { level: 'stable', label: 'Estable', note: 'Extrae texto y tablas hacia CSV con deteccion de estructura por columnas.' },
+      toword: { level: 'stable', label: 'Estable', note: 'Genera .docx con texto y tablas detectadas por pagina.' },
+      toppt: { level: 'stable', label: 'Estable', note: 'Crea una diapositiva por pagina con fondo rasterizado y texto superpuesto.' },
+      createpdf: { level: 'stable', label: 'Estable', note: 'Crea PDF desde imagenes y archivos de texto.' },
+      compress: { level: 'stable', label: 'Estable', note: 'Reduce el tamano del PDF rasterizando paginas con control de calidad.' },
+      merge: { level: 'stable', label: 'Estable', note: 'Usa PDF-Lib para unir o dividir paginas con buen nivel de estabilidad.' },
+      advanced: { level: 'stable', label: 'Estable', note: 'Editor visual por capas para anotar, dibujar y superponer contenido.' },
+      crop: { level: 'stable', label: 'Estable', note: 'Aplica crop box por paginas seleccionadas sin depender del organizador.' },
+      rotatepdf: { level: 'stable', label: 'Estable', note: 'Rota paginas seleccionadas sin reordenar el documento.' },
+      organize: { level: 'stable', label: 'Estable', note: 'Reordena, gira y elimina paginas de forma directa.' },
+      pagenumbers: { level: 'stable', label: 'Estable', note: 'Inserta numeracion con PDF-Lib de forma simple y consistente.' },
+      metadata: { level: 'stable', label: 'Estable', note: 'Permite leer y editar metadatos basicos del PDF con PDF-Lib.' },
+      sign: { level: 'stable', label: 'Estable', note: 'Agrega firma visual sobre el PDF dibujada, escrita o cargada como imagen.' },
+      protect: { level: 'stable', label: 'Estable', note: 'Cifra con AES-256 via QPDF WASM. Protege y desbloquea con la contrasena correcta.' },
+      watermark: { level: 'stable', label: 'Estable', note: 'Aplica la marca de agua del logo con control de opacidad.' },
+      compare: { level: 'stable', label: 'Estable', note: 'Compara texto y estructura entre dos versiones de un PDF pagina a pagina.' },
+      repair: { level: 'stable', label: 'Estable', note: 'Reconstruye el PDF con QPDF; si falla, cae a re-guardado con PDF-Lib.' },
+      privacy: { level: 'stable', label: 'Estable', note: 'Gestiona borrado automatico local de archivos temporales en la sesion.' }
+    };
+
+    function renderHomeRealityPanel() {
+      const cards = [
+        {
+          title: 'No disponible',
+          body: 'OCR de imagenes escaneadas, redaccion permanente real y firma digital certificada con P12/WebAuthn no estan implementados.'
+        },
+        {
+          title: 'Rendimiento',
+          body: 'Las operaciones pesadas corren en el navegador. PDFs grandes, especialmente de mas de 30 MB o muchas paginas, pueden degradar mucho en moviles.'
+        },
+        {
+          title: 'Progreso',
+          body: 'Las barras de progreso actuales son estimadas. No reflejan telemetria exacta por pagina ni separacion completa en workers.'
+        },
+        {
+          title: 'Cifrado',
+          body: 'QPDF WASM protege y desbloquea con la clave correcta. No hace fuerza bruta, no rompe passwords y puede fallar con ciertos PDFs antiguos o hibridos.'
+        }
+      ];
+
+      return `<div class="reality-panel fade-up">
+        <h3>Limites Actuales Del Producto</h3>
+        <p>La interfaz ya no intenta prometer mas de lo que entrega. Estas son las limitaciones tecnicas mas importantes hoy.</p>
+        <div class="reality-grid">${cards.map(card => `
+          <div class="reality-card">
+            <div class="title">${card.title}</div>
+            <div class="body">${card.body}</div>
+          </div>`).join('')}</div>
+      </div>`;
+    }
+
     // ─── State ───
-    let state = { files: [], activeTool: null, privacyActive: false, privacySeconds: 900, timerInterval: null };
+    let state = { files: [], activeTool: null, privacyActive: false, privacyDuration: 900, privacySeconds: 900, timerInterval: null };
     window.state = state;
 
     // ─── Logo Processing (True Transparency) ───
@@ -2082,7 +2098,10 @@
       const logoEl = document.querySelector('.logo img');
       if (logoEl) logoEl.src = data;
     }
-    document.addEventListener('DOMContentLoaded', () => { init(); updateLogos(); });
+    document.addEventListener('DOMContentLoaded', () => {
+      init();
+      updateLogos();
+    });
 
     // ─── Auto Watermark ───
     async function applyAutoWatermark(doc) {
@@ -2130,8 +2149,8 @@
     // ─── Helpers ───
     const PDF_JS_VERSION = '3.11.174';
     const QPDF_CDN_BASE = 'https://cdn.jsdelivr.net/npm/@neslinesli93/qpdf-wasm@0.3.0/dist';
-    const DEFAULT_MAX_FILE_SIZE = 50 * 1024 * 1024;
-    const HEAVY_MAX_FILE_SIZE = 25 * 1024 * 1024;
+    const DEFAULT_MAX_FILE_SIZE = 500 * 1024 * 1024;
+    const HEAVY_MAX_FILE_SIZE = 500 * 1024 * 1024;
     function el(id) { return document.getElementById(id); }
     function bytesToMB(bytes) { return (bytes / (1024 * 1024)).toFixed(0); }
     async function initPdfJs() {
@@ -2163,7 +2182,7 @@
       });
     }
     function getToolSizeLimit(toolId) {
-      const heavyTools = new Set(['compress', 'ocr', 'compare', 'advanced', 'sign']);
+      const heavyTools = new Set(['compress', 'compare', 'advanced', 'sign']);
       return heavyTools.has(toolId) ? HEAVY_MAX_FILE_SIZE : DEFAULT_MAX_FILE_SIZE;
     }
     async function initQpdfModule() {
@@ -2207,9 +2226,13 @@
   </div>`;
     }
 
+    function toolLimitNote(text) {
+      return `<div style="margin-bottom:12px; padding:10px 12px; border:1px solid rgba(251,191,36,0.4); border-radius:10px; background:rgba(251,191,36,0.08); color:#fcd34d; font-size:12px;">${text}</div>`;
+    }
+
     // ─── File Handling ───
     function filterType(files, tool) {
-      if (tool === 'createpdf' || tool === 'advanced' || tool === 'ocr') {
+      if (tool === 'createpdf' || tool === 'advanced') {
         // Allow images, texts, etc for tools that accept them
         return files;
       }
@@ -2220,13 +2243,6 @@
       if (zoneId === 'sigUpDrop') return;
       const filesArr = Array.from(e.dataTransfer.files);
 
-      const LARGE_FILE_LIMIT = getToolSizeLimit(state.activeTool);
-      const tooLarge = filesArr.some(f => f.size > LARGE_FILE_LIMIT);
-      if (tooLarge) {
-        showToast(`Archivo demasiado grande (>${bytesToMB(LARGE_FILE_LIMIT)}MB).`, "error");
-        return;
-      }
-
       const validFiles = filterType(filesArr, state.activeTool);
       if (validFiles.length === 0) {
         showToast("Extensión de archivo no válida para esta herramienta", "error");
@@ -2236,6 +2252,8 @@
         showToast("Algunos archivos fueron omitidos por no ser PDF", "info");
       }
       state.files = [...state.files, ...validFiles];
+      if (state.activeTool === 'compare') window._compareState = null;
+      if (state.activeTool === 'metadata') window._metadataDraft = null;
       showToast(`${validFiles.length} archivo(s) añadidos`, "success");
       renderTool(state.activeTool);
     }
@@ -2246,28 +2264,28 @@
         return;
       }
       const filesArr = Array.from(input.files);
-      const LARGE_FILE_LIMIT = getToolSizeLimit(state.activeTool);
-      if (filesArr.some(f => f.size > LARGE_FILE_LIMIT)) {
-        showToast(`Archivo excedió el límite de seguridad (${bytesToMB(LARGE_FILE_LIMIT)}MB)`, "error");
-        input.value = ""; return;
-      }
-
       const validFiles = filterType(filesArr, state.activeTool);
       if (validFiles.length === 0) {
         showToast("Extensión de archivo no válida", "error");
         return;
       }
       state.files = [...state.files, ...validFiles];
+      if (state.activeTool === 'compare') window._compareState = null;
+      if (state.activeTool === 'metadata') window._metadataDraft = null;
       showToast(`${validFiles.length} archivo(s) añadidos`, "success");
       renderTool(state.activeTool);
     }
     function removeFile(i) {
       state.files.splice(i, 1);
+      if (state.activeTool === 'compare') window._compareState = null;
+      if (state.activeTool === 'metadata') window._metadataDraft = null;
       showToast("Archivo eliminado", "info");
       renderTool(state.activeTool);
     }
     window.clearFiles = function () {
       state.files = [];
+      if (state.activeTool === 'compare') window._compareState = null;
+      if (state.activeTool === 'metadata') window._metadataDraft = null;
       showToast("Lista de archivos vaciada", "info");
       renderTool(state.activeTool);
     }
@@ -2285,9 +2303,12 @@
       el('toolView').classList.remove('hidden');
       el('toolView').querySelector('.tool-container').className = 'tool-container scale-in';
       const tool = CATEGORIES.flatMap(c => c.tools).find(t => t.id === id);
+      const status = TOOL_STATUS[id];
       el('toolHeader').innerHTML = `
     <div class="icon" style="background:${tool.color}15;color:${tool.color}">${ICONS[tool.icon]}</div>
-    <div><h1>${tool.name}</h1><div class="desc">${tool.desc}</div></div>`;
+    <div>
+      <h1>${tool.name}</h1>
+    </div>`;
       renderTool(id);
       window.scrollTo(0, 0);
       // Close mobile menu
@@ -2301,27 +2322,34 @@
     function togglePrivacy() {
       state.privacyActive = !state.privacyActive;
       if (state.privacyActive) {
-        state.privacySeconds = 900;
+        state.privacySeconds = state.privacyDuration;
         state.timerInterval = setInterval(() => {
           state.privacySeconds--;
           if (state.privacySeconds <= 0) {
             state.privacyActive = false;
             clearInterval(state.timerInterval);
             state.timerInterval = null;
-            state.privacySeconds = 900;
+            state.privacySeconds = state.privacyDuration;
             state.files = [];
             state.activeTool = null;
             showHome();
             window.dispatchEvent(new CustomEvent('privacyToggled', { detail: { active: false } }));
-            alert("🔒 Modo Incógnito: Tus datos temporales han sido eliminados por completo después de 15 minutos de inactividad.");
+            alert(`Modo Incognito: tus datos temporales fueron eliminados despues de ${Math.round(state.privacyDuration / 60)} minutos de inactividad.`);
           }
           updateTimerUI();
         }, 1000);
       } else {
-        clearInterval(state.timerInterval); state.timerInterval = null; state.privacySeconds = 900;
+        clearInterval(state.timerInterval); state.timerInterval = null; state.privacySeconds = state.privacyDuration;
       }
       updateTimerUI();
       window.dispatchEvent(new CustomEvent('privacyToggled', { detail: { active: state.privacyActive } }));
+      if (state.activeTool === 'privacy') renderTool('privacy');
+    }
+    window.setPrivacyDuration = function (minutes) {
+      const seconds = Math.max(300, parseInt(minutes || '15', 10) * 60);
+      state.privacyDuration = seconds;
+      state.privacySeconds = state.privacyActive ? seconds : state.privacyDuration;
+      updateTimerUI();
       if (state.activeTool === 'privacy') renderTool('privacy');
     }
     function updateTimerUI() {
@@ -2330,12 +2358,16 @@
       else { t.classList.remove('active'); b.classList.remove('active'); }
       const m = Math.floor(state.privacySeconds / 60), s = state.privacySeconds % 60;
       el('timerVal').textContent = `${m}:${s.toString().padStart(2, '0')}`;
-      const pct = (state.privacySeconds / 900) * 100;
+      const pct = (state.privacySeconds / state.privacyDuration) * 100;
       el('timerCircle').setAttribute('stroke-dasharray', `${pct} ${100 - pct}`);
     }
 
     function downloadTextFile(filename, content) {
       const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      downloadBlob(filename, blob);
+    }
+
+    function downloadBlob(filename, blob) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -2344,6 +2376,44 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+    }
+
+    function parsePageSelection(inputStr, pageCount) {
+      if (!inputStr || !inputStr.trim()) {
+        return Array.from({ length: pageCount }, (_, idx) => idx);
+      }
+
+      const indices = new Set();
+      const parts = inputStr.split(',').map(part => part.trim()).filter(Boolean);
+      parts.forEach(part => {
+        const rangeMatch = part.match(/^(\d+)\s*-\s*(\d+)$/);
+        if (rangeMatch) {
+          let start = parseInt(rangeMatch[1], 10);
+          let end = parseInt(rangeMatch[2], 10);
+          if (Number.isNaN(start) || Number.isNaN(end)) return;
+          if (start > end) [start, end] = [end, start];
+          for (let page = start; page <= end; page++) {
+            if (page >= 1 && page <= pageCount) indices.add(page - 1);
+          }
+          return;
+        }
+
+        const single = parseInt(part, 10);
+        if (!Number.isNaN(single) && single >= 1 && single <= pageCount) {
+          indices.add(single - 1);
+        }
+      });
+
+      return Array.from(indices).sort((a, b) => a - b);
+    }
+
+    async function canvasToBlob(canvas, mimeType, quality) {
+      return new Promise((resolve, reject) => {
+        canvas.toBlob(blob => {
+          if (blob) resolve(blob);
+          else reject(new Error('No se pudo generar la imagen.'));
+        }, mimeType, quality);
+      });
     }
 
 
@@ -2405,8 +2475,7 @@
       const progressMsgs = {
         compress: ['Analizando streams de objetos...', 'Comprimiendo recursos...', 'Reduciendo calidad de imagen...', 'Optimizando estructura...'],
         repair: ['Escaneando corrupción de xref...', 'Reconstruyendo tabla de objetos...', 'Recuperando objetos huérfanos...', 'Validando integridad...'],
-        protect: ['Incrustando marcas de seguridad...', 'Configurando permisos...', 'Cifrando metadatos simbólicos...', 'Verificando firma digital...'],
-        ocr: ['Segmentando páginas...', 'Reconociendo caracteres (Tesseract)...', 'Analizando layout de texto...', 'Extrayendo bloques de contenido...'],
+        protect: ['Incrustando marcas de seguridad...', 'Configurando permisos...', 'Cifrando metadatos simbólicos...', 'Verificando integridad final...'],
         default: ['Cargando documento...', 'Analizando estructura...', 'Aplicando cambios...', 'Finalizando proceso...']
       };
       const msgs = progressMsgs[toolId] || progressMsgs.default;
@@ -2461,7 +2530,7 @@
           let userMsg = "Error inesperado al procesar el PDF.";
           if (e.message?.includes('encrypted')) userMsg = "El PDF está protegido/cifrado y no puede procesarse.";
           if (e.message?.includes('corrupt')) userMsg = "El archivo PDF parece estar dañado.";
-          if (e.message?.includes('Worker')) userMsg = "Error en el motor IA. Recarga la página.";
+          if (e.message?.includes('Worker')) userMsg = "Error en el motor de procesamiento. Recarga la página.";
 
           showToast(userMsg, "error");
           setTimeout(() => progressWrap.remove(), 5000);
@@ -2474,15 +2543,6 @@
 
     // ─── Render Tool ───
     function renderTool(toolId) {
-      // Cleanup scan stream if moving away from scan tool
-      if (window._scanStream && toolId !== 'scan') {
-        window._scanStream.getTracks().forEach(t => t.stop());
-        window._scanStream = null;
-        window._scanStarted = false;
-        window._scanCaptured = false;
-        window._scanImgData = null;
-      }
-
       const container = el('toolContent');
       if (!container) return;
       container.innerHTML = '';
@@ -2501,31 +2561,455 @@
       container.appendChild(c);
 
       switch (toolId) {
+        case 'toimages': renderToImages(c); break;
         case 'toexcel': renderToExcel(c); break;
+        case 'toword': renderToWord(c); break;
         case 'toppt': renderToPPT(c); break;
         case 'createpdf': renderCreatePdf(c); break;
         case 'compress': renderCompress(c); break;
         case 'advanced': renderAdvancedEditor(c); break;
+        case 'crop': renderCrop(c); break;
+        case 'rotatepdf': renderRotatePdf(c); break;
         case 'compare': renderCompare(c); break;
         case 'repair': renderRepair(c); break;
         case 'protect': renderProtect(c); break;
         case 'merge': renderMerge(c); break;
         case 'organize': renderOrganize(c); break;
+        case 'pagenumbers': renderPageNumbers(c); break;
+        case 'metadata': renderMetadata(c); break;
         case 'sign': renderSign(c); break;
         case 'watermark': renderWatermark(c); break;
-        case 'ocr': renderOCR(c); break;
-        case 'scan': renderScan(c); break;
         case 'privacy': renderPrivacy(c); break;
       }
     }
 
-    function renderToExcel(c) {
-      let h = makeDropzone('excelDrop', '.pdf', 'Arrastra tu archivo PDF para extraer texto');
+    function renderToImages(c) {
+      let h = makeDropzone('toImagesDrop', '.pdf', 'Arrastra tu PDF para exportar paginas como imagen', false);
       if (state.files.length) {
+        const format = window._imgFormat || 'png';
+        const quality = window._imgQuality || 92;
+        const scale = window._imgScale || 2;
         h += `<div class="space-y-sm">${state.files.map((f, i) => fileItem(f.name, f.size, i, false)).join('')}</div>`;
-        h += `<button class="btn-primary" id="excelBtn" onclick="simulateProcess('toexcel', doExtractCSV)">${ICONS.Download} Extraer Texto como CSV</button>`;
+        h += `
+          <div style="display:grid; gap:12px; margin-top:14px;">
+            <div style="display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));">
+              <label>
+                <div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Formato</div>
+                <select class="form-select" onchange="window._imgFormat=this.value;renderTool('toimages')">
+                  <option value="png" ${format === 'png' ? 'selected' : ''}>PNG</option>
+                  <option value="jpg" ${format === 'jpg' ? 'selected' : ''}>JPG</option>
+                </select>
+              </label>
+              <label>
+                <div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Escala de render</div>
+                <select class="form-select" onchange="window._imgScale=parseFloat(this.value);renderTool('toimages')">
+                  <option value="1.5" ${scale === 1.5 ? 'selected' : ''}>Ligera</option>
+                  <option value="2" ${scale === 2 ? 'selected' : ''}>Alta</option>
+                  <option value="3" ${scale === 3 ? 'selected' : ''}>Maxima</option>
+                </select>
+              </label>
+              <label>
+                <div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Calidad JPG</div>
+                <input class="form-input" type="number" min="40" max="100" value="${quality}" oninput="window._imgQuality=Math.max(40, Math.min(100, parseInt(this.value || '92', 10)))">
+              </label>
+            </div>
+          </div>`;
+        h += `<button class="btn-primary" id="toImagesBtn" onclick="simulateProcess('toimages', doExportImages)">${ICONS.Download} Exportar paginas como imagen</button>`;
       }
       c.innerHTML = h;
+    }
+
+    async function doExportImages() {
+      const file = state.files[0];
+      const ab = await file.arrayBuffer();
+      const pdfJs = await initPdfJs();
+      const pdf = await pdfJs.getDocument({ data: ab }).promise;
+      const format = window._imgFormat || 'png';
+      const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
+      const quality = Math.max(0.4, Math.min(1, (window._imgQuality || 92) / 100));
+      const scale = window._imgScale || 2;
+      const baseName = file.name.replace(/\.pdf$/i, '');
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale });
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        const blob = await canvasToBlob(canvas, mimeType, quality);
+        downloadBlob(`${baseName}_pagina_${String(i).padStart(2, '0')}.${format}`, blob);
+      }
+    }
+
+    function renderCrop(c) {
+      let h = makeDropzone('cropDrop', '.pdf', 'Arrastra tu PDF para recortar paginas', false);
+      if (state.files.length) {
+        h += `<div class="space-y-sm">${state.files.map((f, i) => fileItem(f.name, f.size, i, false)).join('')}</div>`;
+        h += `
+          <div style="display:grid; gap:12px; margin-top:14px;">
+            <label>
+              <div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Paginas a recortar</div>
+              <input class="form-input" id="cropPages" type="text" placeholder="Ej: 1-3, 5. Vacio = todas">
+            </label>
+            <div style="display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));">
+              <label><div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Margen superior (pt)</div><input class="form-input" id="cropTop" type="number" min="0" value="24"></label>
+              <label><div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Margen derecho (pt)</div><input class="form-input" id="cropRight" type="number" min="0" value="24"></label>
+              <label><div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Margen inferior (pt)</div><input class="form-input" id="cropBottom" type="number" min="0" value="24"></label>
+              <label><div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Margen izquierdo (pt)</div><input class="form-input" id="cropLeft" type="number" min="0" value="24"></label>
+            </div>
+          </div>`;
+        h += `<button class="btn-primary" id="cropBtn" onclick="simulateProcess('crop', doCropPages)">${ICONS.Edit} Aplicar recorte</button>`;
+      }
+      c.innerHTML = h;
+    }
+
+    async function doCropPages() {
+      const { PDFDocument } = window.PDFLib;
+      const file = state.files[0];
+      const doc = await PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: true });
+      const pages = doc.getPages();
+      const indices = parsePageSelection(document.getElementById('cropPages')?.value || '', pages.length);
+      const top = Math.max(0, parseFloat(document.getElementById('cropTop')?.value || '0'));
+      const right = Math.max(0, parseFloat(document.getElementById('cropRight')?.value || '0'));
+      const bottom = Math.max(0, parseFloat(document.getElementById('cropBottom')?.value || '0'));
+      const left = Math.max(0, parseFloat(document.getElementById('cropLeft')?.value || '0'));
+
+      if (!indices.length) throw new Error('No se seleccionaron paginas validas.');
+
+      indices.forEach(index => {
+        const page = pages[index];
+        const width = page.getWidth();
+        const height = page.getHeight();
+        const cropWidth = width - left - right;
+        const cropHeight = height - top - bottom;
+        if (cropWidth <= 20 || cropHeight <= 20) {
+          throw new Error(`El recorte deja el area util demasiado pequena en la pagina ${index + 1}.`);
+        }
+        page.setCropBox(left, bottom, cropWidth, cropHeight);
+      });
+
+      await applyAutoWatermark(doc);
+      const pdfBytes = await doc.save();
+      downloadBlob(file.name.replace(/\.pdf$/i, '') + '_recortado.pdf', new Blob([pdfBytes], { type: 'application/pdf' }));
+    }
+
+    function renderRotatePdf(c) {
+      let h = makeDropzone('rotatePdfDrop', '.pdf', 'Arrastra tu PDF para rotar paginas seleccionadas', false);
+      if (state.files.length) {
+        h += `<div class="space-y-sm">${state.files.map((f, i) => fileItem(f.name, f.size, i, false)).join('')}</div>`;
+        h += `
+          <div style="display:grid; gap:12px; margin-top:14px;">
+            <label>
+              <div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Paginas a rotar</div>
+              <input class="form-input" id="rotatePdfPages" type="text" placeholder="Ej: 1-3, 8. Vacio = todas">
+            </label>
+            <label>
+              <div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Grados</div>
+              <select class="form-select" id="rotatePdfDegrees">
+                <option value="90">90° derecha</option>
+                <option value="-90">90° izquierda</option>
+                <option value="180">180°</option>
+              </select>
+            </label>
+          </div>`;
+        h += `<button class="btn-primary" id="rotatePdfBtn" onclick="simulateProcess('rotatepdf', doRotateSelectedPages)">${ICONS.Rotate} Rotar paginas</button>`;
+      }
+      c.innerHTML = h;
+    }
+
+    async function doRotateSelectedPages() {
+      const { PDFDocument, degrees } = window.PDFLib;
+      const file = state.files[0];
+      const doc = await PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: true });
+      const pages = doc.getPages();
+      const indices = parsePageSelection(document.getElementById('rotatePdfPages')?.value || '', pages.length);
+      const rotation = parseInt(document.getElementById('rotatePdfDegrees')?.value || '90', 10);
+
+      if (!indices.length) throw new Error('No se seleccionaron paginas validas.');
+
+      indices.forEach(index => {
+        const page = pages[index];
+        page.setRotation(degrees(page.getRotation().angle + rotation));
+      });
+
+      await applyAutoWatermark(doc);
+      const pdfBytes = await doc.save();
+      downloadBlob(file.name.replace(/\.pdf$/i, '') + '_rotado.pdf', new Blob([pdfBytes], { type: 'application/pdf' }));
+    }
+
+    function renderMetadata(c) {
+      let h = makeDropzone('metadataDrop', '.pdf', 'Arrastra tu PDF para ver o editar metadatos', false);
+      if (state.files.length) {
+        const draft = window._metadataDraft || {};
+        h += `<div class="space-y-sm">${state.files.map((f, i) => fileItem(f.name, f.size, i, false)).join('')}</div>`;
+        h += `
+          <div style="display:grid; gap:12px; margin-top:14px;">
+            <div style="display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));">
+              <label><div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Titulo</div><input class="form-input" id="metaTitle" type="text" value="${escapeHtml(draft.title || '')}"></label>
+              <label><div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Autor</div><input class="form-input" id="metaAuthor" type="text" value="${escapeHtml(draft.author || '')}"></label>
+              <label><div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Asunto</div><input class="form-input" id="metaSubject" type="text" value="${escapeHtml(draft.subject || '')}"></label>
+              <label><div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Palabras clave</div><input class="form-input" id="metaKeywords" type="text" value="${escapeHtml((draft.keywords || []).join(', '))}" placeholder="ej: legal, contrato, cliente"></label>
+              <label><div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Creador</div><input class="form-input" id="metaCreator" type="text" value="${escapeHtml(draft.creator || '')}"></label>
+              <label><div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Productor</div><input class="form-input" id="metaProducer" type="text" value="${escapeHtml(draft.producer || '')}"></label>
+            </div>
+            <div id="metadataReadOnly" style="padding:12px; border-radius:12px; background:var(--surface2); color:var(--text2); font-size:13px;">Cargando fechas del documento...</div>
+          </div>`;
+        h += `<div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <button class="btn-secondary" onclick="loadMetadataPreview(true)">Recargar metadatos</button>
+          <button class="btn-primary" id="metadataBtn" onclick="simulateProcess('metadata', doSaveMetadata)">${ICONS.Check} Guardar metadatos</button>
+        </div>`;
+        setTimeout(() => loadMetadataPreview(false), 0);
+      }
+      c.innerHTML = h;
+    }
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function formatPdfDate(date) {
+      if (!(date instanceof Date) || Number.isNaN(date.getTime())) return 'No disponible';
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+    }
+
+    async function loadMetadataPreview(forceReload) {
+      if (!state.files.length) return;
+      if (window._metadataLoading && !forceReload) return;
+      window._metadataLoading = true;
+      try {
+        const { PDFDocument } = window.PDFLib;
+        const doc = await PDFDocument.load(await state.files[0].arrayBuffer(), { updateMetadata: false, ignoreEncryption: true });
+        const getValue = (methodName, fallback = '') => typeof doc[methodName] === 'function' ? (doc[methodName]() || fallback) : fallback;
+        const draft = {
+          title: getValue('getTitle'),
+          author: getValue('getAuthor'),
+          subject: getValue('getSubject'),
+          keywords: typeof doc.getKeywords === 'function' ? (doc.getKeywords() || []) : [],
+          creator: getValue('getCreator'),
+          producer: getValue('getProducer')
+        };
+        window._metadataDraft = draft;
+
+        const fields = {
+          metaTitle: draft.title || '',
+          metaAuthor: draft.author || '',
+          metaSubject: draft.subject || '',
+          metaKeywords: (draft.keywords || []).join(', '),
+          metaCreator: draft.creator || '',
+          metaProducer: draft.producer || ''
+        };
+        Object.entries(fields).forEach(([id, value]) => {
+          const input = document.getElementById(id);
+          if (input && !input.matches(':focus')) input.value = value;
+        });
+
+        const readOnly = document.getElementById('metadataReadOnly');
+        if (readOnly) {
+          const created = typeof doc.getCreationDate === 'function' ? doc.getCreationDate() : null;
+          const modified = typeof doc.getModificationDate === 'function' ? doc.getModificationDate() : null;
+          readOnly.innerHTML = `Creado: ${formatPdfDate(created)}<br>Modificado: ${formatPdfDate(modified)}`;
+        }
+      } finally {
+        window._metadataLoading = false;
+      }
+    }
+
+    async function doSaveMetadata() {
+      const { PDFDocument } = window.PDFLib;
+      const file = state.files[0];
+      const doc = await PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: true });
+      const keywords = (document.getElementById('metaKeywords')?.value || '')
+        .split(',')
+        .map(item => item.trim())
+        .filter(Boolean);
+
+      const updates = {
+        setTitle: document.getElementById('metaTitle')?.value || '',
+        setAuthor: document.getElementById('metaAuthor')?.value || '',
+        setSubject: document.getElementById('metaSubject')?.value || '',
+        setCreator: document.getElementById('metaCreator')?.value || '',
+        setProducer: document.getElementById('metaProducer')?.value || ''
+      };
+
+      Object.entries(updates).forEach(([methodName, value]) => {
+        if (typeof doc[methodName] === 'function') doc[methodName](value);
+      });
+      if (typeof doc.setKeywords === 'function') doc.setKeywords(keywords);
+      if (typeof doc.setModificationDate === 'function') doc.setModificationDate(new Date());
+
+      await applyAutoWatermark(doc);
+      const pdfBytes = await doc.save();
+      downloadBlob(file.name.replace(/\.pdf$/i, '') + '_metadatos.pdf', new Blob([pdfBytes], { type: 'application/pdf' }));
+    }
+
+    function renderToExcel(c) {
+      let h = makeDropzone('excelDrop', '.pdf', 'Arrastra tu archivo PDF para extraer tablas');
+      if (state.files.length) {
+        h += `<div class="space-y-sm">${state.files.map((f, i) => fileItem(f.name, f.size, i, false)).join('')}</div>`;
+        h += `<button class="btn-primary" id="excelBtn" onclick="simulateProcess('toexcel', doExtractCSV)">${ICONS.Download} Extraer tabla estructurada (CSV)</button>`;
+      }
+      c.innerHTML = h;
+    }
+
+    function escapeCsvCell(value) {
+      return `"${String(value || '').replace(/"/g, '""')}"`;
+    }
+
+    function median(values) {
+      if (!values.length) return 0;
+      const sorted = [...values].sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+    }
+
+    function normalizePdfTextItems(textContent, viewportHeight) {
+      const items = (textContent?.items || [])
+        .map(item => {
+          const text = String(item.str || '').replace(/\s+/g, ' ').trim();
+          if (!text) return null;
+          const t = item.transform || [1, 0, 0, 1, 0, 0];
+          const x = Number.isFinite(t[4]) ? t[4] : 0;
+          const y = Number.isFinite(t[5]) ? (viewportHeight - t[5]) : 0;
+          const fontSize = Math.max(8, Math.min(42, Math.abs(t[0]) || Math.abs(t[3]) || 10));
+          const width = Math.max(4, Number.isFinite(item.width) ? item.width : text.length * fontSize * 0.42);
+          const height = Math.max(8, Number.isFinite(item.height) ? item.height : fontSize);
+          return { text, x, y, width, height, fontSize };
+        })
+        .filter(Boolean);
+      return items.sort((a, b) => (a.y === b.y ? a.x - b.x : a.y - b.y));
+    }
+
+    function buildTextLines(items) {
+      if (!items.length) return [];
+      const yTol = Math.max(2, Math.min(12, median(items.map(i => i.height)) * 0.55));
+      const lines = [];
+      for (const item of items) {
+        let bestLine = null;
+        let bestDist = Infinity;
+        for (const line of lines) {
+          const dist = Math.abs(item.y - line.y);
+          if (dist <= yTol && dist < bestDist) {
+            bestDist = dist;
+            bestLine = line;
+          }
+        }
+        if (!bestLine) {
+          lines.push({ y: item.y, items: [item] });
+        } else {
+          const count = bestLine.items.length;
+          bestLine.y = (bestLine.y * count + item.y) / (count + 1);
+          bestLine.items.push(item);
+        }
+      }
+
+      return lines
+        .sort((a, b) => a.y - b.y)
+        .map(line => {
+          const sorted = line.items.sort((a, b) => a.x - b.x);
+          const segments = [];
+          for (const item of sorted) {
+            if (!segments.length) {
+              segments.push({ ...item });
+              continue;
+            }
+            const prev = segments[segments.length - 1];
+            const gap = item.x - (prev.x + prev.width);
+            const mergeGap = Math.max(2, Math.min(18, (prev.fontSize + item.fontSize) * 0.22));
+            if (gap <= mergeGap) {
+              const joiner = /[-/([{]$/.test(prev.text) ? '' : ' ';
+              prev.text = `${prev.text}${joiner}${item.text}`.trim();
+              prev.width = Math.max(prev.width, (item.x + item.width) - prev.x);
+              prev.fontSize = Math.max(prev.fontSize, item.fontSize);
+              prev.height = Math.max(prev.height, item.height);
+            } else {
+              segments.push({ ...item });
+            }
+          }
+          return {
+            y: line.y,
+            segments,
+            text: segments.map(s => s.text).join(' ').replace(/\s+/g, ' ').trim()
+          };
+        })
+        .filter(line => line.segments.length && line.text);
+    }
+
+    function detectColumnAnchors(lines) {
+      const xs = [];
+      const widths = [];
+      for (const line of lines) {
+        for (const seg of line.segments) {
+          if (!seg.text) continue;
+          xs.push(seg.x);
+          widths.push(seg.width);
+        }
+      }
+      if (xs.length < 2) return [];
+      xs.sort((a, b) => a - b);
+      const snap = Math.max(18, Math.min(48, (median(widths) || 50) * 0.55));
+      const clusters = [];
+      for (const x of xs) {
+        const last = clusters[clusters.length - 1];
+        if (!last || Math.abs(x - last.x) > snap) {
+          clusters.push({ x, count: 1 });
+        } else {
+          last.x = ((last.x * last.count) + x) / (last.count + 1);
+          last.count++;
+        }
+      }
+      const minCount = Math.max(2, Math.floor(lines.length * 0.08));
+      const filtered = clusters.filter(c => c.count >= minCount);
+      const anchors = (filtered.length >= 2 ? filtered : clusters).map(c => c.x).sort((a, b) => a - b);
+      if (anchors.length <= 10) return anchors;
+      while (anchors.length > 10) {
+        let bestIdx = 0;
+        let bestGap = Infinity;
+        for (let i = 1; i < anchors.length; i++) {
+          const gap = anchors[i] - anchors[i - 1];
+          if (gap < bestGap) {
+            bestGap = gap;
+            bestIdx = i;
+          }
+        }
+        anchors[bestIdx - 1] = (anchors[bestIdx - 1] + anchors[bestIdx]) / 2;
+        anchors.splice(bestIdx, 1);
+      }
+      return anchors;
+    }
+
+    function mapLineToColumns(line, anchors) {
+      if (!anchors.length) return [line.text];
+      const row = Array.from({ length: anchors.length }, () => '');
+      for (const seg of line.segments) {
+        let bestIdx = 0;
+        let bestDist = Infinity;
+        for (let i = 0; i < anchors.length; i++) {
+          const dist = Math.abs(seg.x - anchors[i]);
+          if (dist < bestDist) {
+            bestDist = dist;
+            bestIdx = i;
+          }
+        }
+        row[bestIdx] = row[bestIdx] ? `${row[bestIdx]} ${seg.text}` : seg.text;
+      }
+      const cleaned = row.map(c => c.replace(/\s+/g, ' ').trim());
+      if (cleaned.every(c => !c)) return [line.text];
+      return cleaned;
+    }
+
+    async function extractStructuredPage(page) {
+      const viewport = page.getViewport({ scale: 1.35 });
+      const textContent = await page.getTextContent();
+      const items = normalizePdfTextItems(textContent, viewport.height);
+      const lines = buildTextLines(items);
+      const anchors = detectColumnAnchors(lines);
+      const rows = lines.map(line => mapLineToColumns(line, anchors));
+      return { rows, lines, anchors };
     }
 
     async function doExtractCSV() {
@@ -2533,49 +3017,148 @@
       const ab = await file.arrayBuffer();
       const pdfLib2 = await initPdfJs();
       const pdf = await pdfLib2.getDocument({ data: ab }).promise;
-      let csvContent = '';
+      const chunks = [];
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        const lines = {};
-        textContent.items.forEach(item => {
-          const y = Math.round(item.transform[5]);
-          if (!lines[y]) lines[y] = [];
-          lines[y].push(item.str);
+        const structured = await extractStructuredPage(page);
+        const tabularRows = structured.rows.filter(row => row.filter(Boolean).length >= 2);
+        let rows = tabularRows;
+
+        // Fallback: cuando no hay tabla real, exportar líneas limpias en una sola columna.
+        if (rows.length < 3) {
+          rows = structured.lines.map(line => [line.text]);
+        }
+
+        if (!rows.length) continue;
+        const colCount = Math.max(1, ...rows.map(r => r.length));
+        chunks.push(`"--- Página ${i} ---"`);
+        rows.forEach(row => {
+          const padded = Array.from({ length: colCount }, (_, idx) => row[idx] || '');
+          chunks.push(padded.map(escapeCsvCell).join(';'));
         });
-        const sortedKeys = Object.keys(lines).sort((a, b) => b - a);
-        sortedKeys.forEach(key => { csvContent += lines[key].join(',') + '\n'; });
-        if (i < pdf.numPages) csvContent += '\n';
+        chunks.push('');
       }
-      if (!csvContent.trim()) csvContent = 'No se encontró texto extraíble en el PDF.';
+
+      let csvContent = chunks.join('\n').trim();
+      if (!csvContent) csvContent = 'No se encontró texto extraíble en el PDF.';
       downloadTextFile(file.name.replace(/\.pdf$/i, '.csv'), csvContent);
     }
 
-    function renderToPPT(c) {
-      let h = makeDropzone('pptDrop', '.pdf', 'Arrastra tu archivo PDF (solo .pdf)');
+    function renderToWord(c) {
+      let h = makeDropzone('wordDrop', '.pdf', 'Arrastra tu PDF para exportar a Word con layout');
       if (state.files.length) {
         h += `<div class="space-y-sm">${state.files.map((f, i) => fileItem(f.name, f.size, i, false)).join('')}</div>`;
-        h += `<div id="pptPreviewArea" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"></div>`;
-        h += `<button class="btn-primary" id="pptBtn" onclick="simulateProcess('toppt', doExtractImages)">${ICONS.Download} Extraer Páginas como Imágenes</button>`;
+        h += `<button class="btn-primary" id="wordBtn" onclick="simulateProcess('toword', doConvertToWord)">${ICONS.Download} Exportar Word editable (.docx)</button>`;
       }
       c.innerHTML = h;
     }
 
-    async function doExtractImages() {
+    async function doConvertToWord() {
+      const file = state.files[0];
+      const ab = await file.arrayBuffer();
+      const pdfLib2 = await initPdfJs();
+      const pdf = await pdfLib2.getDocument({ data: ab }).promise;
+      if (!window.docx) {
+        throw new Error('La librería DOCX no está disponible en esta sesión.');
+      }
+
+      const {
+        Document, Packer, Paragraph, HeadingLevel,
+        Table, TableRow, TableCell, WidthType
+      } = window.docx;
+
+      const children = [];
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const structured = await extractStructuredPage(page);
+        const tableRows = structured.rows.filter(row => row.filter(Boolean).length >= 2);
+        children.push(new Paragraph({
+          text: `Página ${i}`,
+          heading: HeadingLevel.HEADING_2
+        }));
+
+        // Si detectamos estructura tabular consistente, usar tabla real en Word.
+        if (tableRows.length >= 3) {
+          const maxCols = Math.max(1, ...tableRows.map(r => r.length));
+          const rows = tableRows.map(row => {
+            const padded = Array.from({ length: maxCols }, (_, idx) => row[idx] || '');
+            return new TableRow({
+              children: padded.map(cell => new TableCell({
+                children: [new Paragraph({ text: cell || ' ' })]
+              }))
+            });
+          });
+          children.push(new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows
+          }));
+        } else {
+          structured.lines.forEach(line => {
+            children.push(new Paragraph({ text: line.text || ' ' }));
+          });
+        }
+
+        children.push(new Paragraph({ text: '' }));
+      }
+
+      const doc = new Document({ sections: [{ children }] });
+      const blob = await Packer.toBlob(doc);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = file.name.replace(/\.pdf$/i, '') + '_editable.docx';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function renderToPPT(c) {
+      let h = makeDropzone('pptDrop', '.pdf', 'Arrastra tu archivo PDF');
+      if (state.files.length) {
+        h += `<div class="space-y-sm">${state.files.map((f, i) => fileItem(f.name, f.size, i, false)).join('')}</div>`;
+        h += `<div id="pptPreviewArea" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;"></div>`;
+        h += `<button class="btn-primary" id="pptBtn" onclick="simulateProcess('toppt', doExportPPTX)">${ICONS.Download} Exportar PPTX (fondo + texto)</button>`;
+      }
+      c.innerHTML = h;
+    }
+
+    async function doExportPPTX() {
       const file = state.files[0];
       const ab = await file.arrayBuffer();
       const pdfLib2 = await initPdfJs();
       const pdf = await pdfLib2.getDocument({ data: ab }).promise;
       const previewArea = document.getElementById('pptPreviewArea');
-      previewArea.innerHTML = '';
+      if (previewArea) previewArea.innerHTML = '';
+
+      if (!window.PptxGenJS) {
+        throw new Error('Motor PPTX no disponible en esta sesión.');
+      }
+
+      const pptx = new window.PptxGenJS();
+      pptx.layout = 'LAYOUT_WIDE';
+
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
         const viewport = page.getViewport({ scale: 2.0 });
         const canvas = document.createElement('canvas');
         canvas.width = viewport.width; canvas.height = viewport.height;
         await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-        const link = document.createElement('a');
-        link.download = `pagina_${i}.jpg`; link.href = canvas.toDataURL('image/jpeg', 0.92); link.click();
+
+        const slide = pptx.addSlide();
+        const bgData = canvas.toDataURL('image/jpeg', 0.92);
+        slide.addImage({ data: bgData, x: 0, y: 0, w: 13.333, h: 7.5 });
+
+        const textContent = await page.getTextContent();
+        textContent.items.forEach(item => {
+          const txt = String(item.str || '').trim();
+          if (!txt) return;
+          const x = (item.transform[4] / viewport.width) * 13.333;
+          const y = ((viewport.height - item.transform[5]) / viewport.height) * 7.5;
+          const fs = Math.max(8, Math.min(20, Math.round(Math.abs(item.transform[0]))));
+          const w = Math.max(0.25, ((item.width || fs * txt.length * 0.45) / viewport.width) * 13.333);
+          slide.addText(txt, { x, y, w, h: 0.24, fontSize: fs, color: '111111' });
+        });
+
         const thumb = document.createElement('div');
         thumb.style.cssText = 'display:inline-block;border-radius:8px;overflow:hidden;border:1px solid var(--border);';
         const img = document.createElement('img');
@@ -2583,8 +3166,10 @@
         const label = document.createElement('div');
         label.style.cssText = 'text-align:center;font-size:11px;color:var(--text4);padding:4px;';
         label.textContent = 'Pág. ' + i;
-        thumb.appendChild(img); thumb.appendChild(label); previewArea.appendChild(thumb);
+        thumb.appendChild(img); thumb.appendChild(label);
+        if (previewArea) previewArea.appendChild(thumb);
       }
+      await pptx.writeFile({ fileName: file.name.replace(/\.pdf$/i, '') + '_editable.pptx' });
     }
 
     function renderCreatePdf(c) {
@@ -2700,7 +3285,7 @@
       if (compLevel === 'extreme') { quality = 0.25; scale = 0.75; }
       if (compLevel === 'low') { quality = 0.85; scale = 1.0; }
 
-      showToast("Iniciando compresión inteligente...", "info");
+      showToast("Iniciando compresión...", "info");
 
       try {
         const pdfjs = await initPdfJs();
@@ -2763,7 +3348,7 @@
 
     function renderAdvancedEditor(c) {
       if (!window._advFiles && !state.files.length) {
-        c.innerHTML = makeDropzone('advDrop', '.pdf', 'Sube el PDF para abrir el Editor Estilo Photoshop', false);
+        c.innerHTML = makeDropzone('advDrop', '.pdf', 'Sube el PDF para abrir el Editor PDF', false);
         return;
       }
       c.innerHTML = `
@@ -3063,70 +3648,313 @@
       document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
     }
 
+    function normalizeCompareText(text) {
+      return String(text || '')
+        .replace(/\u00a0/g, ' ')
+        .replace(/[ \t]+/g, ' ')
+        .replace(/\r/g, '')
+        .replace(/\n{2,}/g, '\n')
+        .trim();
+    }
+
+    function extractLinesFromText(text) {
+      return normalizeCompareText(text)
+        .split(/\n+/)
+        .map(l => l.trim())
+        .filter(l => l.length >= 2);
+    }
+
+    function comparePageText(oldText, newText) {
+      const oldLines = extractLinesFromText(oldText);
+      const newLines = extractLinesFromText(newText);
+      const oldSet = new Set(oldLines);
+      const newSet = new Set(newLines);
+
+      const removed = oldLines.filter(line => !newSet.has(line));
+      const added = newLines.filter(line => !oldSet.has(line));
+      const common = oldLines.filter(line => newSet.has(line)).length;
+      const similarity = Math.max(0, Math.min(1, common / Math.max(oldLines.length, newLines.length, 1)));
+
+      return {
+        similarity,
+        removedCount: removed.length,
+        addedCount: added.length,
+        removedSamples: removed.slice(0, 8),
+        addedSamples: added.slice(0, 8)
+      };
+    }
+
+    async function extractPdfPagesForCompare(file, pdfjs) {
+      const ab = await file.arrayBuffer();
+      const pdf = await pdfjs.getDocument({ data: ab }).promise;
+      const pages = [];
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const tc = await page.getTextContent();
+        const rows = {};
+        tc.items.forEach(item => {
+          const y = Math.round(item.transform[5]);
+          const x = item.transform[4];
+          if (!rows[y]) rows[y] = [];
+          rows[y].push({ x, text: item.str });
+        });
+        const ordered = Object.keys(rows)
+          .sort((a, b) => b - a)
+          .map(y => rows[y].sort((a, b) => a.x - b.x).map(v => v.text).join(' ').trim())
+          .filter(Boolean);
+        pages.push({ pageNumber: i, text: ordered.join('\n') });
+      }
+
+      return { pdf, pages, pageCount: pdf.numPages };
+    }
+
+    function buildCompareSummary(compareState) {
+      const changedPages = compareState.pageChanges.length;
+      const totalPages = Math.max(compareState.old.pageCount, compareState.new.pageCount);
+      const changedPct = totalPages ? ((changedPages / totalPages) * 100).toFixed(1) : '0.0';
+      return { changedPages, totalPages, changedPct };
+    }
+
+    async function renderComparePreview() {
+      const stateCmp = window._compareState;
+      const mount = el('comparePreviewArea');
+      const detail = el('compareChangeDetail');
+      if (!mount || !detail || !stateCmp || !stateCmp.pageChanges.length) return;
+
+      const idx = Math.min(Math.max(stateCmp.selectedIndex || 0, 0), stateCmp.pageChanges.length - 1);
+      stateCmp.selectedIndex = idx;
+      const pageChange = stateCmp.pageChanges[idx];
+
+      const renderOne = async (pdf, pageNo) => {
+        if (!pdf || !pageNo) return '';
+        const page = await pdf.getPage(pageNo);
+        const vp = page.getViewport({ scale: 1.1 });
+        const cv = document.createElement('canvas');
+        cv.width = vp.width;
+        cv.height = vp.height;
+        await page.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+        return cv.toDataURL('image/png');
+      };
+
+      const [oldImg, newImg] = await Promise.all([
+        renderOne(stateCmp.old.pdf, pageChange.oldPage),
+        renderOne(stateCmp.new.pdf, pageChange.newPage)
+      ]);
+
+      mount.innerHTML = `
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div style="border:1px solid var(--border); border-radius:12px; overflow:hidden; background:#111;">
+            <div style="padding:8px 10px; font-size:12px; color:var(--text2); border-bottom:1px solid var(--border);">Versión antigua · Página ${pageChange.oldPage || '-'}</div>
+            ${oldImg ? `<img src="${oldImg}" style="width:100%; display:block;">` : `<div style="padding:20px; color:var(--text4);">Página no disponible</div>`}
+          </div>
+          <div style="border:1px solid var(--border); border-radius:12px; overflow:hidden; background:#111;">
+            <div style="padding:8px 10px; font-size:12px; color:var(--text2); border-bottom:1px solid var(--border);">Versión nueva · Página ${pageChange.newPage || '-'}</div>
+            ${newImg ? `<img src="${newImg}" style="width:100%; display:block;">` : `<div style="padding:20px; color:var(--text4);">Página no disponible</div>`}
+          </div>
+        </div>`;
+
+      const removedHtml = pageChange.removedSamples.length
+        ? pageChange.removedSamples.map(t => `<li style="color:#fca5a5;">${t}</li>`).join('')
+        : '<li style="color:var(--text4);">Sin líneas eliminadas</li>';
+      const addedHtml = pageChange.addedSamples.length
+        ? pageChange.addedSamples.map(t => `<li style="color:#86efac;">${t}</li>`).join('')
+        : '<li style="color:var(--text4);">Sin líneas añadidas</li>';
+
+      detail.innerHTML = `
+        <div class="result-box" style="margin-top:14px;">
+          <div class="label">Cambios textuales de la página seleccionada</div>
+          <div style="margin-top:8px; font-size:13px; color:var(--text2);">Similitud: ${(pageChange.similarity * 100).toFixed(1)}% · Añadidas: ${pageChange.addedCount} · Eliminadas: ${pageChange.removedCount}</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;">
+            <div>
+              <div style="font-size:12px; color:#fca5a5; margin-bottom:6px;">Líneas eliminadas</div>
+              <ul style="padding-left:18px; display:grid; gap:4px; font-size:12px;">${removedHtml}</ul>
+            </div>
+            <div>
+              <div style="font-size:12px; color:#86efac; margin-bottom:6px;">Líneas añadidas</div>
+              <ul style="padding-left:18px; display:grid; gap:4px; font-size:12px;">${addedHtml}</ul>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    window.selectCompareChange = async function (idx) {
+      if (!window._compareState) return;
+      window._compareState.selectedIndex = Number(idx) || 0;
+      await renderComparePreview();
+    };
+
+    window.downloadCompareReportPdf = async function () {
+      if (!window._compareState) return;
+      const cmp = window._compareState;
+      const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
+      const report = await PDFDocument.create();
+      const font = await report.embedFont(StandardFonts.Helvetica);
+      const titleFont = await report.embedFont(StandardFonts.HelveticaBold);
+
+      let page = report.addPage([842, 595]);
+      let y = 560;
+      const lineHeight = 16;
+      const maxWidth = 800;
+
+      const writeLine = (text, opts = {}) => {
+        const size = opts.size || 11;
+        if (y < 40) {
+          page = report.addPage([842, 595]);
+          y = 560;
+        }
+        if (opts.highlight) {
+          page.drawRectangle({
+            x: 20,
+            y: y - 2,
+            width: maxWidth,
+            height: lineHeight,
+            color: opts.highlight
+          });
+        }
+        page.drawText(text.slice(0, 160), {
+          x: 24,
+          y,
+          size,
+          font: opts.bold ? titleFont : font,
+          color: opts.color || rgb(0.12, 0.12, 0.12)
+        });
+        y -= lineHeight;
+      };
+
+      writeLine(`Reporte de comparación: ${cmp.oldName} vs ${cmp.newName}`, { size: 15, bold: true });
+      writeLine(`Generado: ${new Date().toLocaleString()}`, { size: 10 });
+      y -= 6;
+
+      if (cmp.structureChanges.length) {
+        writeLine('Cambios estructurales', { bold: true, highlight: rgb(1, 0.96, 0.75) });
+        cmp.structureChanges.forEach(ch => writeLine(`- ${ch}`));
+        y -= 4;
+      }
+
+      if (cmp.pageChanges.length) {
+        writeLine('Cambios textuales por página', { bold: true, highlight: rgb(1, 0.9, 0.9) });
+        cmp.pageChanges.forEach(ch => {
+          writeLine(`Página ${ch.oldPage || '-'} -> ${ch.newPage || '-'} | Similitud ${(ch.similarity * 100).toFixed(1)}% | +${ch.addedCount} / -${ch.removedCount}`, { bold: true });
+          ch.removedSamples.slice(0, 3).forEach(t => writeLine(`  [-] ${t}`, { color: rgb(0.65, 0.1, 0.1) }));
+          ch.addedSamples.slice(0, 3).forEach(t => writeLine(`  [+] ${t}`, { color: rgb(0.1, 0.45, 0.15) }));
+          y -= 3;
+        });
+      } else {
+        writeLine('No se detectaron cambios textuales.', { highlight: rgb(0.9, 1, 0.9) });
+      }
+
+      await applyAutoWatermark(report);
+      const outBytes = await report.save();
+      const blob = new Blob([outBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'reporte_comparacion_resaltado.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
     function renderCompare(c) {
-      let h = makeDropzone('compDrop1', '.pdf', state.files.length < 2 ? 'Arrastra dos PDFs para analizar diferencias' : 'Archivos seleccionados', true);
+      let h = makeDropzone('compDrop1', '.pdf', state.files.length < 2 ? 'Arrastra dos PDFs para comparar (antiguo vs nuevo)' : 'Archivos listos para comparación', true);
       if (state.files.length) {
         h += `<div class="space-y-sm">${state.files.map((f, i) => fileItem(f.name, f.size, i, false)).join('')}</div>`;
         if (state.files.length >= 2) {
-          h += `<button class="btn-primary" id="compareBtn" onclick="simulateProcess('compare', doCompare)">Ejecutar Análisis de Contraste</button>`;
+          h += `<button class="btn-primary" id="compareBtn" onclick="simulateProcess('compare', doCompare)">Comparar PDFs (texto + estructura)</button>`;
         } else {
-          h += `<button class="btn-primary" disabled>Se requiere 1 archivo más (Versión Antigua y Nueva)</button>`;
+          h += `<button class="btn-primary" disabled>Falta 1 archivo para comparar</button>`;
         }
       }
+
+      const cmp = window._compareState;
+      if (cmp) {
+        const sum = buildCompareSummary(cmp);
+        const structHtml = cmp.structureChanges.length
+          ? `<ul style="padding-left:18px; display:grid; gap:6px; margin-top:8px;">${cmp.structureChanges.map(s => `<li style="color:#fbbf24;">${s}</li>`).join('')}</ul>`
+          : `<p style="font-size:12px;color:var(--text4);margin-top:8px;">Sin páginas añadidas/eliminadas.</p>`;
+
+        const options = cmp.pageChanges.map((p, i) =>
+          `<option value="${i}" ${i === (cmp.selectedIndex || 0) ? 'selected' : ''}>Pág ${p.oldPage || '-'} → ${p.newPage || '-'} · ${(p.similarity * 100).toFixed(1)}%</option>`
+        ).join('');
+
+        h += `
+          <div id="compareResultArea" style="margin-top:16px;">
+            <div class="result-box">
+              <div class="label">Resumen de comparación real</div>
+              <div style="margin-top:10px; font-size:20px; font-weight:700; color:var(--red);">${sum.changedPages} página(s) con cambios de ${sum.totalPages}</div>
+              <div style="font-size:12px; color:var(--text4); margin-top:4px;">Impacto aproximado: ${sum.changedPct}% del documento</div>
+              ${structHtml}
+              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+                <button class="btn-secondary" onclick="downloadCompareReportPdf()">Descargar PDF con diferencias resaltadas</button>
+                <button class="btn-secondary" onclick="renderTool('compare')">Refrescar vista</button>
+              </div>
+            </div>
+
+            ${cmp.pageChanges.length ? `
+              <div style="margin-top:14px;">
+                <label style="display:block; font-size:12px; color:var(--text2); margin-bottom:8px;">Vista side-by-side por página modificada</label>
+                <select class="form-input" onchange="selectCompareChange(this.value)">${options}</select>
+              </div>
+              <div id="comparePreviewArea" style="margin-top:12px;"></div>
+              <div id="compareChangeDetail"></div>
+            ` : ''}
+          </div>`;
+      }
       c.innerHTML = h;
+      if (cmp && cmp.pageChanges.length) {
+        setTimeout(() => renderComparePreview(), 0);
+      }
     }
 
     async function doCompare() {
-      const pdfLib2 = await initPdfJs();
-      async function renderFirstPage(file) {
-        const ab = await file.arrayBuffer();
-        const pdf = await pdfLib2.getDocument({ data: ab }).promise;
-        const page = await pdf.getPage(1);
-        const vp = page.getViewport({ scale: 1.5 });
-        const cv = document.createElement('canvas');
-        cv.width = vp.width; cv.height = vp.height;
-        const cx = cv.getContext('2d');
-        await page.render({ canvasContext: cx, viewport: vp }).promise;
-        return { cv, cx, w: vp.width, h: vp.height };
+      if (state.files.length < 2) throw new Error('Debes cargar dos archivos PDF.');
+      const [oldFile, newFile] = [state.files[0], state.files[1]];
+      const pdfjs = await initPdfJs();
+
+      const [oldData, newData] = await Promise.all([
+        extractPdfPagesForCompare(oldFile, pdfjs),
+        extractPdfPagesForCompare(newFile, pdfjs)
+      ]);
+
+      const maxPages = Math.max(oldData.pageCount, newData.pageCount);
+      const structureChanges = [];
+      const pageChanges = [];
+
+      for (let i = 0; i < maxPages; i++) {
+        const oldPage = oldData.pages[i];
+        const newPage = newData.pages[i];
+
+        if (oldPage && !newPage) {
+          structureChanges.push(`Página eliminada en versión nueva: ${oldPage.pageNumber}`);
+          continue;
+        }
+        if (!oldPage && newPage) {
+          structureChanges.push(`Página añadida en versión nueva: ${newPage.pageNumber}`);
+          continue;
+        }
+        if (!oldPage || !newPage) continue;
+
+        const diff = comparePageText(oldPage.text, newPage.text);
+        if (diff.addedCount > 0 || diff.removedCount > 0) {
+          pageChanges.push({
+            oldPage: oldPage.pageNumber,
+            newPage: newPage.pageNumber,
+            ...diff
+          });
+        }
       }
-      const [r1, r2] = await Promise.all([renderFirstPage(state.files[0]), renderFirstPage(state.files[1])]);
-      const w = Math.max(r1.w, r2.w), ht = Math.max(r1.h, r2.h);
-      const diffCv = document.createElement('canvas'); diffCv.width = w; diffCv.height = ht;
-      const dc = diffCv.getContext('2d');
-      const d1 = r1.cx.getImageData(0, 0, r1.w, r1.h), d2 = r2.cx.getImageData(0, 0, r2.w, r2.h);
-      const dd = dc.createImageData(w, ht);
-      let diffPx = 0;
-      for (let y = 0; y < ht; y++) for (let x = 0; x < w; x++) {
-        const idx = (y * w + x) * 4;
-        if (x < Math.min(r1.w, r2.w) && y < Math.min(r1.h, r2.h)) {
-          const i1 = (y * r1.w + x) * 4, i2 = (y * r2.w + x) * 4;
-          const diff = (Math.abs(d1.data[i1] - d2.data[i2]) + Math.abs(d1.data[i1 + 1] - d2.data[i2 + 1]) + Math.abs(d1.data[i1 + 2] - d2.data[i2 + 2])) / 3;
-          if (diff > 20) { dd.data[idx] = 255; dd.data[idx + 1] = 50; dd.data[idx + 2] = 80; dd.data[idx + 3] = 200; diffPx++; }
-          else { dd.data[idx] = d1.data[i1]; dd.data[idx + 1] = d1.data[i1 + 1]; dd.data[idx + 2] = d1.data[i1 + 2]; dd.data[idx + 3] = 80; }
-        } else { dd.data[idx] = 255; dd.data[idx + 1] = 200; dd.data[idx + 2] = 0; dd.data[idx + 3] = 150; diffPx++; }
-      }
-      dc.putImageData(dd, 0, 0);
-      const pct = ((diffPx / (w * ht)) * 100).toFixed(2);
-      const tc = el('toolContent');
-      const existingResult = document.getElementById('compareResultArea');
-      if (existingResult) existingResult.remove();
-      const resultDiv = document.createElement('div'); resultDiv.id = 'compareResultArea';
-      resultDiv.innerHTML = `
-          <div class="result-box" style="margin:16px 0">
-            <div class="label">Resultado del análisis</div>
-            <div style="margin-top:12px;font-size:20px;font-weight:700;color:var(--red)">${pct}% de diferencia detectada</div>
-            <div style="font-size:12px;color:var(--text4);margin-top:4px">${diffPx.toLocaleString()} píxeles distintos</div>
-          </div>
-          <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#1a1a1a;text-align:center;padding:12px;margin-bottom:16px;">
-            <p style="font-size:12px;color:var(--text4);margin-bottom:8px;">Las zonas rosas indican diferencias</p>
-            <img src="${diffCv.toDataURL('image/png')}" style="max-width:100%;border-radius:8px;">
-          </div>`;
-      const compareBtn = document.getElementById('compareBtn');
-      if (compareBtn && compareBtn.parentElement) {
-        compareBtn.parentElement.insertBefore(resultDiv, compareBtn);
-      } else if (tc) {
-        tc.appendChild(resultDiv);
-      }
+
+      window._compareState = {
+        oldName: oldFile.name,
+        newName: newFile.name,
+        old: oldData,
+        new: newData,
+        structureChanges,
+        pageChanges,
+        selectedIndex: 0
+      };
+
+      renderTool('compare');
     }
 
     function renderRepair(c) {
@@ -3144,19 +3972,40 @@
       const ab = await file.arrayBuffer();
       const { PDFDocument } = window.PDFLib;
 
-      // En realidad solo hace load con ignoreEncryption y vuelve a guardar
-      const doc = await PDFDocument.load(ab, { ignoreEncryption: true });
-      const pageCount = doc.getPageCount();
+      let pdfBytes = null;
+      let pageCount = 0;
+      let engine = 'PDF-Lib fallback';
+      let notes = 'Reconstrucción de estructura y guardado limpio.';
 
-      // Guardamos directamente para "reparar" la estructura básica
-      await applyAutoWatermark(doc);
-      const pdfBytes = await doc.save();
+      try {
+        const qpdf = await initQpdfModule();
+        const inFile = 'repair_in.pdf';
+        const outFile = 'repair_out.pdf';
+        qpdf.FS.writeFile(inFile, new Uint8Array(ab));
+        qpdf.callMain(['--linearize', '--object-streams=generate', '--', inFile, outFile]);
+        const repairedBinary = qpdf.FS.readFile(outFile);
+        const repairedDoc = await PDFDocument.load(repairedBinary, { ignoreEncryption: true });
+        await applyAutoWatermark(repairedDoc);
+        pdfBytes = await repairedDoc.save();
+        pageCount = repairedDoc.getPageCount();
+        engine = 'QPDF WASM + PDF-Lib';
+        notes = 'XRef regenerada, linearización y reempaquetado de objetos aplicada.';
+        try { qpdf.FS.unlink(inFile); } catch (e) { }
+        try { qpdf.FS.unlink(outFile); } catch (e) { }
+      } catch (qpdfErr) {
+        const doc = await PDFDocument.load(ab, { ignoreEncryption: true });
+        await applyAutoWatermark(doc);
+        pdfBytes = await doc.save();
+        pageCount = doc.getPageCount();
+        notes = `Fallback sin QPDF: ${qpdfErr?.message || 'motor QPDF no disponible.'}`;
+      }
 
       document.getElementById('repairResult').innerHTML = `
           <div class="result-box" style="margin-bottom:16px">
-            <div style="font-size:16px;font-weight:600;color:var(--red);margin-bottom:8px;">✓ Análisis de Estructura Completado</div>
-            <div class="label">${pageCount} objeto(s) raíz re-indexados</div>
-            <div style="font-size:12px;color:var(--text4);margin-top:8px">Estructura xref regenerada (v1.7) · Eliminando objetos huérfanos... ¡Listo!</div>
+            <div style="font-size:16px;font-weight:600;color:var(--red);margin-bottom:8px;">✓ Reparación ejecutada</div>
+            <div class="label">${pageCount} página(s) recuperadas</div>
+            <div style="font-size:12px;color:var(--text4);margin-top:8px">Motor: ${engine}</div>
+            <div style="font-size:12px;color:var(--text4);margin-top:4px">${notes}</div>
           </div>`;
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
@@ -3318,24 +4167,7 @@
 
         const inputEl = document.querySelector('#toolContent input');
         const inputStr = inputEl ? inputEl.value : '';
-        let indices = [];
-
-        if (inputStr.trim()) {
-          const parts = inputStr.split(',');
-          parts.forEach(p => {
-            const r = p.split('-');
-            if (r.length === 2) {
-              for (let i = parseInt(r[0]); i <= parseInt(r[1]); i++) {
-                if (i > 0 && i <= doc.getPageCount()) indices.push(i - 1);
-              }
-            } else {
-              const v = parseInt(p);
-              if (v > 0 && v <= doc.getPageCount()) indices.push(v - 1);
-            }
-          });
-        } else {
-          indices = doc.getPageIndices();
-        }
+        const indices = parsePageSelection(inputStr, doc.getPageCount());
 
         if (indices.length > 0) {
           const copied = await resultPdf.copyPages(doc, indices);
@@ -3431,10 +4263,82 @@
       renderTool('organize');
     }
 
-    // ── Sign (Enhanced) ──
+    // ── Page Numbers ──
+    function renderPageNumbers(c) {
+      let h = makeDropzone('pageNumDrop', '.pdf', 'Arrastra tu PDF para numerar páginas', false);
+      if (state.files.length) {
+        h += `<div class="space-y-sm">${state.files.map((f, i) => fileItem(f.name, f.size, i, false)).join('')}</div>`;
+        h += `
+          <div style="margin-top:14px; display:grid; gap:12px;">
+            <div class="form-group">
+              <label>Prefijo</label>
+              <input id="pageNumPrefix" class="form-input" type="text" value="Página " placeholder="Ej: Página ">
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+              <div class="form-group">
+                <label>Inicio</label>
+                <input id="pageNumStart" class="form-input" type="number" value="1" min="1">
+              </div>
+              <div class="form-group">
+                <label>Tamaño</label>
+                <input id="pageNumSize" class="form-input" type="number" value="10" min="8" max="40">
+              </div>
+              <div class="form-group">
+                <label>Posición</label>
+                <select id="pageNumPos" class="form-input">
+                  <option value="bottom-center" selected>Inferior centro</option>
+                  <option value="bottom-right">Inferior derecha</option>
+                  <option value="bottom-left">Inferior izquierda</option>
+                  <option value="top-right">Superior derecha</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <button class="btn-primary" id="pageNumBtn" onclick="simulateProcess('pagenumbers', doAddPageNumbers)">${ICONS.Download} Agregar numeración y descargar</button>`;
+      }
+      c.innerHTML = h;
+    }
+
+    async function doAddPageNumbers() {
+      const file = state.files[0];
+      const ab = await file.arrayBuffer();
+      const { PDFDocument, rgb, StandardFonts } = window.PDFLib;
+      const doc = await PDFDocument.load(ab, { ignoreEncryption: true });
+      const font = await doc.embedFont(StandardFonts.HelveticaBold);
+      const prefix = (el('pageNumPrefix')?.value || '').trim();
+      const startNum = Math.max(1, parseInt(el('pageNumStart')?.value || '1', 10));
+      const fontSize = Math.max(8, Math.min(40, parseInt(el('pageNumSize')?.value || '10', 10)));
+      const pos = el('pageNumPos')?.value || 'bottom-center';
+
+      doc.getPages().forEach((page, i) => {
+        const pageNum = startNum + i;
+        const text = `${prefix}${pageNum}`;
+        const { width, height } = page.getSize();
+        const textWidth = font.widthOfTextAtSize(text, fontSize);
+        let x = 20;
+        let y = 16;
+        if (pos === 'bottom-center') { x = (width - textWidth) / 2; y = 16; }
+        if (pos === 'bottom-right') { x = width - textWidth - 20; y = 16; }
+        if (pos === 'bottom-left') { x = 20; y = 16; }
+        if (pos === 'top-right') { x = width - textWidth - 20; y = height - fontSize - 14; }
+        page.drawText(text, { x, y, size: fontSize, font, color: rgb(0.2, 0.2, 0.2), opacity: 0.95 });
+      });
+
+      await applyAutoWatermark(doc);
+      const outBytes = await doc.save();
+      const blob = new Blob([outBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = file.name.replace(/\.pdf$/i, '') + '_numerado.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // ── Sign (Visual, not certified) ──
     function renderSign(c) {
       if (!state.files.length) {
-        c.innerHTML = makeDropzone('signDrop', '.pdf', 'Sube un PDF para firmar en cualquier lugar', false);
+        c.innerHTML = makeDropzone('signDrop', '.pdf', 'Sube un PDF para añadir firma visible', false);
         return;
       }
 
@@ -3442,6 +4346,9 @@
       window._sigCurrentPage = window._sigCurrentPage || 1;
 
       let h = `
+        <div style="padding:12px 14px; border:1px solid rgba(251,191,36,0.45); border-radius:10px; background:rgba(251,191,36,0.08); color:#fcd34d; font-size:13px; margin-bottom:12px;">
+          Esta herramienta aplica una <strong>firma visible no certificada</strong>. No usa certificado digital (P12/token) ni firma criptográfica legal.
+        </div>
         <div style="background:#1e1e1e; border:1px solid #333; border-radius:12px; overflow:hidden; display:flex; flex-direction:column;">
             <div style="background:#2d2d2d; padding:10px; display:flex; gap:12px; border-bottom:1px solid #444; align-items:center; flex-wrap:wrap;">
                 <button class="btn-primary" style="padding:8px 16px; font-size:13px;" onclick="openSigCreator()">➕ Crear Nueva Firma</button>
@@ -3495,7 +4402,7 @@
           </div>
         </div>
 
-        <button class="btn-primary" style="margin-top:24px;" id="signBtn" onclick="doSign()">Finalizar y Descargar PDF Firmado</button>
+        <button class="btn-primary" style="margin-top:24px;" id="signBtn" onclick="doSign()">Finalizar y Descargar PDF con firma visible</button>
       `;
       c.innerHTML = h;
 
@@ -3736,15 +4643,15 @@
         const pdfBytes = await doc.save();
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = 'firmado_premium.pdf';
+        const a = document.createElement('a'); a.href = url; a.download = 'firmado_visible.pdf';
         a.click(); URL.revokeObjectURL(url);
 
         btn.innerHTML = `${ICONS.Check} ¡Exportado con éxito!`;
-        setTimeout(() => { btn.innerHTML = "Finalizar y Descargar PDF Firmado"; btn.disabled = false; }, 3000);
+        setTimeout(() => { btn.innerHTML = "Finalizar y Descargar PDF con firma visible"; btn.disabled = false; }, 3000);
       } catch (e) {
         console.error(e);
         alert("Error al aplicar las firmas: " + e.message);
-        btn.disabled = false; btn.innerHTML = "Finalizar y Descargar PDF Firmado";
+        btn.disabled = false; btn.innerHTML = "Finalizar y Descargar PDF con firma visible";
       }
     }
 
@@ -3822,167 +4729,24 @@
       if (overlay) overlay.style.opacity = op / 100;
       if (label) label.textContent = op + '%';
     }
-
-    // ── OCR ──
-    function renderOCR(c) {
-      let h = makeDropzone('ocrDrop', '.pdf', 'Arrastra un PDF escaneado o imagen', false);
-      if (state.files.length) {
-        const lang = window._ocrLang || 'es';
-        const langs = [{ id: 'es', l: 'Español' }, { id: 'en', l: 'English' }, { id: 'fr', l: 'Français' }, { id: 'de', l: 'Deutsch' }, { id: 'pt', l: 'Português' }, { id: 'it', l: 'Italiano' }, { id: 'zh', l: '中文' }, { id: 'ja', l: '日本語' }, { id: 'ko', l: '한국어' }, { id: 'ar', l: 'العربية' }];
-        h += `<div><p style="font-size:14px;color:var(--text2);margin-bottom:12px">Idioma del documento:</p>
-      <div class="lang-pills">${langs.map(l => `<button class="lang-pill ${l.id === lang ? 'active' : ''}" onclick="window._ocrLang='${l.id}';renderTool('ocr')">${l.l}</button>`).join('')}</div>`;
-        if (window._ocrResult) {
-          h += `<div class="ocr-result"><div class="ocr-result-header"><span>Texto reconocido</span><button onclick="navigator.clipboard.writeText(window._ocrResult)">Copiar</button></div>
-        <p>${window._ocrResult}</p></div>`;
-        }
-        if (window._ocrResult) {
-          h += `<button class="btn-primary" onclick="downloadTextFile('documento_editable.txt', window._ocrResult)">${ICONS.Download} Descargar texto editable</button>`;
-        } else {
-          h += `<button class="btn-primary" id="ocrBtn" onclick="simulateProcess('ocr', doOCR)">Iniciar OCR</button>`;
-        }
-      }
-      c.innerHTML = h;
-    }
-    async function doOCR() {
-      const file = state.files[0];
-      if (file.type.startsWith('image/')) {
-        const mapLang = { es: 'spa', en: 'eng', fr: 'fra', de: 'deu', pt: 'por', it: 'ita' };
-        const tlang = mapLang[window._ocrLang || 'es'] || 'eng';
-
-        const worker = await Tesseract.createWorker(tlang);
-        const ret = await worker.recognize(file);
-        window._ocrResult = ret.data.text || "No se detectó texto en la imagen.";
-        await worker.terminate();
-      } else {
-        const ab = await file.arrayBuffer();
-        const pdfLib2 = await initPdfJs();
-        const pdf = await pdfLib2.getDocument({ data: ab }).promise;
-        const mapLang = { es: 'spa', en: 'eng', fr: 'fra', de: 'deu', pt: 'por', it: 'ita' };
-        const tlang = mapLang[window._ocrLang || 'es'] || 'eng';
-        const worker = await Tesseract.createWorker(tlang);
-        let fullText = '';
-        const maxPages = Math.min(pdf.numPages, 5);
-        for (let i = 1; i <= maxPages; i++) {
-          const page = await pdf.getPage(i);
-          const vp = page.getViewport({ scale: 2.0 });
-          const cv = document.createElement('canvas'); cv.width = vp.width; cv.height = vp.height;
-          await page.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
-          const ret = await worker.recognize(cv);
-          fullText += ret.data.text + '\n\n';
-        }
-        await worker.terminate();
-        window._ocrResult = fullText.trim() || 'No se detectó texto en el PDF.';
-        if (pdf.numPages > 5) window._ocrResult += '\n\n[Nota: Solo se procesaron las primeras 5 páginas por rendimiento]';
-      }
-      renderTool('ocr');
-    }
-
-    // ── Scan ──
-    function renderScan(c) {
-      const captured = window._scanCaptured || false;
-      const started = window._scanStarted || false;
-
-      c.innerHTML = `
-    <div class="scan-viewport" style="background:#000; position:relative;">
-      ${!captured && started ? '<video id="scanVideo" autoplay playsinline style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;"></video>' : ''}
-      ${captured && window._scanImgData ? `<img src="${window._scanImgData}" style="width:100%; height:100%; object-fit:contain; position:absolute; inset:0;">` : ''}
-      
-      <div class="scan-center" style="position:relative; z-index:10; ${started || captured ? 'display:none;' : ''}">
-        <div class="scan-icon">${ICONS.Scan}</div>
-        <p>Apunta la cámara al documento</p>
-      </div>
-      
-      ${!captured ? `<div class="scan-frame" style="pointer-events:none; z-index:10; ${!started ? 'display:none;' : ''}">
-        <div class="scan-corner tl"></div><div class="scan-corner tr"></div>
-        <div class="scan-corner bl"></div><div class="scan-corner br"></div>
-      </div>` : ''}
-    </div>
-    
-    <div style="display:flex; gap:12px; margin-top:16px;">
-      ${!started && !captured ? `<button class="btn-primary" onclick="startScanCamera()">Iniciar Cámara</button>` : ''}
-      ${started && !captured ? `<button class="btn-primary" onclick="captureScan()">Capturar documento</button>` : ''}
-      ${captured ? `
-        <button class="btn-secondary" style="flex:1" onclick="resetScan()">Escanear otro</button>
-        <button class="btn-primary" id="scanBtn" style="flex:2" onclick="simulateProcess('scan', doGenerateScanPdf)">Convertir a PDF</button>
-      ` : ''}
-    </div>`;
-    }
-
-    async function startScanCamera() {
-      window._scanStarted = true;
-      renderTool('scan');
-      try {
-        window._scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        const v = document.getElementById('scanVideo');
-        if (v) v.srcObject = window._scanStream;
-      } catch (err) {
-        alert("No se pudo acceder a la cámara. Asegúrate de dar los permisos.");
-        resetScan();
-      }
-    }
-
-    function captureScan() {
-      const v = document.getElementById('scanVideo');
-      if (v) {
-        const canvas = document.createElement('canvas');
-        canvas.width = v.videoWidth;
-        canvas.height = v.videoHeight;
-        canvas.getContext('2d').drawImage(v, 0, 0, canvas.width, canvas.height);
-        window._scanImgData = canvas.toDataURL('image/jpeg', 0.8);
-      }
-      if (window._scanStream) {
-        window._scanStream.getTracks().forEach(t => t.stop());
-        window._scanStream = null;
-      }
-      window._scanCaptured = true;
-      renderTool('scan');
-    }
-
-    function resetScan() {
-      window._scanCaptured = false;
-      window._scanStarted = false;
-      window._scanImgData = null;
-      if (window._scanStream) {
-        window._scanStream.getTracks().forEach(t => t.stop());
-        window._scanStream = null;
-      }
-      renderTool('scan');
-    }
-
-    async function doGenerateScanPdf() {
-      if (!window._scanImgData) throw new Error("No hay imagen capturada.");
-      const { PDFDocument } = window.PDFLib;
-      const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage();
-
-      const jpgUrl = window._scanImgData;
-      const jpgImageBytes = await fetch(jpgUrl).then(res => res.arrayBuffer());
-      const jpgImage = await pdfDoc.embedJpg(jpgImageBytes);
-      const { width, height } = page.getSize();
-      page.drawImage(jpgImage, {
-        x: 0,
-        y: 0,
-        width: width,
-        height: height
-      });
-
-      await applyAutoWatermark(pdfDoc);
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'escaneado.pdf';
-      a.click(); URL.revokeObjectURL(url);
-    }
-
     // ── Privacy ──
     function renderPrivacy(c) {
+      const selectedMinutes = Math.round(state.privacyDuration / 60);
       c.innerHTML = `
     <div class="privacy-box">
       <div class="privacy-icon">${ICONS.Privacy}</div>
       <h3>${state.privacyActive ? 'Modo Incógnito Activo' : 'Modo Incógnito de Privacidad'}</h3>
-      <p>Cuando activas el Modo Incógnito, todos los archivos que subas o edites serán eliminados automáticamente 15 minutos después de tu última acción. Sin rastros, sin preocupaciones.</p>
+      <p>Cuando activas el Modo Incógnito, los archivos temporales de esta sesion se eliminan automaticamente tras el tiempo configurado. Todo ocurre localmente en el navegador.</p>
+      <div style="margin:18px 0;">
+        <div style="font-size:13px; color:var(--text2); margin-bottom:6px;">Tiempo de borrado</div>
+        <select class="form-select" ${state.privacyActive ? 'disabled' : ''} onchange="setPrivacyDuration(this.value)">
+          <option value="5" ${selectedMinutes === 5 ? 'selected' : ''}>5 minutos</option>
+          <option value="15" ${selectedMinutes === 15 ? 'selected' : ''}>15 minutos</option>
+          <option value="30" ${selectedMinutes === 30 ? 'selected' : ''}>30 minutos</option>
+        </select>
+      </div>
       <div class="privacy-features">
-        ${['Borrado automático a los 15 minutos', 'Sin almacenamiento en servidores', 'Cifrado de extremo a extremo'].map(f => `
+        ${[`Borrado automatico a los ${selectedMinutes} minutos`, 'Sin almacenamiento en servidores', 'Aislamiento local dentro de la sesion'].map(f => `
           <div class="privacy-feat"><div class="feat-dot">${ICONS.Check}</div><span>${f}</span></div>`).join('')}
       </div>
     </div>
@@ -4039,7 +4803,6 @@
       if (zoneId === 'signDrop') { window._signReady = true; renderTool('sign'); }
       if (zoneId === 'protDrop') { window._protReady = true; renderTool('protect'); }
       if (zoneId === 'wmDrop') { window._wmReady = true; renderTool('watermark'); }
-      if (zoneId === 'ocrDrop') { window._ocrResult = null; renderTool('ocr'); }
       if (zoneId === 'excelDrop') renderTool('toexcel');
       if (zoneId === 'pptDrop') renderTool('toppt');
       if (zoneId === 'createPdfDrop') renderTool('createpdf');
@@ -4054,7 +4817,6 @@
       if (input.id === 'signDropInput') { window._signReady = true; renderTool('sign'); }
       if (input.id === 'protDropInput') { window._protReady = true; renderTool('protect'); }
       if (input.id === 'wmDropInput') { window._wmReady = true; renderTool('watermark'); }
-      if (input.id === 'ocrDropInput') { window._ocrResult = null; renderTool('ocr'); }
       if (input.id === 'excelDropInput') renderTool('toexcel');
       if (input.id === 'pptDropInput') renderTool('toppt');
       if (input.id === 'createPdfDropInput') renderTool('createpdf');
@@ -4074,7 +4836,6 @@
         <div class="tool-card" onclick="showTool('${t.id}')">
           <div class="tool-icon" style="background:${t.color}15;color:${t.color}">${ICONS[t.icon]}</div>
           <h3 style="display:flex; align-items:center; gap:8px;">${t.name} ${t.isNew ? '<span style="font-size:10px; background:var(--red); color:#fff; padding:2px 6px; border-radius:4px; font-weight:bold; letter-spacing:0.5px;">NUEVO</span>' : ''}</h3>
-          <div class="desc">${t.desc}</div>
           <div class="cta" style="color:${t.color}">Usar herramienta →</div>
         </div>`).join('')}
       </div></div>`;
@@ -4092,41 +4853,6 @@
     }
 
 
-  </script>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAnalytics, setAnalyticsCollectionEnabled } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDbZAPtQioiXZzkiiIRrkrBkEPF440NMaE",
-      authDomain: "qaxi-93d6d.firebaseapp.com",
-      projectId: "qaxi-93d6d",
-      storageBucket: "qaxi-93d6d.firebasestorage.app",
-      messagingSenderId: "137240859996",
-      appId: "1:137240859996:web:73e14d28c77233be965d99",
-      measurementId: "G-C74Z1DWV54"
-    };
-
-    try {
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
-      window._firebaseAnalytics = analytics;
-
-      // Hook into the global privacy state
-      const checkPrivacy = () => {
-        if (window.state && window.state.privacyActive) {
-          setAnalyticsCollectionEnabled(analytics, false);
-        } else {
-          setAnalyticsCollectionEnabled(analytics, true);
-        }
-      };
-
-      // Periodically check or check on load
-      checkPrivacy();
-      window.addEventListener('privacyToggled', checkPrivacy);
-    } catch (e) {
-      console.error("Firebase init error:", e);
-    }
   </script>
 </body>
 
