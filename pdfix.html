@@ -147,24 +147,30 @@
     @keyframes fadeUp {
       from {
         opacity: 0;
-        transform: translateY(20px)
+        transform: translateY(32px);
+        filter: blur(4px)
       }
-
+      60% {
+        opacity: 1;
+        filter: blur(0)
+      }
       to {
         opacity: 1;
-        transform: translateY(0)
+        transform: translateY(0);
+        filter: blur(0)
       }
     }
 
     @keyframes scaleIn {
       from {
         opacity: 0;
-        transform: scale(.95)
+        transform: scale(.92);
+        filter: blur(2px)
       }
-
       to {
         opacity: 1;
-        transform: scale(1)
+        transform: scale(1);
+        filter: blur(0)
       }
     }
 
@@ -174,12 +180,27 @@
       }
     }
 
+    @keyframes shimmer {
+      0% { background-position: -200% center }
+      100% { background-position: 200% center }
+    }
+
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0) }
+      50% { transform: translateY(-5px) }
+    }
+
+    @keyframes cardGlow {
+      0% { box-shadow: 0 4px 20px rgba(0,0,0,0.3) }
+      100% { box-shadow: 0 16px 48px rgba(255,51,102,0.18), 0 4px 20px rgba(0,0,0,0.3) }
+    }
+
     .fade-up {
-      animation: fadeUp .6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards
+      animation: fadeUp .7s cubic-bezier(0.16, 1, 0.3, 1) forwards
     }
 
     .scale-in {
-      animation: scaleIn .4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards
+      animation: scaleIn .45s cubic-bezier(0.16, 1, 0.3, 1) forwards
     }
 
     .float-icon {
@@ -479,17 +500,41 @@
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border);
       cursor: pointer;
-      transition: all .4s cubic-bezier(.4, 0, .2, 1);
+      transition: transform .35s cubic-bezier(0.16, 1, 0.3, 1),
+                  border-color .35s ease,
+                  background .35s ease,
+                  box-shadow .35s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
 
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%);
+      background-size: 200% 100%;
+      opacity: 0;
+      transition: opacity .3s;
+      pointer-events: none;
+    }
+
+    .tool-card:hover::before {
+      opacity: 1;
+      animation: shimmer 1.2s linear infinite;
+    }
+
     .tool-card:hover {
-      transform: translateY(-4px) scale(1.02);
-      border-color: rgba(255, 51, 102, 0.4);
+      transform: translateY(-6px) scale(1.025);
+      border-color: rgba(255, 51, 102, 0.45);
       background: rgba(255, 255, 255, 0.07);
-      box-shadow: 0 12px 40px var(--red-bg2);
+      box-shadow: 0 20px 50px rgba(255, 51, 102, 0.15), 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .tool-card:active {
+      transform: translateY(-2px) scale(1.01);
+      transition-duration: .1s;
     }
 
     .tool-icon {
@@ -500,7 +545,12 @@
       align-items: center;
       justify-content: center;
       margin-bottom: 16px;
-      transition: all .3s
+      transition: transform .4s cubic-bezier(0.16, 1, 0.3, 1), background .3s, box-shadow .3s
+    }
+
+    .tool-card:hover .tool-icon {
+      animation: floatIcon 1.8s ease-in-out infinite;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
     }
 
     .tool-icon svg {
@@ -511,14 +561,24 @@
     .tool-card h3 {
       font-size: 16px;
       font-weight: 600;
-      margin-bottom: 4px;
-      color: var(--text)
+      margin-bottom: 6px;
+      color: var(--text);
+      transition: color .3s
+    }
+
+    .tool-card:hover h3 {
+      color: #fff
     }
 
     .tool-card .desc {
       font-size: 12px;
-      line-height: 1.5;
-      color: var(--text4)
+      line-height: 1.55;
+      color: var(--text4);
+      transition: color .3s
+    }
+
+    .tool-card:hover .desc {
+      color: rgba(255,255,255,0.55)
     }
 
     .tool-card .meta-row {
@@ -567,13 +627,15 @@
       align-items: center;
       gap: 4px;
       opacity: 0;
-      transition: opacity .3s;
+      transform: translateX(-6px);
+      transition: opacity .3s ease, transform .35s cubic-bezier(0.16, 1, 0.3, 1);
       font-size: 12px;
       font-weight: 600
     }
 
     .tool-card:hover .cta {
-      opacity: 1
+      opacity: 1;
+      transform: translateX(0)
     }
 
     /* Tool View */
@@ -1879,7 +1941,7 @@
           <div class="footer-logo">
             <span>PDFix Technologies</span>
           </div>
-          <p>PDFix — Hecho con precisión</p>
+          <p>V1.0.0</p>
         </footer>
       </div>
     </div>
@@ -1972,12 +2034,12 @@
       {
         title: "Herramientas de Conversión", subtitle: "Transforma tus documentos rápidamente", tools: [
           { id: "toimages", name: "PDF a Imágenes", desc: "Exporta cada página como PNG o JPG", icon: "File", color: "#06b6d4", isNew: true },
-          { id: "toexcel", name: "PDF a Excel", desc: "Extrae texto tabular a CSV (beta)", icon: "Upload", color: "#10b981", isNew: true },
-          { id: "toword", name: "PDF a Word", desc: "Exporta texto/tablas detectadas a .docx (beta)", icon: "File", color: "#22c55e", isNew: true },
+          { id: "toexcel", name: "PDF a Excel", desc: "Extrae texto y tablas a CSV con estructura por columnas", icon: "Upload", color: "#10b981", isNew: true },
+          { id: "toword", name: "PDF a Word", desc: "Exporta texto y tablas detectadas a Word editable", icon: "File", color: "#22c55e", isNew: true },
           { id: "toppt", name: "PDF a PowerPoint", desc: "Genera PPTX con fondo por página y texto superpuesto", icon: "File", color: "#f59e0b", isNew: true },
           { id: "createpdf", name: "Exportar a PDF", desc: "Crea PDF desde imágenes y TXT", icon: "Upload", color: "#6366f1", isNew: true },
           { id: "merge", name: "Unir y Dividir", desc: "Combina archivos o extrae páginas", icon: "Merge", color: "#EF4444" },
-          { id: "compress", name: "Comprimir PDF", desc: "Compresión por rasterizado (con pérdida)", icon: "Download", color: "#3b82f6" },
+          { id: "compress", name: "Comprimir PDF", desc: "Reduce el tamaño rasterizando páginas con control de calidad", icon: "Download", color: "#3b82f6" },
         ]
       },
       {
@@ -1988,7 +2050,7 @@
           { id: "organize", name: "Organizar Páginas", desc: "Reordena, gira o elimina hojas", icon: "Pages", color: "#DC2626" },
           { id: "pagenumbers", name: "Agregar numeración", desc: "Inserta número de página en todo el PDF", icon: "File", color: "#ef4444", isNew: true },
           { id: "metadata", name: "Metadatos PDF", desc: "Ver y editar autor, título y palabras clave", icon: "File", color: "#14b8a6", isNew: true },
-          { id: "sign", name: "Firma visible", desc: "Añade firma visual (no certificada)", icon: "Sign", color: "#DC2626" },
+          { id: "sign", name: "Firma visible", desc: "Añade firma visual dibujada, escrita o como imagen", icon: "Sign", color: "#DC2626" },
           { id: "protect", name: "Proteger / Desbloquear", desc: "Contraseñas y restricciones", icon: "Lock", color: "#991B1B" },
           { id: "watermark", name: "Marca de Agua", desc: "Protege tu propiedad intelectual", icon: "Watermark", color: "#B91C1C" },
         ]
@@ -2105,44 +2167,46 @@
 
     // ─── Auto Watermark ───
     async function applyAutoWatermark(doc) {
+      const pages = doc.getPages();
+
+      // Logo embedding is optional — never blocks the text watermark
+      let logoImg = null;
+      let logoW = 0, logoH = 0;
       try {
-        const pages = doc.getPages();
         const logoDataURL = window._transparentLogo || await getTransparentLogo();
-        const logoImg = await doc.embedPng(logoDataURL);
-        const { width: logoW, height: logoH } = logoImg.scale(0.08); // Smaller for footer
+        logoImg = await doc.embedPng(logoDataURL);
+        const scaled = logoImg.scale(0.08);
+        logoW = scaled.width;
+        logoH = scaled.height;
+      } catch (e) {
+        console.warn("Logo embed skipped:", e);
+      }
 
-        pages.forEach(page => {
-          const { width, height } = page.getSize();
-
-          // Draw Logo in footer
-          page.drawImage(logoImg, {
-            x: 20,
-            y: 15,
-            width: logoW,
-            height: logoH,
-            opacity: 0.4
-          });
-
-          // Draw Text in footer
+      // Text watermarks always run
+      for (const page of pages) {
+        const { width, height } = page.getSize();
+        try {
+          if (logoImg) {
+            page.drawImage(logoImg, { x: 20, y: 15, width: logoW, height: logoH, opacity: 0.4 });
+          }
           page.drawText('Exportado desde PDFix', {
-            x: 20 + logoW + 8,
+            x: logoImg ? 20 + logoW + 8 : 20,
             y: 18,
             size: 10,
-            opacity: 0.4,
-            color: window.PDFLib.rgb(0.5, 0.5, 0.5)
+            opacity: 0.45,
+            color: window.PDFLib.rgb(0.55, 0.55, 0.55)
           });
-
-          // Optional: Subtle diagonal watermark for security/branding
           page.drawText('PDFix Technologies', {
-            x: width / 2 - 50,
-            y: height / 2,
-            size: 40,
-            opacity: 0.03,
+            x: width / 2 - 120,
+            y: height / 2 - 20,
+            size: 52,
+            opacity: 0.12,
+            color: window.PDFLib.rgb(0.6, 0.6, 0.6),
             rotate: window.PDFLib.degrees(45),
           });
-        });
-      } catch (e) {
-        console.warn("Auto-watermark failed:", e);
+        } catch (e) {
+          console.warn("Watermark on page failed:", e);
+        }
       }
     }
 
@@ -2637,6 +2701,27 @@
         canvas.width = Math.ceil(viewport.width);
         canvas.height = Math.ceil(viewport.height);
         await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        // Apply watermark on canvas
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width, h = canvas.height;
+        ctx.save();
+        ctx.globalAlpha = 0.13;
+        ctx.fillStyle = '#888888';
+        ctx.font = `bold ${Math.round(w * 0.065)}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.translate(w / 2, h / 2);
+        ctx.rotate(-Math.PI / 4);
+        ctx.fillText('PDFix Technologies', 0, 0);
+        ctx.restore();
+        ctx.save();
+        ctx.globalAlpha = 0.45;
+        ctx.fillStyle = '#888888';
+        ctx.font = `${Math.round(w * 0.018)}px sans-serif`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('Exportado desde PDFix', 16, h - 12);
+        ctx.restore();
         const blob = await canvasToBlob(canvas, mimeType, quality);
         downloadBlob(`${baseName}_pagina_${String(i).padStart(2, '0')}.${format}`, blob);
       }
@@ -4085,8 +4170,17 @@
           showToast("Cifrando binario con AES-256...", "info");
           qpdf.callMain(qpdfArgs);
           const outData = qpdf.FS.readFile(outFilename);
-          const blob = new Blob([outData], { type: 'application/pdf' });
-          const url = URL.createObjectURL(blob);
+          let finalBlob;
+          try {
+            const { PDFDocument } = window.PDFLib;
+            const wmDoc = await PDFDocument.load(outData);
+            await applyAutoWatermark(wmDoc);
+            const wmBytes = await wmDoc.save({ userPassword: userPw, ownerPassword: masterPw });
+            finalBlob = new Blob([wmBytes], { type: 'application/pdf' });
+          } catch (e) {
+            finalBlob = new Blob([outData], { type: 'application/pdf' });
+          }
+          const url = URL.createObjectURL(finalBlob);
           const a = document.createElement('a'); a.href = url; a.download = 'protegido_real.pdf';
           a.click(); URL.revokeObjectURL(url);
           showToast("PDF cifrado exitosamente", "success");
@@ -4108,8 +4202,17 @@
 
           qpdf.callMain(args);
           const outData = qpdf.FS.readFile(outFilename);
-          const blob = new Blob([outData], { type: 'application/pdf' });
-          const url = URL.createObjectURL(blob);
+          let finalBlob;
+          try {
+            const { PDFDocument } = window.PDFLib;
+            const wmDoc = await PDFDocument.load(outData);
+            await applyAutoWatermark(wmDoc);
+            const wmBytes = await wmDoc.save();
+            finalBlob = new Blob([wmBytes], { type: 'application/pdf' });
+          } catch (e) {
+            finalBlob = new Blob([outData], { type: 'application/pdf' });
+          }
+          const url = URL.createObjectURL(finalBlob);
           const a = document.createElement('a'); a.href = url; a.download = 'desbloqueado_real.pdf';
           a.click(); URL.revokeObjectURL(url);
           showToast("Documento desbloqueado", "success");
@@ -4832,10 +4935,11 @@
       CATEGORIES.forEach((cat, ci) => {
         catHTML += `<div class="category fade-up" style="animation-delay:${ci * 0.15}s">
       <div class="category-header"><h2>${cat.title}</h2><p>${cat.subtitle}</p></div>
-      <div class="tools-grid">${cat.tools.map(t => `
-        <div class="tool-card" onclick="showTool('${t.id}')">
+      <div class="tools-grid">${cat.tools.map((t, ti) => `
+        <div class="tool-card fade-up" style="animation-delay:${(ci * 0.15) + (ti * 0.07)}s" onclick="showTool('${t.id}')">
           <div class="tool-icon" style="background:${t.color}15;color:${t.color}">${ICONS[t.icon]}</div>
-          <h3 style="display:flex; align-items:center; gap:8px;">${t.name} ${t.isNew ? '<span style="font-size:10px; background:var(--red); color:#fff; padding:2px 6px; border-radius:4px; font-weight:bold; letter-spacing:0.5px;">NUEVO</span>' : ''}</h3>
+          <h3 style="display:flex; align-items:center; gap:8px;">${t.name}</h3>
+          <p class="desc">${t.desc}</p>
           <div class="cta" style="color:${t.color}">Usar herramienta →</div>
         </div>`).join('')}
       </div></div>`;
