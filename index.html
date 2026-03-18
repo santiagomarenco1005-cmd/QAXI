@@ -127,25 +127,6 @@
             display: block;
         }
 
-        /* Site banner (logo.jpeg) */
-        .site-banner {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            padding: 14px 0 6px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(0, 0, 0, 0));
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-        }
-
-        .site-banner img {
-            max-width: 420px;
-            width: 90%;
-            height: auto;
-            object-fit: contain;
-            border-radius: 10px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-        }
-
         /* Hero banner (replaces hero text) */
         .hero-banner {
             width: 100%;
@@ -478,12 +459,6 @@
 
         .section-title span {
             color: var(--gold);
-        }
-
-        /* --- STYLES FOR TRAFFIC & SOCIAL SECTIONS --- */
-        .traffic-section,
-        .social-section {
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .premium-card {
@@ -917,220 +892,6 @@
 
         .learn-modal.show .modal-content {
             animation: popIn 260ms cubic-bezier(.2, .9, .2, 1);
-        }
-
-        /* ESTILOS MEJORADOS PARA EL DASHBOARD */
-        .dashboard-card {
-            background: #050505;
-            /* Fondo solido elegante */
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            /* Borde sutil */
-            border-radius: 30px;
-            /* Bordes mas redondeados */
-            padding: 0;
-            overflow: hidden;
-            width: 100%;
-            max-width: 420px;
-            /* Un poco mas angosto para elegancia */
-            position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
-        }
-
-        .close-modal-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            z-index: 20;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .close-modal-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: #fff;
-            transform: rotate(90deg);
-        }
-
-        .dash-header {
-            padding: 45px 30px 20px 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            /* Eliminamos borde inferior duro para mas limpieza */
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(0, 0, 0, 0) 100%);
-        }
-
-        .dash-avatar-container {
-            position: relative;
-            margin-bottom: 20px;
-            cursor: pointer;
-            group-hover: opacity 0.8;
-        }
-
-        .dash-avatar {
-            width: 85px;
-            height: 85px;
-            background: linear-gradient(135deg, var(--gold), #FDB931);
-            color: #000;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.2rem;
-            font-weight: 800;
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15);
-            border: 3px solid #0f0f0f;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .dash-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .dash-avatar-container:hover .dash-avatar {
-            transform: scale(1.05);
-            border-color: var(--gold);
-        }
-
-        .avatar-edit-badge {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: #222;
-            border: 2px solid #0f0f0f;
-            color: #fff;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            transition: 0.2s;
-        }
-
-        .dash-avatar-container:hover .avatar-edit-badge {
-            background: var(--gold);
-            color: #000;
-        }
-
-        .dash-user-info {
-            text-align: center;
-            width: 100%;
-        }
-
-        .dash-label {
-            font-size: 0.65rem;
-            color: #555;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-
-        .dash-email {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #fff;
-            letter-spacing: -0.3px;
-        }
-
-        .dash-body {
-            padding: 20px 35px 35px 35px;
-        }
-
-        .dash-status-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            background: rgba(255, 255, 255, 0.02);
-            padding: 18px 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-        }
-
-        .plan-badge {
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .web-access-area {
-            text-align: center;
-        }
-
-        .web-btn-big {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background: #fff;
-            color: #000;
-            width: 100%;
-            padding: 16px;
-            border-radius: 14px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            margin-top: 15px;
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
-        }
-
-        .web-btn-big:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.15);
-            background: #f0f0f0;
-        }
-
-        .dash-footer {
-            padding: 25px 35px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: center;
-            /* Centrado para elegancia */
-            background: #080808;
-        }
-
-        .logout-link {
-            color: #666;
-            /* Mas sutil por defecto */
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logout-link:hover {
-            color: #ff4444;
-            /* text-decoration: none; removed underline */
-        }
-
-        .close {
-            /* ESTILO ANTIGUO ELIMINADO en favor de .close-modal-btn */
-            display: none;
         }
 
         .auth-input {
@@ -2030,61 +1791,6 @@
         </div>
     </div>
 
-    <div id="dashboardModal" class="modal">
-        <div class="modal-content dashboard-card">
-            <!-- Botón de cerrar estilizado y alejado -->
-            <div class="close-modal-btn" onclick="closeDashboardModal()">
-                <i class="fas fa-times"></i>
-            </div>
-
-            <div class="dash-header">
-                <!-- Contenedor Avatar Interactivo -->
-                <div class="dash-avatar-container" onclick="document.getElementById('avatarInput').click()"
-                    title="Cambiar foto">
-                    <div class="dash-avatar">
-                        <span id="textAvatar">Q</span>
-                        <img id="imgAvatar" src="" alt="Perfil" style="display: none;">
-                    </div>
-                    <div class="avatar-edit-badge"><i class="fas fa-camera"></i></div>
-                    <input type="file" id="avatarInput" accept="image/*" style="display: none;"
-                        onchange="handleAvatarUpload(this)">
-                </div>
-
-                <div class="dash-user-info">
-                    <div class="dash-email" id="dashEmail">cargando...</div>
-                    <div class="dash-label">CLIENTE ID</div>
-                </div>
-            </div>
-
-            <div class="dash-body">
-                <div class="dash-status-container">
-                    <div class="dash-label" style="margin:0; opacity: 0.7;">PLAN ACTUAL</div>
-                    <span id="dashStatus" class="plan-badge">CARGANDO...</span>
-                </div>
-
-                <div id="web-section" style="display: none;">
-                    <div class="web-access-area">
-                        <a href="#" id="webLinkBtn" target="_blank" class="web-btn-big">
-                            VISITAR MI SITIO WEB <i class="fas fa-arrow-right" style="font-size: 0.8em;"></i>
-                        </a>
-                        <div style="font-size: 0.75rem; color:#444; margin-top:12px;">Estado: <strong>Activo y
-                                visible</strong></div>
-                    </div>
-                </div>
-                <div id="no-web-msg"
-                    style="color: #666; font-size: 0.85rem; text-align: center; padding: 25px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 16px; background: rgba(255,255,255,0.01);">
-                    <i class="fas fa-hammer"
-                        style="margin-bottom: 10px; font-size: 1.2rem; display: block; opacity: 0.5;"></i>
-                    Tu servicio se está configurando.
-                </div>
-            </div>
-
-            <div class="dash-footer">
-                <div id="btnLogout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</div>
-            </div>
-        </div>
-    </div>
-
     <div id="tutorialModal" class="modal">
         <div class="modal-content" style="max-width: 600px; text-align: left;">
             <span class="close" onclick="closeTutorialModal()">&times;</span>
@@ -2185,12 +1891,9 @@
         let basePrice = 0;
         let productType = "";
         let finalPrice = 0;
-        let activeCode = "";
-        let isGiftCard = false; // Control de Gift Card
 
         // Referencias DOM
         const authModal = document.getElementById('authModal');
-        const dashboardModal = document.getElementById('dashboardModal');
         const tutorialModal = document.getElementById('tutorialModal');
         const learnModal = document.getElementById('learnModal');
         const authForm = document.getElementById('authForm');
@@ -2255,137 +1958,14 @@
             setTimeout(() => { learnModal.style.display = 'none'; }, 260);
         };
 
-        // partner-related functionality removed as requested
-
-        // --- LÓGICA TARJETA DE REGALO ---
-        function applyGiftCard(code) {
-            activeCode = code;
-            isGiftCard = true;
-            finalPrice = 0; // Gratis
-
-            // elements used here may exist in payment page; keep behavior
-            if (typeof originalPriceDisplay !== 'undefined') {
-                originalPriceDisplay.innerText = formatCurrency(basePrice);
-                originalPriceDisplay.style.display = 'block';
-            }
-            if (typeof priceDisplay !== 'undefined') priceDisplay.innerText = "$0 COP";
-
-            if (typeof discountTag !== 'undefined') {
-                discountTag.style.display = 'inline-block';
-                discountTag.innerText = "TARJETA DE REGALO ACEPTADA";
-                discountTag.style.background = "#FFD700";
-                discountTag.style.color = "#000";
-            }
-
-            if (typeof qrFrame !== 'undefined') qrFrame.style.display = "none"; // Ocultar QR
-
-            if (typeof codeStatus !== 'undefined') {
-                codeStatus.innerHTML = `
-                    <div style='color:#FFD700; font-weight:700; margin-bottom:5px; font-size:1rem;'>
-                        <i class='fas fa-gift'></i> ¡SALDO CUBIERTO AL 100%!
-                    </div>
-                    <div style='color:#fff; font-size:0.8rem;'>
-                        No necesitas pagar. Envíanos el código para activar tu servicio.
-                    </div>
-                `;
-            }
-
-            if (typeof noteInstruction !== 'undefined') noteInstruction.innerHTML = `ACTIVAR: <span style='color:#FFD700'>${code}</span>`;
-            updatePaymentLinks();
-        }
-
-        function applyDiscount(code) {
-            activeCode = code;
-            let discountPercent = 0;
-
-            if (productType === 'PLAN') discountPercent = 0.15;
-            else if (productType === 'PREMIUM') discountPercent = 0.20;
-            else if (productType === 'MICROAPP') discountPercent = 0.05;
-
-            const discountAmount = basePrice * discountPercent;
-            finalPrice = basePrice - discountAmount;
-
-            if (typeof originalPriceDisplay !== 'undefined') {
-                originalPriceDisplay.innerText = formatCurrency(basePrice);
-                originalPriceDisplay.style.display = 'block';
-            }
-            if (typeof priceDisplay !== 'undefined') priceDisplay.innerText = formatCurrency(finalPrice);
-
-            if (typeof discountTag !== 'undefined') {
-                discountTag.style.display = 'inline-block';
-                discountTag.innerText = `AHORRAS: ${formatCurrency(discountAmount)}`;
-                discountTag.style.background = "rgba(76, 175, 80, 0.15)";
-                discountTag.style.color = "#4caf50";
-            }
-
-            if (typeof noteInstruction !== 'undefined') noteInstruction.innerHTML = `CORREO + NOMBRE + <span style='color:#FFD700'>${code}</span>`;
-            updatePaymentLinks();
-        }
-
-        function resetPrice() {
-            finalPrice = basePrice; activeCode = ""; isGiftCard = false;
-            if (typeof originalPriceDisplay !== 'undefined') originalPriceDisplay.style.display = 'none';
-            if (typeof priceDisplay !== 'undefined') priceDisplay.innerText = formatCurrency(basePrice);
-            if (typeof discountTag !== 'undefined') discountTag.style.display = 'none';
-            if (typeof noteInstruction !== 'undefined') noteInstruction.innerHTML = "TU CORREO + TU NOMBRE";
-            if (typeof qrFrame !== 'undefined') qrFrame.style.display = "block";
-            updatePaymentLinks();
-        }
-
-        window.updatePaymentLinks = () => {
-            let subject = `Pago ${currentProduct}`;
-            let msg = "";
-
-            if (isGiftCard) {
-                subject = `CANJE GIFT CARD: ${activeCode}`;
-                msg = `Hola QAXI, quiero canjear mi tarjeta de regalo.\n\nServicio: ${currentProduct}\nCódigo de Serie: ${activeCode}\n\nQuedo atento a la activación.`;
-            } else {
-                msg = `Hola, pago: ${currentProduct}.\nValor: ${formatCurrency(finalPrice)}\n`;
-                if (activeCode) msg += `Código Partner: ${activeCode} (Descuento Aplicado)\n`;
-                msg += `Adjunto comprobante Nequi.`;
-            }
-
-            if (document.getElementById('emailLink')) {
-                document.getElementById('emailLink').href = `mailto:santiagomarenco1005@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(msg)}`;
-            }
-
-            const chatBtn = document.getElementById('chatLink');
-            if (chatBtn) {
-                document.getElementById('chatLink').onclick = (e) => {
-                    e.preventDefault();
-                    if (isGiftCard) {
-                        window.open(`https://wa.me/573213526875?text=${encodeURIComponent(msg)}`, '_blank');
-                    } else {
-                        navigator.clipboard.writeText(msg).then(() => window.open('chat.html', '_blank'));
-                    }
-                };
-
-                if (isGiftCard) {
-                    chatBtn.innerHTML = '<i class="fab fa-whatsapp"></i> Activar por WhatsApp';
-                    chatBtn.classList.remove('btn-fill');
-                    chatBtn.style.background = '#25D366';
-                    chatBtn.style.color = '#fff';
-                    chatBtn.style.border = 'none';
-                } else {
-                    chatBtn.innerHTML = '<i class="fas fa-comment-dots"></i> Enviar en QAXI Chat (BETA)';
-                    chatBtn.classList.add('btn-fill');
-                    chatBtn.style.background = '#fff';
-                    chatBtn.style.color = '#000';
-                }
-            }
-        };
-
         function formatCurrency(amount) {
             return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(amount);
         }
 
-        window.closeNequiModal = () => { if (typeof nequiModal !== 'undefined') nequiModal.style.display = "none"; };
-
         window.openTutorialModal = () => {
-            closeNequiModal(); closeDashboardModal(); tutorialModal.style.display = "flex";
+            tutorialModal.style.display = "flex";
         };
         window.closeTutorialModal = () => tutorialModal.style.display = "none";
-        window.closeDashboardModal = () => dashboardModal.style.display = "none";
 
         // --- QAXI TEST PREVIEW FUNCTIONS ---
         window.openTestPreview = () => {
@@ -2474,40 +2054,6 @@
             window.location.href = 'mi-panel.html';
         };
 
-        // Función para manejar la subida de foto (visual + localStorage)
-        window.handleAvatarUpload = (input) => {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const imgUrl = e.target.result;
-                    // Actualizar UI
-                    updateAvatarUI(imgUrl);
-                    // Guardar en localStorage si hay usuario
-                    if (currentUser) {
-                        try {
-                            localStorage.setItem(`avatar_${currentUser.email}`, imgUrl);
-                        } catch (err) {
-                            console.log("Error guardando avatar local (quizás muy grande):", err);
-                        }
-                    }
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        };
-
-        function updateAvatarUI(url) {
-            const imgEl = document.getElementById('imgAvatar');
-            const txtEl = document.getElementById('textAvatar');
-            if (url) {
-                imgEl.src = url;
-                imgEl.style.display = 'block';
-                txtEl.style.display = 'none';
-            } else {
-                imgEl.style.display = 'none';
-                txtEl.style.display = 'block';
-            }
-        }
-
         // --- PARTÍCULAS ---
         const canvas = document.getElementById("particles-canvas");
         const ctx = canvas.getContext("2d");
@@ -2523,7 +2069,6 @@
 
         window.onclick = function (event) {
             if (event.target == authModal) window.closeAuthModal();
-            if (event.target == dashboardModal) window.closeDashboardModal();
             if (event.target == tutorialModal) window.closeTutorialModal();
             if (event.target == learnModal) window.closeLearnModal();
             if (event.target == document.getElementById('testPreviewModal')) window.closeTestPreview();
